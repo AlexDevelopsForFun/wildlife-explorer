@@ -1276,6 +1276,16 @@ body, #root {
   font-style: italic;
 }
 
+/* Shimmer placeholder shown while AI description is generating */
+.animal-card__fact--generating {
+  height: 2.8em;             /* matches ~2 lines of text */
+  border-radius: 4px;
+  background: linear-gradient(90deg, #e8f5ee 25%, #d4edda 50%, #e8f5ee 75%);
+  background-size: 600px 100%;
+  animation: shimmer 1.6s infinite linear;
+  border-top-color: #edf7f0; /* keeps the separator visible */
+}
+
 /* ── Source tags ──────────────────────────────────────────────────────────── */
 /* Wrapper row — allows multiple badges when an animal is confirmed by >1 API  */
 .source-tags {

@@ -17,6 +17,7 @@ import { useLiveData } from './hooks/useLiveData';
 import { useNpsParks } from './hooks/useNpsParks';
 import { WILDLIFE_CACHE, WILDLIFE_CACHE_BUILT_AT } from './data/wildlifeCache.js';
 import { fetchAnimalPhoto } from './services/photoService';
+import { fetchGeneratedDescription, needsGeneratedDescription } from './services/descriptionService';
 
 // ── Park type colors & icons ──────────────────────────────────────────────────
 const PARK_COLORS = { nationalPark: '#7B5B2E' };
@@ -508,7 +509,7 @@ function resolveAnimalSources(animal) {
 }
 
 // ── Animal card ───────────────────────────────────────────────────────────────
-function AnimalCard({ animal, debugMode, seasonalFreqs }) {
+function AnimalCard({ animal, debugMode, seasonalFreqs, location }) {
   const r = RARITY[animal.rarity] ?? RARITY.rare;
   const t = ANIMAL_TYPES[animal.animalType];
 
@@ -525,12 +526,29 @@ function AnimalCard({ animal, debugMode, seasonalFreqs }) {
   const [photo,    setPhoto]    = useState(undefined);
   const [expanded, setExpanded] = useState(false);
 
+  // Generated description — fetched when funFact is absent or a generic placeholder
+  const [genFact, setGenFact] = useState(null);
+
   // Fetch photo lazily when the card mounts (i.e. when the popup opens)
   useEffect(() => {
     let alive = true;
     fetchAnimalPhoto(animal.name).then(p => { if (alive) setPhoto(p); });
     return () => { alive = false; };
   }, [animal.name]);
+
+  // Fetch AI description when the hardcoded funFact is missing or a placeholder
+  useEffect(() => {
+    if (!needsGeneratedDescription(animal.funFact)) return;
+    if (!location) return;
+    let alive = true;
+    fetchGeneratedDescription(
+      animal.name,
+      location.name,
+      location.state,
+      animal.animalType,
+    ).then(d => { if (alive && d) setGenFact(d); });
+    return () => { alive = false; };
+  }, [animal.name, animal.funFact, location]);
 
   // Emoji used as silhouette placeholder by animal type
   const placeholderEmoji = t?.emoji ?? '🐾';
@@ -677,7 +695,14 @@ function AnimalCard({ animal, debugMode, seasonalFreqs }) {
         </div>
       </div>
 
-      <p className="animal-card__fact">{animal.funFact}</p>
+      {/* Fun fact — prefer hardcoded, fall back to AI-generated, hide on placeholder */}
+      {needsGeneratedDescription(animal.funFact) ? (
+        genFact
+          ? <p className="animal-card__fact">{genFact}</p>
+          : <p className="animal-card__fact animal-card__fact--generating" aria-label="Generating description…" />
+      ) : (
+        <p className="animal-card__fact">{animal.funFact}</p>
+      )}
 
       {/* Source tags — one badge per source; multiple when confirmed by >1 API */}
       <div className="source-tags">
@@ -753,18 +778,34 @@ function AnimalCard({ animal, debugMode, seasonalFreqs }) {
 // Same photo logic as AnimalCard. fetchAnimalPhoto uses a shared in-memory +
 // localStorage cache, so if the animal was already shown in the main list above
 // the photo resolves instantly without a second network call.
-function ExceptionalCard({ animal, seasonalFreqs }) {
+function ExceptionalCard({ animal, seasonalFreqs, location }) {
   const t = ANIMAL_TYPES[animal.animalType];
   const placeholderEmoji = t?.emoji ?? animal.emoji ?? '🐾';
 
   const [photo,    setPhoto]    = useState(undefined);
   const [expanded, setExpanded] = useState(false);
 
+  // Generated description — same logic as AnimalCard
+  const [genFact, setGenFact] = useState(null);
+
   useEffect(() => {
     let alive = true;
     fetchAnimalPhoto(animal.name).then(p => { if (alive) setPhoto(p); });
     return () => { alive = false; };
   }, [animal.name]);
+
+  useEffect(() => {
+    if (!needsGeneratedDescription(animal.funFact)) return;
+    if (!location) return;
+    let alive = true;
+    fetchGeneratedDescription(
+      animal.name,
+      location.name,
+      location.state,
+      animal.animalType,
+    ).then(d => { if (alive && d) setGenFact(d); });
+    return () => { alive = false; };
+  }, [animal.name, animal.funFact, location]);
 
   return (
     <div className="exceptional-card">
@@ -864,7 +905,13 @@ function ExceptionalCard({ animal, seasonalFreqs }) {
         </div>
       </div>
 
-      <p className="exceptional-card__fact">{animal.funFact}</p>
+      {needsGeneratedDescription(animal.funFact) ? (
+        genFact
+          ? <p className="exceptional-card__fact">{genFact}</p>
+          : <p className="exceptional-card__fact animal-card__fact--generating" aria-label="Generating description…" />
+      ) : (
+        <p className="exceptional-card__fact">{animal.funFact}</p>
+      )}
 
       {/* Source badges — same logic as AnimalCard */}
       {(() => {
@@ -1560,7 +1607,7 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
 
             return (
               <>
-                {visibleList.map((a, i) => <AnimalCard key={`${a.name}-${i}`} animal={a} debugMode={debugMode} seasonalFreqs={seasonalFreqs} />)}
+                {visibleList.map((a, i) => <AnimalCard key={`${a.name}-${i}`} animal={a} debugMode={debugMode} seasonalFreqs={seasonalFreqs} location={location} />)}
                 {isDefaultCapped && (
                   <button className="lp__show-all-btn" onClick={() => setShowAll(true)}>
                     Show all {filtered.length} species ↓
@@ -1601,7 +1648,7 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
             </p>
             <div className="lp__exceptional-cards">
               {exceptionalAnimals.map((a, i) => (
-                <ExceptionalCard key={`exc-${a.name}-${i}`} animal={a} seasonalFreqs={seasonalFreqs} />
+                <ExceptionalCard key={`exc-${a.name}-${i}`} animal={a} seasonalFreqs={seasonalFreqs} location={location} />
               ))}
             </div>
           </div>
