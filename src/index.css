@@ -1286,14 +1286,22 @@ body, #root {
   border-top-color: #edf7f0;
 }
 
-/* Attribution label shown below pre-fetched descriptions */
+/* Attribution label shown below any animal description.
+   Three tiers:
+     🏛️ Park Naturalist — curated, written for this app
+     🌿 iNaturalist     — species summary from iNaturalist/Wikipedia
+     📖 Wikipedia       — Wikipedia REST API extract
+     🏛️ Park Records    — factual fallback from observation data          */
 .description-source {
-  display: block;
+  display: inline-block;
   font-size: 11px;
   color: #9ca3af;
   font-style: normal;
-  margin-top: 3px;
-  letter-spacing: 0.01em;
+  margin-top: 4px;
+  letter-spacing: 0.02em;
+  padding: 1px 5px 1px 0;
+  border-radius: 3px;
+  line-height: 1.4;
 }
 
 /* ── Source tags ──────────────────────────────────────────────────────────── */

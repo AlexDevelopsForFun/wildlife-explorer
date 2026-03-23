@@ -141,6 +141,24 @@ const SOURCE_TOOLTIPS = {
   estimated:   'Species documented in official park records and wildlife inventories',
 };
 
+// ── Description source badges ─────────────────────────────────────────────────
+// Shown below an animal's description line to indicate where it came from.
+// Three-tier hierarchy:
+//   🏛️ Park Naturalist — curated entries written for this app (wildlifeData.js)
+//   🌿 iNaturalist     — wikipedia_summary field from api.inaturalist.org/v1/taxa
+//   📖 Wikipedia       — extract field from en.wikipedia.org/api/rest_v1/page/summary
+//   🏛️ Park Records    — factual fallback built from existing observation data
+const DESC_SOURCE_ICON = {
+  'iNaturalist':    '🌿',
+  'Wikipedia':      '📖',
+  'Park Records':   '🏛️',
+};
+const DESC_SOURCE_LABEL = {
+  'iNaturalist':    'iNaturalist',
+  'Wikipedia':      'Wikipedia',
+  'Park Records':   'Park Records',
+};
+
 // ── Year-round display config ─────────────────────────────────────────────────
 // Not part of SEASONS (which drives the filter dropdown) — display-only.
 const YEAR_ROUND_DISPLAY = { label: 'Year Round', emoji: '🌀', color: '#6b7280' };
@@ -678,18 +696,24 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location }) {
         </div>
       </div>
 
-      {/* Description — prefer curated funFact, fall back to pre-fetched description */}
+      {/* Description — 3-tier hierarchy with source badge */}
       {needsGeneratedDescription(animal.funFact) ? (
         animal.description
           ? <>
               <p className="animal-card__fact">{animal.description}</p>
               {animal.descriptionSource && (
-                <span className="description-source">via {animal.descriptionSource}</span>
+                <span className="description-source">
+                  {DESC_SOURCE_ICON[animal.descriptionSource] ?? '📖'}{' '}
+                  {DESC_SOURCE_LABEL[animal.descriptionSource] ?? animal.descriptionSource}
+                </span>
               )}
             </>
           : null
       ) : (
-        <p className="animal-card__fact">{animal.funFact}</p>
+        <>
+          <p className="animal-card__fact">{animal.funFact}</p>
+          <span className="description-source">🏛️ Park Naturalist</span>
+        </>
       )}
 
       {/* Source tags — one badge per source; multiple when confirmed by >1 API */}
@@ -882,12 +906,18 @@ function ExceptionalCard({ animal, seasonalFreqs, location }) {
           ? <>
               <p className="exceptional-card__fact">{animal.description}</p>
               {animal.descriptionSource && (
-                <span className="description-source">via {animal.descriptionSource}</span>
+                <span className="description-source">
+                  {DESC_SOURCE_ICON[animal.descriptionSource] ?? '📖'}{' '}
+                  {DESC_SOURCE_LABEL[animal.descriptionSource] ?? animal.descriptionSource}
+                </span>
               )}
             </>
           : null
       ) : (
-        <p className="exceptional-card__fact">{animal.funFact}</p>
+        <>
+          <p className="exceptional-card__fact">{animal.funFact}</p>
+          <span className="description-source">🏛️ Park Naturalist</span>
+        </>
       )}
 
       {/* Source badges — same logic as AnimalCard */}
