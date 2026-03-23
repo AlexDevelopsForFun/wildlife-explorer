@@ -1,9 +1,15 @@
 // ── AI fun-fact service ────────────────────────────────────────────────────────
-// For animals with no real description (generic placeholders or null funFact),
-// calls /api/ai-funfact to generate a park-specific 2-3 sentence description.
-// Results are cached in localStorage (30-day TTL) so the API fires once per
-// animal per park per device. Concurrent requests for the same key are
-// deduplicated via a pending-promise map.
+// Generates park-specific animal descriptions via the /api/ai-funfact serverless
+// function (Anthropic claude-haiku). This service is NOT called from the UI —
+// descriptions are now pre-fetched at build time by scripts/enrichDescriptions.js
+// and stored in wildlifeCache.js as animal.description + animal.descriptionSource.
+//
+// This module is kept intact so it can be re-enabled (e.g. for live animals that
+// don't appear in the static cache). To re-enable, import fetchGeneratedDescription
+// in App.jsx and call it from the AnimalCard / ExceptionalCard useEffect.
+//
+// The localStorage cache and deduplication infrastructure remain active so that
+// if re-enabled, no redundant API calls fire.
 
 const _descCache   = new Map(); // { key → description string }
 const _pendingDesc = new Map(); // { key → Promise<string|null> }

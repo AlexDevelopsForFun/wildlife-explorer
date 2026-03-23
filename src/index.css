@@ -1276,14 +1276,24 @@ body, #root {
   font-style: italic;
 }
 
-/* Shimmer placeholder shown while AI description is generating */
+/* Shimmer placeholder — kept for reference, not currently used */
 .animal-card__fact--generating {
-  height: 2.8em;             /* matches ~2 lines of text */
+  height: 2.8em;
   border-radius: 4px;
   background: linear-gradient(90deg, #e8f5ee 25%, #d4edda 50%, #e8f5ee 75%);
   background-size: 600px 100%;
   animation: shimmer 1.6s infinite linear;
-  border-top-color: #edf7f0; /* keeps the separator visible */
+  border-top-color: #edf7f0;
+}
+
+/* Attribution label shown below pre-fetched descriptions */
+.description-source {
+  display: block;
+  font-size: 11px;
+  color: #9ca3af;
+  font-style: normal;
+  margin-top: 3px;
+  letter-spacing: 0.01em;
 }
 
 /* ── Source tags ──────────────────────────────────────────────────────────── */

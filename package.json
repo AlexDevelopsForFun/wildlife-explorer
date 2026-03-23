@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "build:cache": "node scripts/buildWildlifeCache.js"
+    "build:cache": "node scripts/buildWildlifeCache.js",
+    "build:descriptions": "node scripts/enrichDescriptions.js",
+    "test:descriptions": "node scripts/testDescriptions.js"
   },
   "dependencies": {
     "leaflet": "^1.9.4",

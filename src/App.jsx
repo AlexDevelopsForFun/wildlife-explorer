@@ -17,7 +17,7 @@ import { useLiveData } from './hooks/useLiveData';
 import { useNpsParks } from './hooks/useNpsParks';
 import { WILDLIFE_CACHE, WILDLIFE_CACHE_BUILT_AT } from './data/wildlifeCache.js';
 import { fetchAnimalPhoto } from './services/photoService';
-import { fetchGeneratedDescription, needsGeneratedDescription } from './services/descriptionService';
+import { needsGeneratedDescription } from './services/descriptionService';
 
 // ── Park type colors & icons ──────────────────────────────────────────────────
 const PARK_COLORS = { nationalPark: '#7B5B2E' };
@@ -526,34 +526,12 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location }) {
   const [photo,    setPhoto]    = useState(undefined);
   const [expanded, setExpanded] = useState(false);
 
-  // Generated description — fetched when funFact is absent or a generic placeholder
-  const [genFact,    setGenFact]    = useState(null);
-  const [descFailed, setDescFailed] = useState(false); // true → hide shimmer cleanly
-
   // Fetch photo lazily when the card mounts (i.e. when the popup opens)
   useEffect(() => {
     let alive = true;
     fetchAnimalPhoto(animal.name).then(p => { if (alive) setPhoto(p); });
     return () => { alive = false; };
   }, [animal.name]);
-
-  // Fetch AI description when the hardcoded funFact is missing or a placeholder
-  useEffect(() => {
-    if (!needsGeneratedDescription(animal.funFact)) return;
-    if (!location) return;
-    let alive = true;
-    fetchGeneratedDescription(
-      animal.name,
-      location.name,
-      location.state,
-      animal.animalType,
-    ).then(d => {
-      if (!alive) return;
-      if (d) setGenFact(d);
-      else   setDescFailed(true); // timeout / API error — hide shimmer silently
-    });
-    return () => { alive = false; };
-  }, [animal.name, animal.funFact, location]);
 
   // Emoji used as silhouette placeholder by animal type
   const placeholderEmoji = t?.emoji ?? '🐾';
@@ -700,12 +678,16 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location }) {
         </div>
       </div>
 
-      {/* Fun fact — prefer hardcoded, fall back to AI-generated, hide on error/timeout */}
+      {/* Description — prefer curated funFact, fall back to pre-fetched description */}
       {needsGeneratedDescription(animal.funFact) ? (
-        descFailed ? null :
-        genFact
-          ? <p className="animal-card__fact">{genFact}</p>
-          : <p className="animal-card__fact animal-card__fact--generating" aria-label="Generating description…" />
+        animal.description
+          ? <>
+              <p className="animal-card__fact">{animal.description}</p>
+              {animal.descriptionSource && (
+                <span className="description-source">via {animal.descriptionSource}</span>
+              )}
+            </>
+          : null
       ) : (
         <p className="animal-card__fact">{animal.funFact}</p>
       )}
@@ -791,32 +773,11 @@ function ExceptionalCard({ animal, seasonalFreqs, location }) {
   const [photo,    setPhoto]    = useState(undefined);
   const [expanded, setExpanded] = useState(false);
 
-  // Generated description — same logic as AnimalCard
-  const [genFact,    setGenFact]    = useState(null);
-  const [descFailed, setDescFailed] = useState(false);
-
   useEffect(() => {
     let alive = true;
     fetchAnimalPhoto(animal.name).then(p => { if (alive) setPhoto(p); });
     return () => { alive = false; };
   }, [animal.name]);
-
-  useEffect(() => {
-    if (!needsGeneratedDescription(animal.funFact)) return;
-    if (!location) return;
-    let alive = true;
-    fetchGeneratedDescription(
-      animal.name,
-      location.name,
-      location.state,
-      animal.animalType,
-    ).then(d => {
-      if (!alive) return;
-      if (d) setGenFact(d);
-      else   setDescFailed(true);
-    });
-    return () => { alive = false; };
-  }, [animal.name, animal.funFact, location]);
 
   return (
     <div className="exceptional-card">
@@ -917,10 +878,14 @@ function ExceptionalCard({ animal, seasonalFreqs, location }) {
       </div>
 
       {needsGeneratedDescription(animal.funFact) ? (
-        descFailed ? null :
-        genFact
-          ? <p className="exceptional-card__fact">{genFact}</p>
-          : <p className="exceptional-card__fact animal-card__fact--generating" aria-label="Generating description…" />
+        animal.description
+          ? <>
+              <p className="exceptional-card__fact">{animal.description}</p>
+              {animal.descriptionSource && (
+                <span className="description-source">via {animal.descriptionSource}</span>
+              )}
+            </>
+          : null
       ) : (
         <p className="exceptional-card__fact">{animal.funFact}</p>
       )}
