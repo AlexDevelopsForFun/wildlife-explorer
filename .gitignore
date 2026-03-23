@@ -1,0 +1,27 @@
+# ── Dependencies ─────────────────────────────────────────────────────────────
+node_modules/
+
+# ── Build output ──────────────────────────────────────────────────────────────
+dist/
+dist-ssr/
+
+# ── Environment variables — NEVER commit these ────────────────────────────────
+.env
+.env.local
+.env.*.local
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+*.log
+npm-debug.log*
+scripts/rebuild-*.log
+
+# ── OS / editor ───────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/settings.json
+
+# ── Vite cache ────────────────────────────────────────────────────────────────
+.vite/
+
+# ── Claude Code local config ──────────────────────────────────────────────────
+.claude/
