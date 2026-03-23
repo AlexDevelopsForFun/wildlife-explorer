@@ -527,7 +527,8 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location }) {
   const [expanded, setExpanded] = useState(false);
 
   // Generated description — fetched when funFact is absent or a generic placeholder
-  const [genFact, setGenFact] = useState(null);
+  const [genFact,    setGenFact]    = useState(null);
+  const [descFailed, setDescFailed] = useState(false); // true → hide shimmer cleanly
 
   // Fetch photo lazily when the card mounts (i.e. when the popup opens)
   useEffect(() => {
@@ -546,7 +547,11 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location }) {
       location.name,
       location.state,
       animal.animalType,
-    ).then(d => { if (alive && d) setGenFact(d); });
+    ).then(d => {
+      if (!alive) return;
+      if (d) setGenFact(d);
+      else   setDescFailed(true); // timeout / API error — hide shimmer silently
+    });
     return () => { alive = false; };
   }, [animal.name, animal.funFact, location]);
 
@@ -695,8 +700,9 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location }) {
         </div>
       </div>
 
-      {/* Fun fact — prefer hardcoded, fall back to AI-generated, hide on placeholder */}
+      {/* Fun fact — prefer hardcoded, fall back to AI-generated, hide on error/timeout */}
       {needsGeneratedDescription(animal.funFact) ? (
+        descFailed ? null :
         genFact
           ? <p className="animal-card__fact">{genFact}</p>
           : <p className="animal-card__fact animal-card__fact--generating" aria-label="Generating description…" />
@@ -786,7 +792,8 @@ function ExceptionalCard({ animal, seasonalFreqs, location }) {
   const [expanded, setExpanded] = useState(false);
 
   // Generated description — same logic as AnimalCard
-  const [genFact, setGenFact] = useState(null);
+  const [genFact,    setGenFact]    = useState(null);
+  const [descFailed, setDescFailed] = useState(false);
 
   useEffect(() => {
     let alive = true;
@@ -803,7 +810,11 @@ function ExceptionalCard({ animal, seasonalFreqs, location }) {
       location.name,
       location.state,
       animal.animalType,
-    ).then(d => { if (alive && d) setGenFact(d); });
+    ).then(d => {
+      if (!alive) return;
+      if (d) setGenFact(d);
+      else   setDescFailed(true);
+    });
     return () => { alive = false; };
   }, [animal.name, animal.funFact, location]);
 
@@ -906,6 +917,7 @@ function ExceptionalCard({ animal, seasonalFreqs, location }) {
       </div>
 
       {needsGeneratedDescription(animal.funFact) ? (
+        descFailed ? null :
         genFact
           ? <p className="exceptional-card__fact">{genFact}</p>
           : <p className="exceptional-card__fact animal-card__fact--generating" aria-label="Generating description…" />

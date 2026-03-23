@@ -9,6 +9,7 @@ const _descCache   = new Map(); // { key → description string }
 const _pendingDesc = new Map(); // { key → Promise<string|null> }
 const LS_PREFIX    = 'wm_desc_v1_';
 const DESC_TTL     = 30 * 24 * 60 * 60 * 1000; // 30 days
+const TIMEOUT_MS   = 8000;                       // 8 s — give up and hide shimmer
 
 // Normalise to a stable localStorage key: "Ruffed Grouse" + "Acadia" → "ruffed_grouse__acadia_np"
 function normKey(animalName, parkName) {
@@ -61,13 +62,24 @@ export async function fetchGeneratedDescription(animalName, parkName, parkState,
   } catch { /* storage unavailable */ }
 
   // 4. API call — POST to the Vercel serverless function
+  //    AbortController gives us the 8-second timeout; on abort the catch
+  //    returns null so callers hide the shimmer with a clean empty state.
   const promise = (async () => {
+    const controller = new AbortController();
+    const timerId = setTimeout(() => {
+      controller.abort();
+      console.warn('[descriptionService] timed out after 8 s:', key);
+    }, TIMEOUT_MS);
+
     try {
       const res = await fetch('/api/ai-funfact', {
         method:  'POST',
         headers: { 'content-type': 'application/json' },
         body:    JSON.stringify({ animalName, parkName, parkState, animalType }),
+        signal:  controller.signal,
       });
+
+      clearTimeout(timerId);
 
       if (!res.ok) {
         console.warn('[descriptionService] api error', res.status);
@@ -84,7 +96,10 @@ export async function fetchGeneratedDescription(animalName, parkName, parkState,
 
       return description;
     } catch (err) {
-      console.warn('[descriptionService] fetch failed:', err.message);
+      clearTimeout(timerId);
+      if (err.name !== 'AbortError') {
+        console.warn('[descriptionService] fetch failed:', err.message);
+      }
       return null;
     } finally {
       _pendingDesc.delete(key);
