@@ -437,6 +437,67 @@ function SplashScreen({ onDismiss }) {
  * relative to the number of active seasons so the numbers feel meaningful.
  * Returns { spring, summer, fall, winter, _estimated: true } or null.
  */
+// ── Iconic sort helpers ───────────────────────────────────────────────────────
+// Returns a charisma score (1–10) used to rank within iconic sort tiers.
+// Higher = more exciting / visitor-recognisable.
+function getCharismaScore(name, animalType) {
+  const n = (name ?? '').toLowerCase();
+  if (/\b(bison|buffalo|grizzly|bear|wolf|wolves|alligator|crocodile|moose|elk|wapiti|mountain lion|puma|cougar|jaguar|panther|wolverine|manatee)\b/.test(n)) return 10;
+  if (/\b(manatee|whale|dolphin|orca|shark|sea lion|walrus|sea otter|steller)\b/.test(n)) return 9;
+  if (/\b(bald eagle|golden eagle|eagle|condor|peregrine|falcon|osprey)\b/.test(n)) return 9;
+  if (/\b(hawk|owl|vulture|kite|harrier|merlin|kestrel)\b/.test(n)) return 8;
+  if (/\b(puffin|flamingo|spoonbill|whooping crane|sandhill crane|roseate|pelican|frigate|booby)\b/.test(n)) return 8;
+  if (/\b(seal|harbor seal|grey seal|fur seal|sea turtle|leatherback|loggerhead)\b/.test(n)) return 8;
+  if (/\b(fox|coyote|bobcat|lynx|otter|beaver|pronghorn|bighorn|mountain goat|caribou|muskox|bison|deer|elk|moose)\b/.test(n)) return 7;
+  if (/\b(rattlesnake|boa|python|king snake|milk snake|gopher snake|coral snake)\b/.test(n)) return 7;
+  if (/\b(heron|egret|ibis|stork|loon|puffin|cormorant|gannet|anhinga)\b/.test(n)) return 7;
+  if (animalType === 'marine') return 7;
+  if (animalType === 'mammal') return 6;
+  if (animalType === 'reptile' || animalType === 'amphibian') return 6;
+  if (animalType === 'bird') return 5;
+  if (animalType === 'insect') return 3;
+  return 4;
+}
+
+const _RARITY_ORDER = { guaranteed: 0, very_likely: 1, likely: 2, unlikely: 3, rare: 4, exceptional: 5 };
+
+function iconicSortFn(a, b) {
+  // Tier 1: curated Park Naturalist animals (real funFact, not a placeholder)
+  const aIsCurated = !!(a.funFact && !needsGeneratedDescription(a.funFact));
+  const bIsCurated = !!(b.funFact && !needsGeneratedDescription(b.funFact));
+  if (aIsCurated !== bIsCurated) return aIsCurated ? -1 : 1;
+  if (aIsCurated) {
+    // Within curated: charisma first (Bison/Wolf/Bear before common sparrows),
+    // then rarity (Guaranteed before Rare within same charisma band)
+    const cd = getCharismaScore(b.name, b.animalType) - getCharismaScore(a.name, a.animalType);
+    if (cd !== 0) return cd;
+    return (_RARITY_ORDER[a.rarity] ?? 5) - (_RARITY_ORDER[b.rarity] ?? 5);
+  }
+
+  // Tier 2: guaranteed/very_likely mammals
+  const aTopMammal = a.animalType === 'mammal' && (a.rarity === 'guaranteed' || a.rarity === 'very_likely');
+  const bTopMammal = b.animalType === 'mammal' && (b.rarity === 'guaranteed' || b.rarity === 'very_likely');
+  if (aTopMammal !== bTopMammal) return aTopMammal ? -1 : 1;
+  if (aTopMammal) {
+    const rd = (_RARITY_ORDER[a.rarity] ?? 5) - (_RARITY_ORDER[b.rarity] ?? 5);
+    if (rd !== 0) return rd;
+    return getCharismaScore(b.name, b.animalType) - getCharismaScore(a.name, a.animalType);
+  }
+
+  // Tier 3: rare animals — exciting even if hard to see
+  const aIsRare = a.rarity === 'rare';
+  const bIsRare = b.rarity === 'rare';
+  if (aIsRare !== bIsRare) return aIsRare ? -1 : 1;
+  if (aIsRare) {
+    return getCharismaScore(b.name, b.animalType) - getCharismaScore(a.name, a.animalType);
+  }
+
+  // Tier 4: everything else — charisma descending, then rarity ascending
+  const cd = getCharismaScore(b.name, b.animalType) - getCharismaScore(a.name, a.animalType);
+  if (cd !== 0) return cd;
+  return (_RARITY_ORDER[a.rarity] ?? 5) - (_RARITY_ORDER[b.rarity] ?? 5);
+}
+
 // Approximate encounter-rate by rarity tier — used as last-resort when no
 // frequency field exists (e.g. NPS-only records). Keeps estimated badges
 // honest: exceptional animals show ~1%, rare ~4%, etc.
@@ -654,7 +715,25 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location }) {
                     animal.seasons,
                     animal.rarity,
                   );
-              if (!freq) return null;
+              if (!freq) {
+                // Exceptional animals always show a chance estimate even without season data
+                if (animal.rarity !== 'exceptional') return null;
+                const f = animal.frequency ?? animal._debug?.frequency ?? RARITY_FREQ_FALLBACK.exceptional;
+                const pct = Math.max(1, Math.round(f * 100));
+                const fetchInFlight = sciKey && !(sciKey in (seasonalFreqs ?? {}));
+                return (
+                  <div
+                    className="exceptional-chance"
+                    title="Exceptional sightings are documented but extremely rare — most visitors never see this animal"
+                  >
+                    ⭐ ~{pct}% chance per visit
+                    <span className="freq-est-flag" title="Estimated from rarity tier">~est</span>
+                    {fetchInFlight && (
+                      <span className="freq-loading" title="Loading accurate seasonal data from iNaturalist…">↻</span>
+                    )}
+                  </div>
+                );
+              }
               const isEstimated = freq._estimated === true;
               const SEASON_KEYS = ['spring', 'summer', 'fall', 'winter'];
               const SEASON_EMOJI = { spring: '🌸', summer: '☀️', fall: '🍂', winter: '❄️' };
@@ -856,48 +935,49 @@ function ExceptionalCard({ animal, seasonalFreqs, location }) {
           <span className="rarity-badge rarity-badge--exceptional" style={{ color: '#7c3aed', background: '#7c3aed18', borderColor: '#7c3aed44' }}>
             ⭐ Exceptional
           </span>
-          {/* Seasonal frequency percentages — same logic as AnimalCard */}
+          {/* Exceptional chance — single prominent line; always shown for exceptional tier */}
           {(() => {
             const sciKey = animal.scientificName?.toLowerCase();
             const histFreq = sciKey ? seasonalFreqs?.[sciKey] : undefined;
-            const freq = (histFreq != null && histFreq !== undefined)
-              ? histFreq
-              : estimateSeasonalFreqFromField(
-                  animal.frequency ?? animal._debug?.frequency,
-                  animal.seasons,
-                  animal.rarity,
-                );
-            if (!freq) return null;
-            const isEstimated = freq._estimated === true;
+            const isHistReal = histFreq && !histFreq._estimated;
             const SEASON_KEYS = ['spring', 'summer', 'fall', 'winter'];
-            const SEASON_EMOJI = { spring: '🌸', summer: '☀️', fall: '🍂', winter: '❄️' };
-            const validSeasons = (animal.seasons?.includes('year_round') || animal.seasons?.includes('year-round'))
-              ? SEASON_KEYS
-              : SEASON_KEYS.filter(s => animal.seasons?.includes(s));
-            const items = validSeasons
-              .map(s => ({ s, pct: freq[s] }))
-              .filter(({ pct }) => pct != null && pct > 0);
-            if (!items.length) return null;
+            const SEASON_NAMES = { spring: 'spring', summer: 'summer', fall: 'fall', winter: 'winter' };
+
+            let chanceText, isEstimated;
+
+            if (isHistReal) {
+              // Real iNaturalist histogram — show peak season percentage
+              const peaks = SEASON_KEYS
+                .map(s => ({ s, pct: histFreq[s] }))
+                .filter(({ pct }) => pct != null && pct > 0)
+                .sort((a, b) => b.pct - a.pct);
+              if (peaks.length) {
+                const { s, pct } = peaks[0];
+                chanceText = `~${pct}% chance in ${SEASON_NAMES[s]}`;
+                isEstimated = false;
+              }
+            }
+
+            if (!chanceText) {
+              // No histogram — derive from frequency field or rarity fallback
+              const f = animal.frequency ?? animal._debug?.frequency ?? RARITY_FREQ_FALLBACK.exceptional;
+              const pct = Math.max(1, Math.round(f * 100));
+              chanceText = `~${pct}% chance per visit`;
+              isEstimated = true;
+            }
+
+            const fetchInFlight = isEstimated && sciKey && !(sciKey in (seasonalFreqs ?? {}));
+
             return (
-              <div className={`seasonal-freq${isEstimated ? ' seasonal-freq--est' : ''}`}>
-                {items.map(({ s, pct }) => {
-                  const colorClass = pct >= 60 ? 'freq--high' : pct >= 30 ? 'freq--med' : pct >= 10 ? 'freq--low' : 'freq--trace';
-                  return (
-                    <span
-                      key={s}
-                      className={`freq-badge ${colorClass}`}
-                      title={isEstimated
-                        ? `~${pct}% estimated presence in ${s} (from overall encounter rate)`
-                        : `${pct}% of iNaturalist observations were recorded in ${s}`}
-                    >
-                      {SEASON_EMOJI[s]} {pct}%
-                    </span>
-                  );
-                })}
+              <div
+                className="exceptional-chance"
+                title="Exceptional sightings are documented but extremely rare — most visitors never see this animal"
+              >
+                ⭐ {chanceText}
                 {isEstimated && (
-                  <span className="freq-est-flag" title="Estimated from overall sighting frequency">~est</span>
+                  <span className="freq-est-flag" title="Estimated from rarity tier">~est</span>
                 )}
-                {isEstimated && sciKey && !(sciKey in (seasonalFreqs ?? {})) && (
+                {fetchInFlight && (
                   <span className="freq-loading" title="Loading accurate seasonal data from iNaturalist…">↻</span>
                 )}
               </div>
@@ -1260,11 +1340,10 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
 
     if (popupRarity !== 'all') result = result.filter(a => a.rarity === popupRarity);
 
-    // When sort is 'common-first' and no specific rarity is selected, exceptional
-    // animals are shown exclusively in the Rare Finds section below the main list.
-    // Exclude them here so they don't appear twice. For all other sort orders
-    // (rarest-first, a-z) they integrate naturally into the sorted main list.
-    if (popupSort === 'common-first' && popupRarity === 'all') {
+    // On 'iconic-first' and 'common-first' sorts, exceptional animals are shown
+    // exclusively in the Rare Finds section below with special ExceptionalCard styling.
+    // On other sorts (rarest-first, a-z) they integrate naturally into the main list.
+    if ((popupSort === 'iconic-first' || popupSort === 'common-first') && popupRarity === 'all') {
       result = result.filter(a => a.rarity !== 'exceptional');
     }
 
@@ -1276,11 +1355,12 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
       );
     }
 
-    const rarityOrder = { guaranteed: 0, very_likely: 1, likely: 2, unlikely: 3, rare: 4, exceptional: 5 };
-    if (popupSort === 'common-first') {
-      result = [...result].sort((a, b) => (rarityOrder[a.rarity] ?? 5) - (rarityOrder[b.rarity] ?? 5));
+    if (popupSort === 'iconic-first') {
+      result = [...result].sort(iconicSortFn);
+    } else if (popupSort === 'common-first') {
+      result = [...result].sort((a, b) => (_RARITY_ORDER[a.rarity] ?? 5) - (_RARITY_ORDER[b.rarity] ?? 5));
     } else if (popupSort === 'rarest-first') {
-      result = [...result].sort((a, b) => (rarityOrder[b.rarity] ?? 5) - (rarityOrder[a.rarity] ?? 5));
+      result = [...result].sort((a, b) => (_RARITY_ORDER[b.rarity] ?? 5) - (_RARITY_ORDER[a.rarity] ?? 5));
     } else {
       result = [...result].sort((a, b) => a.name.localeCompare(b.name));
     }
@@ -1550,6 +1630,7 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
             onChange={e => setPopupSort(e.target.value)}
             aria-label="Sort order"
           >
+            <option value="iconic-first">Most Iconic</option>
             <option value="common-first">Most Common</option>
             <option value="rarest-first">Rarest First</option>
             <option value="a-z">A–Z</option>
@@ -1649,13 +1730,12 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
         </div>
 
         {/* ── Rare Finds highlight section ───────────────────────────────────
-             Shown only on 'Most Common First' sort with rarity set to 'all'
-             (exceptional animals are excluded from the main list in that mode
-             and displayed here instead). On other sorts they integrate into the
-             main list naturally. Fully filter-aware: respects type, subtype,
-             season, and search. Hidden automatically when the filtered set is
-             empty (requirement: no empty section).                            ── */}
-        {isLive && exceptionalAnimals.length > 0 && popupSort === 'common-first' && popupRarity === 'all' && (
+             Shown on 'Most Iconic' and 'Most Common' sorts with rarity = 'all'
+             (exceptional animals are excluded from the main list in those modes
+             and displayed here with special ExceptionalCard styling instead).
+             On other sorts (rarest-first, a-z) they integrate into the main
+             list naturally. Fully filter-aware.                               ── */}
+        {isLive && exceptionalAnimals.length > 0 && (popupSort === 'iconic-first' || popupSort === 'common-first') && popupRarity === 'all' && (
           <div className="lp__exceptional">
             <div className="lp__exceptional-title">
               {rareFindTitle}
@@ -1816,7 +1896,7 @@ export default function App() {
 
   // Popup-local filter preferences (persist across popup open/close)
   const [popupType,    setPopupType]    = useState('all');
-  const [popupSort,    setPopupSort]    = useState('common-first');
+  const [popupSort,    setPopupSort]    = useState('iconic-first');
   const [popupRarity,  setPopupRarity]  = useState('all');
   const [popupSubtype, setPopupSubtype] = useState('all');
   // Reset subtype whenever the animal-type tab changes

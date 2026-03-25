@@ -1304,6 +1304,17 @@ body, #root {
   line-height: 1.4;
 }
 
+.exceptional-chance {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #7c3aed;
+  margin-top: 4px;
+  cursor: default;
+}
+
 .obs-count-note {
   display: block;
   font-size: 10px;
