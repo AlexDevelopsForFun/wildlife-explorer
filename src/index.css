@@ -1304,6 +1304,14 @@ body, #root {
   line-height: 1.4;
 }
 
+.obs-count-note {
+  display: block;
+  font-size: 10px;
+  color: #b0b8c4;
+  margin-top: 3px;
+  font-style: italic;
+}
+
 /* ── Source tags ──────────────────────────────────────────────────────────── */
 /* Wrapper row — allows multiple badges when an animal is confirmed by >1 API  */
 .source-tags {

@@ -32,6 +32,7 @@ const PLACEHOLDER_PATTERNS = [
   /^\d+ research-grade iNaturalist observations at this park\.?$/i,
   /^Recorded \d+ times on iNaturalist at this park\.?$/i,
   /^Appears on \d+% of .+ eBird checklists/i,
+  /^Verified in \d+ iNaturalist research-grade observations/i,
 ];
 
 export function needsGeneratedDescription(funFact) {

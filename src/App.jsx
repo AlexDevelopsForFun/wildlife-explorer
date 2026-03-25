@@ -707,6 +707,11 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location }) {
                   {DESC_SOURCE_LABEL[animal.descriptionSource] ?? animal.descriptionSource}
                 </span>
               )}
+              {animal._debug?.obsCount > 0 && (
+                <span className="obs-count-note">
+                  Based on {animal._debug.obsCount.toLocaleString()} verified iNaturalist observations
+                </span>
+              )}
             </>
           : null
       ) : (
@@ -909,6 +914,11 @@ function ExceptionalCard({ animal, seasonalFreqs, location }) {
                 <span className="description-source">
                   {DESC_SOURCE_ICON[animal.descriptionSource] ?? '📖'}{' '}
                   {DESC_SOURCE_LABEL[animal.descriptionSource] ?? animal.descriptionSource}
+                </span>
+              )}
+              {animal._debug?.obsCount > 0 && (
+                <span className="obs-count-note">
+                  Based on {animal._debug.obsCount.toLocaleString()} verified iNaturalist observations
                 </span>
               )}
             </>

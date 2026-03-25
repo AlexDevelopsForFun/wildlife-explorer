@@ -126,9 +126,6 @@ async function fetchWikipediaDescription(name) {
 }
 
 function buildFactualFallback(animal, parkName) {
-  const sci = animal.scientificName ? ` (${animal.scientificName})` : '';
-  const countMatch = (animal.funFact ?? '').match(/^(\d+) research-grade/);
-  const count = countMatch ? parseInt(countMatch[1], 10) : null;
   const seasons = (animal.seasons ?? []).filter(s => s !== 'year_round');
   const bestSeason =
     seasons.length === 1 ? seasons[0]
@@ -136,12 +133,10 @@ function buildFactualFallback(animal, parkName) {
     : seasons.includes('spring') ? 'spring'
     : seasons.includes('fall')   ? 'fall'
     : seasons[0] ?? 'summer';
-  const countPart = count
-    ? ` with ${count.toLocaleString()} iNaturalist research-grade observations`
-    : '';
+  const seasonLabel = bestSeason.charAt(0).toUpperCase() + bestSeason.slice(1);
   return {
-    text:   `${animal.name}${sci} has been documented at ${parkName}${countPart}. ` +
-            `It is most commonly observed during ${bestSeason.charAt(0).toUpperCase() + bestSeason.slice(1)}.`,
+    text:   `${animal.name} is officially documented in the species inventory for ${parkName}. ` +
+            `Visit during ${seasonLabel} for the best chance of a sighting.`,
     source: 'Park Records',
   };
 }
@@ -182,8 +177,10 @@ async function main() {
   else             console.log(`   Parks:   ALL (this will take several hours)`);
   console.log(`   Dry run: ${DRY_RUN ? 'YES — no files will be written' : 'no'}\n`);
 
-  // Load existing cache and description store
+  // Load existing cache, description store, and park names
   const { WILDLIFE_CACHE, WILDLIFE_CACHE_BUILT_AT } = await import('../src/data/wildlifeCache.js');
+  const { wildlifeLocations } = await import('../src/wildlifeData.js');
+  const parkNames = Object.fromEntries(wildlifeLocations.map(l => [l.id, l.name]));
   const descCache = loadDescriptionCache();
 
   const parksToProcess = Object.keys(WILDLIFE_CACHE)
@@ -203,7 +200,7 @@ async function main() {
     }
 
     console.log(`\n  [${parkId}] ${animals.length} animals, ${toEnrich.length} need descriptions`);
-    const parkName = `${parkId.charAt(0).toUpperCase() + parkId.slice(1)} National Park`;
+    const parkName = parkNames[parkId] ?? `${parkId.charAt(0).toUpperCase() + parkId.slice(1)} National Park`;
 
     let parkFetched = 0;
 

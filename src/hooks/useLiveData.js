@@ -114,6 +114,12 @@ function applyBundleEnrichment(list, bundledAnimals) {
       // don't produce the wrong migration badge derivation.
       seasons:         b.seasons ?? a.seasons,
       migrationStatus: a.migrationStatus ?? b.migrationStatus ?? null,
+      // Always restore curated descriptions from the static bundle — live API
+      // data (e.g. "Verified in X iNaturalist observations") must never overwrite
+      // a Wikipedia or Park Naturalist description that was built at enrichment time.
+      description:       b.description       ?? a.description,
+      descriptionSource: b.descriptionSource ?? a.descriptionSource,
+      funFact:           b.funFact           ?? a.funFact,
     };
   });
 }
