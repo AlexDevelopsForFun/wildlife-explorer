@@ -437,6 +437,14 @@ function SplashScreen({ onDismiss }) {
  * relative to the number of active seasons so the numbers feel meaningful.
  * Returns { spring, summer, fall, winter, _estimated: true } or null.
  */
+// Placeholder emoji shown while a photo is loading or unavailable.
+// Deliberately generic per-type (paw for all mammals, not 🦌 deer specifically)
+// so a raccoon, wolf, and beaver all get an appropriate placeholder.
+const PHOTO_PLACEHOLDER = {
+  bird: '🐦', mammal: '🐾', reptile: '🦎', amphibian: '🐸',
+  insect: '🦋', marine: '🐠', fish: '🐟',
+};
+
 // ── Iconic sort helpers ───────────────────────────────────────────────────────
 // Returns a charisma score (1–10) used to rank within iconic sort tiers.
 // Higher = more exciting / visitor-recognisable.
@@ -608,12 +616,12 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location }) {
   // Fetch photo lazily when the card mounts (i.e. when the popup opens)
   useEffect(() => {
     let alive = true;
-    fetchAnimalPhoto(animal.name).then(p => { if (alive) setPhoto(p); });
+    fetchAnimalPhoto(animal.name, animal.scientificName).then(p => { if (alive) setPhoto(p); });
     return () => { alive = false; };
-  }, [animal.name]);
+  }, [animal.name, animal.scientificName]);
 
-  // Emoji used as silhouette placeholder by animal type
-  const placeholderEmoji = t?.emoji ?? '🐾';
+  // Generic per-type placeholder — avoids showing 🦌 deer for every mammal
+  const placeholderEmoji = PHOTO_PLACEHOLDER[animal.animalType] ?? '🐾';
 
   return (
     <div className={`animal-card${isEstimated ? ' animal-card--estimated' : ''}${expanded && photo ? ' animal-card--photo-open' : ''}`}>
@@ -876,16 +884,16 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location }) {
 // the photo resolves instantly without a second network call.
 function ExceptionalCard({ animal, seasonalFreqs, location }) {
   const t = ANIMAL_TYPES[animal.animalType];
-  const placeholderEmoji = t?.emoji ?? animal.emoji ?? '🐾';
+  const placeholderEmoji = PHOTO_PLACEHOLDER[animal.animalType] ?? '🐾';
 
   const [photo,    setPhoto]    = useState(undefined);
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
     let alive = true;
-    fetchAnimalPhoto(animal.name).then(p => { if (alive) setPhoto(p); });
+    fetchAnimalPhoto(animal.name, animal.scientificName).then(p => { if (alive) setPhoto(p); });
     return () => { alive = false; };
-  }, [animal.name]);
+  }, [animal.name, animal.scientificName]);
 
   return (
     <div className="exceptional-card">

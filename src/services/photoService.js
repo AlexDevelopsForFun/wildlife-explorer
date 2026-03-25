@@ -1,3 +1,5 @@
+import { BUNDLED_PHOTOS } from '../data/photoCache.js';
+
 // ── Animal photo service ───────────────────────────────────────────────────────
 // Fetches photos from iNaturalist (primary) or Wikipedia (fallback).
 // Results are cached in-memory + localStorage so each species is only fetched once.
@@ -114,8 +116,17 @@ async function tryWikipedia(animalName) {
 }
 
 // ── Public API ────────────────────────────────────────────────────────────────
-export async function fetchAnimalPhoto(animalName) {
+// Accepts an optional scientificName for fallback lookups when the common name
+// returns no result from iNaturalist or Wikipedia.
+export async function fetchAnimalPhoto(animalName, scientificName) {
   const key = normKey(animalName);
+
+  // 0. Bundled photo cache — pre-fetched at build time, zero network cost
+  if (animalName in BUNDLED_PHOTOS) {
+    const bundled = BUNDLED_PHOTOS[animalName];
+    _photoCache.set(key, bundled);
+    return bundled;
+  }
 
   // 1. Memory cache — fastest path, no async needed
   if (_photoCache.has(key)) return _photoCache.get(key);
@@ -137,9 +148,19 @@ export async function fetchAnimalPhoto(animalName) {
     }
   } catch { /* storage unavailable or parse error */ }
 
-  // 4. Network fetch: iNat first, Wikipedia fallback, null if both fail
+  // 4. Network fetch — four strategies in priority order:
+  //    a) iNaturalist by common name  (fastest, best quality)
+  //    b) Wikipedia by common name
+  //    c) Wikipedia by scientific name (catches "Common Raccoon" → Procyon lotor etc.)
+  //    d) iNaturalist by scientific name
+  //    Only cache null after all four fail.
   const promise = (async () => {
-    const photo = (await tryInat(animalName)) ?? (await tryWikipedia(animalName)) ?? null;
+    let photo = await tryInat(animalName);
+    if (!photo) photo = await tryWikipedia(animalName);
+    if (!photo && scientificName) photo = await tryWikipedia(scientificName);
+    if (!photo && scientificName) photo = await tryInat(scientificName);
+    photo = photo ?? null;
+
     _photoCache.set(key, photo);
     _pendingCache.delete(key);
     try {
