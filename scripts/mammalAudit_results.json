@@ -1,0 +1,2268 @@
+{
+  "auditDate": "2026-03-26T23:23:11.785Z",
+  "totalParks": 63,
+  "missingMammals": [
+    {
+      "park": "yellowstone",
+      "name": "Wapiti",
+      "scientificName": "Cervus canadensis",
+      "obsCount": 4203,
+      "suggestedRarity": "guaranteed",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "yellowstone",
+      "name": "Brown Bear",
+      "scientificName": "Ursus arctos",
+      "obsCount": 1372,
+      "suggestedRarity": "likely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "denali",
+      "name": "Thinhorn Sheep",
+      "scientificName": "Ovis dalli",
+      "obsCount": 429,
+      "suggestedRarity": "likely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "acadia",
+      "name": "Grey Seal",
+      "scientificName": "Halichoerus grypus",
+      "obsCount": 26,
+      "suggestedRarity": "unlikely",
+      "isBat": false,
+      "isMarine": true
+    },
+    {
+      "park": "greatsmokymountains",
+      "name": "Wapiti",
+      "scientificName": "Cervus canadensis",
+      "obsCount": 409,
+      "suggestedRarity": "likely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "greatsmokymountains",
+      "name": "Wild Boar",
+      "scientificName": "Sus scrofa",
+      "obsCount": 35,
+      "suggestedRarity": "unlikely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "congaree",
+      "name": "Wild Boar",
+      "scientificName": "Sus scrofa",
+      "obsCount": 141,
+      "suggestedRarity": "likely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "windcave",
+      "name": "Wapiti",
+      "scientificName": "Cervus canadensis",
+      "obsCount": 35,
+      "suggestedRarity": "unlikely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "grandcanyon",
+      "name": "Wapiti",
+      "scientificName": "Cervus canadensis",
+      "obsCount": 2213,
+      "suggestedRarity": "guaranteed",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "petrifiedforest",
+      "name": "Wapiti",
+      "scientificName": "Cervus canadensis",
+      "obsCount": 27,
+      "suggestedRarity": "unlikely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "grandteton",
+      "name": "Wapiti",
+      "scientificName": "Cervus canadensis",
+      "obsCount": 695,
+      "suggestedRarity": "very_likely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "rockymountain",
+      "name": "Wapiti",
+      "scientificName": "Cervus canadensis",
+      "obsCount": 3134,
+      "suggestedRarity": "guaranteed",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "glacier",
+      "name": "Common Golden-mantled Ground Squirrel",
+      "scientificName": "Callospermophilus lateralis",
+      "obsCount": 574,
+      "suggestedRarity": "likely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "glacier",
+      "name": "Mule Deer",
+      "scientificName": "Odocoileus hemionus",
+      "obsCount": 450,
+      "suggestedRarity": "likely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "glacier",
+      "name": "Brown Bear",
+      "scientificName": "Ursus arctos",
+      "obsCount": 395,
+      "suggestedRarity": "unlikely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "glacier",
+      "name": "White-tailed Deer",
+      "scientificName": "Odocoileus virginianus",
+      "obsCount": 309,
+      "suggestedRarity": "likely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "glacier",
+      "name": "American Red Squirrel",
+      "scientificName": "Tamiasciurus hudsonicus",
+      "obsCount": 200,
+      "suggestedRarity": "likely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "glacier",
+      "name": "Red Fox",
+      "scientificName": "Vulpes vulpes",
+      "obsCount": 76,
+      "suggestedRarity": "unlikely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "glacier",
+      "name": "Snowshoe Hare",
+      "scientificName": "Lepus americanus",
+      "obsCount": 70,
+      "suggestedRarity": "unlikely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "glacier",
+      "name": "American Beaver",
+      "scientificName": "Castor canadensis",
+      "obsCount": 53,
+      "suggestedRarity": "unlikely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "glacier",
+      "name": "Yellow-pine Chipmunk",
+      "scientificName": "Neotamias amoenus",
+      "obsCount": 41,
+      "suggestedRarity": "unlikely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "glacier",
+      "name": "Wapiti",
+      "scientificName": "Cervus canadensis",
+      "obsCount": 36,
+      "suggestedRarity": "unlikely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "glacier",
+      "name": "Red-tailed Chipmunk",
+      "scientificName": "Neotamias ruficaudus",
+      "obsCount": 27,
+      "suggestedRarity": "unlikely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "glacier",
+      "name": "Yellow-bellied Marmot",
+      "scientificName": "Marmota flaviventris",
+      "obsCount": 24,
+      "suggestedRarity": "unlikely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "glacier",
+      "name": "American Marten",
+      "scientificName": "Martes americana",
+      "obsCount": 21,
+      "suggestedRarity": "unlikely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "glacier",
+      "name": "Long-tailed Weasel",
+      "scientificName": "Neogale frenata",
+      "obsCount": 20,
+      "suggestedRarity": "unlikely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "olympic",
+      "name": "Wapiti",
+      "scientificName": "Cervus canadensis",
+      "obsCount": 453,
+      "suggestedRarity": "likely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "olympic",
+      "name": "Grey Whale",
+      "scientificName": "Eschrichtius robustus",
+      "obsCount": 25,
+      "suggestedRarity": "rare",
+      "isBat": false,
+      "isMarine": true
+    },
+    {
+      "park": "mountrainier",
+      "name": "Wapiti",
+      "scientificName": "Cervus canadensis",
+      "obsCount": 53,
+      "suggestedRarity": "unlikely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "redwood",
+      "name": "Wapiti",
+      "scientificName": "Cervus canadensis",
+      "obsCount": 1418,
+      "suggestedRarity": "very_likely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "channelislands",
+      "name": "Grey Whale",
+      "scientificName": "Eschrichtius robustus",
+      "obsCount": 28,
+      "suggestedRarity": "rare",
+      "isBat": false,
+      "isMarine": true
+    },
+    {
+      "park": "hawaiivolcanoes",
+      "name": "Wild Boar",
+      "scientificName": "Sus scrofa",
+      "obsCount": 32,
+      "suggestedRarity": "unlikely",
+      "isBat": false,
+      "isMarine": false
+    }
+  ],
+  "rarityMismatches": [
+    {
+      "park": "yellowstone",
+      "name": "Gray Wolf",
+      "scientificName": "Canis lupus",
+      "obsCount": 993,
+      "cacheRarity": "rare",
+      "suggestedRarity": "likely",
+      "direction": "upgrade",
+      "steps": 2
+    },
+    {
+      "park": "everglades",
+      "name": "West Indian Manatee",
+      "scientificName": "Trichechus manatus",
+      "obsCount": 1067,
+      "cacheRarity": "unlikely",
+      "suggestedRarity": "very_likely",
+      "direction": "upgrade",
+      "steps": 2
+    },
+    {
+      "park": "denali",
+      "name": "Arctic Ground Squirrel",
+      "scientificName": "Urocitellus parryii",
+      "obsCount": 706,
+      "cacheRarity": "guaranteed",
+      "suggestedRarity": "likely",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "acadia",
+      "name": "American Black Bear",
+      "scientificName": "Ursus americanus",
+      "obsCount": 3,
+      "cacheRarity": "unlikely",
+      "suggestedRarity": "exceptional",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "newrivergorge",
+      "name": "White-tailed Deer",
+      "scientificName": "Odocoileus virginianus",
+      "obsCount": 91,
+      "cacheRarity": "guaranteed",
+      "suggestedRarity": "unlikely",
+      "direction": "downgrade",
+      "steps": 3
+    },
+    {
+      "park": "cuyahogavalley",
+      "name": "White-tailed Deer",
+      "scientificName": "Odocoileus virginianus",
+      "obsCount": 385,
+      "cacheRarity": "guaranteed",
+      "suggestedRarity": "likely",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "cuyahogavalley",
+      "name": "Eastern Gray Squirrel",
+      "scientificName": "Sciurus carolinensis",
+      "obsCount": 143,
+      "cacheRarity": "very_likely",
+      "suggestedRarity": "unlikely",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "congaree",
+      "name": "White-tailed Deer",
+      "scientificName": "Odocoileus virginianus",
+      "obsCount": 55,
+      "cacheRarity": "guaranteed",
+      "suggestedRarity": "unlikely",
+      "direction": "downgrade",
+      "steps": 3
+    },
+    {
+      "park": "mammothcave",
+      "name": "White-tailed Deer",
+      "scientificName": "Odocoileus virginianus",
+      "obsCount": 192,
+      "cacheRarity": "guaranteed",
+      "suggestedRarity": "likely",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "indianadunes",
+      "name": "White-tailed Deer",
+      "scientificName": "Odocoileus virginianus",
+      "obsCount": 92,
+      "cacheRarity": "guaranteed",
+      "suggestedRarity": "unlikely",
+      "direction": "downgrade",
+      "steps": 3
+    },
+    {
+      "park": "badlands",
+      "name": "American Bison",
+      "scientificName": "Bison bison",
+      "obsCount": 654,
+      "cacheRarity": "guaranteed",
+      "suggestedRarity": "likely",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "badlands",
+      "name": "Pronghorn",
+      "scientificName": "Antilocapra americana",
+      "obsCount": 205,
+      "cacheRarity": "guaranteed",
+      "suggestedRarity": "likely",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "windcave",
+      "name": "American Bison",
+      "scientificName": "Bison bison",
+      "obsCount": 436,
+      "cacheRarity": "guaranteed",
+      "suggestedRarity": "likely",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "theodoreroosevelt",
+      "name": "American Bison",
+      "scientificName": "Bison bison",
+      "obsCount": 849,
+      "cacheRarity": "guaranteed",
+      "suggestedRarity": "likely",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "theodoreroosevelt",
+      "name": "Pronghorn",
+      "scientificName": "Antilocapra americana",
+      "obsCount": 65,
+      "cacheRarity": "very_likely",
+      "suggestedRarity": "unlikely",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "gatewayarch",
+      "name": "Eastern Gray Squirrel",
+      "scientificName": "Sciurus carolinensis",
+      "obsCount": 78,
+      "cacheRarity": "guaranteed",
+      "suggestedRarity": "unlikely",
+      "direction": "downgrade",
+      "steps": 3
+    },
+    {
+      "park": "grandcanyon",
+      "name": "American Bison",
+      "scientificName": "Bison bison",
+      "obsCount": 159,
+      "cacheRarity": "exceptional",
+      "suggestedRarity": "unlikely",
+      "direction": "upgrade",
+      "steps": 2
+    },
+    {
+      "park": "zion",
+      "name": "Bighorn Sheep",
+      "scientificName": "Ovis canadensis",
+      "obsCount": 46,
+      "cacheRarity": "very_likely",
+      "suggestedRarity": "unlikely",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "zion",
+      "name": "Desert Cottontail",
+      "scientificName": "Sylvilagus audubonii",
+      "obsCount": 11,
+      "cacheRarity": "likely",
+      "suggestedRarity": "rare",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "zion",
+      "name": "Coyote",
+      "scientificName": "Canis latrans",
+      "obsCount": 3,
+      "cacheRarity": "likely",
+      "suggestedRarity": "exceptional",
+      "direction": "downgrade",
+      "steps": 3
+    },
+    {
+      "park": "brycecanyon",
+      "name": "Common Golden-mantled Ground Squirrel",
+      "scientificName": "Callospermophilus lateralis",
+      "obsCount": 645,
+      "cacheRarity": "guaranteed",
+      "suggestedRarity": "likely",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "brycecanyon",
+      "name": "Pronghorn",
+      "scientificName": "Antilocapra americana",
+      "obsCount": 98,
+      "cacheRarity": "very_likely",
+      "suggestedRarity": "unlikely",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "arches",
+      "name": "Coyote",
+      "scientificName": "Canis latrans",
+      "obsCount": 5,
+      "cacheRarity": "likely",
+      "suggestedRarity": "rare",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "capitolreef",
+      "name": "Mule Deer",
+      "scientificName": "Odocoileus hemionus",
+      "obsCount": 273,
+      "cacheRarity": "guaranteed",
+      "suggestedRarity": "likely",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "capitolreef",
+      "name": "Coyote",
+      "scientificName": "Canis latrans",
+      "obsCount": 2,
+      "cacheRarity": "likely",
+      "suggestedRarity": "exceptional",
+      "direction": "downgrade",
+      "steps": 3
+    },
+    {
+      "park": "mesaverde",
+      "name": "Mule Deer",
+      "scientificName": "Odocoileus hemionus",
+      "obsCount": 123,
+      "cacheRarity": "guaranteed",
+      "suggestedRarity": "unlikely",
+      "direction": "downgrade",
+      "steps": 3
+    },
+    {
+      "park": "guadalupemountains",
+      "name": "Mule Deer",
+      "scientificName": "Odocoileus hemionus",
+      "obsCount": 142,
+      "cacheRarity": "very_likely",
+      "suggestedRarity": "unlikely",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "grandteton",
+      "name": "American Bison",
+      "scientificName": "Bison bison",
+      "obsCount": 708,
+      "cacheRarity": "guaranteed",
+      "suggestedRarity": "likely",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "grandteton",
+      "name": "Gray Wolf",
+      "scientificName": "Canis lupus",
+      "obsCount": 19,
+      "cacheRarity": "unlikely",
+      "suggestedRarity": "exceptional",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "rockymountain",
+      "name": "Moose",
+      "scientificName": "Alces alces",
+      "obsCount": 1495,
+      "cacheRarity": "unlikely",
+      "suggestedRarity": "very_likely",
+      "direction": "upgrade",
+      "steps": 2
+    },
+    {
+      "park": "rockymountain",
+      "name": "American Pika",
+      "scientificName": "Ochotona princeps",
+      "obsCount": 912,
+      "cacheRarity": "unlikely",
+      "suggestedRarity": "very_likely",
+      "direction": "upgrade",
+      "steps": 2
+    },
+    {
+      "park": "olympic",
+      "name": "Humpback Whale",
+      "scientificName": "Megaptera novaeangliae",
+      "obsCount": 19,
+      "cacheRarity": "unlikely",
+      "suggestedRarity": "exceptional",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "craterlake",
+      "name": "Common Golden-mantled Ground Squirrel",
+      "scientificName": "Callospermophilus lateralis",
+      "obsCount": 702,
+      "cacheRarity": "guaranteed",
+      "suggestedRarity": "likely",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "pinnacles",
+      "name": "California Ground Squirrel",
+      "scientificName": "Otospermophilus beecheyi",
+      "obsCount": 735,
+      "cacheRarity": "guaranteed",
+      "suggestedRarity": "likely",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "kenaifjords",
+      "name": "Harbor Seal",
+      "scientificName": "Phoca vitulina",
+      "obsCount": 21,
+      "cacheRarity": "guaranteed",
+      "suggestedRarity": "unlikely",
+      "direction": "downgrade",
+      "steps": 3
+    },
+    {
+      "park": "kenaifjords",
+      "name": "Steller Sea Lion",
+      "scientificName": "Eumetopias jubatus",
+      "obsCount": 19,
+      "cacheRarity": "likely",
+      "suggestedRarity": "rare",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "kenaifjords",
+      "name": "Sea Otter",
+      "scientificName": "Enhydra lutris",
+      "obsCount": 13,
+      "cacheRarity": "guaranteed",
+      "suggestedRarity": "rare",
+      "direction": "downgrade",
+      "steps": 4
+    },
+    {
+      "park": "kenaifjords",
+      "name": "Orca",
+      "scientificName": "Orcinus orca",
+      "obsCount": 7,
+      "cacheRarity": "unlikely",
+      "suggestedRarity": "exceptional",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "kenaifjords",
+      "name": "Humpback Whale",
+      "scientificName": "Megaptera novaeangliae",
+      "obsCount": 7,
+      "cacheRarity": "likely",
+      "suggestedRarity": "exceptional",
+      "direction": "downgrade",
+      "steps": 3
+    },
+    {
+      "park": "glacierbay",
+      "name": "Harbor Seal",
+      "scientificName": "Phoca vitulina",
+      "obsCount": 133,
+      "cacheRarity": "guaranteed",
+      "suggestedRarity": "likely",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "glacierbay",
+      "name": "Humpback Whale",
+      "scientificName": "Megaptera novaeangliae",
+      "obsCount": 104,
+      "cacheRarity": "very_likely",
+      "suggestedRarity": "unlikely",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "katmai",
+      "name": "Brown Bear",
+      "scientificName": "Ursus arctos",
+      "obsCount": 800,
+      "cacheRarity": "guaranteed",
+      "suggestedRarity": "likely",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "katmai",
+      "name": "Moose",
+      "scientificName": "Alces alces",
+      "obsCount": 15,
+      "cacheRarity": "likely",
+      "suggestedRarity": "rare",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "katmai",
+      "name": "Humpback Whale",
+      "scientificName": "Megaptera novaeangliae",
+      "obsCount": 2,
+      "cacheRarity": "unlikely",
+      "suggestedRarity": "exceptional",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "katmai",
+      "name": "North American River Otter",
+      "scientificName": "Lontra canadensis",
+      "obsCount": 2,
+      "cacheRarity": "unlikely",
+      "suggestedRarity": "exceptional",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "wrangellstelias",
+      "name": "Brown Bear",
+      "scientificName": "Ursus arctos",
+      "obsCount": 25,
+      "cacheRarity": "likely",
+      "suggestedRarity": "rare",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "wrangellstelias",
+      "name": "Moose",
+      "scientificName": "Alces alces",
+      "obsCount": 12,
+      "cacheRarity": "very_likely",
+      "suggestedRarity": "rare",
+      "direction": "downgrade",
+      "steps": 3
+    },
+    {
+      "park": "wrangellstelias",
+      "name": "Gray Wolf",
+      "scientificName": "Canis lupus",
+      "obsCount": 2,
+      "cacheRarity": "unlikely",
+      "suggestedRarity": "exceptional",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "lakeclark",
+      "name": "Brown Bear",
+      "scientificName": "Ursus arctos",
+      "obsCount": 131,
+      "cacheRarity": "guaranteed",
+      "suggestedRarity": "unlikely",
+      "direction": "downgrade",
+      "steps": 3
+    },
+    {
+      "park": "lakeclark",
+      "name": "Gray Wolf",
+      "scientificName": "Canis lupus",
+      "obsCount": 2,
+      "cacheRarity": "unlikely",
+      "suggestedRarity": "exceptional",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "hotsprings",
+      "name": "White-tailed Deer",
+      "scientificName": "Odocoileus virginianus",
+      "obsCount": 36,
+      "cacheRarity": "guaranteed",
+      "suggestedRarity": "unlikely",
+      "direction": "downgrade",
+      "steps": 3
+    },
+    {
+      "park": "hotsprings",
+      "name": "Eastern Gray Squirrel",
+      "scientificName": "Sciurus carolinensis",
+      "obsCount": 17,
+      "cacheRarity": "guaranteed",
+      "suggestedRarity": "rare",
+      "direction": "downgrade",
+      "steps": 4
+    },
+    {
+      "park": "carlsbadcaverns",
+      "name": "Mexican Free-tailed Bat",
+      "scientificName": "Tadarida brasiliensis",
+      "obsCount": 9,
+      "cacheRarity": "guaranteed",
+      "suggestedRarity": "unlikely",
+      "direction": "downgrade",
+      "steps": 3
+    }
+  ],
+  "seasonalIssues": [
+    {
+      "park": "everglades",
+      "name": "American Black Bear",
+      "issue": "bear listed as winter-active (should hibernate)"
+    },
+    {
+      "park": "newrivergorge",
+      "name": "American Black Bear",
+      "issue": "bear listed as winter-active (should hibernate)"
+    },
+    {
+      "park": "windcave",
+      "name": "Thirteen-lined Ground Squirrel",
+      "issue": "hibernating species listed as winter-active"
+    },
+    {
+      "park": "theodoreroosevelt",
+      "name": "Thirteen-lined Ground Squirrel",
+      "issue": "hibernating species listed as winter-active"
+    },
+    {
+      "park": "grandcanyon",
+      "name": "American Black Bear",
+      "issue": "bear listed as winter-active (should hibernate)"
+    },
+    {
+      "park": "zion",
+      "name": "Common Golden-mantled Ground Squirrel",
+      "issue": "hibernating species listed as winter-active"
+    },
+    {
+      "park": "zion",
+      "name": "American Black Bear",
+      "issue": "bear listed as winter-active (should hibernate)"
+    },
+    {
+      "park": "zion",
+      "name": "Yellow-bellied Marmot",
+      "issue": "hibernating species listed as winter-active"
+    },
+    {
+      "park": "brycecanyon",
+      "name": "Yellow-bellied Marmot",
+      "issue": "hibernating species listed as winter-active"
+    },
+    {
+      "park": "arches",
+      "name": "Common Golden-mantled Ground Squirrel",
+      "issue": "hibernating species listed as winter-active"
+    },
+    {
+      "park": "capitolreef",
+      "name": "American Black Bear",
+      "issue": "bear listed as winter-active (should hibernate)"
+    },
+    {
+      "park": "bigbend",
+      "name": "Black Bear",
+      "issue": "bear listed as winter-active (should hibernate)"
+    },
+    {
+      "park": "greatsanddunes",
+      "name": "Thirteen-lined Ground Squirrel",
+      "issue": "hibernating species listed as winter-active"
+    },
+    {
+      "park": "olympic",
+      "name": "Cascade Golden-mantled Ground Squirrel",
+      "issue": "hibernating species listed as winter-active"
+    },
+    {
+      "park": "northcascades",
+      "name": "Columbian Ground Squirrel",
+      "issue": "hibernating species listed as winter-active"
+    },
+    {
+      "park": "craterlake",
+      "name": "Douglas's Ground Squirrel",
+      "issue": "hibernating species listed as winter-active"
+    },
+    {
+      "park": "craterlake",
+      "name": "Belding's Ground Squirrel",
+      "issue": "hibernating species listed as winter-active"
+    },
+    {
+      "park": "lassenvolcanic",
+      "name": "California Ground Squirrel",
+      "issue": "hibernating species listed as winter-active"
+    },
+    {
+      "park": "joshuatree",
+      "name": "Round-tailed Ground Squirrel",
+      "issue": "hibernating species listed as winter-active"
+    },
+    {
+      "park": "deathvalley",
+      "name": "Round-tailed Ground Squirrel",
+      "issue": "hibernating species listed as winter-active"
+    },
+    {
+      "park": "deathvalley",
+      "name": "California Ground Squirrel",
+      "issue": "hibernating species listed as winter-active"
+    },
+    {
+      "park": "deathvalley",
+      "name": "Common Golden-mantled Ground Squirrel",
+      "issue": "hibernating species listed as winter-active"
+    },
+    {
+      "park": "lakeclark",
+      "name": "Arctic Ground Squirrel",
+      "issue": "hibernating species listed as winter-active"
+    },
+    {
+      "park": "gatesofthearctic",
+      "name": "American Black Bear",
+      "issue": "bear listed as winter-active (should hibernate)"
+    },
+    {
+      "park": "hotsprings",
+      "name": "American Black Bear",
+      "issue": "bear listed as winter-active (should hibernate)"
+    }
+  ],
+  "crossParkIssues": [
+    {
+      "mammal": "White-tailed Deer",
+      "park": "voyageurs",
+      "issue": "rarity too low: rare (should be ≥likely)",
+      "cacheRarity": "rare"
+    },
+    {
+      "mammal": "White-tailed Deer",
+      "park": "badlands",
+      "issue": "rarity too low: rare (should be ≥likely)",
+      "cacheRarity": "rare"
+    },
+    {
+      "mammal": "White-tailed Deer",
+      "park": "windcave",
+      "issue": "rarity too low: rare (should be ≥likely)",
+      "cacheRarity": "rare"
+    },
+    {
+      "mammal": "White-tailed Deer",
+      "park": "theodoreroosevelt",
+      "issue": "rarity too low: rare (should be ≥likely)",
+      "cacheRarity": "rare"
+    },
+    {
+      "mammal": "Mule Deer",
+      "park": "glacier",
+      "issue": "missing from cache",
+      "cacheRarity": null
+    },
+    {
+      "mammal": "Mule Deer",
+      "park": "greatsanddunes",
+      "issue": "rarity too low: unlikely (should be ≥likely)",
+      "cacheRarity": "unlikely"
+    },
+    {
+      "mammal": "Mule Deer",
+      "park": "deathvalley",
+      "issue": "rarity too low: rare (should be ≥likely)",
+      "cacheRarity": "rare"
+    },
+    {
+      "mammal": "Black Bear",
+      "park": "northcascades",
+      "issue": "rarity too low: rare (should be ≥unlikely)",
+      "cacheRarity": "rare"
+    },
+    {
+      "mammal": "Black Bear",
+      "park": "congaree",
+      "issue": "missing from cache",
+      "cacheRarity": null
+    },
+    {
+      "mammal": "Black Bear",
+      "park": "newrivergorge",
+      "issue": "rarity too low: rare (should be ≥unlikely)",
+      "cacheRarity": "rare"
+    },
+    {
+      "mammal": "Coyote",
+      "park": "glacier",
+      "issue": "missing from cache",
+      "cacheRarity": null
+    },
+    {
+      "mammal": "Raccoon",
+      "park": "shenandoah",
+      "issue": "rarity too low: rare (should be ≥unlikely)",
+      "cacheRarity": "rare"
+    },
+    {
+      "mammal": "Raccoon",
+      "park": "greatsmokymountains",
+      "issue": "rarity too low: rare (should be ≥unlikely)",
+      "cacheRarity": "rare"
+    },
+    {
+      "mammal": "Raccoon",
+      "park": "acadia",
+      "issue": "rarity too low: rare (should be ≥unlikely)",
+      "cacheRarity": "rare"
+    },
+    {
+      "mammal": "Raccoon",
+      "park": "mammothcave",
+      "issue": "missing from cache",
+      "cacheRarity": null
+    },
+    {
+      "mammal": "Raccoon",
+      "park": "hotsprings",
+      "issue": "rarity too low: rare (should be ≥unlikely)",
+      "cacheRarity": "rare"
+    },
+    {
+      "mammal": "Raccoon",
+      "park": "newrivergorge",
+      "issue": "rarity too low: rare (should be ≥unlikely)",
+      "cacheRarity": "rare"
+    },
+    {
+      "mammal": "American Beaver",
+      "park": "glacier",
+      "issue": "missing from cache",
+      "cacheRarity": null
+    },
+    {
+      "mammal": "American Beaver",
+      "park": "rockymountain",
+      "issue": "rarity too low: rare (should be ≥unlikely)",
+      "cacheRarity": "rare"
+    },
+    {
+      "mammal": "American Beaver",
+      "park": "voyageurs",
+      "issue": "rarity too low: rare (should be ≥unlikely)",
+      "cacheRarity": "rare"
+    },
+    {
+      "mammal": "American Beaver",
+      "park": "shenandoah",
+      "issue": "rarity too low: rare (should be ≥unlikely)",
+      "cacheRarity": "rare"
+    },
+    {
+      "mammal": "Striped Skunk",
+      "park": "yosemite",
+      "issue": "missing from cache",
+      "cacheRarity": null
+    },
+    {
+      "mammal": "Striped Skunk",
+      "park": "glacier",
+      "issue": "missing from cache",
+      "cacheRarity": null
+    },
+    {
+      "mammal": "Striped Skunk",
+      "park": "grandcanyon",
+      "issue": "missing from cache",
+      "cacheRarity": null
+    },
+    {
+      "mammal": "Virginia Opossum",
+      "park": "shenandoah",
+      "issue": "rarity too low: rare (should be ≥unlikely)",
+      "cacheRarity": "rare"
+    },
+    {
+      "mammal": "Virginia Opossum",
+      "park": "greatsmokymountains",
+      "issue": "rarity too low: rare (should be ≥unlikely)",
+      "cacheRarity": "rare"
+    },
+    {
+      "mammal": "Virginia Opossum",
+      "park": "congaree",
+      "issue": "rarity too low: rare (should be ≥unlikely)",
+      "cacheRarity": "rare"
+    },
+    {
+      "mammal": "Virginia Opossum",
+      "park": "mammothcave",
+      "issue": "rarity too low: rare (should be ≥unlikely)",
+      "cacheRarity": "rare"
+    },
+    {
+      "mammal": "Virginia Opossum",
+      "park": "hotsprings",
+      "issue": "missing from cache",
+      "cacheRarity": null
+    },
+    {
+      "mammal": "Eastern Gray Squirrel",
+      "park": "shenandoah",
+      "issue": "rarity too low: unlikely (should be ≥likely)",
+      "cacheRarity": "unlikely"
+    },
+    {
+      "mammal": "Eastern Gray Squirrel",
+      "park": "acadia",
+      "issue": "rarity too low: rare (should be ≥likely)",
+      "cacheRarity": "rare"
+    },
+    {
+      "mammal": "Eastern Gray Squirrel",
+      "park": "newrivergorge",
+      "issue": "rarity too low: rare (should be ≥likely)",
+      "cacheRarity": "rare"
+    },
+    {
+      "mammal": "Red Squirrel",
+      "park": "glacier",
+      "issue": "missing from cache",
+      "cacheRarity": null
+    },
+    {
+      "mammal": "Red Squirrel",
+      "park": "olympic",
+      "issue": "missing from cache",
+      "cacheRarity": null
+    },
+    {
+      "mammal": "Moose",
+      "park": "voyageurs",
+      "issue": "missing from cache",
+      "cacheRarity": null
+    },
+    {
+      "mammal": "Moose",
+      "park": "olympic",
+      "issue": "missing from cache",
+      "cacheRarity": null
+    },
+    {
+      "mammal": "Moose",
+      "park": "northcascades",
+      "issue": "rarity too low: rare (should be ≥unlikely)",
+      "cacheRarity": "rare"
+    },
+    {
+      "mammal": "Elk",
+      "park": "glacier",
+      "issue": "missing from cache",
+      "cacheRarity": null
+    },
+    {
+      "mammal": "Pronghorn",
+      "park": "grandcanyon",
+      "issue": "rarity too low: rare (should be ≥unlikely)",
+      "cacheRarity": "rare"
+    },
+    {
+      "mammal": "Sea Otter",
+      "park": "channelislands",
+      "issue": "missing from cache",
+      "cacheRarity": null
+    },
+    {
+      "mammal": "California Sea Lion",
+      "park": "kenaifjords",
+      "issue": "missing from cache",
+      "cacheRarity": null
+    },
+    {
+      "mammal": "Florida Manatee",
+      "park": "everglades",
+      "issue": "missing from cache",
+      "cacheRarity": null
+    },
+    {
+      "mammal": "Florida Manatee",
+      "park": "biscayne",
+      "issue": "missing from cache",
+      "cacheRarity": null
+    },
+    {
+      "mammal": "Humpback Whale",
+      "park": "acadia",
+      "issue": "missing from cache",
+      "cacheRarity": null
+    }
+  ],
+  "iconicMammalCheck": [
+    {
+      "park": "yellowstone",
+      "name": "American Bison",
+      "targetRarity": "guaranteed",
+      "cacheRarity": "guaranteed",
+      "pass": true,
+      "note": "OK"
+    },
+    {
+      "park": "yellowstone",
+      "name": "Gray Wolf",
+      "targetRarity": "rare",
+      "cacheRarity": "rare",
+      "pass": true,
+      "note": "OK"
+    },
+    {
+      "park": "yellowstone",
+      "name": "Grizzly Bear",
+      "targetRarity": "unlikely",
+      "cacheRarity": "unlikely",
+      "pass": true,
+      "note": "OK"
+    },
+    {
+      "park": "yellowstone",
+      "name": "Elk",
+      "targetRarity": "likely",
+      "cacheRarity": "guaranteed",
+      "pass": false,
+      "note": "MISMATCH"
+    },
+    {
+      "park": "everglades",
+      "name": "American Alligator",
+      "targetRarity": "guaranteed",
+      "cacheRarity": "guaranteed",
+      "pass": true,
+      "note": "OK"
+    },
+    {
+      "park": "everglades",
+      "name": "American Crocodile",
+      "targetRarity": "unlikely",
+      "cacheRarity": "unlikely",
+      "pass": true,
+      "note": "OK"
+    },
+    {
+      "park": "everglades",
+      "name": "West Indian Manatee",
+      "targetRarity": "rare",
+      "cacheRarity": "unlikely",
+      "pass": false,
+      "note": "MISMATCH"
+    },
+    {
+      "park": "everglades",
+      "name": "Florida Panther",
+      "targetRarity": "exceptional",
+      "cacheRarity": "exceptional",
+      "pass": true,
+      "note": "OK"
+    },
+    {
+      "park": "grandcanyon",
+      "name": "American Bison",
+      "targetRarity": "rare",
+      "cacheRarity": "exceptional",
+      "pass": false,
+      "note": "MISMATCH"
+    },
+    {
+      "park": "glacierbay",
+      "name": "Humpback Whale",
+      "targetRarity": "likely",
+      "cacheRarity": "very_likely",
+      "pass": false,
+      "note": "MISMATCH"
+    },
+    {
+      "park": "channelislands",
+      "name": "California Sea Lion",
+      "targetRarity": "likely",
+      "cacheRarity": "likely",
+      "pass": true,
+      "note": "OK"
+    },
+    {
+      "park": "zion",
+      "name": "Desert Bighorn Sheep",
+      "targetRarity": "very_likely",
+      "cacheRarity": "very_likely",
+      "pass": true,
+      "note": "OK"
+    },
+    {
+      "park": "glacier",
+      "name": "Grizzly Bear",
+      "targetRarity": "unlikely",
+      "cacheRarity": "unlikely",
+      "pass": true,
+      "note": "OK"
+    },
+    {
+      "park": "glacier",
+      "name": "Mountain Goat",
+      "targetRarity": "unlikely",
+      "cacheRarity": "very_likely",
+      "pass": false,
+      "note": "MISMATCH"
+    },
+    {
+      "park": "glacier",
+      "name": "Wolverine",
+      "targetRarity": "exceptional",
+      "cacheRarity": "exceptional",
+      "pass": true,
+      "note": "OK"
+    },
+    {
+      "park": "saguaro",
+      "name": "Javelina",
+      "targetRarity": "likely",
+      "cacheRarity": "NOT IN CACHE",
+      "pass": false,
+      "note": "MISSING"
+    },
+    {
+      "park": "greatsmokymountains",
+      "name": "Black Bear",
+      "targetRarity": "unlikely",
+      "cacheRarity": "likely",
+      "pass": false,
+      "note": "MISMATCH"
+    },
+    {
+      "park": "greatsmokymountains",
+      "name": "White-tailed Deer",
+      "targetRarity": "guaranteed",
+      "cacheRarity": "guaranteed",
+      "pass": true,
+      "note": "OK"
+    },
+    {
+      "park": "denali",
+      "name": "Moose",
+      "targetRarity": "unlikely",
+      "cacheRarity": "very_likely",
+      "pass": false,
+      "note": "MISMATCH"
+    },
+    {
+      "park": "denali",
+      "name": "Grizzly Bear",
+      "targetRarity": "unlikely",
+      "cacheRarity": "NOT IN CACHE",
+      "pass": false,
+      "note": "MISSING"
+    },
+    {
+      "park": "badlands",
+      "name": "American Bison",
+      "targetRarity": "likely",
+      "cacheRarity": "guaranteed",
+      "pass": false,
+      "note": "MISMATCH"
+    },
+    {
+      "park": "windcave",
+      "name": "American Bison",
+      "targetRarity": "guaranteed",
+      "cacheRarity": "guaranteed",
+      "pass": true,
+      "note": "OK"
+    },
+    {
+      "park": "isleroyale",
+      "name": "Moose",
+      "targetRarity": "likely",
+      "cacheRarity": "likely",
+      "pass": true,
+      "note": "OK"
+    },
+    {
+      "park": "katmai",
+      "name": "Brown Bear",
+      "targetRarity": "guaranteed",
+      "cacheRarity": "guaranteed",
+      "pass": true,
+      "note": "OK"
+    }
+  ],
+  "batCompleteness": [],
+  "marineMammals": [
+    {
+      "park": "acadia",
+      "inatMarineCount": 3,
+      "cacheMarineCount": 4,
+      "missingMarine": [
+        {
+          "name": "Grey Seal",
+          "obsCount": 26,
+          "suggestedRarity": "unlikely"
+        },
+        {
+          "name": "Harbour Porpoise",
+          "obsCount": 8,
+          "suggestedRarity": "exceptional"
+        }
+      ],
+      "cachedMarineNames": [
+        "Harbor Seal",
+        "Gray Seal",
+        "Harbor Porpoise",
+        "Minke Whale"
+      ]
+    },
+    {
+      "park": "biscayne",
+      "inatMarineCount": 2,
+      "cacheMarineCount": 2,
+      "missingMarine": [],
+      "cachedMarineNames": [
+        "Tamanend's Bottlenose Dolphin",
+        "Common Bottlenose Dolphin"
+      ]
+    },
+    {
+      "park": "drytortugas",
+      "inatMarineCount": 1,
+      "cacheMarineCount": 1,
+      "missingMarine": [],
+      "cachedMarineNames": [
+        "Common Bottlenose Dolphin"
+      ]
+    },
+    {
+      "park": "olympic",
+      "inatMarineCount": 12,
+      "cacheMarineCount": 12,
+      "missingMarine": [
+        {
+          "name": "Grey Whale",
+          "obsCount": 25,
+          "suggestedRarity": "rare"
+        },
+        {
+          "name": "Harbour Porpoise",
+          "obsCount": 6,
+          "suggestedRarity": "exceptional"
+        }
+      ],
+      "cachedMarineNames": [
+        "Harbor Seal",
+        "Humpback Whale",
+        "Sea Otter",
+        "Gray Whale",
+        "California Sea Lion",
+        "Steller Sea Lion",
+        "Harbor Porpoise",
+        "Northern Elephant Seal",
+        "Dall's Porpoise",
+        "Cuvier's Beaked Whale",
+        "Northern Right Whale Dolphin",
+        "Fin Whale"
+      ]
+    },
+    {
+      "park": "redwood",
+      "inatMarineCount": 6,
+      "cacheMarineCount": 7,
+      "missingMarine": [],
+      "cachedMarineNames": [
+        "Humpback Whale",
+        "Harbor Seal",
+        "California Sea Lion",
+        "Northern Elephant Seal",
+        "Steller Sea Lion",
+        "Harbor Porpoise",
+        "Common Dolphin"
+      ]
+    },
+    {
+      "park": "channelislands",
+      "inatMarineCount": 15,
+      "cacheMarineCount": 15,
+      "missingMarine": [
+        {
+          "name": "Grey Whale",
+          "obsCount": 28,
+          "suggestedRarity": "rare"
+        }
+      ],
+      "cachedMarineNames": [
+        "Humpback Whale",
+        "California Sea Lion",
+        "Harbor Seal",
+        "Northern Elephant Seal",
+        "Common Dolphin",
+        "Risso's Dolphin",
+        "Gray Whale",
+        "Common Bottlenose Dolphin",
+        "Steller Sea Lion",
+        "Orca",
+        "Blue Whale",
+        "Dall's Porpoise",
+        "Ginkgo-toothed Beaked Whale",
+        "Guadalupe Fur Seal",
+        "Sperm Whale"
+      ]
+    },
+    {
+      "park": "kenaifjords",
+      "inatMarineCount": 6,
+      "cacheMarineCount": 6,
+      "missingMarine": [],
+      "cachedMarineNames": [
+        "Harbor Seal",
+        "Humpback Whale",
+        "Steller Sea Lion",
+        "Orca",
+        "Sea Otter",
+        "Dall's Porpoise"
+      ]
+    },
+    {
+      "park": "glacierbay",
+      "inatMarineCount": 7,
+      "cacheMarineCount": 7,
+      "missingMarine": [
+        {
+          "name": "Harbour Porpoise",
+          "obsCount": 14,
+          "suggestedRarity": "exceptional"
+        }
+      ],
+      "cachedMarineNames": [
+        "Harbor Seal",
+        "Humpback Whale",
+        "Orca",
+        "Steller Sea Lion",
+        "Sea Otter",
+        "Harbor Porpoise",
+        "California Sea Lion"
+      ]
+    },
+    {
+      "park": "katmai",
+      "inatMarineCount": 4,
+      "cacheMarineCount": 4,
+      "missingMarine": [],
+      "cachedMarineNames": [
+        "Humpback Whale",
+        "Sea Otter",
+        "Harbor Seal",
+        "Fin Whale"
+      ]
+    },
+    {
+      "park": "hawaiivolcanoes",
+      "inatMarineCount": 1,
+      "cacheMarineCount": 1,
+      "missingMarine": [],
+      "cachedMarineNames": [
+        "Humpback Whale"
+      ]
+    }
+  ],
+  "parkSummaries": {
+    "yellowstone": {
+      "inatMammalCount": 47,
+      "cacheMammalCount": 47,
+      "cacheTotal": 730,
+      "missingCount": 2
+    },
+    "everglades": {
+      "inatMammalCount": 31,
+      "cacheMammalCount": 32,
+      "cacheTotal": 669,
+      "missingCount": 0
+    },
+    "denali": {
+      "inatMammalCount": 22,
+      "cacheMammalCount": 22,
+      "cacheTotal": 757,
+      "missingCount": 1
+    },
+    "acadia": {
+      "inatMammalCount": 35,
+      "cacheMammalCount": 36,
+      "cacheTotal": 764,
+      "missingCount": 1
+    },
+    "shenandoah": {
+      "inatMammalCount": 31,
+      "cacheMammalCount": 32,
+      "cacheTotal": 470,
+      "missingCount": 0
+    },
+    "newrivergorge": {
+      "inatMammalCount": 21,
+      "cacheMammalCount": 22,
+      "cacheTotal": 679,
+      "missingCount": 0
+    },
+    "cuyahogavalley": {
+      "inatMammalCount": 30,
+      "cacheMammalCount": 30,
+      "cacheTotal": 539,
+      "missingCount": 0
+    },
+    "isleroyale": {
+      "inatMammalCount": 11,
+      "cacheMammalCount": 11,
+      "cacheTotal": 711,
+      "missingCount": 0
+    },
+    "greatsmokymountains": {
+      "inatMammalCount": 45,
+      "cacheMammalCount": 46,
+      "cacheTotal": 577,
+      "missingCount": 2
+    },
+    "biscayne": {
+      "inatMammalCount": 5,
+      "cacheMammalCount": 5,
+      "cacheTotal": 620,
+      "missingCount": 0
+    },
+    "drytortugas": {
+      "inatMammalCount": 2,
+      "cacheMammalCount": 2,
+      "cacheTotal": 434,
+      "missingCount": 0
+    },
+    "congaree": {
+      "inatMammalCount": 17,
+      "cacheMammalCount": 18,
+      "cacheTotal": 467,
+      "missingCount": 1
+    },
+    "mammothcave": {
+      "inatMammalCount": 19,
+      "cacheMammalCount": 19,
+      "cacheTotal": 513,
+      "missingCount": 0
+    },
+    "voyageurs": {
+      "inatMammalCount": 16,
+      "cacheMammalCount": 17,
+      "cacheTotal": 709,
+      "missingCount": 0
+    },
+    "indianadunes": {
+      "inatMammalCount": 26,
+      "cacheMammalCount": 26,
+      "cacheTotal": 532,
+      "missingCount": 0
+    },
+    "badlands": {
+      "inatMammalCount": 24,
+      "cacheMammalCount": 26,
+      "cacheTotal": 444,
+      "missingCount": 0
+    },
+    "windcave": {
+      "inatMammalCount": 20,
+      "cacheMammalCount": 20,
+      "cacheTotal": 434,
+      "missingCount": 1
+    },
+    "theodoreroosevelt": {
+      "inatMammalCount": 24,
+      "cacheMammalCount": 25,
+      "cacheTotal": 417,
+      "missingCount": 0
+    },
+    "gatewayarch": {
+      "inatMammalCount": 6,
+      "cacheMammalCount": 6,
+      "cacheTotal": 362,
+      "missingCount": 0
+    },
+    "grandcanyon": {
+      "inatMammalCount": 48,
+      "cacheMammalCount": 47,
+      "cacheTotal": 488,
+      "missingCount": 1
+    },
+    "zion": {
+      "inatMammalCount": 40,
+      "cacheMammalCount": 40,
+      "cacheTotal": 461,
+      "missingCount": 0
+    },
+    "brycecanyon": {
+      "inatMammalCount": 26,
+      "cacheMammalCount": 26,
+      "cacheTotal": 667,
+      "missingCount": 0
+    },
+    "arches": {
+      "inatMammalCount": 26,
+      "cacheMammalCount": 26,
+      "cacheTotal": 248,
+      "missingCount": 0
+    },
+    "canyonlands": {
+      "inatMammalCount": 24,
+      "cacheMammalCount": 24,
+      "cacheTotal": 531,
+      "missingCount": 0
+    },
+    "capitolreef": {
+      "inatMammalCount": 34,
+      "cacheMammalCount": 34,
+      "cacheTotal": 235,
+      "missingCount": 0
+    },
+    "mesaverde": {
+      "inatMammalCount": 19,
+      "cacheMammalCount": 19,
+      "cacheTotal": 213,
+      "missingCount": 0
+    },
+    "petrifiedforest": {
+      "inatMammalCount": 33,
+      "cacheMammalCount": 34,
+      "cacheTotal": 302,
+      "missingCount": 1
+    },
+    "saguaro": {
+      "inatMammalCount": 34,
+      "cacheMammalCount": 34,
+      "cacheTotal": 346,
+      "missingCount": 0
+    },
+    "whitesands": {
+      "inatMammalCount": 13,
+      "cacheMammalCount": 13,
+      "cacheTotal": 610,
+      "missingCount": 0
+    },
+    "guadalupemountains": {
+      "inatMammalCount": 19,
+      "cacheMammalCount": 19,
+      "cacheTotal": 266,
+      "missingCount": 0
+    },
+    "bigbend": {
+      "inatMammalCount": 58,
+      "cacheMammalCount": 52,
+      "cacheTotal": 363,
+      "missingCount": 0
+    },
+    "grandteton": {
+      "inatMammalCount": 45,
+      "cacheMammalCount": 47,
+      "cacheTotal": 205,
+      "missingCount": 1
+    },
+    "rockymountain": {
+      "inatMammalCount": 41,
+      "cacheMammalCount": 44,
+      "cacheTotal": 227,
+      "missingCount": 1
+    },
+    "glacier": {
+      "inatMammalCount": 51,
+      "cacheMammalCount": 11,
+      "cacheTotal": 175,
+      "missingCount": 14
+    },
+    "greatsanddunes": {
+      "inatMammalCount": 25,
+      "cacheMammalCount": 26,
+      "cacheTotal": 231,
+      "missingCount": 0
+    },
+    "blackcanyon": {
+      "inatMammalCount": 19,
+      "cacheMammalCount": 19,
+      "cacheTotal": 206,
+      "missingCount": 0
+    },
+    "olympic": {
+      "inatMammalCount": 49,
+      "cacheMammalCount": 52,
+      "cacheTotal": 245,
+      "missingCount": 2
+    },
+    "northcascades": {
+      "inatMammalCount": 20,
+      "cacheMammalCount": 21,
+      "cacheTotal": 604,
+      "missingCount": 0
+    },
+    "mountrainier": {
+      "inatMammalCount": 32,
+      "cacheMammalCount": 33,
+      "cacheTotal": 614,
+      "missingCount": 1
+    },
+    "craterlake": {
+      "inatMammalCount": 23,
+      "cacheMammalCount": 25,
+      "cacheTotal": 616,
+      "missingCount": 0
+    },
+    "redwood": {
+      "inatMammalCount": 52,
+      "cacheMammalCount": 51,
+      "cacheTotal": 235,
+      "missingCount": 1
+    },
+    "lassenvolcanic": {
+      "inatMammalCount": 24,
+      "cacheMammalCount": 25,
+      "cacheTotal": 929,
+      "missingCount": 0
+    },
+    "yosemite": {
+      "inatMammalCount": 50,
+      "cacheMammalCount": 50,
+      "cacheTotal": 228,
+      "missingCount": 0
+    },
+    "kingscanyon": {
+      "inatMammalCount": 28,
+      "cacheMammalCount": 28,
+      "cacheTotal": 237,
+      "missingCount": 0
+    },
+    "sequoia": {
+      "inatMammalCount": 42,
+      "cacheMammalCount": 42,
+      "cacheTotal": 942,
+      "missingCount": 0
+    },
+    "joshuatree": {
+      "inatMammalCount": 38,
+      "cacheMammalCount": 38,
+      "cacheTotal": 247,
+      "missingCount": 0
+    },
+    "deathvalley": {
+      "inatMammalCount": 36,
+      "cacheMammalCount": 36,
+      "cacheTotal": 264,
+      "missingCount": 0
+    },
+    "channelislands": {
+      "inatMammalCount": 29,
+      "cacheMammalCount": 28,
+      "cacheTotal": 290,
+      "missingCount": 1
+    },
+    "pinnacles": {
+      "inatMammalCount": 46,
+      "cacheMammalCount": 47,
+      "cacheTotal": 239,
+      "missingCount": 0
+    },
+    "kenaifjords": {
+      "inatMammalCount": 19,
+      "cacheMammalCount": 19,
+      "cacheTotal": 609,
+      "missingCount": 0
+    },
+    "glacierbay": {
+      "inatMammalCount": 21,
+      "cacheMammalCount": 21,
+      "cacheTotal": 213,
+      "missingCount": 0
+    },
+    "katmai": {
+      "inatMammalCount": 23,
+      "cacheMammalCount": 25,
+      "cacheTotal": 616,
+      "missingCount": 0
+    },
+    "wrangellstelias": {
+      "inatMammalCount": 21,
+      "cacheMammalCount": 23,
+      "cacheTotal": 613,
+      "missingCount": 0
+    },
+    "lakeclark": {
+      "inatMammalCount": 14,
+      "cacheMammalCount": 14,
+      "cacheTotal": 604,
+      "missingCount": 0
+    },
+    "gatesofthearctic": {
+      "inatMammalCount": 15,
+      "cacheMammalCount": 15,
+      "cacheTotal": 605,
+      "missingCount": 0
+    },
+    "kobukvalley": {
+      "inatMammalCount": 7,
+      "cacheMammalCount": 7,
+      "cacheTotal": 597,
+      "missingCount": 0
+    },
+    "hawaiivolcanoes": {
+      "inatMammalCount": 8,
+      "cacheMammalCount": 8,
+      "cacheTotal": 356,
+      "missingCount": 1
+    },
+    "haleakala": {
+      "inatMammalCount": 7,
+      "cacheMammalCount": 7,
+      "cacheTotal": 355,
+      "missingCount": 0
+    },
+    "americansamoa": {
+      "inatMammalCount": 1,
+      "cacheMammalCount": 1,
+      "cacheTotal": 115,
+      "missingCount": 0
+    },
+    "virginislands": {
+      "inatMammalCount": 12,
+      "cacheMammalCount": 12,
+      "cacheTotal": 359,
+      "missingCount": 0
+    },
+    "hotsprings": {
+      "inatMammalCount": 11,
+      "cacheMammalCount": 11,
+      "cacheTotal": 515,
+      "missingCount": 0
+    },
+    "carlsbadcaverns": {
+      "inatMammalCount": 25,
+      "cacheMammalCount": 25,
+      "cacheTotal": 533,
+      "missingCount": 0
+    },
+    "greatbasin": {
+      "inatMammalCount": 34,
+      "cacheMammalCount": 34,
+      "cacheTotal": 394,
+      "missingCount": 0
+    }
+  },
+  "topMissing": [
+    {
+      "park": "yellowstone",
+      "name": "Wapiti",
+      "scientificName": "Cervus canadensis",
+      "obsCount": 4203,
+      "suggestedRarity": "guaranteed",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "rockymountain",
+      "name": "Wapiti",
+      "scientificName": "Cervus canadensis",
+      "obsCount": 3134,
+      "suggestedRarity": "guaranteed",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "grandcanyon",
+      "name": "Wapiti",
+      "scientificName": "Cervus canadensis",
+      "obsCount": 2213,
+      "suggestedRarity": "guaranteed",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "redwood",
+      "name": "Wapiti",
+      "scientificName": "Cervus canadensis",
+      "obsCount": 1418,
+      "suggestedRarity": "very_likely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "yellowstone",
+      "name": "Brown Bear",
+      "scientificName": "Ursus arctos",
+      "obsCount": 1372,
+      "suggestedRarity": "likely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "grandteton",
+      "name": "Wapiti",
+      "scientificName": "Cervus canadensis",
+      "obsCount": 695,
+      "suggestedRarity": "very_likely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "glacier",
+      "name": "Common Golden-mantled Ground Squirrel",
+      "scientificName": "Callospermophilus lateralis",
+      "obsCount": 574,
+      "suggestedRarity": "likely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "olympic",
+      "name": "Wapiti",
+      "scientificName": "Cervus canadensis",
+      "obsCount": 453,
+      "suggestedRarity": "likely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "glacier",
+      "name": "Mule Deer",
+      "scientificName": "Odocoileus hemionus",
+      "obsCount": 450,
+      "suggestedRarity": "likely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "denali",
+      "name": "Thinhorn Sheep",
+      "scientificName": "Ovis dalli",
+      "obsCount": 429,
+      "suggestedRarity": "likely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "greatsmokymountains",
+      "name": "Wapiti",
+      "scientificName": "Cervus canadensis",
+      "obsCount": 409,
+      "suggestedRarity": "likely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "glacier",
+      "name": "Brown Bear",
+      "scientificName": "Ursus arctos",
+      "obsCount": 395,
+      "suggestedRarity": "unlikely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "glacier",
+      "name": "White-tailed Deer",
+      "scientificName": "Odocoileus virginianus",
+      "obsCount": 309,
+      "suggestedRarity": "likely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "glacier",
+      "name": "American Red Squirrel",
+      "scientificName": "Tamiasciurus hudsonicus",
+      "obsCount": 200,
+      "suggestedRarity": "likely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "congaree",
+      "name": "Wild Boar",
+      "scientificName": "Sus scrofa",
+      "obsCount": 141,
+      "suggestedRarity": "likely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "glacier",
+      "name": "Red Fox",
+      "scientificName": "Vulpes vulpes",
+      "obsCount": 76,
+      "suggestedRarity": "unlikely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "glacier",
+      "name": "Snowshoe Hare",
+      "scientificName": "Lepus americanus",
+      "obsCount": 70,
+      "suggestedRarity": "unlikely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "glacier",
+      "name": "American Beaver",
+      "scientificName": "Castor canadensis",
+      "obsCount": 53,
+      "suggestedRarity": "unlikely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "mountrainier",
+      "name": "Wapiti",
+      "scientificName": "Cervus canadensis",
+      "obsCount": 53,
+      "suggestedRarity": "unlikely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "glacier",
+      "name": "Yellow-pine Chipmunk",
+      "scientificName": "Neotamias amoenus",
+      "obsCount": 41,
+      "suggestedRarity": "unlikely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "glacier",
+      "name": "Wapiti",
+      "scientificName": "Cervus canadensis",
+      "obsCount": 36,
+      "suggestedRarity": "unlikely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "greatsmokymountains",
+      "name": "Wild Boar",
+      "scientificName": "Sus scrofa",
+      "obsCount": 35,
+      "suggestedRarity": "unlikely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "windcave",
+      "name": "Wapiti",
+      "scientificName": "Cervus canadensis",
+      "obsCount": 35,
+      "suggestedRarity": "unlikely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "hawaiivolcanoes",
+      "name": "Wild Boar",
+      "scientificName": "Sus scrofa",
+      "obsCount": 32,
+      "suggestedRarity": "unlikely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "channelislands",
+      "name": "Grey Whale",
+      "scientificName": "Eschrichtius robustus",
+      "obsCount": 28,
+      "suggestedRarity": "rare",
+      "isBat": false,
+      "isMarine": true
+    },
+    {
+      "park": "petrifiedforest",
+      "name": "Wapiti",
+      "scientificName": "Cervus canadensis",
+      "obsCount": 27,
+      "suggestedRarity": "unlikely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "glacier",
+      "name": "Red-tailed Chipmunk",
+      "scientificName": "Neotamias ruficaudus",
+      "obsCount": 27,
+      "suggestedRarity": "unlikely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "acadia",
+      "name": "Grey Seal",
+      "scientificName": "Halichoerus grypus",
+      "obsCount": 26,
+      "suggestedRarity": "unlikely",
+      "isBat": false,
+      "isMarine": true
+    },
+    {
+      "park": "olympic",
+      "name": "Grey Whale",
+      "scientificName": "Eschrichtius robustus",
+      "obsCount": 25,
+      "suggestedRarity": "rare",
+      "isBat": false,
+      "isMarine": true
+    },
+    {
+      "park": "glacier",
+      "name": "Yellow-bellied Marmot",
+      "scientificName": "Marmota flaviventris",
+      "obsCount": 24,
+      "suggestedRarity": "unlikely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "glacier",
+      "name": "American Marten",
+      "scientificName": "Martes americana",
+      "obsCount": 21,
+      "suggestedRarity": "unlikely",
+      "isBat": false,
+      "isMarine": false
+    },
+    {
+      "park": "glacier",
+      "name": "Long-tailed Weasel",
+      "scientificName": "Neogale frenata",
+      "obsCount": 20,
+      "suggestedRarity": "unlikely",
+      "isBat": false,
+      "isMarine": false
+    }
+  ],
+  "summary": {
+    "totalMissingMammals": 32,
+    "totalRarityMismatches": 53,
+    "totalSeasonalIssues": 25,
+    "totalCrossParkIssues": 44,
+    "iconicFailCount": 10,
+    "batCompletenessParks": 0,
+    "missingMarineSpecies": 6
+  }
+}

@@ -594,6 +594,10 @@ export const wildlifeLocations = [
         scientificName: 'Falco peregrinus',
         seasons: ['spring', 'summer', 'fall'], bestSeason: 'spring', rarity: 'unlikely',
         funFact: "Peregrine falcons nest on the Grand Canyon's cliff faces and are regularly seen stooping at speeds exceeding 200 mph on unsuspecting ravens and swifts. The canyon's vertical walls provide ideal nest ledges safe from mammalian predators." },
+      { name: 'Elk', emoji: '🦌', animalType: 'mammal',
+        scientificName: 'Cervus canadensis',
+        seasons: ['fall', 'winter', 'spring'], bestSeason: 'fall', rarity: 'likely',
+        funFact: "Elk are commonly seen on the North Rim and the forested South Rim of the Grand Canyon. They were reintroduced to the South Rim in the 1910s and the population now numbers in the hundreds. Fall rut brings bulls to meadows near the rim at dusk, bugling across the canyon." },
     ],
   },
 

@@ -333,39 +333,76 @@ function slim(a, source = 'static') {
 // Mirrors the RARITY_OVERRIDES in src/services/apiService.js.
 // These park-specific overrides correct species whose iNat observation counts
 // are low due to remoteness or low visitor numbers, not actual rarity.
+// KEEP IN SYNC with both apiService.js and scripts/patchRarity.mjs.
 const RARITY_OVERRIDES = {
-  yellowstone:           { 'American Bison': 'guaranteed', 'American Elk': 'guaranteed', 'Elk': 'very_likely', 'Grizzly Bear': 'unlikely', 'Gray Wolf': 'rare' },
+  // ── Yellowstone / Tetons ─────────────────────────────────────────────────
+  yellowstone:           { 'American Bison': 'guaranteed', 'American Elk': 'guaranteed', 'Elk': 'very_likely', 'Grizzly Bear': 'unlikely', 'Gray Wolf': 'rare', 'Moose': 'unlikely' },
   'grand-teton':         { 'American Bison': 'guaranteed', 'Moose': 'likely' },
   grandteton:            { 'American Bison': 'guaranteed', 'Moose': 'likely' },
-  everglades:            { 'American Alligator': 'guaranteed', 'West Indian Manatee': 'unlikely', 'Florida Manatee': 'unlikely' },
-  congaree:              { 'American Alligator': 'guaranteed' },
-  greatsmokymountains:   { 'Black Bear': 'unlikely' },
-  acadia:                { 'Bald Eagle': 'likely' },
-  olympic:               { 'Bald Eagle': 'likely' },
-  isleroyale:            { 'Moose': 'likely' },
+  // ── Southeast ────────────────────────────────────────────────────────────
+  everglades:            { 'American Alligator': 'guaranteed', 'West Indian Manatee': 'unlikely', 'Florida Manatee': 'unlikely', 'Great Blue Heron': 'guaranteed', 'Anhinga': 'guaranteed', 'Snowy Egret': 'very_likely', 'Roseate Spoonbill': 'likely', 'Eastern Lubber Grasshopper': 'very_likely', 'Florida Panther': 'exceptional' },
+  congaree:              { 'American Alligator': 'guaranteed', 'White-tailed Deer': 'guaranteed' },
+  biscayne:              { 'Brown Pelican': 'very_likely', 'Double-crested Cormorant': 'very_likely', 'Bottlenose Dolphin': 'unlikely' },
+  drytortugas:           { 'Sooty Tern': 'guaranteed', 'Brown Noddy': 'guaranteed', 'Magnificent Frigatebird': 'very_likely', 'American Alligator': 'exceptional' }, // data quality: no alligators at DT
+  // ── East / Appalachian ───────────────────────────────────────────────────
+  greatsmokymountains:   { 'White-tailed Deer': 'guaranteed', 'Black Bear': 'likely', 'Wild Turkey': 'very_likely' },
+  shenandoah:            { 'White-tailed Deer': 'guaranteed', 'Wild Turkey': 'very_likely', 'Black Bear': 'likely' },
+  acadia:                { 'American Herring Gull': 'guaranteed', 'Bald Eagle': 'rare', 'White-tailed Deer': 'very_likely', 'Harbor Seal': 'likely', 'Common Loon': 'likely' },
+  olympic:               { 'Mule Deer': 'guaranteed', 'Bald Eagle': 'likely', 'Roosevelt Elk': 'likely', 'Harbor Seal': 'likely', 'Olympic Marmot': 'very_likely', 'Canada Jay': 'very_likely' },
+  isleroyale:            { 'Moose': 'likely', 'Common Loon': 'guaranteed' },
   newrivergorge:         { 'White-tailed Deer': 'guaranteed', 'Black Bear': 'likely' },
+  cuyahogavalley:        { 'White-tailed Deer': 'guaranteed', 'Eastern Gray Squirrel': 'very_likely' },
   mammothcave:           { 'Little Brown Bat': 'guaranteed', 'White-tailed Deer': 'guaranteed' },
   hotsprings:            { 'White-tailed Deer': 'guaranteed', 'Eastern Gray Squirrel': 'guaranteed' },
   indianadunes:          { 'White-tailed Deer': 'guaranteed', 'Sandhill Crane': 'very_likely' },
-  gatewayarch:           { 'White-tailed Deer': 'very_likely', 'Red Fox': 'unlikely' },
+  gatewayarch:           { 'Eastern Gray Squirrel': 'guaranteed', 'American Robin': 'very_likely', 'White-tailed Deer': 'very_likely', 'Red Fox': 'unlikely' },
   voyageurs:             { 'Common Loon': 'guaranteed', 'Bald Eagle': 'very_likely', 'Moose': 'likely' },
-  glacier:               { 'Mountain Goat': 'guaranteed', 'Grizzly Bear': 'likely', 'Bighorn Sheep': 'very_likely', 'Bald Eagle': 'likely' },
+  // ── Rocky Mountain / Great Plains ────────────────────────────────────────
+  glacier:               { 'Mountain Goat': 'very_likely', 'Grizzly Bear': 'unlikely', 'Bighorn Sheep': 'very_likely', 'Bald Eagle': 'likely' },
   badlands:              { 'American Bison': 'guaranteed', 'Pronghorn': 'guaranteed', 'Black-tailed Prairie Dog': 'guaranteed' },
-  capitolreef:           { 'Mule Deer': 'very_likely', 'Coyote': 'likely' },
-  mesaverde:             { 'Mule Deer': 'guaranteed', 'Wild Turkey': 'very_likely' },
+  windcave:              { 'American Bison': 'guaranteed', 'Pronghorn': 'very_likely', 'Black-tailed Prairie Dog': 'very_likely' },
+  theodoreroosevelt:     { 'American Bison': 'guaranteed', 'Pronghorn': 'very_likely', 'Black-tailed Prairie Dog': 'very_likely', 'Wild Horse': 'very_likely' },
+  // ── Rocky Mountain / Sierra Nevada / Southwest ───────────────────────────
+  rockymountain:         { 'American Elk': 'guaranteed', 'Elk': 'guaranteed', 'Mule Deer': 'very_likely', 'Bighorn Sheep': 'likely' },
+  yosemite:              { 'California Ground Squirrel': 'guaranteed', "Steller's Jay": 'very_likely', 'Mule Deer': 'very_likely', 'Black Bear': 'unlikely' },
+  saguaro:               { "Gambel's Quail": 'guaranteed', 'Cactus Wren': 'very_likely', 'Gila Woodpecker': 'very_likely' },
+  grandcanyon:           { 'Common Raven': 'guaranteed', 'Rock Squirrel': 'very_likely', 'Mule Deer': 'very_likely', 'Elk': 'likely', 'American Bison': 'exceptional' }, // no bison at GC
+  zion:                  { 'Rock Squirrel': 'guaranteed', 'Mule Deer': 'very_likely', 'Desert Cottontail': 'likely', 'Coyote': 'likely' },
+  brycecanyon:           { 'Utah Prairie Dog': 'guaranteed', "Common Golden-mantled Ground Squirrel": 'guaranteed', 'Mule Deer': 'very_likely', 'Common Raven': 'very_likely', 'Pronghorn': 'very_likely' },
+  arches:                { 'Common Raven': 'guaranteed', 'Mule Deer': 'likely', 'Coyote': 'likely', 'Desert Cottontail': 'likely' },
+  canyonlands:           { 'Common Raven': 'guaranteed', 'Common Side-blotched Lizard': 'very_likely', 'Mule Deer': 'likely' },
+  capitolreef:           { 'Mule Deer': 'guaranteed', 'Common Raven': 'very_likely', 'Coyote': 'likely' },
+  petrifiedforest:       { 'Common Raven': 'guaranteed', 'Pronghorn': 'very_likely' },
+  mesaverde:             { 'Mule Deer': 'guaranteed', 'Wild Turkey': 'very_likely', "Gunnison's Prairie Dog": 'rare' },
   blackcanyon:           { 'Mule Deer': 'likely', 'Peregrine Falcon': 'unlikely' },
-  greatbasin:            { 'Mule Deer': 'very_likely', 'Pronghorn': 'likely' },
+  greatbasin:            { 'Mule Deer': 'very_likely', "Steller's Jay": 'very_likely', 'Pronghorn': 'likely' },
   guadalupemountains:    { 'Mule Deer': 'very_likely', 'Elk': 'likely' },
+  joshuatree:            { 'Common Side-blotched Lizard': 'guaranteed', 'Common Chuckwalla': 'very_likely' },
+  deathvalley:           { 'Common Raven': 'guaranteed', 'Coyote': 'very_likely', 'Common Side-blotched Lizard': 'very_likely' },
+  whitesands:            { 'Western Earless Lizard': 'guaranteed' },
+  pinnacles:             { 'California Ground Squirrel': 'guaranteed', 'California Condor': 'very_likely', 'Acorn Woodpecker': 'very_likely', 'California Scrub-Jay': 'very_likely' },
+  craterlake:            { "Common Golden-mantled Ground Squirrel": 'guaranteed', "Clark's Nutcracker": 'very_likely' },
+  mountrainier:          { 'Hoary Marmot': 'guaranteed', 'Canada Jay': 'very_likely', 'Sooty Grouse': 'very_likely' },
+  redwood:               { 'Roosevelt Elk': 'guaranteed', "Steller's Jay": 'very_likely' },
+  kingscanyon:           { "Steller's Jay": 'guaranteed' },
+  sequoia:               { "Steller's Jay": 'guaranteed' },
+  lassenvolcanic:        { "Steller's Jay": 'guaranteed', "Common Golden-mantled Ground Squirrel": 'very_likely' },
+  bigbend:               { 'Greater Roadrunner': 'guaranteed', 'Mexican Jay': 'very_likely', 'Cactus Wren': 'very_likely' },
+  // ── Southwest caves ──────────────────────────────────────────────────────
   carlsbadcaverns:       { 'Mexican Free-tailed Bat': 'guaranteed' },
-  denali:                { 'Brown Bear': 'guaranteed', 'Caribou': 'guaranteed', 'Moose': 'very_likely', 'Dall Sheep': 'very_likely', 'Arctic Ground Squirrel': 'guaranteed', 'Grizzly Bear': 'guaranteed' },
+  // ── Alaska ───────────────────────────────────────────────────────────────
+  denali:                { 'Brown Bear': 'likely', 'Caribou': 'very_likely', 'Moose': 'very_likely', 'Dall Sheep': 'very_likely', 'Arctic Ground Squirrel': 'guaranteed', 'Grizzly Bear': 'likely' },
   katmai:                { 'Brown Bear': 'guaranteed' },
   glacierbay:            { 'Humpback Whale': 'very_likely', 'Harbor Seal': 'guaranteed', 'Sea Otter': 'very_likely' },
   kenaifjords:           { 'Sea Otter': 'guaranteed', 'Harbor Seal': 'guaranteed', 'Tufted Puffin': 'very_likely', 'Horned Puffin': 'very_likely', 'Orca': 'unlikely' },
   wrangell:              { 'Dall Sheep': 'very_likely', 'Moose': 'very_likely', 'Brown Bear': 'likely' },
+  wrangellstelias:       { 'Dall Sheep': 'very_likely', 'Moose': 'very_likely', 'Brown Bear': 'likely' },
   lakeclark:             { 'Brown Bear': 'guaranteed', 'Sockeye Salmon': 'guaranteed' },
-  hawaiivolcanoes:       { 'Nene': 'very_likely', 'Hawaiian Hawk': 'unlikely', 'Hawaiian Goose': 'very_likely' },
+  // ── Hawaii ───────────────────────────────────────────────────────────────
+  hawaiivolcanoes:       { 'Nene': 'guaranteed', 'Hawaiian Hawk': 'unlikely', 'Hawaiian Goose': 'guaranteed' },
   haleakala:             { 'Nene': 'guaranteed', 'Hawaiian Goose': 'guaranteed' },
-  virginislands:         { 'Green Sea Turtle': 'very_likely', 'Hawksbill Sea Turtle': 'unlikely' },
+  // ── Island / Tropical ────────────────────────────────────────────────────
+  virginislands:         { 'Green Iguana': 'guaranteed', 'Green Sea Turtle': 'very_likely', 'Hawksbill Sea Turtle': 'unlikely' },
   americansamoa:         { 'Samoan Flying Fox': 'very_likely', 'Green Sea Turtle': 'likely' },
 };
 
@@ -1021,6 +1058,29 @@ function dedup(animals) {
 // Sort animals: abundant first, then common, uncommon, rare, exceptional.
 const RARITY_RANK = { guaranteed: 0, very_likely: 1, likely: 2, unlikely: 3, rare: 4, exceptional: 5 };
 
+// ── Mammal minimum rarity floor ───────────────────────────────────────────────
+// iNaturalist observation counts severely under-represent common generalist mammals
+// (coyote, deer, rabbits) because casual visitors don't bother submitting them.
+// A mammal with verified iNat sightings (≥5 obs) is genuinely present and active
+// in the park — 'exceptional' (<2%) is almost never the correct tier for these.
+// Floor: exceptional → rare for any mammal with 5+ verified iNat observations.
+// Floor: exceptional or rare → unlikely for mammals with 25+ iNat observations.
+// Hardcoded wildlifeData.js animals (_priority=0) are always exempt (rarity already curated).
+// Note: runtime RARITY_OVERRIDES in apiService.js protect legitimately rare species
+// (e.g. Florida Panther) from this floor if an explicit override is present.
+function applyMammalRarityFloor(deduped) {
+  for (const a of deduped) {
+    if (a.animalType !== 'mammal') continue;
+    if (a._priority === 0) continue;              // curated hardcoded animal — skip
+    const obs = a._count ?? 0;
+    if (obs >= 25 && (a.rarity === 'exceptional' || a.rarity === 'rare')) {
+      a.rarity = 'unlikely';                      // well-documented mammal: min unlikely
+    } else if (obs >= 5 && a.rarity === 'exceptional') {
+      a.rarity = 'rare';                          // confirmed mammal: min rare
+    }
+  }
+}
+
 // ── Per-park fetch ────────────────────────────────────────────────────────────
 async function fetchPark(loc, { noQualityFilter = false } = {}) {
   console.log(`  [${loc.id}] fetching…${noQualityFilter ? ' [no quality filter]' : ''}`);
@@ -1166,6 +1226,7 @@ async function fetchPark(loc, { noQualityFilter = false } = {}) {
 
   // Deduplicate and sort by rarity + source priority — no species cap
   const deduped = dedup(pool);
+  applyMammalRarityFloor(deduped);              // fix iNat under-reporting for mammals
   deduped.sort((a, b) => {
     const rDiff = (RARITY_RANK[a.rarity] ?? 2) - (RARITY_RANK[b.rarity] ?? 2);
     if (rDiff !== 0) return rDiff;
@@ -1221,6 +1282,7 @@ async function fetchParkWide(loc) {
   }
 
   const deduped = dedup(pool);
+  applyMammalRarityFloor(deduped);              // fix iNat under-reporting for mammals
   deduped.sort((a, b) => {
     const rDiff = (RARITY_RANK[a.rarity] ?? 2) - (RARITY_RANK[b.rarity] ?? 2);
     if (rDiff !== 0) return rDiff;

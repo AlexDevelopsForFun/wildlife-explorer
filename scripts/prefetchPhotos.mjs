@@ -21,9 +21,13 @@ const DELAY   = 350;   // ms between iNat requests (well under their rate limit)
 
 const { WILDLIFE_CACHE } = await import('../src/data/wildlifeCache.js');
 
-// ── 1. Rank animals by number of parks they appear in ────────────────────────
+// ── 1. Rank animals by a hybrid score: park count × charisma boost ────────────
 const parkCount  = new Map();   // name → # parks containing it
 const sciNameMap = new Map();   // name → scientificName (first non-null found)
+const rarityMap  = new Map();   // name → rarity (best across parks)
+const typeMap    = new Map();   // name → animalType
+
+const RARITY_SCORE = { guaranteed: 6, very_likely: 5, likely: 4, unlikely: 3, rare: 2, exceptional: 2 };
 
 for (const entry of Object.values(WILDLIFE_CACHE)) {
   const seen = new Set();
@@ -33,16 +37,35 @@ for (const entry of Object.values(WILDLIFE_CACHE)) {
       seen.add(a.name);
       parkCount.set(a.name, (parkCount.get(a.name) ?? 0) + 1);
     }
-    if (a.scientificName && !sciNameMap.has(a.name)) {
-      sciNameMap.set(a.name, a.scientificName);
-    }
+    if (a.scientificName && !sciNameMap.has(a.name)) sciNameMap.set(a.name, a.scientificName);
+    if (a.animalType && !typeMap.has(a.name)) typeMap.set(a.name, a.animalType);
+    // Keep highest rarity score seen across all parks
+    const rs = RARITY_SCORE[a.rarity] ?? 0;
+    if (rs > (rarityMap.get(a.name) ?? 0)) rarityMap.set(a.name, rs);
   }
 }
 
+// Charisma boost for iconic/visitor-facing animals
+function charismaBoost(name, type) {
+  const n = (name ?? '').toLowerCase();
+  if (/\b(bison|buffalo|bear|grizzly|wolf|alligator|moose|elk|wapiti|mountain lion|puma|cougar|manatee|wolverine)\b/.test(n)) return 40;
+  if (/\b(eagle|condor|osprey|peregrine|falcon|hawk|owl|puffin|flamingo|spoonbill|crane|loon|pelican)\b/.test(n)) return 30;
+  if (/\b(whale|dolphin|orca|seal|sea lion|sea turtle|shark|manta ray)\b/.test(n)) return 30;
+  if (/\b(deer|pronghorn|bighorn|mountain goat|caribou|fox|coyote|bobcat|lynx|otter|beaver)\b/.test(n)) return 20;
+  if (type === 'mammal') return 15;
+  if (type === 'marine') return 15;
+  if (type === 'reptile') return 10;
+  return 0;
+}
+
 const ranked = [...parkCount.entries()]
-  .sort((a, b) => b[1] - a[1])
-  .slice(0, COUNT)
-  .map(([name]) => ({ name, sci: sciNameMap.get(name) ?? null }));
+  .map(([name, parks]) => {
+    const type = typeMap.get(name);
+    const score = parks + charismaBoost(name, type) + (rarityMap.get(name) ?? 0);
+    return { name, score, sci: sciNameMap.get(name) ?? null };
+  })
+  .sort((a, b) => b.score - a.score)
+  .slice(0, COUNT);
 
 console.log(`\n📸  Photo Pre-fetch`);
 console.log(`   Animals to fetch: ${ranked.length}`);

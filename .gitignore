@@ -23,6 +23,9 @@ Thumbs.db
 # ── Vite cache ────────────────────────────────────────────────────────────────
 .vite/
 
+# ── eBird S&T GeoTIFF cache (large binary files, re-downloaded automatically) ─
+scripts/geotiff-cache/
+
 # ── Claude Code local config ──────────────────────────────────────────────────
 .claude/
 

@@ -1,0 +1,7018 @@
+{
+  "auditDate": "2026-03-27T00:01:43.412Z",
+  "totalParks": 63,
+  "missingReptiles": [
+    {
+      "park": "greatsmokymountains",
+      "name": "Eastern Copperhead",
+      "scientificName": "Agkistrodon contortrix",
+      "obsCount": 259,
+      "suggestedRarity": "very_likely"
+    },
+    {
+      "park": "greatsmokymountains",
+      "name": "Common Box Turtle",
+      "scientificName": "Terrapene carolina",
+      "obsCount": 57,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "grandcanyon",
+      "name": "Western Rattlesnake",
+      "scientificName": "Crotalus oreganus",
+      "obsCount": 133,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "zion",
+      "name": "Western Rattlesnake",
+      "scientificName": "Crotalus oreganus",
+      "obsCount": 72,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "arches",
+      "name": "Western Whiptail",
+      "scientificName": "Aspidoscelis tigris",
+      "obsCount": 315,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "arches",
+      "name": "Long-nosed Leopard Lizard",
+      "scientificName": "Gambelia wislizenii",
+      "obsCount": 187,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "arches",
+      "name": "Ornate Tree Lizard",
+      "scientificName": "Urosaurus ornatus",
+      "obsCount": 121,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "arches",
+      "name": "Common Sagebrush Lizard",
+      "scientificName": "Sceloporus graciosus",
+      "obsCount": 74,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "arches",
+      "name": "Eastern Collared Lizard",
+      "scientificName": "Crotaphytus collaris",
+      "obsCount": 24,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "canyonlands",
+      "name": "Western Whiptail",
+      "scientificName": "Aspidoscelis tigris",
+      "obsCount": 183,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "canyonlands",
+      "name": "Ornate Tree Lizard",
+      "scientificName": "Urosaurus ornatus",
+      "obsCount": 136,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "canyonlands",
+      "name": "Common Sagebrush Lizard",
+      "scientificName": "Sceloporus graciosus",
+      "obsCount": 104,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "canyonlands",
+      "name": "Long-nosed Leopard Lizard",
+      "scientificName": "Gambelia wislizenii",
+      "obsCount": 44,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "canyonlands",
+      "name": "Desert Collared Lizard",
+      "scientificName": "Crotaphytus bicinctores",
+      "obsCount": 40,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "canyonlands",
+      "name": "Striped Whipsnake",
+      "scientificName": "Masticophis taeniatus",
+      "obsCount": 30,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "canyonlands",
+      "name": "Western Rattlesnake",
+      "scientificName": "Crotalus oreganus",
+      "obsCount": 27,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "capitolreef",
+      "name": "Western Whiptail",
+      "scientificName": "Aspidoscelis tigris",
+      "obsCount": 121,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "capitolreef",
+      "name": "Ornate Tree Lizard",
+      "scientificName": "Urosaurus ornatus",
+      "obsCount": 58,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "capitolreef",
+      "name": "Western Terrestrial Garter Snake",
+      "scientificName": "Thamnophis elegans",
+      "obsCount": 26,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "capitolreef",
+      "name": "Common Sagebrush Lizard",
+      "scientificName": "Sceloporus graciosus",
+      "obsCount": 25,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "capitolreef",
+      "name": "Long-nosed Leopard Lizard",
+      "scientificName": "Gambelia wislizenii",
+      "obsCount": 22,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "capitolreef",
+      "name": "Striped Whipsnake",
+      "scientificName": "Masticophis taeniatus",
+      "obsCount": 20,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "mesaverde",
+      "name": "Common Sagebrush Lizard",
+      "scientificName": "Sceloporus graciosus",
+      "obsCount": 186,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "mesaverde",
+      "name": "Plateau Striped Whiptail",
+      "scientificName": "Aspidoscelis velox",
+      "obsCount": 92,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "mesaverde",
+      "name": "Greater Short-horned Lizard",
+      "scientificName": "Phrynosoma hernandesi",
+      "obsCount": 53,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "mesaverde",
+      "name": "Ornate Tree Lizard",
+      "scientificName": "Urosaurus ornatus",
+      "obsCount": 20,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "petrifiedforest",
+      "name": "Greater Short-horned Lizard",
+      "scientificName": "Phrynosoma hernandesi",
+      "obsCount": 112,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "petrifiedforest",
+      "name": "Western Earless Lizard",
+      "scientificName": "Holbrookia maculata",
+      "obsCount": 93,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "petrifiedforest",
+      "name": "Plateau Striped Whiptail",
+      "scientificName": "Aspidoscelis velox",
+      "obsCount": 81,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "petrifiedforest",
+      "name": "Striped Whipsnake",
+      "scientificName": "Masticophis taeniatus",
+      "obsCount": 56,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "petrifiedforest",
+      "name": "New Mexico Whiptail",
+      "scientificName": "Aspidoscelis neomexicanus",
+      "obsCount": 45,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "petrifiedforest",
+      "name": "Glossy Snake",
+      "scientificName": "Arizona elegans",
+      "obsCount": 43,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "petrifiedforest",
+      "name": "Chihuahuan Nightsnake",
+      "scientificName": "Hypsiglena jani",
+      "obsCount": 33,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "petrifiedforest",
+      "name": "Prairie Rattlesnake",
+      "scientificName": "Crotalus viridis",
+      "obsCount": 31,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "petrifiedforest",
+      "name": "California King Snake",
+      "scientificName": "Lampropeltis californiae",
+      "obsCount": 29,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "saguaro",
+      "name": "Greater Earless Lizard",
+      "scientificName": "Cophosaurus texanus",
+      "obsCount": 168,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "saguaro",
+      "name": "Western Whiptail",
+      "scientificName": "Aspidoscelis tigris",
+      "obsCount": 164,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "saguaro",
+      "name": "Regal Horned Lizard",
+      "scientificName": "Phrynosoma solare",
+      "obsCount": 122,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "saguaro",
+      "name": "Desert Iguana",
+      "scientificName": "Dipsosaurus dorsalis",
+      "obsCount": 120,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "saguaro",
+      "name": "Gopher Snake",
+      "scientificName": "Pituophis catenifer",
+      "obsCount": 95,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "saguaro",
+      "name": "Ornate Tree Lizard",
+      "scientificName": "Urosaurus ornatus",
+      "obsCount": 79,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "saguaro",
+      "name": "Tiger Rattlesnake",
+      "scientificName": "Crotalus tigris",
+      "obsCount": 75,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "saguaro",
+      "name": "Western Banded Gecko",
+      "scientificName": "Coleonyx variegatus",
+      "obsCount": 71,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "saguaro",
+      "name": "Eastern Collared Lizard",
+      "scientificName": "Crotaphytus collaris",
+      "obsCount": 62,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "saguaro",
+      "name": "Coachwhip",
+      "scientificName": "Masticophis flagellum",
+      "obsCount": 61,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "saguaro",
+      "name": "Black-necked Garter Snake",
+      "scientificName": "Thamnophis cyrtopsis",
+      "obsCount": 58,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "saguaro",
+      "name": "Western Black-tailed Rattlesnake",
+      "scientificName": "Crotalus molossus",
+      "obsCount": 58,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "saguaro",
+      "name": "Greater Short-horned Lizard",
+      "scientificName": "Phrynosoma hernandesi",
+      "obsCount": 50,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "saguaro",
+      "name": "Long-nosed Snake",
+      "scientificName": "Rhinocheilus lecontei",
+      "obsCount": 44,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "saguaro",
+      "name": "Clark's Spiny Lizard",
+      "scientificName": "Sceloporus clarkii",
+      "obsCount": 33,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "saguaro",
+      "name": "Sonoran Spotted Whiptail",
+      "scientificName": "Aspidoscelis sonorae",
+      "obsCount": 27,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "saguaro",
+      "name": "Arizona Black Rattlesnake",
+      "scientificName": "Crotalus cerberus",
+      "obsCount": 24,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "saguaro",
+      "name": "Sonoran Whipsnake",
+      "scientificName": "Masticophis bilineatus",
+      "obsCount": 22,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "saguaro",
+      "name": "Western Patch-nosed Snake",
+      "scientificName": "Salvadora hexalepis",
+      "obsCount": 20,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "whitesands",
+      "name": "Western Earless Lizard",
+      "scientificName": "Holbrookia maculata",
+      "obsCount": 322,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "whitesands",
+      "name": "Southwestern Fence Lizard",
+      "scientificName": "Sceloporus cowlesi",
+      "obsCount": 98,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "whitesands",
+      "name": "Little Striped Whiptail",
+      "scientificName": "Aspidoscelis inornatus",
+      "obsCount": 33,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "guadalupemountains",
+      "name": "Southwestern Fence Lizard",
+      "scientificName": "Sceloporus cowlesi",
+      "obsCount": 234,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "guadalupemountains",
+      "name": "Greater Earless Lizard",
+      "scientificName": "Cophosaurus texanus",
+      "obsCount": 213,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "guadalupemountains",
+      "name": "Ornate Tree Lizard",
+      "scientificName": "Urosaurus ornatus",
+      "obsCount": 131,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "guadalupemountains",
+      "name": "Chihuahuan Spotted Whiptail",
+      "scientificName": "Aspidoscelis exsanguis",
+      "obsCount": 80,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "guadalupemountains",
+      "name": "Crevice Spiny Lizard",
+      "scientificName": "Sceloporus poinsettii",
+      "obsCount": 69,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "guadalupemountains",
+      "name": "Eastern Black-tailed Rattlesnake",
+      "scientificName": "Crotalus ornatus",
+      "obsCount": 25,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Greater Earless Lizard",
+      "scientificName": "Cophosaurus texanus",
+      "obsCount": 738,
+      "suggestedRarity": "very_likely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Rusty-rumped Whiptail",
+      "scientificName": "Aspidoscelis scalaris",
+      "obsCount": 268,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Common Side-blotched Lizard",
+      "scientificName": "Uta stansburiana",
+      "obsCount": 198,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Marbled Whiptail",
+      "scientificName": "Aspidoscelis marmoratus",
+      "obsCount": 197,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Canyon Lizard",
+      "scientificName": "Sceloporus merriami",
+      "obsCount": 190,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Crevice Spiny Lizard",
+      "scientificName": "Sceloporus poinsettii",
+      "obsCount": 163,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Eastern Black-tailed Rattlesnake",
+      "scientificName": "Crotalus ornatus",
+      "obsCount": 163,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Texas Alligator Lizard",
+      "scientificName": "Gerrhonotus infernalis",
+      "obsCount": 159,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Southwestern Fence Lizard",
+      "scientificName": "Sceloporus cowlesi",
+      "obsCount": 133,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Spiny Softshell",
+      "scientificName": "Apalone spinifera",
+      "obsCount": 94,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Common Checkered Whiptail",
+      "scientificName": "Aspidoscelis tesselatus",
+      "obsCount": 93,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Trans-pecos Ratsnake",
+      "scientificName": "Bogertophis subocularis",
+      "obsCount": 91,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Chihuahuan Nightsnake",
+      "scientificName": "Hypsiglena jani",
+      "obsCount": 87,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Ornate Tree Lizard",
+      "scientificName": "Urosaurus ornatus",
+      "obsCount": 84,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Gopher Snake",
+      "scientificName": "Pituophis catenifer",
+      "obsCount": 80,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Eastern Collared Lizard",
+      "scientificName": "Crotaphytus collaris",
+      "obsCount": 75,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Long-nosed Snake",
+      "scientificName": "Rhinocheilus lecontei",
+      "obsCount": 72,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Texas Banded Gecko",
+      "scientificName": "Coleonyx brevis",
+      "obsCount": 70,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Coachwhip",
+      "scientificName": "Masticophis flagellum",
+      "obsCount": 66,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Twin-spotted Spiny Lizard",
+      "scientificName": "Sceloporus bimaculosus",
+      "obsCount": 63,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Black-necked Garter Snake",
+      "scientificName": "Thamnophis cyrtopsis",
+      "obsCount": 59,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Baird's Ratsnake",
+      "scientificName": "Pantherophis bairdi",
+      "obsCount": 51,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Mediterranean House Gecko",
+      "scientificName": "Hemidactylus turcicus",
+      "obsCount": 41,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Green Anole",
+      "scientificName": "Anolis carolinensis",
+      "obsCount": 40,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Chihuahuan Spotted Whiptail",
+      "scientificName": "Aspidoscelis exsanguis",
+      "obsCount": 35,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Big Bend Patch-nosed Snake",
+      "scientificName": "Salvadora deserticola",
+      "obsCount": 35,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Plain-bellied Watersnake",
+      "scientificName": "Nerodia erythrogaster",
+      "obsCount": 33,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Striped Whipsnake",
+      "scientificName": "Masticophis taeniatus",
+      "obsCount": 31,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Roundtail Horned Lizard",
+      "scientificName": "Phrynosoma modestum",
+      "obsCount": 31,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Great Plains Ground Snake",
+      "scientificName": "Sonora episcopa",
+      "obsCount": 27,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Mojave Rattlesnake",
+      "scientificName": "Crotalus scutulatus",
+      "obsCount": 26,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Big Bend Slider",
+      "scientificName": "Trachemys gaigeae",
+      "obsCount": 26,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Glossy Snake",
+      "scientificName": "Arizona elegans",
+      "obsCount": 25,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Eastern Patch-nosed Snake",
+      "scientificName": "Salvadora grahamiae",
+      "obsCount": 25,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Great Plains Skink",
+      "scientificName": "Plestiodon obsoletus",
+      "obsCount": 22,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Rock Rattlesnake",
+      "scientificName": "Crotalus lepidus",
+      "obsCount": 20,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Little Striped Whiptail",
+      "scientificName": "Aspidoscelis inornatus",
+      "obsCount": 20,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "greatsanddunes",
+      "name": "Plateau Fence Lizard",
+      "scientificName": "Sceloporus tristichus",
+      "obsCount": 38,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "blackcanyon",
+      "name": "Plateau Fence Lizard",
+      "scientificName": "Sceloporus tristichus",
+      "obsCount": 129,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "blackcanyon",
+      "name": "Eastern Collared Lizard",
+      "scientificName": "Crotaphytus collaris",
+      "obsCount": 59,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "blackcanyon",
+      "name": "Common Sagebrush Lizard",
+      "scientificName": "Sceloporus graciosus",
+      "obsCount": 21,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "olympic",
+      "name": "Northwestern Garter Snake",
+      "scientificName": "Thamnophis ordinoides",
+      "obsCount": 144,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "olympic",
+      "name": "Common Garter Snake",
+      "scientificName": "Thamnophis sirtalis",
+      "obsCount": 141,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "mountrainier",
+      "name": "Northwestern Garter Snake",
+      "scientificName": "Thamnophis ordinoides",
+      "obsCount": 29,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "mountrainier",
+      "name": "Common Garter Snake",
+      "scientificName": "Thamnophis sirtalis",
+      "obsCount": 23,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "craterlake",
+      "name": "Common Sagebrush Lizard",
+      "scientificName": "Sceloporus graciosus",
+      "obsCount": 60,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "redwood",
+      "name": "Common Garter Snake",
+      "scientificName": "Thamnophis sirtalis",
+      "obsCount": 98,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "redwood",
+      "name": "Northern Alligator Lizard",
+      "scientificName": "Elgaria coerulea",
+      "obsCount": 51,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "redwood",
+      "name": "Western Fence Lizard",
+      "scientificName": "Sceloporus occidentalis",
+      "obsCount": 49,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "redwood",
+      "name": "Western Terrestrial Garter Snake",
+      "scientificName": "Thamnophis elegans",
+      "obsCount": 45,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "redwood",
+      "name": "Aquatic Garter Snake",
+      "scientificName": "Thamnophis atratus",
+      "obsCount": 31,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "redwood",
+      "name": "Northwestern Garter Snake",
+      "scientificName": "Thamnophis ordinoides",
+      "obsCount": 29,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "redwood",
+      "name": "Gopher Snake",
+      "scientificName": "Pituophis catenifer",
+      "obsCount": 28,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "lassenvolcanic",
+      "name": "Common Sagebrush Lizard",
+      "scientificName": "Sceloporus graciosus",
+      "obsCount": 129,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "lassenvolcanic",
+      "name": "Common Garter Snake",
+      "scientificName": "Thamnophis sirtalis",
+      "obsCount": 58,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "yosemite",
+      "name": "Common Sagebrush Lizard",
+      "scientificName": "Sceloporus graciosus",
+      "obsCount": 361,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "yosemite",
+      "name": "Western Rattlesnake",
+      "scientificName": "Crotalus oreganus",
+      "obsCount": 222,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "yosemite",
+      "name": "California Mountain Kingsnake",
+      "scientificName": "Lampropeltis zonata",
+      "obsCount": 160,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "yosemite",
+      "name": "Gilbert's Skink",
+      "scientificName": "Plestiodon gilberti",
+      "obsCount": 151,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "yosemite",
+      "name": "Northern Alligator Lizard",
+      "scientificName": "Elgaria coerulea",
+      "obsCount": 104,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "yosemite",
+      "name": "Sierra Garter Snake",
+      "scientificName": "Thamnophis couchii",
+      "obsCount": 84,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "yosemite",
+      "name": "Western Whiptail",
+      "scientificName": "Aspidoscelis tigris",
+      "obsCount": 62,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "yosemite",
+      "name": "Southern Alligator Lizard",
+      "scientificName": "Elgaria multicarinata",
+      "obsCount": 58,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "yosemite",
+      "name": "Northern Rubber Boa",
+      "scientificName": "Charina bottae",
+      "obsCount": 49,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "yosemite",
+      "name": "Gopher Snake",
+      "scientificName": "Pituophis catenifer",
+      "obsCount": 37,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "kingscanyon",
+      "name": "Common Sagebrush Lizard",
+      "scientificName": "Sceloporus graciosus",
+      "obsCount": 98,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "kingscanyon",
+      "name": "Western Rattlesnake",
+      "scientificName": "Crotalus oreganus",
+      "obsCount": 74,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "kingscanyon",
+      "name": "California Mountain Kingsnake",
+      "scientificName": "Lampropeltis zonata",
+      "obsCount": 50,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "kingscanyon",
+      "name": "Sierra Garter Snake",
+      "scientificName": "Thamnophis couchii",
+      "obsCount": 39,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "kingscanyon",
+      "name": "Northern Alligator Lizard",
+      "scientificName": "Elgaria coerulea",
+      "obsCount": 39,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "sequoia",
+      "name": "Common Sagebrush Lizard",
+      "scientificName": "Sceloporus graciosus",
+      "obsCount": 129,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "sequoia",
+      "name": "Northern Alligator Lizard",
+      "scientificName": "Elgaria coerulea",
+      "obsCount": 84,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "sequoia",
+      "name": "Western Rattlesnake",
+      "scientificName": "Crotalus oreganus",
+      "obsCount": 72,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "sequoia",
+      "name": "Western Terrestrial Garter Snake",
+      "scientificName": "Thamnophis elegans",
+      "obsCount": 61,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "sequoia",
+      "name": "Northern Rubber Boa",
+      "scientificName": "Charina bottae",
+      "obsCount": 34,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "sequoia",
+      "name": "Southern Alligator Lizard",
+      "scientificName": "Elgaria multicarinata",
+      "obsCount": 28,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "sequoia",
+      "name": "Western Whiptail",
+      "scientificName": "Aspidoscelis tigris",
+      "obsCount": 25,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "sequoia",
+      "name": "Sierra Garter Snake",
+      "scientificName": "Thamnophis couchii",
+      "obsCount": 21,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "joshuatree",
+      "name": "Desert Spiny Lizard",
+      "scientificName": "Sceloporus magister",
+      "obsCount": 1068,
+      "suggestedRarity": "very_likely"
+    },
+    {
+      "park": "joshuatree",
+      "name": "Western Whiptail",
+      "scientificName": "Aspidoscelis tigris",
+      "obsCount": 903,
+      "suggestedRarity": "very_likely"
+    },
+    {
+      "park": "joshuatree",
+      "name": "Desert Horned Lizard",
+      "scientificName": "Phrynosoma platyrhinos",
+      "obsCount": 625,
+      "suggestedRarity": "very_likely"
+    },
+    {
+      "park": "joshuatree",
+      "name": "Southwestern Speckled Rattlesnake",
+      "scientificName": "Crotalus pyrrhus",
+      "obsCount": 445,
+      "suggestedRarity": "very_likely"
+    },
+    {
+      "park": "joshuatree",
+      "name": "Long-nosed Leopard Lizard",
+      "scientificName": "Gambelia wislizenii",
+      "obsCount": 430,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "joshuatree",
+      "name": "Desert Collared Lizard",
+      "scientificName": "Crotaphytus bicinctores",
+      "obsCount": 408,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "joshuatree",
+      "name": "Desert Iguana",
+      "scientificName": "Dipsosaurus dorsalis",
+      "obsCount": 269,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "joshuatree",
+      "name": "Western Patch-nosed Snake",
+      "scientificName": "Salvadora hexalepis",
+      "obsCount": 108,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "joshuatree",
+      "name": "Coachwhip",
+      "scientificName": "Masticophis flagellum",
+      "obsCount": 105,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "joshuatree",
+      "name": "Desert Night Lizard",
+      "scientificName": "Xantusia vigilis",
+      "obsCount": 101,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "joshuatree",
+      "name": "Western Rattlesnake",
+      "scientificName": "Crotalus oreganus",
+      "obsCount": 73,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "joshuatree",
+      "name": "Sidewinder",
+      "scientificName": "Crotalus cerastes",
+      "obsCount": 71,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "joshuatree",
+      "name": "Glossy Snake",
+      "scientificName": "Arizona elegans",
+      "obsCount": 48,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "joshuatree",
+      "name": "Coastal Rosy Boa",
+      "scientificName": "Lichanura orcutti",
+      "obsCount": 47,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "joshuatree",
+      "name": "Western Banded Gecko",
+      "scientificName": "Coleonyx variegatus",
+      "obsCount": 31,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "joshuatree",
+      "name": "California King Snake",
+      "scientificName": "Lampropeltis californiae",
+      "obsCount": 27,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "joshuatree",
+      "name": "Blainville's Horned Lizard",
+      "scientificName": "Phrynosoma blainvillii",
+      "obsCount": 27,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "deathvalley",
+      "name": "Desert Iguana",
+      "scientificName": "Dipsosaurus dorsalis",
+      "obsCount": 274,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "deathvalley",
+      "name": "Desert Horned Lizard",
+      "scientificName": "Phrynosoma platyrhinos",
+      "obsCount": 185,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "deathvalley",
+      "name": "Desert Collared Lizard",
+      "scientificName": "Crotaphytus bicinctores",
+      "obsCount": 147,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "deathvalley",
+      "name": "Western Whiptail",
+      "scientificName": "Aspidoscelis tigris",
+      "obsCount": 135,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "deathvalley",
+      "name": "Sidewinder",
+      "scientificName": "Crotalus cerastes",
+      "obsCount": 113,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "deathvalley",
+      "name": "Panamint Rattlesnake",
+      "scientificName": "Crotalus stephensi",
+      "obsCount": 100,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "deathvalley",
+      "name": "Desert Spiny Lizard",
+      "scientificName": "Sceloporus magister",
+      "obsCount": 92,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "deathvalley",
+      "name": "Western Banded Gecko",
+      "scientificName": "Coleonyx variegatus",
+      "obsCount": 64,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "deathvalley",
+      "name": "Long-nosed Leopard Lizard",
+      "scientificName": "Gambelia wislizenii",
+      "obsCount": 55,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "deathvalley",
+      "name": "Coachwhip",
+      "scientificName": "Masticophis flagellum",
+      "obsCount": 47,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "deathvalley",
+      "name": "Gopher Snake",
+      "scientificName": "Pituophis catenifer",
+      "obsCount": 44,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "deathvalley",
+      "name": "Western Fence Lizard",
+      "scientificName": "Sceloporus occidentalis",
+      "obsCount": 36,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "deathvalley",
+      "name": "Common Sagebrush Lizard",
+      "scientificName": "Sceloporus graciosus",
+      "obsCount": 29,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "deathvalley",
+      "name": "Ground Snake",
+      "scientificName": "Sonora semiannulata",
+      "obsCount": 21,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "deathvalley",
+      "name": "Western Patch-nosed Snake",
+      "scientificName": "Salvadora hexalepis",
+      "obsCount": 21,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "channelislands",
+      "name": "Island Fence Lizard",
+      "scientificName": "Sceloporus becki",
+      "obsCount": 337,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "channelislands",
+      "name": "Southern Alligator Lizard",
+      "scientificName": "Elgaria multicarinata",
+      "obsCount": 177,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "channelislands",
+      "name": "Western Fence Lizard",
+      "scientificName": "Sceloporus occidentalis",
+      "obsCount": 21,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "pinnacles",
+      "name": "Western Whiptail",
+      "scientificName": "Aspidoscelis tigris",
+      "obsCount": 445,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "pinnacles",
+      "name": "Common Side-blotched Lizard",
+      "scientificName": "Uta stansburiana",
+      "obsCount": 388,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "pinnacles",
+      "name": "Common Garter Snake",
+      "scientificName": "Thamnophis sirtalis",
+      "obsCount": 229,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "pinnacles",
+      "name": "Western Rattlesnake",
+      "scientificName": "Crotalus oreganus",
+      "obsCount": 178,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "pinnacles",
+      "name": "Striped Racer",
+      "scientificName": "Masticophis lateralis",
+      "obsCount": 108,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "pinnacles",
+      "name": "California King Snake",
+      "scientificName": "Lampropeltis californiae",
+      "obsCount": 45,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "pinnacles",
+      "name": "Southern Alligator Lizard",
+      "scientificName": "Elgaria multicarinata",
+      "obsCount": 39,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "pinnacles",
+      "name": "Gilbert's Skink",
+      "scientificName": "Plestiodon gilberti",
+      "obsCount": 23,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "pinnacles",
+      "name": "Ring-necked Snake",
+      "scientificName": "Diadophis punctatus",
+      "obsCount": 21,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "hawaiivolcanoes",
+      "name": "Jackson's Chameleon",
+      "scientificName": "Trioceros jacksonii",
+      "obsCount": 35,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "hawaiivolcanoes",
+      "name": "Dark-flecked Garden Sunskink",
+      "scientificName": "Lampropholis delicata",
+      "obsCount": 32,
+      "suggestedRarity": "unlikely"
+    }
+  ],
+  "reptileRarityMismatches": [
+    {
+      "park": "everglades",
+      "name": "American Crocodile",
+      "obsCount": 2309,
+      "cacheRarity": "unlikely",
+      "suggestedRarity": "very_likely",
+      "direction": "upgrade",
+      "steps": 2
+    },
+    {
+      "park": "shenandoah",
+      "name": "Timber Rattlesnake",
+      "obsCount": 194,
+      "cacheRarity": "rare",
+      "suggestedRarity": "likely",
+      "direction": "upgrade",
+      "steps": 2
+    },
+    {
+      "park": "biscayne",
+      "name": "American Alligator",
+      "obsCount": 1,
+      "cacheRarity": "guaranteed",
+      "suggestedRarity": "exceptional",
+      "direction": "downgrade",
+      "steps": 5
+    },
+    {
+      "park": "congaree",
+      "name": "American Alligator",
+      "obsCount": 104,
+      "cacheRarity": "guaranteed",
+      "suggestedRarity": "likely",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "saguaro",
+      "name": "Desert Spiny Lizard",
+      "obsCount": 165,
+      "cacheRarity": "guaranteed",
+      "suggestedRarity": "likely",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "saguaro",
+      "name": "Common Chuckwalla",
+      "obsCount": 1,
+      "cacheRarity": "unlikely",
+      "suggestedRarity": "exceptional",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "bigbend",
+      "name": "Western Diamond-backed Rattlesnake",
+      "obsCount": 323,
+      "cacheRarity": "unlikely",
+      "suggestedRarity": "very_likely",
+      "direction": "upgrade",
+      "steps": 2
+    },
+    {
+      "park": "lassenvolcanic",
+      "name": "Western Fence Lizard",
+      "obsCount": 2,
+      "cacheRarity": "unlikely",
+      "suggestedRarity": "exceptional",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "virginislands",
+      "name": "Green Iguana",
+      "obsCount": 100,
+      "cacheRarity": "guaranteed",
+      "suggestedRarity": "likely",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "hotsprings",
+      "name": "Pond Slider",
+      "obsCount": 2,
+      "cacheRarity": "likely",
+      "suggestedRarity": "exceptional",
+      "direction": "downgrade",
+      "steps": 3
+    },
+    {
+      "park": "greatbasin",
+      "name": "Common Side-blotched Lizard",
+      "obsCount": 2,
+      "cacheRarity": "likely",
+      "suggestedRarity": "exceptional",
+      "direction": "downgrade",
+      "steps": 3
+    }
+  ],
+  "reptileSeasonalIssues": [
+    {
+      "park": "yellowstone",
+      "name": "Common Sagebrush Lizard",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "yellowstone",
+      "name": "Northern Rubber Boa",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "yellowstone",
+      "name": "Prairie Rattlesnake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "yellowstone",
+      "name": "North American Racer",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "denali",
+      "name": "Oriental Turtle-Dove",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "shenandoah",
+      "name": "Red-bellied Snake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "shenandoah",
+      "name": "Smooth Greensnake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "shenandoah",
+      "name": "Eastern Fence Lizard",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "shenandoah",
+      "name": "Eastern Milksnake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "shenandoah",
+      "name": "Common Wormsnake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "shenandoah",
+      "name": "North American Racer",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "shenandoah",
+      "name": "Rough Greensnake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "shenandoah",
+      "name": "Broad-headed Skink",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "shenandoah",
+      "name": "Common Snapping Turtle",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "shenandoah",
+      "name": "Queensnake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "shenandoah",
+      "name": "Painted Turtle",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "shenandoah",
+      "name": "Red Cornsnake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "shenandoah",
+      "name": "Common Ribbon Snake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "newrivergorge",
+      "name": "Common Snapping Turtle",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "newrivergorge",
+      "name": "Red-bellied Snake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "newrivergorge",
+      "name": "North American Racer",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "newrivergorge",
+      "name": "Spiny Softshell",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "newrivergorge",
+      "name": "Eastern Musk Turtle",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "newrivergorge",
+      "name": "Painted Turtle",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "newrivergorge",
+      "name": "Smooth Greensnake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "cuyahogavalley",
+      "name": "Eastern Milksnake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "cuyahogavalley",
+      "name": "Spiny Softshell",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "cuyahogavalley",
+      "name": "Ring-necked Snake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "cuyahogavalley",
+      "name": "Red-bellied Snake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "cuyahogavalley",
+      "name": "River Cooter",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "cuyahogavalley",
+      "name": "Eastern Musk Turtle",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "cuyahogavalley",
+      "name": "North American Racer",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "cuyahogavalley",
+      "name": "Common Five-lined Skink",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "mammothcave",
+      "name": "DeKay's Brownsnake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "mammothcave",
+      "name": "Common Wormsnake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "mammothcave",
+      "name": "Little Brown Skink",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "mammothcave",
+      "name": "Rough Greensnake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "mammothcave",
+      "name": "Broad-headed Skink",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "mammothcave",
+      "name": "Smooth Earthsnake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "mammothcave",
+      "name": "Eastern Milksnake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "mammothcave",
+      "name": "Eastern Fence Lizard",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "mammothcave",
+      "name": "Spiny Softshell",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "mammothcave",
+      "name": "Painted Turtle",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "mammothcave",
+      "name": "Northern Map Turtle",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "mammothcave",
+      "name": "Red-bellied Snake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "voyageurs",
+      "name": "Common Snapping Turtle",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "voyageurs",
+      "name": "Red-bellied Snake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "indianadunes",
+      "name": "North American Racer",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "indianadunes",
+      "name": "Eastern Milksnake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "indianadunes",
+      "name": "Pond Slider",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "indianadunes",
+      "name": "Eastern Musk Turtle",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "indianadunes",
+      "name": "Western Ribbon Snake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "indianadunes",
+      "name": "Slender Glass Lizard",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "indianadunes",
+      "name": "Common Ribbon Snake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "badlands",
+      "name": "Plains Hognose Snake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "badlands",
+      "name": "Painted Turtle",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "badlands",
+      "name": "Ornate Box Turtle",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "windcave",
+      "name": "Painted Turtle",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "windcave",
+      "name": "Common Garter Snake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "windcave",
+      "name": "North American Racer",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "windcave",
+      "name": "Plains Garter Snake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "windcave",
+      "name": "Western Terrestrial Garter Snake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "windcave",
+      "name": "Plains Hognose Snake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "windcave",
+      "name": "Common Snapping Turtle",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "theodoreroosevelt",
+      "name": "Plains Garter Snake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "theodoreroosevelt",
+      "name": "Common Snapping Turtle",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "zion",
+      "name": "Ground Snake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "zion",
+      "name": "Arizona Mountain Kingsnake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "zion",
+      "name": "Long-nosed Leopard Lizard",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "zion",
+      "name": "Ring-necked Snake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "zion",
+      "name": "Mediterranean Gecko",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "zion",
+      "name": "Zebra-tailed Lizard",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "zion",
+      "name": "Western Fence Lizard",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "zion",
+      "name": "Western Patch-nosed Snake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "brycecanyon",
+      "name": "Striped Whipsnake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "brycecanyon",
+      "name": "Plateau Striped Whiptail",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "brycecanyon",
+      "name": "Ornate Tree Lizard",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "brycecanyon",
+      "name": "Western Skink",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "brycecanyon",
+      "name": "Desert Collared Lizard",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "brycecanyon",
+      "name": "Desert Spiny Lizard",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "arches",
+      "name": "Gopher Snake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "arches",
+      "name": "Western Rattlesnake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "arches",
+      "name": "Striped Whipsnake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "arches",
+      "name": "Western Terrestrial Garter Snake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "arches",
+      "name": "Southwestern Blackhead Snake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "lassenvolcanic",
+      "name": "Oriental Turtle-Dove",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "sequoia",
+      "name": "Oriental Turtle-Dove",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "kenaifjords",
+      "name": "Oriental Turtle-Dove",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "katmai",
+      "name": "Oriental Turtle-Dove",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "wrangellstelias",
+      "name": "Oriental Turtle-Dove",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "lakeclark",
+      "name": "Oriental Turtle-Dove",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "gatesofthearctic",
+      "name": "Oriental Turtle-Dove",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "kobukvalley",
+      "name": "Oriental Turtle-Dove",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "greatbasin",
+      "name": "Long-nosed Leopard Lizard",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "greatbasin",
+      "name": "Desert Nightsnake",
+      "issue": "reptile has winter season (cold-blooded, northern park)"
+    }
+  ],
+  "missingAmphibians": [
+    {
+      "park": "cuyahogavalley",
+      "name": "Unisexual Mole Salamander",
+      "scientificName": "Ambystoma unisexual",
+      "obsCount": 16,
+      "suggestedRarity": "rare"
+    },
+    {
+      "park": "arches",
+      "name": "American Bullfrog",
+      "scientificName": "Lithobates catesbeianus",
+      "obsCount": 42,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "arches",
+      "name": "Red-spotted Toad",
+      "scientificName": "Anaxyrus punctatus",
+      "obsCount": 31,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "canyonlands",
+      "name": "Red-spotted Toad",
+      "scientificName": "Anaxyrus punctatus",
+      "obsCount": 38,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "canyonlands",
+      "name": "Woodhouse's Toad",
+      "scientificName": "Anaxyrus woodhousii",
+      "obsCount": 28,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "capitolreef",
+      "name": "Red-spotted Toad",
+      "scientificName": "Anaxyrus punctatus",
+      "obsCount": 20,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "capitolreef",
+      "name": "Woodhouse's Toad",
+      "scientificName": "Anaxyrus woodhousii",
+      "obsCount": 19,
+      "suggestedRarity": "rare"
+    },
+    {
+      "park": "petrifiedforest",
+      "name": "Great Plains Toad",
+      "scientificName": "Anaxyrus cognatus",
+      "obsCount": 96,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "petrifiedforest",
+      "name": "Mexican Spadefoot",
+      "scientificName": "Spea multiplicata",
+      "obsCount": 64,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "petrifiedforest",
+      "name": "Couch's Spadefoot",
+      "scientificName": "Scaphiopus couchii",
+      "obsCount": 39,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "petrifiedforest",
+      "name": "Red-spotted Toad",
+      "scientificName": "Anaxyrus punctatus",
+      "obsCount": 24,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "saguaro",
+      "name": "Red-spotted Toad",
+      "scientificName": "Anaxyrus punctatus",
+      "obsCount": 204,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "saguaro",
+      "name": "Canyon Tree Frog",
+      "scientificName": "Dryophytes arenicolor",
+      "obsCount": 117,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "saguaro",
+      "name": "Sonoran Desert Toad",
+      "scientificName": "Incilius alvarius",
+      "obsCount": 114,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "saguaro",
+      "name": "Couch's Spadefoot",
+      "scientificName": "Scaphiopus couchii",
+      "obsCount": 31,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "guadalupemountains",
+      "name": "Red-spotted Toad",
+      "scientificName": "Anaxyrus punctatus",
+      "obsCount": 15,
+      "suggestedRarity": "rare"
+    },
+    {
+      "park": "bigbend",
+      "name": "Red-spotted Toad",
+      "scientificName": "Anaxyrus punctatus",
+      "obsCount": 140,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Rio Grande Leopard Frog",
+      "scientificName": "Lithobates berlandieri",
+      "obsCount": 73,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Canyon Tree Frog",
+      "scientificName": "Dryophytes arenicolor",
+      "obsCount": 41,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Couch's Spadefoot",
+      "scientificName": "Scaphiopus couchii",
+      "obsCount": 36,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "bigbend",
+      "name": "Texas Toad",
+      "scientificName": "Anaxyrus speciosus",
+      "obsCount": 29,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "bigbend",
+      "name": "American Bullfrog",
+      "scientificName": "Lithobates catesbeianus",
+      "obsCount": 16,
+      "suggestedRarity": "rare"
+    },
+    {
+      "park": "grandteton",
+      "name": "Boreal Chorus Frog",
+      "scientificName": "Pseudacris maculata",
+      "obsCount": 32,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "rockymountain",
+      "name": "Boreal Chorus Frog",
+      "scientificName": "Pseudacris maculata",
+      "obsCount": 34,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "glacier",
+      "name": "Rocky Mountain Tailed Frog",
+      "scientificName": "Ascaphus montanus",
+      "obsCount": 33,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "olympic",
+      "name": "Western Red-backed Salamander",
+      "scientificName": "Plethodon vehiculum",
+      "obsCount": 139,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "olympic",
+      "name": "Ensatina",
+      "scientificName": "Ensatina eschscholtzii",
+      "obsCount": 62,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "olympic",
+      "name": "Olympic Torrent Salamander",
+      "scientificName": "Rhyacotriton olympicus",
+      "obsCount": 61,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "olympic",
+      "name": "Coastal Tailed Frog",
+      "scientificName": "Ascaphus truei",
+      "obsCount": 56,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "olympic",
+      "name": "Cope's Giant Salamander",
+      "scientificName": "Dicamptodon copei",
+      "obsCount": 33,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "mountrainier",
+      "name": "Coastal Tailed Frog",
+      "scientificName": "Ascaphus truei",
+      "obsCount": 28,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "mountrainier",
+      "name": "Northern Red-legged Frog",
+      "scientificName": "Rana aurora",
+      "obsCount": 15,
+      "suggestedRarity": "rare"
+    },
+    {
+      "park": "mountrainier",
+      "name": "Long-toed Salamander",
+      "scientificName": "Ambystoma macrodactylum",
+      "obsCount": 15,
+      "suggestedRarity": "rare"
+    },
+    {
+      "park": "redwood",
+      "name": "Pacific Giant Salamander",
+      "scientificName": "Dicamptodon tenebrosus",
+      "obsCount": 391,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "redwood",
+      "name": "Wandering Salamander",
+      "scientificName": "Aneides vagrans",
+      "obsCount": 45,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "lassenvolcanic",
+      "name": "Long-toed Salamander",
+      "scientificName": "Ambystoma macrodactylum",
+      "obsCount": 20,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "yosemite",
+      "name": "Pacific chorus frog",
+      "scientificName": "Pseudacris regilla",
+      "obsCount": 568,
+      "suggestedRarity": "very_likely"
+    },
+    {
+      "park": "yosemite",
+      "name": "Yosemite Toad",
+      "scientificName": "Anaxyrus canorus",
+      "obsCount": 148,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "yosemite",
+      "name": "Sierra Newt",
+      "scientificName": "Taricha sierrae",
+      "obsCount": 119,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "yosemite",
+      "name": "Sierra Nevada Yellow-legged Frog",
+      "scientificName": "Rana sierrae",
+      "obsCount": 108,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "yosemite",
+      "name": "Ensatina",
+      "scientificName": "Ensatina eschscholtzii",
+      "obsCount": 61,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "yosemite",
+      "name": "Mount Lyell Salamander",
+      "scientificName": "Hydromantes platycephalus",
+      "obsCount": 24,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "yosemite",
+      "name": "California Red-legged Frog",
+      "scientificName": "Rana draytonii",
+      "obsCount": 19,
+      "suggestedRarity": "rare"
+    },
+    {
+      "park": "yosemite",
+      "name": "Western Toad",
+      "scientificName": "Anaxyrus boreas",
+      "obsCount": 16,
+      "suggestedRarity": "rare"
+    },
+    {
+      "park": "kingscanyon",
+      "name": "Pacific chorus frog",
+      "scientificName": "Pseudacris regilla",
+      "obsCount": 64,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "kingscanyon",
+      "name": "Sierra Nevada Yellow-legged Frog",
+      "scientificName": "Rana sierrae",
+      "obsCount": 59,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "sequoia",
+      "name": "Pacific chorus frog",
+      "scientificName": "Pseudacris regilla",
+      "obsCount": 117,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "sequoia",
+      "name": "Ensatina",
+      "scientificName": "Ensatina eschscholtzii",
+      "obsCount": 44,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "sequoia",
+      "name": "California Newt",
+      "scientificName": "Taricha torosa",
+      "obsCount": 27,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "sequoia",
+      "name": "Sierra Newt",
+      "scientificName": "Taricha sierrae",
+      "obsCount": 27,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "sequoia",
+      "name": "Western Toad",
+      "scientificName": "Anaxyrus boreas",
+      "obsCount": 26,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "joshuatree",
+      "name": "Red-spotted Toad",
+      "scientificName": "Anaxyrus punctatus",
+      "obsCount": 192,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "joshuatree",
+      "name": "California Tree Frog",
+      "scientificName": "Pseudacris cadaverina",
+      "obsCount": 86,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "deathvalley",
+      "name": "Western Toad",
+      "scientificName": "Anaxyrus boreas",
+      "obsCount": 126,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "deathvalley",
+      "name": "Red-spotted Toad",
+      "scientificName": "Anaxyrus punctatus",
+      "obsCount": 22,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "channelislands",
+      "name": "Channel Islands Slender Salamander",
+      "scientificName": "Batrachoseps pacificus",
+      "obsCount": 101,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "channelislands",
+      "name": "Black-bellied Slender Salamander",
+      "scientificName": "Batrachoseps nigriventris",
+      "obsCount": 81,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "pinnacles",
+      "name": "Pacific chorus frog",
+      "scientificName": "Pseudacris regilla",
+      "obsCount": 195,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "pinnacles",
+      "name": "Western Toad",
+      "scientificName": "Anaxyrus boreas",
+      "obsCount": 134,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "pinnacles",
+      "name": "Gabilan Mountains Slender Salamander",
+      "scientificName": "Batrachoseps gavilanensis",
+      "obsCount": 129,
+      "suggestedRarity": "likely"
+    },
+    {
+      "park": "pinnacles",
+      "name": "Arboreal Salamander",
+      "scientificName": "Aneides lugubris",
+      "obsCount": 58,
+      "suggestedRarity": "unlikely"
+    },
+    {
+      "park": "pinnacles",
+      "name": "Ensatina",
+      "scientificName": "Ensatina eschscholtzii",
+      "obsCount": 18,
+      "suggestedRarity": "rare"
+    },
+    {
+      "park": "hawaiivolcanoes",
+      "name": "Common Coqui",
+      "scientificName": "Eleutherodactylus coqui",
+      "obsCount": 37,
+      "suggestedRarity": "unlikely"
+    }
+  ],
+  "amphibianRarityMismatches": [
+    {
+      "park": "shenandoah",
+      "name": "Spring Peeper",
+      "obsCount": 1,
+      "cacheRarity": "very_likely",
+      "suggestedRarity": "exceptional",
+      "direction": "downgrade",
+      "steps": 4
+    },
+    {
+      "park": "greatsmokymountains",
+      "name": "Red Salamander",
+      "obsCount": 199,
+      "cacheRarity": "rare",
+      "suggestedRarity": "likely",
+      "direction": "upgrade",
+      "steps": 2
+    },
+    {
+      "park": "congaree",
+      "name": "American Bullfrog",
+      "obsCount": 11,
+      "cacheRarity": "likely",
+      "suggestedRarity": "rare",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "badlands",
+      "name": "Western Tiger Salamander",
+      "obsCount": 3,
+      "cacheRarity": "unlikely",
+      "suggestedRarity": "exceptional",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "rockymountain",
+      "name": "Western Toad",
+      "obsCount": 3,
+      "cacheRarity": "unlikely",
+      "suggestedRarity": "exceptional",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "northcascades",
+      "name": "Western Toad",
+      "obsCount": 15,
+      "cacheRarity": "likely",
+      "suggestedRarity": "rare",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "northcascades",
+      "name": "Cascades Frog",
+      "obsCount": 2,
+      "cacheRarity": "likely",
+      "suggestedRarity": "exceptional",
+      "direction": "downgrade",
+      "steps": 3
+    },
+    {
+      "park": "mountrainier",
+      "name": "Western Toad",
+      "obsCount": 2,
+      "cacheRarity": "unlikely",
+      "suggestedRarity": "exceptional",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "craterlake",
+      "name": "Pacific chorus frog",
+      "obsCount": 10,
+      "cacheRarity": "likely",
+      "suggestedRarity": "rare",
+      "direction": "downgrade",
+      "steps": 2
+    },
+    {
+      "park": "redwood",
+      "name": "Northern Red-legged Frog",
+      "obsCount": 1,
+      "cacheRarity": "likely",
+      "suggestedRarity": "exceptional",
+      "direction": "downgrade",
+      "steps": 3
+    }
+  ],
+  "amphibianSeasonalIssues": [
+    {
+      "park": "yellowstone",
+      "name": "Plains Spadefoot",
+      "issue": "amphibian has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "shenandoah",
+      "name": "American Bullfrog",
+      "issue": "amphibian has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "newrivergorge",
+      "name": "American Bullfrog",
+      "issue": "amphibian has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "mammothcave",
+      "name": "Eastern Spadefoot",
+      "issue": "amphibian has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "voyageurs",
+      "name": "Eastern Newt",
+      "issue": "amphibian has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "indianadunes",
+      "name": "Eastern Newt",
+      "issue": "amphibian has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "badlands",
+      "name": "American Bullfrog",
+      "issue": "amphibian has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "theodoreroosevelt",
+      "name": "Plains Spadefoot",
+      "issue": "amphibian has winter season (cold-blooded, northern park)"
+    },
+    {
+      "park": "zion",
+      "name": "Great Basin Spadefoot",
+      "issue": "amphibian has winter season (cold-blooded, northern park)"
+    }
+  ],
+  "missingInsects": [
+    {
+      "park": "greatsmokymountains",
+      "name": "Megalodacne heros",
+      "scientificName": "Megalodacne heros",
+      "obsCount": 650,
+      "suggestedRarity": "very_likely",
+      "parkNote": "Firefly capital, synchronous fireflies"
+    },
+    {
+      "park": "saguaro",
+      "name": "Empress Leilia",
+      "scientificName": "Asterocampa leilia",
+      "obsCount": 389,
+      "suggestedRarity": "likely",
+      "parkNote": "Desert icons: tarantula hawk, cactus bee"
+    },
+    {
+      "park": "saguaro",
+      "name": "American Snout",
+      "scientificName": "Libytheana carinenta",
+      "obsCount": 320,
+      "suggestedRarity": "likely",
+      "parkNote": "Desert icons: tarantula hawk, cactus bee"
+    },
+    {
+      "park": "saguaro",
+      "name": "Dainty Sulphur",
+      "scientificName": "Nathalis iole",
+      "obsCount": 215,
+      "suggestedRarity": "likely",
+      "parkNote": "Desert icons: tarantula hawk, cactus bee"
+    },
+    {
+      "park": "saguaro",
+      "name": "Ceraunus Blue",
+      "scientificName": "Hemiargus ceraunus",
+      "obsCount": 201,
+      "suggestedRarity": "likely",
+      "parkNote": "Desert icons: tarantula hawk, cactus bee"
+    },
+    {
+      "park": "saguaro",
+      "name": "Reakirt's Blue",
+      "scientificName": "Echinargus isola",
+      "obsCount": 178,
+      "suggestedRarity": "likely",
+      "parkNote": "Desert icons: tarantula hawk, cactus bee"
+    },
+    {
+      "park": "saguaro",
+      "name": "Western Honey Bee",
+      "scientificName": "Apis mellifera",
+      "obsCount": 171,
+      "suggestedRarity": "likely",
+      "parkNote": "Desert icons: tarantula hawk, cactus bee"
+    },
+    {
+      "park": "saguaro",
+      "name": "Marine Blue",
+      "scientificName": "Leptotes marina",
+      "obsCount": 164,
+      "suggestedRarity": "likely",
+      "parkNote": "Desert icons: tarantula hawk, cactus bee"
+    },
+    {
+      "park": "saguaro",
+      "name": "Queen",
+      "scientificName": "Danaus gilippus",
+      "obsCount": 144,
+      "suggestedRarity": "likely",
+      "parkNote": "Desert icons: tarantula hawk, cactus bee"
+    },
+    {
+      "park": "saguaro",
+      "name": "Tiny Checkerspot",
+      "scientificName": "Microtia dymas",
+      "obsCount": 143,
+      "suggestedRarity": "likely",
+      "parkNote": "Desert icons: tarantula hawk, cactus bee"
+    },
+    {
+      "park": "saguaro",
+      "name": "Painted Lady",
+      "scientificName": "Vanessa cardui",
+      "obsCount": 140,
+      "suggestedRarity": "likely",
+      "parkNote": "Desert icons: tarantula hawk, cactus bee"
+    },
+    {
+      "park": "saguaro",
+      "name": "Southern Dogface",
+      "scientificName": "Zerene cesonia",
+      "obsCount": 133,
+      "suggestedRarity": "likely",
+      "parkNote": "Desert icons: tarantula hawk, cactus bee"
+    },
+    {
+      "park": "saguaro",
+      "name": "Gray Bird Grasshopper",
+      "scientificName": "Schistocerca nitens",
+      "obsCount": 125,
+      "suggestedRarity": "likely",
+      "parkNote": "Desert icons: tarantula hawk, cactus bee"
+    },
+    {
+      "park": "saguaro",
+      "name": "Sleepy Orange",
+      "scientificName": "Eurema nicippe",
+      "obsCount": 125,
+      "suggestedRarity": "likely",
+      "parkNote": "Desert icons: tarantula hawk, cactus bee"
+    },
+    {
+      "park": "saguaro",
+      "name": "Gray Hairstreak",
+      "scientificName": "Strymon melinus",
+      "obsCount": 124,
+      "suggestedRarity": "likely",
+      "parkNote": "Desert icons: tarantula hawk, cactus bee"
+    },
+    {
+      "park": "saguaro",
+      "name": "White-lined Sphinx",
+      "scientificName": "Hyles lineata",
+      "obsCount": 108,
+      "suggestedRarity": "likely",
+      "parkNote": "Desert icons: tarantula hawk, cactus bee"
+    },
+    {
+      "park": "saguaro",
+      "name": "Pipevine Swallowtail",
+      "scientificName": "Battus philenor",
+      "obsCount": 105,
+      "suggestedRarity": "likely",
+      "parkNote": "Desert icons: tarantula hawk, cactus bee"
+    },
+    {
+      "park": "saguaro",
+      "name": "Orange Skipperling",
+      "scientificName": "Oarisma aurantiaca",
+      "obsCount": 105,
+      "suggestedRarity": "likely",
+      "parkNote": "Desert icons: tarantula hawk, cactus bee"
+    },
+    {
+      "park": "saguaro",
+      "name": "Variegated Meadowhawk",
+      "scientificName": "Sympetrum corruptum",
+      "obsCount": 104,
+      "suggestedRarity": "likely",
+      "parkNote": "Desert icons: tarantula hawk, cactus bee"
+    },
+    {
+      "park": "saguaro",
+      "name": "Gray Buckeye",
+      "scientificName": "Junonia grisea",
+      "obsCount": 101,
+      "suggestedRarity": "likely",
+      "parkNote": "Desert icons: tarantula hawk, cactus bee"
+    },
+    {
+      "park": "saguaro",
+      "name": "Great Spreadwing",
+      "scientificName": "Archilestes grandis",
+      "obsCount": 97,
+      "suggestedRarity": "unlikely",
+      "parkNote": "Desert icons: tarantula hawk, cactus bee"
+    },
+    {
+      "park": "rockymountain",
+      "name": "Rocky Mountain Parnassian",
+      "scientificName": "Parnassius smintheus",
+      "obsCount": 259,
+      "suggestedRarity": "likely",
+      "parkNote": "Alpine: Mormon fritillary, alpine beetles"
+    },
+    {
+      "park": "rockymountain",
+      "name": "Spotted Tussock Moth",
+      "scientificName": "Lophocampa maculata",
+      "obsCount": 200,
+      "suggestedRarity": "likely",
+      "parkNote": "Alpine: Mormon fritillary, alpine beetles"
+    },
+    {
+      "park": "rockymountain",
+      "name": "Weidemeyer's Admiral",
+      "scientificName": "Limenitis weidemeyerii",
+      "obsCount": 199,
+      "suggestedRarity": "likely",
+      "parkNote": "Alpine: Mormon fritillary, alpine beetles"
+    },
+    {
+      "park": "rockymountain",
+      "name": "Hoary Comma",
+      "scientificName": "Polygonia gracilis",
+      "obsCount": 181,
+      "suggestedRarity": "likely",
+      "parkNote": "Alpine: Mormon fritillary, alpine beetles"
+    },
+    {
+      "park": "rockymountain",
+      "name": "Police Car Moth",
+      "scientificName": "Gnophaela vermiculata",
+      "obsCount": 175,
+      "suggestedRarity": "likely",
+      "parkNote": "Alpine: Mormon fritillary, alpine beetles"
+    },
+    {
+      "park": "rockymountain",
+      "name": "White-spotted Sawyer",
+      "scientificName": "Monochamus scutellatus",
+      "obsCount": 171,
+      "suggestedRarity": "likely",
+      "parkNote": "Alpine: Mormon fritillary, alpine beetles"
+    },
+    {
+      "park": "rockymountain",
+      "name": "Arctic Blue",
+      "scientificName": "Agriades glandon",
+      "obsCount": 96,
+      "suggestedRarity": "unlikely",
+      "parkNote": "Alpine: Mormon fritillary, alpine beetles"
+    },
+    {
+      "park": "rockymountain",
+      "name": "Blue Fungus Beetle",
+      "scientificName": "Cypherotylus californicus",
+      "obsCount": 95,
+      "suggestedRarity": "unlikely",
+      "parkNote": "Alpine: Mormon fritillary, alpine beetles"
+    },
+    {
+      "park": "rockymountain",
+      "name": "Greenish Blue",
+      "scientificName": "Icaricia saepiolus",
+      "obsCount": 87,
+      "suggestedRarity": "unlikely",
+      "parkNote": "Alpine: Mormon fritillary, alpine beetles"
+    },
+    {
+      "park": "rockymountain",
+      "name": "Red Admiral",
+      "scientificName": "Vanessa atalanta",
+      "obsCount": 85,
+      "suggestedRarity": "unlikely",
+      "parkNote": "Alpine: Mormon fritillary, alpine beetles"
+    },
+    {
+      "park": "rockymountain",
+      "name": "Small Wood-Nymph",
+      "scientificName": "Cercyonis oetus",
+      "obsCount": 83,
+      "suggestedRarity": "unlikely",
+      "parkNote": "Alpine: Mormon fritillary, alpine beetles"
+    },
+    {
+      "park": "rockymountain",
+      "name": "Dorcas Copper",
+      "scientificName": "Tharsalea dorcas",
+      "obsCount": 80,
+      "suggestedRarity": "unlikely",
+      "parkNote": "Alpine: Mormon fritillary, alpine beetles"
+    },
+    {
+      "park": "rockymountain",
+      "name": "Mead's Sulphur",
+      "scientificName": "Colias meadii",
+      "obsCount": 75,
+      "suggestedRarity": "unlikely",
+      "parkNote": "Alpine: Mormon fritillary, alpine beetles"
+    },
+    {
+      "park": "rockymountain",
+      "name": "Western Tiger Swallowtail",
+      "scientificName": "Papilio rutulus",
+      "obsCount": 69,
+      "suggestedRarity": "unlikely",
+      "parkNote": "Alpine: Mormon fritillary, alpine beetles"
+    },
+    {
+      "park": "rockymountain",
+      "name": "Painted Lady",
+      "scientificName": "Vanessa cardui",
+      "obsCount": 67,
+      "suggestedRarity": "unlikely",
+      "parkNote": "Alpine: Mormon fritillary, alpine beetles"
+    },
+    {
+      "park": "rockymountain",
+      "name": "Mourning Cloak",
+      "scientificName": "Nymphalis antiopa",
+      "obsCount": 66,
+      "suggestedRarity": "unlikely",
+      "parkNote": "Alpine: Mormon fritillary, alpine beetles"
+    },
+    {
+      "park": "rockymountain",
+      "name": "Green Comma",
+      "scientificName": "Polygonia faunus",
+      "obsCount": 61,
+      "suggestedRarity": "unlikely",
+      "parkNote": "Alpine: Mormon fritillary, alpine beetles"
+    },
+    {
+      "park": "rockymountain",
+      "name": "Northern Checkerspot",
+      "scientificName": "Chlosyne palla",
+      "obsCount": 57,
+      "suggestedRarity": "unlikely",
+      "parkNote": "Alpine: Mormon fritillary, alpine beetles"
+    },
+    {
+      "park": "rockymountain",
+      "name": "Russet Skipperling",
+      "scientificName": "Piruna pirus",
+      "obsCount": 54,
+      "suggestedRarity": "unlikely",
+      "parkNote": "Alpine: Mormon fritillary, alpine beetles"
+    },
+    {
+      "park": "rockymountain",
+      "name": "Queen Alexandra’s Sulphur",
+      "scientificName": "Colias alexandra",
+      "obsCount": 53,
+      "suggestedRarity": "unlikely",
+      "parkNote": "Alpine: Mormon fritillary, alpine beetles"
+    },
+    {
+      "park": "yosemite",
+      "name": "California Sister",
+      "scientificName": "Adelpha californica",
+      "obsCount": 504,
+      "suggestedRarity": "very_likely",
+      "parkNote": "Monarch corridor, oak woodland diversity"
+    },
+    {
+      "park": "yosemite",
+      "name": "Convergent Lady Beetle",
+      "scientificName": "Hippodamia convergens",
+      "obsCount": 231,
+      "suggestedRarity": "likely",
+      "parkNote": "Monarch corridor, oak woodland diversity"
+    },
+    {
+      "park": "yosemite",
+      "name": "Pale Swallowtail",
+      "scientificName": "Papilio eurymedon",
+      "obsCount": 201,
+      "suggestedRarity": "likely",
+      "parkNote": "Monarch corridor, oak woodland diversity"
+    },
+    {
+      "park": "yosemite",
+      "name": "Yellow-faced Bumble Bee",
+      "scientificName": "Bombus vosnesenskii",
+      "obsCount": 199,
+      "suggestedRarity": "likely",
+      "parkNote": "Monarch corridor, oak woodland diversity"
+    },
+    {
+      "park": "yosemite",
+      "name": "Shasta Blue",
+      "scientificName": "Icaricia shasta",
+      "obsCount": 180,
+      "suggestedRarity": "likely",
+      "parkNote": "Monarch corridor, oak woodland diversity"
+    },
+    {
+      "park": "yosemite",
+      "name": "Echo Azure",
+      "scientificName": "Celastrina echo",
+      "obsCount": 173,
+      "suggestedRarity": "likely",
+      "parkNote": "Monarch corridor, oak woodland diversity"
+    },
+    {
+      "park": "yosemite",
+      "name": "Cobalt Milkweed Beetle",
+      "scientificName": "Chrysochus cobaltinus",
+      "obsCount": 164,
+      "suggestedRarity": "likely",
+      "parkNote": "Monarch corridor, oak woodland diversity"
+    },
+    {
+      "park": "yosemite",
+      "name": "California Tortoiseshell",
+      "scientificName": "Nymphalis californica",
+      "obsCount": 162,
+      "suggestedRarity": "likely",
+      "parkNote": "Monarch corridor, oak woodland diversity"
+    },
+    {
+      "park": "yosemite",
+      "name": "Mormon Fritillary",
+      "scientificName": "Argynnis mormonia",
+      "obsCount": 156,
+      "suggestedRarity": "likely",
+      "parkNote": "Monarch corridor, oak woodland diversity"
+    },
+    {
+      "park": "yosemite",
+      "name": "Clodius Parnassian",
+      "scientificName": "Parnassius clodius",
+      "obsCount": 150,
+      "suggestedRarity": "likely",
+      "parkNote": "Monarch corridor, oak woodland diversity"
+    },
+    {
+      "park": "yosemite",
+      "name": "Greenish Blue",
+      "scientificName": "Icaricia saepiolus",
+      "obsCount": 146,
+      "suggestedRarity": "likely",
+      "parkNote": "Monarch corridor, oak woodland diversity"
+    },
+    {
+      "park": "yosemite",
+      "name": "Sandhill Skipper",
+      "scientificName": "Polites sabuleti",
+      "obsCount": 123,
+      "suggestedRarity": "likely",
+      "parkNote": "Monarch corridor, oak woodland diversity"
+    },
+    {
+      "park": "yosemite",
+      "name": "Silver-spotted Tiger Moth",
+      "scientificName": "Lophocampa argentata",
+      "obsCount": 120,
+      "suggestedRarity": "likely",
+      "parkNote": "Monarch corridor, oak woodland diversity"
+    },
+    {
+      "park": "yosemite",
+      "name": "Sierra Blue",
+      "scientificName": "Agriades podarce",
+      "obsCount": 105,
+      "suggestedRarity": "likely",
+      "parkNote": "Monarch corridor, oak woodland diversity"
+    },
+    {
+      "park": "yosemite",
+      "name": "Monarch",
+      "scientificName": "Danaus plexippus",
+      "obsCount": 102,
+      "suggestedRarity": "likely",
+      "parkNote": "Monarch corridor, oak woodland diversity"
+    },
+    {
+      "park": "yosemite",
+      "name": "Edith's Checkerspot",
+      "scientificName": "Euphydryas editha",
+      "obsCount": 101,
+      "suggestedRarity": "likely",
+      "parkNote": "Monarch corridor, oak woodland diversity"
+    },
+    {
+      "park": "yosemite",
+      "name": "Lustrous Copper",
+      "scientificName": "Lycaena cupreus",
+      "obsCount": 98,
+      "suggestedRarity": "unlikely",
+      "parkNote": "Monarch corridor, oak woodland diversity"
+    },
+    {
+      "park": "yosemite",
+      "name": "Sierra Sulphur",
+      "scientificName": "Colias behrii",
+      "obsCount": 96,
+      "suggestedRarity": "unlikely",
+      "parkNote": "Monarch corridor, oak woodland diversity"
+    },
+    {
+      "park": "yosemite",
+      "name": "Hoary Comma",
+      "scientificName": "Polygonia gracilis",
+      "obsCount": 90,
+      "suggestedRarity": "unlikely",
+      "parkNote": "Monarch corridor, oak woodland diversity"
+    },
+    {
+      "park": "yosemite",
+      "name": "Crackling Forest Grasshopper",
+      "scientificName": "Trimerotropis verruculata",
+      "obsCount": 89,
+      "suggestedRarity": "unlikely",
+      "parkNote": "Monarch corridor, oak woodland diversity"
+    }
+  ],
+  "parkSummaries": {
+    "yellowstone": {
+      "cacheReptiles": 6,
+      "cacheAmphibians": 5,
+      "inatReptiles": 6,
+      "inatAmphibians": 5,
+      "missingReptiles": 0,
+      "missingAmphibians": 0,
+      "isNorthern": true
+    },
+    "everglades": {
+      "cacheReptiles": 66,
+      "cacheAmphibians": 16,
+      "inatReptiles": 65,
+      "inatAmphibians": 16,
+      "missingReptiles": 0,
+      "missingAmphibians": 0,
+      "isNorthern": false
+    },
+    "denali": {
+      "cacheReptiles": 1,
+      "cacheAmphibians": 1,
+      "inatReptiles": 0,
+      "inatAmphibians": 1,
+      "missingReptiles": 0,
+      "missingAmphibians": 0,
+      "isNorthern": true
+    },
+    "acadia": {
+      "cacheReptiles": 7,
+      "cacheAmphibians": 12,
+      "inatReptiles": 7,
+      "inatAmphibians": 12,
+      "missingReptiles": 0,
+      "missingAmphibians": 0,
+      "isNorthern": true
+    },
+    "shenandoah": {
+      "cacheReptiles": 22,
+      "cacheAmphibians": 21,
+      "inatReptiles": 21,
+      "inatAmphibians": 21,
+      "missingReptiles": 0,
+      "missingAmphibians": 0,
+      "isNorthern": true
+    },
+    "newrivergorge": {
+      "cacheReptiles": 16,
+      "cacheAmphibians": 25,
+      "inatReptiles": 14,
+      "inatAmphibians": 25,
+      "missingReptiles": 0,
+      "missingAmphibians": 0,
+      "isNorthern": true
+    },
+    "cuyahogavalley": {
+      "cacheReptiles": 16,
+      "cacheAmphibians": 23,
+      "inatReptiles": 15,
+      "inatAmphibians": 24,
+      "missingReptiles": 0,
+      "missingAmphibians": 1,
+      "isNorthern": true
+    },
+    "isleroyale": {
+      "cacheReptiles": 3,
+      "cacheAmphibians": 7,
+      "inatReptiles": 3,
+      "inatAmphibians": 7,
+      "missingReptiles": 0,
+      "missingAmphibians": 0,
+      "isNorthern": true
+    },
+    "greatsmokymountains": {
+      "cacheReptiles": 29,
+      "cacheAmphibians": 44,
+      "inatReptiles": 29,
+      "inatAmphibians": 45,
+      "missingReptiles": 2,
+      "missingAmphibians": 0,
+      "isNorthern": false
+    },
+    "biscayne": {
+      "cacheReptiles": 31,
+      "cacheAmphibians": 5,
+      "inatReptiles": 22,
+      "inatAmphibians": 4,
+      "missingReptiles": 0,
+      "missingAmphibians": 0,
+      "isNorthern": false
+    },
+    "drytortugas": {
+      "cacheReptiles": 11,
+      "cacheAmphibians": 1,
+      "inatReptiles": 4,
+      "inatAmphibians": 1,
+      "missingReptiles": 0,
+      "missingAmphibians": 0,
+      "isNorthern": false
+    },
+    "congaree": {
+      "cacheReptiles": 34,
+      "cacheAmphibians": 24,
+      "inatReptiles": 31,
+      "inatAmphibians": 23,
+      "missingReptiles": 0,
+      "missingAmphibians": 0,
+      "isNorthern": false
+    },
+    "mammothcave": {
+      "cacheReptiles": 23,
+      "cacheAmphibians": 26,
+      "inatReptiles": 22,
+      "inatAmphibians": 25,
+      "missingReptiles": 0,
+      "missingAmphibians": 0,
+      "isNorthern": true
+    },
+    "voyageurs": {
+      "cacheReptiles": 4,
+      "cacheAmphibians": 9,
+      "inatReptiles": 4,
+      "inatAmphibians": 9,
+      "missingReptiles": 0,
+      "missingAmphibians": 0,
+      "isNorthern": true
+    },
+    "indianadunes": {
+      "cacheReptiles": 15,
+      "cacheAmphibians": 12,
+      "inatReptiles": 14,
+      "inatAmphibians": 12,
+      "missingReptiles": 0,
+      "missingAmphibians": 0,
+      "isNorthern": true
+    },
+    "badlands": {
+      "cacheReptiles": 10,
+      "cacheAmphibians": 6,
+      "inatReptiles": 7,
+      "inatAmphibians": 6,
+      "missingReptiles": 0,
+      "missingAmphibians": 0,
+      "isNorthern": true
+    },
+    "windcave": {
+      "cacheReptiles": 10,
+      "cacheAmphibians": 4,
+      "inatReptiles": 9,
+      "inatAmphibians": 4,
+      "missingReptiles": 0,
+      "missingAmphibians": 0,
+      "isNorthern": true
+    },
+    "theodoreroosevelt": {
+      "cacheReptiles": 9,
+      "cacheAmphibians": 7,
+      "inatReptiles": 8,
+      "inatAmphibians": 7,
+      "missingReptiles": 0,
+      "missingAmphibians": 0,
+      "isNorthern": true
+    },
+    "gatewayarch": {
+      "cacheReptiles": 5,
+      "cacheAmphibians": 3,
+      "inatReptiles": 3,
+      "inatAmphibians": 1,
+      "missingReptiles": 0,
+      "missingAmphibians": 0,
+      "isNorthern": false
+    },
+    "grandcanyon": {
+      "cacheReptiles": 34,
+      "cacheAmphibians": 5,
+      "inatReptiles": 34,
+      "inatAmphibians": 5,
+      "missingReptiles": 1,
+      "missingAmphibians": 0,
+      "isNorthern": false
+    },
+    "zion": {
+      "cacheReptiles": 24,
+      "cacheAmphibians": 7,
+      "inatReptiles": 23,
+      "inatAmphibians": 7,
+      "missingReptiles": 1,
+      "missingAmphibians": 0,
+      "isNorthern": true
+    },
+    "brycecanyon": {
+      "cacheReptiles": 12,
+      "cacheAmphibians": 2,
+      "inatReptiles": 12,
+      "inatAmphibians": 2,
+      "missingReptiles": 0,
+      "missingAmphibians": 0,
+      "isNorthern": true
+    },
+    "arches": {
+      "cacheReptiles": 7,
+      "cacheAmphibians": 0,
+      "inatReptiles": 16,
+      "inatAmphibians": 5,
+      "missingReptiles": 5,
+      "missingAmphibians": 2,
+      "isNorthern": true
+    },
+    "canyonlands": {
+      "cacheReptiles": 3,
+      "cacheAmphibians": 0,
+      "inatReptiles": 16,
+      "inatAmphibians": 5,
+      "missingReptiles": 7,
+      "missingAmphibians": 2,
+      "isNorthern": true
+    },
+    "capitolreef": {
+      "cacheReptiles": 3,
+      "cacheAmphibians": 0,
+      "inatReptiles": 14,
+      "inatAmphibians": 5,
+      "missingReptiles": 6,
+      "missingAmphibians": 2,
+      "isNorthern": true
+    },
+    "mesaverde": {
+      "cacheReptiles": 3,
+      "cacheAmphibians": 0,
+      "inatReptiles": 11,
+      "inatAmphibians": 1,
+      "missingReptiles": 4,
+      "missingAmphibians": 0,
+      "isNorthern": true
+    },
+    "petrifiedforest": {
+      "cacheReptiles": 4,
+      "cacheAmphibians": 0,
+      "inatReptiles": 16,
+      "inatAmphibians": 7,
+      "missingReptiles": 9,
+      "missingAmphibians": 4,
+      "isNorthern": false
+    },
+    "saguaro": {
+      "cacheReptiles": 5,
+      "cacheAmphibians": 0,
+      "inatReptiles": 42,
+      "inatAmphibians": 5,
+      "missingReptiles": 19,
+      "missingAmphibians": 4,
+      "isNorthern": false
+    },
+    "whitesands": {
+      "cacheReptiles": 2,
+      "cacheAmphibians": 0,
+      "inatReptiles": 16,
+      "inatAmphibians": 2,
+      "missingReptiles": 3,
+      "missingAmphibians": 0,
+      "isNorthern": false
+    },
+    "guadalupemountains": {
+      "cacheReptiles": 4,
+      "cacheAmphibians": 0,
+      "inatReptiles": 28,
+      "inatAmphibians": 2,
+      "missingReptiles": 6,
+      "missingAmphibians": 1,
+      "isNorthern": false
+    },
+    "bigbend": {
+      "cacheReptiles": 5,
+      "cacheAmphibians": 0,
+      "inatReptiles": 61,
+      "inatAmphibians": 12,
+      "missingReptiles": 37,
+      "missingAmphibians": 6,
+      "isNorthern": false
+    },
+    "grandteton": {
+      "cacheReptiles": 1,
+      "cacheAmphibians": 3,
+      "inatReptiles": 4,
+      "inatAmphibians": 5,
+      "missingReptiles": 0,
+      "missingAmphibians": 1,
+      "isNorthern": true
+    },
+    "rockymountain": {
+      "cacheReptiles": 1,
+      "cacheAmphibians": 2,
+      "inatReptiles": 2,
+      "inatAmphibians": 3,
+      "missingReptiles": 0,
+      "missingAmphibians": 1,
+      "isNorthern": true
+    },
+    "glacier": {
+      "cacheReptiles": 1,
+      "cacheAmphibians": 2,
+      "inatReptiles": 2,
+      "inatAmphibians": 6,
+      "missingReptiles": 0,
+      "missingAmphibians": 1,
+      "isNorthern": true
+    },
+    "greatsanddunes": {
+      "cacheReptiles": 0,
+      "cacheAmphibians": 0,
+      "inatReptiles": 4,
+      "inatAmphibians": 2,
+      "missingReptiles": 1,
+      "missingAmphibians": 0,
+      "isNorthern": true
+    },
+    "blackcanyon": {
+      "cacheReptiles": 0,
+      "cacheAmphibians": 0,
+      "inatReptiles": 10,
+      "inatAmphibians": 0,
+      "missingReptiles": 3,
+      "missingAmphibians": 0,
+      "isNorthern": true
+    },
+    "olympic": {
+      "cacheReptiles": 0,
+      "cacheAmphibians": 7,
+      "inatReptiles": 6,
+      "inatAmphibians": 14,
+      "missingReptiles": 2,
+      "missingAmphibians": 5,
+      "isNorthern": true
+    },
+    "northcascades": {
+      "cacheReptiles": 0,
+      "cacheAmphibians": 6,
+      "inatReptiles": 6,
+      "inatAmphibians": 7,
+      "missingReptiles": 0,
+      "missingAmphibians": 0,
+      "isNorthern": true
+    },
+    "mountrainier": {
+      "cacheReptiles": 0,
+      "cacheAmphibians": 4,
+      "inatReptiles": 4,
+      "inatAmphibians": 11,
+      "missingReptiles": 2,
+      "missingAmphibians": 3,
+      "isNorthern": true
+    },
+    "craterlake": {
+      "cacheReptiles": 1,
+      "cacheAmphibians": 3,
+      "inatReptiles": 5,
+      "inatAmphibians": 5,
+      "missingReptiles": 1,
+      "missingAmphibians": 0,
+      "isNorthern": true
+    },
+    "redwood": {
+      "cacheReptiles": 0,
+      "cacheAmphibians": 7,
+      "inatReptiles": 13,
+      "inatAmphibians": 12,
+      "missingReptiles": 7,
+      "missingAmphibians": 2,
+      "isNorthern": true
+    },
+    "lassenvolcanic": {
+      "cacheReptiles": 4,
+      "cacheAmphibians": 3,
+      "inatReptiles": 8,
+      "inatAmphibians": 3,
+      "missingReptiles": 2,
+      "missingAmphibians": 1,
+      "isNorthern": true
+    },
+    "yosemite": {
+      "cacheReptiles": 2,
+      "cacheAmphibians": 0,
+      "inatReptiles": 19,
+      "inatAmphibians": 11,
+      "missingReptiles": 10,
+      "missingAmphibians": 8,
+      "isNorthern": true
+    },
+    "kingscanyon": {
+      "cacheReptiles": 2,
+      "cacheAmphibians": 0,
+      "inatReptiles": 16,
+      "inatAmphibians": 7,
+      "missingReptiles": 5,
+      "missingAmphibians": 2,
+      "isNorthern": true
+    },
+    "sequoia": {
+      "cacheReptiles": 3,
+      "cacheAmphibians": 0,
+      "inatReptiles": 21,
+      "inatAmphibians": 10,
+      "missingReptiles": 8,
+      "missingAmphibians": 5,
+      "isNorthern": true
+    },
+    "joshuatree": {
+      "cacheReptiles": 6,
+      "cacheAmphibians": 0,
+      "inatReptiles": 39,
+      "inatAmphibians": 2,
+      "missingReptiles": 17,
+      "missingAmphibians": 2,
+      "isNorthern": false
+    },
+    "deathvalley": {
+      "cacheReptiles": 4,
+      "cacheAmphibians": 0,
+      "inatReptiles": 37,
+      "inatAmphibians": 4,
+      "missingReptiles": 15,
+      "missingAmphibians": 2,
+      "isNorthern": false
+    },
+    "channelislands": {
+      "cacheReptiles": 2,
+      "cacheAmphibians": 2,
+      "inatReptiles": 9,
+      "inatAmphibians": 3,
+      "missingReptiles": 3,
+      "missingAmphibians": 2,
+      "isNorthern": false
+    },
+    "pinnacles": {
+      "cacheReptiles": 3,
+      "cacheAmphibians": 1,
+      "inatReptiles": 17,
+      "inatAmphibians": 5,
+      "missingReptiles": 9,
+      "missingAmphibians": 5,
+      "isNorthern": false
+    },
+    "kenaifjords": {
+      "cacheReptiles": 1,
+      "cacheAmphibians": 0,
+      "inatReptiles": 0,
+      "inatAmphibians": 0,
+      "missingReptiles": 0,
+      "missingAmphibians": 0,
+      "isNorthern": true
+    },
+    "glacierbay": {
+      "cacheReptiles": 0,
+      "cacheAmphibians": 0,
+      "inatReptiles": 0,
+      "inatAmphibians": 1,
+      "missingReptiles": 0,
+      "missingAmphibians": 0,
+      "isNorthern": true
+    },
+    "katmai": {
+      "cacheReptiles": 1,
+      "cacheAmphibians": 0,
+      "inatReptiles": 0,
+      "inatAmphibians": 0,
+      "missingReptiles": 0,
+      "missingAmphibians": 0,
+      "isNorthern": true
+    },
+    "wrangellstelias": {
+      "cacheReptiles": 1,
+      "cacheAmphibians": 0,
+      "inatReptiles": 0,
+      "inatAmphibians": 2,
+      "missingReptiles": 0,
+      "missingAmphibians": 0,
+      "isNorthern": true
+    },
+    "lakeclark": {
+      "cacheReptiles": 1,
+      "cacheAmphibians": 0,
+      "inatReptiles": 0,
+      "inatAmphibians": 1,
+      "missingReptiles": 0,
+      "missingAmphibians": 0,
+      "isNorthern": true
+    },
+    "gatesofthearctic": {
+      "cacheReptiles": 1,
+      "cacheAmphibians": 0,
+      "inatReptiles": 0,
+      "inatAmphibians": 1,
+      "missingReptiles": 0,
+      "missingAmphibians": 0,
+      "isNorthern": true
+    },
+    "kobukvalley": {
+      "cacheReptiles": 1,
+      "cacheAmphibians": 0,
+      "inatReptiles": 0,
+      "inatAmphibians": 1,
+      "missingReptiles": 0,
+      "missingAmphibians": 0,
+      "isNorthern": true
+    },
+    "hawaiivolcanoes": {
+      "cacheReptiles": 1,
+      "cacheAmphibians": 0,
+      "inatReptiles": 10,
+      "inatAmphibians": 3,
+      "missingReptiles": 2,
+      "missingAmphibians": 1,
+      "isNorthern": false
+    },
+    "haleakala": {
+      "cacheReptiles": 1,
+      "cacheAmphibians": 0,
+      "inatReptiles": 9,
+      "inatAmphibians": 3,
+      "missingReptiles": 0,
+      "missingAmphibians": 0,
+      "isNorthern": false
+    },
+    "americansamoa": {
+      "cacheReptiles": 3,
+      "cacheAmphibians": 1,
+      "inatReptiles": 2,
+      "inatAmphibians": 1,
+      "missingReptiles": 0,
+      "missingAmphibians": 0,
+      "isNorthern": false
+    },
+    "virginislands": {
+      "cacheReptiles": 14,
+      "cacheAmphibians": 6,
+      "inatReptiles": 11,
+      "inatAmphibians": 6,
+      "missingReptiles": 0,
+      "missingAmphibians": 0,
+      "isNorthern": false
+    },
+    "hotsprings": {
+      "cacheReptiles": 29,
+      "cacheAmphibians": 13,
+      "inatReptiles": 26,
+      "inatAmphibians": 12,
+      "missingReptiles": 0,
+      "missingAmphibians": 0,
+      "isNorthern": false
+    },
+    "carlsbadcaverns": {
+      "cacheReptiles": 33,
+      "cacheAmphibians": 5,
+      "inatReptiles": 32,
+      "inatAmphibians": 5,
+      "missingReptiles": 0,
+      "missingAmphibians": 0,
+      "isNorthern": false
+    },
+    "greatbasin": {
+      "cacheReptiles": 10,
+      "cacheAmphibians": 0,
+      "inatReptiles": 10,
+      "inatAmphibians": 0,
+      "missingReptiles": 0,
+      "missingAmphibians": 0,
+      "isNorthern": true
+    }
+  },
+  "criticalFixes": [
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "joshuatree",
+      "name": "Desert Spiny Lizard",
+      "obsCount": 1068,
+      "action": "Add to cache as very_likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "joshuatree",
+      "name": "Western Whiptail",
+      "obsCount": 903,
+      "action": "Add to cache as very_likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "bigbend",
+      "name": "Greater Earless Lizard",
+      "obsCount": 738,
+      "action": "Add to cache as very_likely"
+    },
+    {
+      "type": "insect",
+      "priority": "critical",
+      "park": "greatsmokymountains",
+      "name": "Megalodacne heros",
+      "obsCount": 650,
+      "action": "Add to cache as very_likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "joshuatree",
+      "name": "Desert Horned Lizard",
+      "obsCount": 625,
+      "action": "Add to cache as very_likely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "critical",
+      "park": "yosemite",
+      "name": "Pacific chorus frog",
+      "obsCount": 568,
+      "action": "Add to cache as very_likely"
+    },
+    {
+      "type": "insect",
+      "priority": "critical",
+      "park": "yosemite",
+      "name": "California Sister",
+      "obsCount": 504,
+      "action": "Add to cache as very_likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "joshuatree",
+      "name": "Southwestern Speckled Rattlesnake",
+      "obsCount": 445,
+      "action": "Add to cache as very_likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "pinnacles",
+      "name": "Western Whiptail",
+      "obsCount": 445,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "joshuatree",
+      "name": "Long-nosed Leopard Lizard",
+      "obsCount": 430,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "joshuatree",
+      "name": "Desert Collared Lizard",
+      "obsCount": 408,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "critical",
+      "park": "redwood",
+      "name": "Pacific Giant Salamander",
+      "obsCount": 391,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "insect",
+      "priority": "critical",
+      "park": "saguaro",
+      "name": "Empress Leilia",
+      "obsCount": 389,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "pinnacles",
+      "name": "Common Side-blotched Lizard",
+      "obsCount": 388,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "yosemite",
+      "name": "Common Sagebrush Lizard",
+      "obsCount": 361,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "channelislands",
+      "name": "Island Fence Lizard",
+      "obsCount": 337,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "whitesands",
+      "name": "Western Earless Lizard",
+      "obsCount": 322,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "insect",
+      "priority": "critical",
+      "park": "saguaro",
+      "name": "American Snout",
+      "obsCount": 320,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "arches",
+      "name": "Western Whiptail",
+      "obsCount": 315,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "deathvalley",
+      "name": "Desert Iguana",
+      "obsCount": 274,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "joshuatree",
+      "name": "Desert Iguana",
+      "obsCount": 269,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "bigbend",
+      "name": "Rusty-rumped Whiptail",
+      "obsCount": 268,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "greatsmokymountains",
+      "name": "Eastern Copperhead",
+      "obsCount": 259,
+      "action": "Add to cache as very_likely"
+    },
+    {
+      "type": "insect",
+      "priority": "critical",
+      "park": "rockymountain",
+      "name": "Rocky Mountain Parnassian",
+      "obsCount": 259,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "guadalupemountains",
+      "name": "Southwestern Fence Lizard",
+      "obsCount": 234,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "insect",
+      "priority": "critical",
+      "park": "yosemite",
+      "name": "Convergent Lady Beetle",
+      "obsCount": 231,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "pinnacles",
+      "name": "Common Garter Snake",
+      "obsCount": 229,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "yosemite",
+      "name": "Western Rattlesnake",
+      "obsCount": 222,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "insect",
+      "priority": "critical",
+      "park": "saguaro",
+      "name": "Dainty Sulphur",
+      "obsCount": 215,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "guadalupemountains",
+      "name": "Greater Earless Lizard",
+      "obsCount": 213,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "critical",
+      "park": "saguaro",
+      "name": "Red-spotted Toad",
+      "obsCount": 204,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "insect",
+      "priority": "critical",
+      "park": "saguaro",
+      "name": "Ceraunus Blue",
+      "obsCount": 201,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "insect",
+      "priority": "critical",
+      "park": "yosemite",
+      "name": "Pale Swallowtail",
+      "obsCount": 201,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "insect",
+      "priority": "critical",
+      "park": "rockymountain",
+      "name": "Spotted Tussock Moth",
+      "obsCount": 200,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "bigbend",
+      "name": "Common Side-blotched Lizard",
+      "obsCount": 198,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "bigbend",
+      "name": "Marbled Whiptail",
+      "obsCount": 197,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "critical",
+      "park": "pinnacles",
+      "name": "Pacific chorus frog",
+      "obsCount": 195,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "critical",
+      "park": "joshuatree",
+      "name": "Red-spotted Toad",
+      "obsCount": 192,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "bigbend",
+      "name": "Canyon Lizard",
+      "obsCount": 190,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "arches",
+      "name": "Long-nosed Leopard Lizard",
+      "obsCount": 187,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "mesaverde",
+      "name": "Common Sagebrush Lizard",
+      "obsCount": 186,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "deathvalley",
+      "name": "Desert Horned Lizard",
+      "obsCount": 185,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "canyonlands",
+      "name": "Western Whiptail",
+      "obsCount": 183,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "pinnacles",
+      "name": "Western Rattlesnake",
+      "obsCount": 178,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "channelislands",
+      "name": "Southern Alligator Lizard",
+      "obsCount": 177,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "saguaro",
+      "name": "Greater Earless Lizard",
+      "obsCount": 168,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "saguaro",
+      "name": "Western Whiptail",
+      "obsCount": 164,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "bigbend",
+      "name": "Crevice Spiny Lizard",
+      "obsCount": 163,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "bigbend",
+      "name": "Eastern Black-tailed Rattlesnake",
+      "obsCount": 163,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "yosemite",
+      "name": "California Mountain Kingsnake",
+      "obsCount": 160,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "bigbend",
+      "name": "Texas Alligator Lizard",
+      "obsCount": 159,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "yosemite",
+      "name": "Gilbert's Skink",
+      "obsCount": 151,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "critical",
+      "park": "yosemite",
+      "name": "Yosemite Toad",
+      "obsCount": 148,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "deathvalley",
+      "name": "Desert Collared Lizard",
+      "obsCount": 147,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "olympic",
+      "name": "Northwestern Garter Snake",
+      "obsCount": 144,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "olympic",
+      "name": "Common Garter Snake",
+      "obsCount": 141,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "critical",
+      "park": "bigbend",
+      "name": "Red-spotted Toad",
+      "obsCount": 140,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "critical",
+      "park": "olympic",
+      "name": "Western Red-backed Salamander",
+      "obsCount": 139,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "canyonlands",
+      "name": "Ornate Tree Lizard",
+      "obsCount": 136,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "deathvalley",
+      "name": "Western Whiptail",
+      "obsCount": 135,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "critical",
+      "park": "pinnacles",
+      "name": "Western Toad",
+      "obsCount": 134,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "grandcanyon",
+      "name": "Western Rattlesnake",
+      "obsCount": 133,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "bigbend",
+      "name": "Southwestern Fence Lizard",
+      "obsCount": 133,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "guadalupemountains",
+      "name": "Ornate Tree Lizard",
+      "obsCount": 131,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "blackcanyon",
+      "name": "Plateau Fence Lizard",
+      "obsCount": 129,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "lassenvolcanic",
+      "name": "Common Sagebrush Lizard",
+      "obsCount": 129,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "sequoia",
+      "name": "Common Sagebrush Lizard",
+      "obsCount": 129,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "critical",
+      "park": "pinnacles",
+      "name": "Gabilan Mountains Slender Salamander",
+      "obsCount": 129,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "critical",
+      "park": "deathvalley",
+      "name": "Western Toad",
+      "obsCount": 126,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "saguaro",
+      "name": "Regal Horned Lizard",
+      "obsCount": 122,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "arches",
+      "name": "Ornate Tree Lizard",
+      "obsCount": 121,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "capitolreef",
+      "name": "Western Whiptail",
+      "obsCount": 121,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "saguaro",
+      "name": "Desert Iguana",
+      "obsCount": 120,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "critical",
+      "park": "yosemite",
+      "name": "Sierra Newt",
+      "obsCount": 119,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "critical",
+      "park": "saguaro",
+      "name": "Canyon Tree Frog",
+      "obsCount": 117,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "critical",
+      "park": "sequoia",
+      "name": "Pacific chorus frog",
+      "obsCount": 117,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "critical",
+      "park": "saguaro",
+      "name": "Sonoran Desert Toad",
+      "obsCount": 114,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "deathvalley",
+      "name": "Sidewinder",
+      "obsCount": 113,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "petrifiedforest",
+      "name": "Greater Short-horned Lizard",
+      "obsCount": 112,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "joshuatree",
+      "name": "Western Patch-nosed Snake",
+      "obsCount": 108,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "pinnacles",
+      "name": "Striped Racer",
+      "obsCount": 108,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "critical",
+      "park": "yosemite",
+      "name": "Sierra Nevada Yellow-legged Frog",
+      "obsCount": 108,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "joshuatree",
+      "name": "Coachwhip",
+      "obsCount": 105,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "canyonlands",
+      "name": "Common Sagebrush Lizard",
+      "obsCount": 104,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "yosemite",
+      "name": "Northern Alligator Lizard",
+      "obsCount": 104,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "joshuatree",
+      "name": "Desert Night Lizard",
+      "obsCount": 101,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "critical",
+      "park": "channelislands",
+      "name": "Channel Islands Slender Salamander",
+      "obsCount": 101,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "critical",
+      "park": "deathvalley",
+      "name": "Panamint Rattlesnake",
+      "obsCount": 100,
+      "action": "Add to cache as likely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "critical",
+      "park": "petrifiedforest",
+      "name": "Great Plains Toad",
+      "obsCount": 96,
+      "action": "Add to cache as unlikely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "critical",
+      "park": "joshuatree",
+      "name": "California Tree Frog",
+      "obsCount": 86,
+      "action": "Add to cache as unlikely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "critical",
+      "park": "channelislands",
+      "name": "Black-bellied Slender Salamander",
+      "obsCount": 81,
+      "action": "Add to cache as unlikely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "critical",
+      "park": "bigbend",
+      "name": "Rio Grande Leopard Frog",
+      "obsCount": 73,
+      "action": "Add to cache as unlikely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "critical",
+      "park": "petrifiedforest",
+      "name": "Mexican Spadefoot",
+      "obsCount": 64,
+      "action": "Add to cache as unlikely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "critical",
+      "park": "kingscanyon",
+      "name": "Pacific chorus frog",
+      "obsCount": 64,
+      "action": "Add to cache as unlikely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "critical",
+      "park": "olympic",
+      "name": "Ensatina",
+      "obsCount": 62,
+      "action": "Add to cache as unlikely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "critical",
+      "park": "olympic",
+      "name": "Olympic Torrent Salamander",
+      "obsCount": 61,
+      "action": "Add to cache as unlikely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "critical",
+      "park": "yosemite",
+      "name": "Ensatina",
+      "obsCount": 61,
+      "action": "Add to cache as unlikely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "critical",
+      "park": "kingscanyon",
+      "name": "Sierra Nevada Yellow-legged Frog",
+      "obsCount": 59,
+      "action": "Add to cache as unlikely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "critical",
+      "park": "pinnacles",
+      "name": "Arboreal Salamander",
+      "obsCount": 58,
+      "action": "Add to cache as unlikely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "critical",
+      "park": "olympic",
+      "name": "Coastal Tailed Frog",
+      "obsCount": 56,
+      "action": "Add to cache as unlikely"
+    }
+  ],
+  "highFixes": [
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "everglades",
+      "name": "American Crocodile",
+      "obsCount": 2309,
+      "action": "upgrade: unlikely→very_likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "bigbend",
+      "name": "Western Diamond-backed Rattlesnake",
+      "obsCount": 323,
+      "action": "upgrade: unlikely→very_likely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "greatsmokymountains",
+      "name": "Red Salamander",
+      "obsCount": 199,
+      "action": "upgrade: rare→likely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "rockymountain",
+      "name": "Weidemeyer's Admiral",
+      "obsCount": 199,
+      "action": "Add as likely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "yosemite",
+      "name": "Yellow-faced Bumble Bee",
+      "obsCount": 199,
+      "action": "Add as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "shenandoah",
+      "name": "Timber Rattlesnake",
+      "obsCount": 194,
+      "action": "upgrade: rare→likely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "rockymountain",
+      "name": "Hoary Comma",
+      "obsCount": 181,
+      "action": "Add as likely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "yosemite",
+      "name": "Shasta Blue",
+      "obsCount": 180,
+      "action": "Add as likely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "saguaro",
+      "name": "Reakirt's Blue",
+      "obsCount": 178,
+      "action": "Add as likely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "rockymountain",
+      "name": "Police Car Moth",
+      "obsCount": 175,
+      "action": "Add as likely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "yosemite",
+      "name": "Echo Azure",
+      "obsCount": 173,
+      "action": "Add as likely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "saguaro",
+      "name": "Western Honey Bee",
+      "obsCount": 171,
+      "action": "Add as likely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "rockymountain",
+      "name": "White-spotted Sawyer",
+      "obsCount": 171,
+      "action": "Add as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "saguaro",
+      "name": "Desert Spiny Lizard",
+      "obsCount": 165,
+      "action": "downgrade: guaranteed→likely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "saguaro",
+      "name": "Marine Blue",
+      "obsCount": 164,
+      "action": "Add as likely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "yosemite",
+      "name": "Cobalt Milkweed Beetle",
+      "obsCount": 164,
+      "action": "Add as likely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "yosemite",
+      "name": "California Tortoiseshell",
+      "obsCount": 162,
+      "action": "Add as likely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "yosemite",
+      "name": "Mormon Fritillary",
+      "obsCount": 156,
+      "action": "Add as likely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "yosemite",
+      "name": "Clodius Parnassian",
+      "obsCount": 150,
+      "action": "Add as likely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "yosemite",
+      "name": "Greenish Blue",
+      "obsCount": 146,
+      "action": "Add as likely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "saguaro",
+      "name": "Queen",
+      "obsCount": 144,
+      "action": "Add as likely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "saguaro",
+      "name": "Tiny Checkerspot",
+      "obsCount": 143,
+      "action": "Add as likely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "saguaro",
+      "name": "Painted Lady",
+      "obsCount": 140,
+      "action": "Add as likely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "saguaro",
+      "name": "Southern Dogface",
+      "obsCount": 133,
+      "action": "Add as likely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "saguaro",
+      "name": "Gray Bird Grasshopper",
+      "obsCount": 125,
+      "action": "Add as likely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "saguaro",
+      "name": "Sleepy Orange",
+      "obsCount": 125,
+      "action": "Add as likely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "saguaro",
+      "name": "Gray Hairstreak",
+      "obsCount": 124,
+      "action": "Add as likely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "yosemite",
+      "name": "Sandhill Skipper",
+      "obsCount": 123,
+      "action": "Add as likely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "yosemite",
+      "name": "Silver-spotted Tiger Moth",
+      "obsCount": 120,
+      "action": "Add as likely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "saguaro",
+      "name": "White-lined Sphinx",
+      "obsCount": 108,
+      "action": "Add as likely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "saguaro",
+      "name": "Pipevine Swallowtail",
+      "obsCount": 105,
+      "action": "Add as likely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "saguaro",
+      "name": "Orange Skipperling",
+      "obsCount": 105,
+      "action": "Add as likely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "yosemite",
+      "name": "Sierra Blue",
+      "obsCount": 105,
+      "action": "Add as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "congaree",
+      "name": "American Alligator",
+      "obsCount": 104,
+      "action": "downgrade: guaranteed→likely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "saguaro",
+      "name": "Variegated Meadowhawk",
+      "obsCount": 104,
+      "action": "Add as likely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "yosemite",
+      "name": "Monarch",
+      "obsCount": 102,
+      "action": "Add as likely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "saguaro",
+      "name": "Gray Buckeye",
+      "obsCount": 101,
+      "action": "Add as likely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "yosemite",
+      "name": "Edith's Checkerspot",
+      "obsCount": 101,
+      "action": "Add as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "virginislands",
+      "name": "Green Iguana",
+      "obsCount": 100,
+      "action": "downgrade: guaranteed→likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "whitesands",
+      "name": "Southwestern Fence Lizard",
+      "obsCount": 98,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "redwood",
+      "name": "Common Garter Snake",
+      "obsCount": 98,
+      "action": "Add as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "kingscanyon",
+      "name": "Common Sagebrush Lizard",
+      "obsCount": 98,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "yosemite",
+      "name": "Lustrous Copper",
+      "obsCount": 98,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "saguaro",
+      "name": "Great Spreadwing",
+      "obsCount": 97,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "rockymountain",
+      "name": "Arctic Blue",
+      "obsCount": 96,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "yosemite",
+      "name": "Sierra Sulphur",
+      "obsCount": 96,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "saguaro",
+      "name": "Gopher Snake",
+      "obsCount": 95,
+      "action": "Add as likely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "rockymountain",
+      "name": "Blue Fungus Beetle",
+      "obsCount": 95,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "bigbend",
+      "name": "Spiny Softshell",
+      "obsCount": 94,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "petrifiedforest",
+      "name": "Western Earless Lizard",
+      "obsCount": 93,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "bigbend",
+      "name": "Common Checkered Whiptail",
+      "obsCount": 93,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "mesaverde",
+      "name": "Plateau Striped Whiptail",
+      "obsCount": 92,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "deathvalley",
+      "name": "Desert Spiny Lizard",
+      "obsCount": 92,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "bigbend",
+      "name": "Trans-pecos Ratsnake",
+      "obsCount": 91,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "yosemite",
+      "name": "Hoary Comma",
+      "obsCount": 90,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "yosemite",
+      "name": "Crackling Forest Grasshopper",
+      "obsCount": 89,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "bigbend",
+      "name": "Chihuahuan Nightsnake",
+      "obsCount": 87,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "rockymountain",
+      "name": "Greenish Blue",
+      "obsCount": 87,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "rockymountain",
+      "name": "Red Admiral",
+      "obsCount": 85,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "bigbend",
+      "name": "Ornate Tree Lizard",
+      "obsCount": 84,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "yosemite",
+      "name": "Sierra Garter Snake",
+      "obsCount": 84,
+      "action": "Add as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "sequoia",
+      "name": "Northern Alligator Lizard",
+      "obsCount": 84,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "rockymountain",
+      "name": "Small Wood-Nymph",
+      "obsCount": 83,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "petrifiedforest",
+      "name": "Plateau Striped Whiptail",
+      "obsCount": 81,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "guadalupemountains",
+      "name": "Chihuahuan Spotted Whiptail",
+      "obsCount": 80,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "bigbend",
+      "name": "Gopher Snake",
+      "obsCount": 80,
+      "action": "Add as likely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "rockymountain",
+      "name": "Dorcas Copper",
+      "obsCount": 80,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "saguaro",
+      "name": "Ornate Tree Lizard",
+      "obsCount": 79,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "saguaro",
+      "name": "Tiger Rattlesnake",
+      "obsCount": 75,
+      "action": "Add as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "bigbend",
+      "name": "Eastern Collared Lizard",
+      "obsCount": 75,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "rockymountain",
+      "name": "Mead's Sulphur",
+      "obsCount": 75,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "arches",
+      "name": "Common Sagebrush Lizard",
+      "obsCount": 74,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "kingscanyon",
+      "name": "Western Rattlesnake",
+      "obsCount": 74,
+      "action": "Add as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "joshuatree",
+      "name": "Western Rattlesnake",
+      "obsCount": 73,
+      "action": "Add as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "zion",
+      "name": "Western Rattlesnake",
+      "obsCount": 72,
+      "action": "Add as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "bigbend",
+      "name": "Long-nosed Snake",
+      "obsCount": 72,
+      "action": "Add as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "sequoia",
+      "name": "Western Rattlesnake",
+      "obsCount": 72,
+      "action": "Add as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "saguaro",
+      "name": "Western Banded Gecko",
+      "obsCount": 71,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "joshuatree",
+      "name": "Sidewinder",
+      "obsCount": 71,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "bigbend",
+      "name": "Texas Banded Gecko",
+      "obsCount": 70,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "guadalupemountains",
+      "name": "Crevice Spiny Lizard",
+      "obsCount": 69,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "rockymountain",
+      "name": "Western Tiger Swallowtail",
+      "obsCount": 69,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "rockymountain",
+      "name": "Painted Lady",
+      "obsCount": 67,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "bigbend",
+      "name": "Coachwhip",
+      "obsCount": 66,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "rockymountain",
+      "name": "Mourning Cloak",
+      "obsCount": 66,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "deathvalley",
+      "name": "Western Banded Gecko",
+      "obsCount": 64,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "bigbend",
+      "name": "Twin-spotted Spiny Lizard",
+      "obsCount": 63,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "saguaro",
+      "name": "Eastern Collared Lizard",
+      "obsCount": 62,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "yosemite",
+      "name": "Western Whiptail",
+      "obsCount": 62,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "saguaro",
+      "name": "Coachwhip",
+      "obsCount": 61,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "sequoia",
+      "name": "Western Terrestrial Garter Snake",
+      "obsCount": 61,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "rockymountain",
+      "name": "Green Comma",
+      "obsCount": 61,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "craterlake",
+      "name": "Common Sagebrush Lizard",
+      "obsCount": 60,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "bigbend",
+      "name": "Black-necked Garter Snake",
+      "obsCount": 59,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "blackcanyon",
+      "name": "Eastern Collared Lizard",
+      "obsCount": 59,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "capitolreef",
+      "name": "Ornate Tree Lizard",
+      "obsCount": 58,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "saguaro",
+      "name": "Black-necked Garter Snake",
+      "obsCount": 58,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "saguaro",
+      "name": "Western Black-tailed Rattlesnake",
+      "obsCount": 58,
+      "action": "Add as likely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "lassenvolcanic",
+      "name": "Common Garter Snake",
+      "obsCount": 58,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "yosemite",
+      "name": "Southern Alligator Lizard",
+      "obsCount": 58,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "greatsmokymountains",
+      "name": "Common Box Turtle",
+      "obsCount": 57,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "rockymountain",
+      "name": "Northern Checkerspot",
+      "obsCount": 57,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "petrifiedforest",
+      "name": "Striped Whipsnake",
+      "obsCount": 56,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "deathvalley",
+      "name": "Long-nosed Leopard Lizard",
+      "obsCount": 55,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "rockymountain",
+      "name": "Russet Skipperling",
+      "obsCount": 54,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "mesaverde",
+      "name": "Greater Short-horned Lizard",
+      "obsCount": 53,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "insect",
+      "priority": "high",
+      "park": "rockymountain",
+      "name": "Queen Alexandra’s Sulphur",
+      "obsCount": 53,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "bigbend",
+      "name": "Baird's Ratsnake",
+      "obsCount": 51,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "redwood",
+      "name": "Northern Alligator Lizard",
+      "obsCount": 51,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "saguaro",
+      "name": "Greater Short-horned Lizard",
+      "obsCount": 50,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "kingscanyon",
+      "name": "California Mountain Kingsnake",
+      "obsCount": 50,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "redwood",
+      "name": "Western Fence Lizard",
+      "obsCount": 49,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "yosemite",
+      "name": "Northern Rubber Boa",
+      "obsCount": 49,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "joshuatree",
+      "name": "Glossy Snake",
+      "obsCount": 48,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "joshuatree",
+      "name": "Coastal Rosy Boa",
+      "obsCount": 47,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "deathvalley",
+      "name": "Coachwhip",
+      "obsCount": 47,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "petrifiedforest",
+      "name": "New Mexico Whiptail",
+      "obsCount": 45,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "redwood",
+      "name": "Western Terrestrial Garter Snake",
+      "obsCount": 45,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "pinnacles",
+      "name": "California King Snake",
+      "obsCount": 45,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "redwood",
+      "name": "Wandering Salamander",
+      "obsCount": 45,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "canyonlands",
+      "name": "Long-nosed Leopard Lizard",
+      "obsCount": 44,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "saguaro",
+      "name": "Long-nosed Snake",
+      "obsCount": 44,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "deathvalley",
+      "name": "Gopher Snake",
+      "obsCount": 44,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "sequoia",
+      "name": "Ensatina",
+      "obsCount": 44,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "petrifiedforest",
+      "name": "Glossy Snake",
+      "obsCount": 43,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "arches",
+      "name": "American Bullfrog",
+      "obsCount": 42,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "bigbend",
+      "name": "Mediterranean House Gecko",
+      "obsCount": 41,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "bigbend",
+      "name": "Canyon Tree Frog",
+      "obsCount": 41,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "canyonlands",
+      "name": "Desert Collared Lizard",
+      "obsCount": 40,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "bigbend",
+      "name": "Green Anole",
+      "obsCount": 40,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "kingscanyon",
+      "name": "Sierra Garter Snake",
+      "obsCount": 39,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "kingscanyon",
+      "name": "Northern Alligator Lizard",
+      "obsCount": 39,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "pinnacles",
+      "name": "Southern Alligator Lizard",
+      "obsCount": 39,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "petrifiedforest",
+      "name": "Couch's Spadefoot",
+      "obsCount": 39,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "greatsanddunes",
+      "name": "Plateau Fence Lizard",
+      "obsCount": 38,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "canyonlands",
+      "name": "Red-spotted Toad",
+      "obsCount": 38,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "yosemite",
+      "name": "Gopher Snake",
+      "obsCount": 37,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "hawaiivolcanoes",
+      "name": "Common Coqui",
+      "obsCount": 37,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "deathvalley",
+      "name": "Western Fence Lizard",
+      "obsCount": 36,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "bigbend",
+      "name": "Couch's Spadefoot",
+      "obsCount": 36,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "bigbend",
+      "name": "Chihuahuan Spotted Whiptail",
+      "obsCount": 35,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "bigbend",
+      "name": "Big Bend Patch-nosed Snake",
+      "obsCount": 35,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "hawaiivolcanoes",
+      "name": "Jackson's Chameleon",
+      "obsCount": 35,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "sequoia",
+      "name": "Northern Rubber Boa",
+      "obsCount": 34,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "rockymountain",
+      "name": "Boreal Chorus Frog",
+      "obsCount": 34,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "petrifiedforest",
+      "name": "Chihuahuan Nightsnake",
+      "obsCount": 33,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "saguaro",
+      "name": "Clark's Spiny Lizard",
+      "obsCount": 33,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "whitesands",
+      "name": "Little Striped Whiptail",
+      "obsCount": 33,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "bigbend",
+      "name": "Plain-bellied Watersnake",
+      "obsCount": 33,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "glacier",
+      "name": "Rocky Mountain Tailed Frog",
+      "obsCount": 33,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "olympic",
+      "name": "Cope's Giant Salamander",
+      "obsCount": 33,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "hawaiivolcanoes",
+      "name": "Dark-flecked Garden Sunskink",
+      "obsCount": 32,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "grandteton",
+      "name": "Boreal Chorus Frog",
+      "obsCount": 32,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "petrifiedforest",
+      "name": "Prairie Rattlesnake",
+      "obsCount": 31,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "bigbend",
+      "name": "Striped Whipsnake",
+      "obsCount": 31,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "bigbend",
+      "name": "Roundtail Horned Lizard",
+      "obsCount": 31,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "redwood",
+      "name": "Aquatic Garter Snake",
+      "obsCount": 31,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "joshuatree",
+      "name": "Western Banded Gecko",
+      "obsCount": 31,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "arches",
+      "name": "Red-spotted Toad",
+      "obsCount": 31,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "saguaro",
+      "name": "Couch's Spadefoot",
+      "obsCount": 31,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "canyonlands",
+      "name": "Striped Whipsnake",
+      "obsCount": 30,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "petrifiedforest",
+      "name": "California King Snake",
+      "obsCount": 29,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "mountrainier",
+      "name": "Northwestern Garter Snake",
+      "obsCount": 29,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "redwood",
+      "name": "Northwestern Garter Snake",
+      "obsCount": 29,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "deathvalley",
+      "name": "Common Sagebrush Lizard",
+      "obsCount": 29,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "bigbend",
+      "name": "Texas Toad",
+      "obsCount": 29,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "redwood",
+      "name": "Gopher Snake",
+      "obsCount": 28,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "sequoia",
+      "name": "Southern Alligator Lizard",
+      "obsCount": 28,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "canyonlands",
+      "name": "Woodhouse's Toad",
+      "obsCount": 28,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "mountrainier",
+      "name": "Coastal Tailed Frog",
+      "obsCount": 28,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "canyonlands",
+      "name": "Western Rattlesnake",
+      "obsCount": 27,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "saguaro",
+      "name": "Sonoran Spotted Whiptail",
+      "obsCount": 27,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "bigbend",
+      "name": "Great Plains Ground Snake",
+      "obsCount": 27,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "joshuatree",
+      "name": "California King Snake",
+      "obsCount": 27,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "joshuatree",
+      "name": "Blainville's Horned Lizard",
+      "obsCount": 27,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "sequoia",
+      "name": "California Newt",
+      "obsCount": 27,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "sequoia",
+      "name": "Sierra Newt",
+      "obsCount": 27,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "capitolreef",
+      "name": "Western Terrestrial Garter Snake",
+      "obsCount": 26,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "bigbend",
+      "name": "Mojave Rattlesnake",
+      "obsCount": 26,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "bigbend",
+      "name": "Big Bend Slider",
+      "obsCount": 26,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "sequoia",
+      "name": "Western Toad",
+      "obsCount": 26,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "capitolreef",
+      "name": "Common Sagebrush Lizard",
+      "obsCount": 25,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "guadalupemountains",
+      "name": "Eastern Black-tailed Rattlesnake",
+      "obsCount": 25,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "bigbend",
+      "name": "Glossy Snake",
+      "obsCount": 25,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "bigbend",
+      "name": "Eastern Patch-nosed Snake",
+      "obsCount": 25,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "sequoia",
+      "name": "Western Whiptail",
+      "obsCount": 25,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "arches",
+      "name": "Eastern Collared Lizard",
+      "obsCount": 24,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "saguaro",
+      "name": "Arizona Black Rattlesnake",
+      "obsCount": 24,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "petrifiedforest",
+      "name": "Red-spotted Toad",
+      "obsCount": 24,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "yosemite",
+      "name": "Mount Lyell Salamander",
+      "obsCount": 24,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "mountrainier",
+      "name": "Common Garter Snake",
+      "obsCount": 23,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "pinnacles",
+      "name": "Gilbert's Skink",
+      "obsCount": 23,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "capitolreef",
+      "name": "Long-nosed Leopard Lizard",
+      "obsCount": 22,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "saguaro",
+      "name": "Sonoran Whipsnake",
+      "obsCount": 22,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "bigbend",
+      "name": "Great Plains Skink",
+      "obsCount": 22,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "deathvalley",
+      "name": "Red-spotted Toad",
+      "obsCount": 22,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "blackcanyon",
+      "name": "Common Sagebrush Lizard",
+      "obsCount": 21,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "sequoia",
+      "name": "Sierra Garter Snake",
+      "obsCount": 21,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "deathvalley",
+      "name": "Ground Snake",
+      "obsCount": 21,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "deathvalley",
+      "name": "Western Patch-nosed Snake",
+      "obsCount": 21,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "channelislands",
+      "name": "Western Fence Lizard",
+      "obsCount": 21,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "pinnacles",
+      "name": "Ring-necked Snake",
+      "obsCount": 21,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "capitolreef",
+      "name": "Striped Whipsnake",
+      "obsCount": 20,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "mesaverde",
+      "name": "Ornate Tree Lizard",
+      "obsCount": 20,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "saguaro",
+      "name": "Western Patch-nosed Snake",
+      "obsCount": 20,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "bigbend",
+      "name": "Rock Rattlesnake",
+      "obsCount": 20,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "bigbend",
+      "name": "Little Striped Whiptail",
+      "obsCount": 20,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "capitolreef",
+      "name": "Red-spotted Toad",
+      "obsCount": 20,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "lassenvolcanic",
+      "name": "Long-toed Salamander",
+      "obsCount": 20,
+      "action": "Add as unlikely"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "capitolreef",
+      "name": "Woodhouse's Toad",
+      "obsCount": 19,
+      "action": "Add as rare"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "yosemite",
+      "name": "California Red-legged Frog",
+      "obsCount": 19,
+      "action": "Add as rare"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "pinnacles",
+      "name": "Ensatina",
+      "obsCount": 18,
+      "action": "Add as rare"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "cuyahogavalley",
+      "name": "Unisexual Mole Salamander",
+      "obsCount": 16,
+      "action": "Add as rare"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "bigbend",
+      "name": "American Bullfrog",
+      "obsCount": 16,
+      "action": "Add as rare"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "yosemite",
+      "name": "Western Toad",
+      "obsCount": 16,
+      "action": "Add as rare"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "guadalupemountains",
+      "name": "Red-spotted Toad",
+      "obsCount": 15,
+      "action": "Add as rare"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "mountrainier",
+      "name": "Northern Red-legged Frog",
+      "obsCount": 15,
+      "action": "Add as rare"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "mountrainier",
+      "name": "Long-toed Salamander",
+      "obsCount": 15,
+      "action": "Add as rare"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "northcascades",
+      "name": "Western Toad",
+      "obsCount": 15,
+      "action": "downgrade: likely→rare"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "congaree",
+      "name": "American Bullfrog",
+      "obsCount": 11,
+      "action": "downgrade: likely→rare"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "craterlake",
+      "name": "Pacific chorus frog",
+      "obsCount": 10,
+      "action": "downgrade: likely→rare"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "badlands",
+      "name": "Western Tiger Salamander",
+      "obsCount": 3,
+      "action": "downgrade: unlikely→exceptional"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "rockymountain",
+      "name": "Western Toad",
+      "obsCount": 3,
+      "action": "downgrade: unlikely→exceptional"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "lassenvolcanic",
+      "name": "Western Fence Lizard",
+      "obsCount": 2,
+      "action": "downgrade: unlikely→exceptional"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "hotsprings",
+      "name": "Pond Slider",
+      "obsCount": 2,
+      "action": "downgrade: likely→exceptional"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "greatbasin",
+      "name": "Common Side-blotched Lizard",
+      "obsCount": 2,
+      "action": "downgrade: likely→exceptional"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "northcascades",
+      "name": "Cascades Frog",
+      "obsCount": 2,
+      "action": "downgrade: likely→exceptional"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "mountrainier",
+      "name": "Western Toad",
+      "obsCount": 2,
+      "action": "downgrade: unlikely→exceptional"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "biscayne",
+      "name": "American Alligator",
+      "obsCount": 1,
+      "action": "downgrade: guaranteed→exceptional"
+    },
+    {
+      "type": "reptile",
+      "priority": "high",
+      "park": "saguaro",
+      "name": "Common Chuckwalla",
+      "obsCount": 1,
+      "action": "downgrade: unlikely→exceptional"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "shenandoah",
+      "name": "Spring Peeper",
+      "obsCount": 1,
+      "action": "downgrade: very_likely→exceptional"
+    },
+    {
+      "type": "amphibian",
+      "priority": "high",
+      "park": "redwood",
+      "name": "Northern Red-legged Frog",
+      "obsCount": 1,
+      "action": "downgrade: likely→exceptional"
+    }
+  ],
+  "mediumFixes": [
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "yellowstone",
+      "name": "Common Sagebrush Lizard",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "yellowstone",
+      "name": "Northern Rubber Boa",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "yellowstone",
+      "name": "Prairie Rattlesnake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "yellowstone",
+      "name": "North American Racer",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "denali",
+      "name": "Oriental Turtle-Dove",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "shenandoah",
+      "name": "Red-bellied Snake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "shenandoah",
+      "name": "Smooth Greensnake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "shenandoah",
+      "name": "Eastern Fence Lizard",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "shenandoah",
+      "name": "Eastern Milksnake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "shenandoah",
+      "name": "Common Wormsnake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "shenandoah",
+      "name": "North American Racer",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "shenandoah",
+      "name": "Rough Greensnake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "shenandoah",
+      "name": "Broad-headed Skink",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "shenandoah",
+      "name": "Common Snapping Turtle",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "shenandoah",
+      "name": "Queensnake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "shenandoah",
+      "name": "Painted Turtle",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "shenandoah",
+      "name": "Red Cornsnake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "shenandoah",
+      "name": "Common Ribbon Snake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "newrivergorge",
+      "name": "Common Snapping Turtle",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "newrivergorge",
+      "name": "Red-bellied Snake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "newrivergorge",
+      "name": "North American Racer",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "newrivergorge",
+      "name": "Spiny Softshell",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "newrivergorge",
+      "name": "Eastern Musk Turtle",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "newrivergorge",
+      "name": "Painted Turtle",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "newrivergorge",
+      "name": "Smooth Greensnake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "cuyahogavalley",
+      "name": "Eastern Milksnake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "cuyahogavalley",
+      "name": "Spiny Softshell",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "cuyahogavalley",
+      "name": "Ring-necked Snake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "cuyahogavalley",
+      "name": "Red-bellied Snake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "cuyahogavalley",
+      "name": "River Cooter",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "cuyahogavalley",
+      "name": "Eastern Musk Turtle",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "cuyahogavalley",
+      "name": "North American Racer",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "cuyahogavalley",
+      "name": "Common Five-lined Skink",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "mammothcave",
+      "name": "DeKay's Brownsnake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "mammothcave",
+      "name": "Common Wormsnake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "mammothcave",
+      "name": "Little Brown Skink",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "mammothcave",
+      "name": "Rough Greensnake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "mammothcave",
+      "name": "Broad-headed Skink",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "mammothcave",
+      "name": "Smooth Earthsnake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "mammothcave",
+      "name": "Eastern Milksnake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "mammothcave",
+      "name": "Eastern Fence Lizard",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "mammothcave",
+      "name": "Spiny Softshell",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "mammothcave",
+      "name": "Painted Turtle",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "mammothcave",
+      "name": "Northern Map Turtle",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "mammothcave",
+      "name": "Red-bellied Snake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "voyageurs",
+      "name": "Common Snapping Turtle",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "voyageurs",
+      "name": "Red-bellied Snake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "indianadunes",
+      "name": "North American Racer",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "indianadunes",
+      "name": "Eastern Milksnake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "indianadunes",
+      "name": "Pond Slider",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "indianadunes",
+      "name": "Eastern Musk Turtle",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "indianadunes",
+      "name": "Western Ribbon Snake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "indianadunes",
+      "name": "Slender Glass Lizard",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "indianadunes",
+      "name": "Common Ribbon Snake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "badlands",
+      "name": "Plains Hognose Snake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "badlands",
+      "name": "Painted Turtle",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "badlands",
+      "name": "Ornate Box Turtle",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "windcave",
+      "name": "Painted Turtle",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "windcave",
+      "name": "Common Garter Snake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "windcave",
+      "name": "North American Racer",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "windcave",
+      "name": "Plains Garter Snake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "windcave",
+      "name": "Western Terrestrial Garter Snake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "windcave",
+      "name": "Plains Hognose Snake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "windcave",
+      "name": "Common Snapping Turtle",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "theodoreroosevelt",
+      "name": "Plains Garter Snake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "theodoreroosevelt",
+      "name": "Common Snapping Turtle",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "zion",
+      "name": "Ground Snake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "zion",
+      "name": "Arizona Mountain Kingsnake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "zion",
+      "name": "Long-nosed Leopard Lizard",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "zion",
+      "name": "Ring-necked Snake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "zion",
+      "name": "Mediterranean Gecko",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "zion",
+      "name": "Zebra-tailed Lizard",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "zion",
+      "name": "Western Fence Lizard",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "zion",
+      "name": "Western Patch-nosed Snake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "brycecanyon",
+      "name": "Striped Whipsnake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "brycecanyon",
+      "name": "Plateau Striped Whiptail",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "brycecanyon",
+      "name": "Ornate Tree Lizard",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "brycecanyon",
+      "name": "Western Skink",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "brycecanyon",
+      "name": "Desert Collared Lizard",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "brycecanyon",
+      "name": "Desert Spiny Lizard",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "arches",
+      "name": "Gopher Snake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "arches",
+      "name": "Western Rattlesnake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "arches",
+      "name": "Striped Whipsnake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "arches",
+      "name": "Western Terrestrial Garter Snake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "arches",
+      "name": "Southwestern Blackhead Snake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "lassenvolcanic",
+      "name": "Oriental Turtle-Dove",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "sequoia",
+      "name": "Oriental Turtle-Dove",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "kenaifjords",
+      "name": "Oriental Turtle-Dove",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "katmai",
+      "name": "Oriental Turtle-Dove",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "wrangellstelias",
+      "name": "Oriental Turtle-Dove",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "lakeclark",
+      "name": "Oriental Turtle-Dove",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "gatesofthearctic",
+      "name": "Oriental Turtle-Dove",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "kobukvalley",
+      "name": "Oriental Turtle-Dove",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "greatbasin",
+      "name": "Long-nosed Leopard Lizard",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "reptile",
+      "priority": "medium",
+      "park": "greatbasin",
+      "name": "Desert Nightsnake",
+      "action": "reptile has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "amphibian",
+      "priority": "medium",
+      "park": "yellowstone",
+      "name": "Plains Spadefoot",
+      "action": "amphibian has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "amphibian",
+      "priority": "medium",
+      "park": "shenandoah",
+      "name": "American Bullfrog",
+      "action": "amphibian has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "amphibian",
+      "priority": "medium",
+      "park": "newrivergorge",
+      "name": "American Bullfrog",
+      "action": "amphibian has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "amphibian",
+      "priority": "medium",
+      "park": "mammothcave",
+      "name": "Eastern Spadefoot",
+      "action": "amphibian has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "amphibian",
+      "priority": "medium",
+      "park": "voyageurs",
+      "name": "Eastern Newt",
+      "action": "amphibian has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "amphibian",
+      "priority": "medium",
+      "park": "indianadunes",
+      "name": "Eastern Newt",
+      "action": "amphibian has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "amphibian",
+      "priority": "medium",
+      "park": "badlands",
+      "name": "American Bullfrog",
+      "action": "amphibian has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "amphibian",
+      "priority": "medium",
+      "park": "theodoreroosevelt",
+      "name": "Plains Spadefoot",
+      "action": "amphibian has winter season (cold-blooded, northern park)"
+    },
+    {
+      "type": "amphibian",
+      "priority": "medium",
+      "park": "zion",
+      "name": "Great Basin Spadefoot",
+      "action": "amphibian has winter season (cold-blooded, northern park)"
+    }
+  ],
+  "specialChecks": [
+    {
+      "park": "saguaro",
+      "name": "Common Side-blotched Lizard",
+      "wantMin": "very_likely",
+      "cacheRarity": "very_likely",
+      "pass": true,
+      "note": "OK"
+    },
+    {
+      "park": "joshuatree",
+      "name": "Common Side-blotched Lizard",
+      "wantMin": "very_likely",
+      "cacheRarity": "very_likely",
+      "pass": true,
+      "note": "OK"
+    },
+    {
+      "park": "yosemite",
+      "name": "Western Fence Lizard",
+      "wantMin": "very_likely",
+      "cacheRarity": "very_likely",
+      "pass": true,
+      "note": "OK"
+    },
+    {
+      "park": "joshuatree",
+      "name": "Desert Tortoise",
+      "wantExact": "unlikely",
+      "cacheRarity": "unlikely",
+      "pass": true,
+      "note": "OK"
+    },
+    {
+      "park": "everglades",
+      "name": "American Alligator",
+      "wantExact": "guaranteed",
+      "cacheRarity": "guaranteed",
+      "pass": true,
+      "note": "OK"
+    },
+    {
+      "park": "everglades",
+      "name": "American Crocodile",
+      "wantExact": "unlikely",
+      "cacheRarity": "unlikely",
+      "pass": true,
+      "note": "OK"
+    },
+    {
+      "park": "virginislands",
+      "name": "Green Sea Turtle",
+      "wantMin": "unlikely",
+      "cacheRarity": "unlikely",
+      "pass": true,
+      "note": "OK"
+    },
+    {
+      "park": "drytortugas",
+      "name": "Green Sea Turtle",
+      "wantMin": "unlikely",
+      "cacheRarity": "unlikely",
+      "pass": true,
+      "note": "OK"
+    },
+    {
+      "park": "greatsmokymountains",
+      "name": "Red-backed Salamander",
+      "wantMin": "likely",
+      "cacheRarity": "likely",
+      "pass": true,
+      "note": "OK"
+    },
+    {
+      "park": "congaree",
+      "name": "Cottonmouth",
+      "wantMin": "unlikely",
+      "cacheRarity": "likely",
+      "pass": true,
+      "note": "OK"
+    }
+  ],
+  "summary": {
+    "missingReptiles": 187,
+    "missingAmphibians": 63,
+    "missingInsects": 61,
+    "reptileRarityMismatches": 11,
+    "amphibianRarityMismatches": 10,
+    "reptileSeasonalIssues": 95,
+    "amphibianSeasonalIssues": 9,
+    "criticalFixes": 100,
+    "highFixes": 232,
+    "mediumFixes": 104
+  }
+}

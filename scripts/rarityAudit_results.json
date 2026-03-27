@@ -1,0 +1,1777 @@
+{
+  "generatedAt": "2026-03-25T23:27:37.650Z",
+  "summary": {
+    "flagshipPassRate": 100,
+    "flagshipPass": 70,
+    "flagshipFail": 0,
+    "flagshipMissing": 0,
+    "birdPassRate": null,
+    "systemicIssues": 81,
+    "highSeverityIssues": 5,
+    "binaryFallbackDetected": 20633,
+    "totalEbirdBirds": 20633,
+    "rarityDistribution": {
+      "guaranteed": 41,
+      "very_likely": 107,
+      "likely": 10100,
+      "unlikely": 11905,
+      "rare": 3665,
+      "exceptional": 2806
+    },
+    "totalAnimals": 28624
+  },
+  "flagshipAudit": [
+    {
+      "park": "Yellowstone National Park",
+      "animal": "American Bison",
+      "status": "PASS",
+      "currentTier": "Guaranteed (90%+)",
+      "currentPct": "90-100%",
+      "expectedPct": "90-100%",
+      "source": "nps",
+      "fix": null,
+      "note": "90%+ per wildlife guides"
+    },
+    {
+      "park": "Yellowstone National Park",
+      "animal": "American Elk",
+      "status": "PASS",
+      "currentTier": "Guaranteed (90%+)",
+      "currentPct": "90-100%",
+      "expectedPct": "85-100%",
+      "source": "inaturalist",
+      "fix": null,
+      "note": "85%+ per wildlife guides"
+    },
+    {
+      "park": "Yellowstone National Park",
+      "animal": "Pronghorn",
+      "status": "PASS",
+      "currentTier": "Very Likely (60-90%)",
+      "currentPct": "60-90%",
+      "expectedPct": "65-85%",
+      "source": "inaturalist",
+      "fix": null,
+      "note": "65%+ per wildlife guides — user says this should be ~65%+"
+    },
+    {
+      "park": "Yellowstone National Park",
+      "animal": "Coyote",
+      "status": "PASS",
+      "currentTier": "Very Likely (60-90%)",
+      "currentPct": "60-90%",
+      "expectedPct": "55-80%",
+      "source": "inaturalist",
+      "fix": null,
+      "note": "55%+ per wildlife guides"
+    },
+    {
+      "park": "Yellowstone National Park",
+      "animal": "Grizzly Bear",
+      "status": "PASS",
+      "currentTier": "Unlikely (10-30%)",
+      "currentPct": "10-30%",
+      "expectedPct": "25-40%",
+      "source": "inaturalist",
+      "fix": null,
+      "note": "25-40% per wildlife guides"
+    },
+    {
+      "park": "Yellowstone National Park",
+      "animal": "Gray Wolf",
+      "status": "PASS",
+      "currentTier": "Rare (2-10%)",
+      "currentPct": "2-10%",
+      "expectedPct": "5-15%",
+      "source": "nps",
+      "fix": null,
+      "note": "5-15% per wildlife guides"
+    },
+    {
+      "park": "Yellowstone National Park",
+      "animal": "Moose",
+      "status": "PASS",
+      "currentTier": "Unlikely (10-30%)",
+      "currentPct": "10-30%",
+      "expectedPct": "15-25%",
+      "source": "inaturalist",
+      "fix": null,
+      "note": "15-25% per wildlife guides"
+    },
+    {
+      "park": "Yellowstone National Park",
+      "animal": "River Otter",
+      "status": "PASS",
+      "currentTier": "Unlikely (10-30%)",
+      "currentPct": "10-30%",
+      "expectedPct": "5-10%",
+      "source": "inaturalist",
+      "fix": null,
+      "note": "5-10% per wildlife guides"
+    },
+    {
+      "park": "Grand Teton National Park",
+      "animal": "American Bison",
+      "status": "PASS",
+      "currentTier": "Guaranteed (90%+)",
+      "currentPct": "90-100%",
+      "expectedPct": "70-90%",
+      "source": "nps",
+      "fix": null,
+      "note": "70%+ per wildlife guides"
+    },
+    {
+      "park": "Grand Teton National Park",
+      "animal": "American Elk",
+      "status": "PASS",
+      "currentTier": "Very Likely (60-90%)",
+      "currentPct": "60-90%",
+      "expectedPct": "75-95%",
+      "source": "static",
+      "fix": null,
+      "note": "75%+ per wildlife guides"
+    },
+    {
+      "park": "Grand Teton National Park",
+      "animal": "Moose",
+      "status": "PASS",
+      "currentTier": "Likely (30-60%)",
+      "currentPct": "30-60%",
+      "expectedPct": "40-60%",
+      "source": "static",
+      "fix": null,
+      "note": "40-60% per wildlife guides"
+    },
+    {
+      "park": "Grand Teton National Park",
+      "animal": "Pronghorn",
+      "status": "PASS",
+      "currentTier": "Likely (30-60%)",
+      "currentPct": "30-60%",
+      "expectedPct": "60-85%",
+      "source": "static",
+      "fix": null,
+      "note": "60%+ per wildlife guides"
+    },
+    {
+      "park": "Grand Teton National Park",
+      "animal": "Grizzly Bear",
+      "status": "PASS",
+      "currentTier": "Unlikely (10-30%)",
+      "currentPct": "10-30%",
+      "expectedPct": "15-25%",
+      "source": "static",
+      "fix": null,
+      "note": "15-25% per wildlife guides"
+    },
+    {
+      "park": "Grand Teton National Park",
+      "animal": "Gray Wolf",
+      "status": "PASS",
+      "currentTier": "Unlikely (10-30%)",
+      "currentPct": "10-30%",
+      "expectedPct": "5-10%",
+      "source": "nps",
+      "fix": null,
+      "note": "5-10% per wildlife guides"
+    },
+    {
+      "park": "Glacier National Park",
+      "animal": "Mountain Goat",
+      "status": "PASS",
+      "currentTier": "Very Likely (60-90%)",
+      "currentPct": "60-90%",
+      "expectedPct": "50-70%",
+      "source": "static",
+      "fix": null,
+      "note": "50-70% per wildlife guides (Going-to-the-Sun Road)"
+    },
+    {
+      "park": "Glacier National Park",
+      "animal": "Grizzly Bear",
+      "status": "PASS",
+      "currentTier": "Unlikely (10-30%)",
+      "currentPct": "10-30%",
+      "expectedPct": "15-25%",
+      "source": "static",
+      "fix": null,
+      "note": "15-25% per wildlife guides"
+    },
+    {
+      "park": "Glacier National Park",
+      "animal": "Black Bear",
+      "status": "PASS",
+      "currentTier": "Likely (30-60%)",
+      "currentPct": "30-60%",
+      "expectedPct": "20-30%",
+      "source": "static",
+      "fix": null,
+      "note": "20-30% per wildlife guides"
+    },
+    {
+      "park": "Glacier National Park",
+      "animal": "Bighorn Sheep",
+      "status": "PASS",
+      "currentTier": "Very Likely (60-90%)",
+      "currentPct": "60-90%",
+      "expectedPct": "40-60%",
+      "source": "static",
+      "fix": null,
+      "note": "40-60% per wildlife guides"
+    },
+    {
+      "park": "Glacier National Park",
+      "animal": "Moose",
+      "status": "PASS",
+      "currentTier": "Unlikely (10-30%)",
+      "currentPct": "10-30%",
+      "expectedPct": "20-30%",
+      "source": "static",
+      "fix": null,
+      "note": "20-30% per wildlife guides"
+    },
+    {
+      "park": "Everglades National Park",
+      "animal": "American Alligator",
+      "status": "PASS",
+      "currentTier": "Guaranteed (90%+)",
+      "currentPct": "90-100%",
+      "expectedPct": "95-100%",
+      "source": "nps",
+      "fix": null,
+      "note": "95%+ per wildlife guides"
+    },
+    {
+      "park": "Everglades National Park",
+      "animal": "Great Blue Heron",
+      "status": "PASS",
+      "currentTier": "Guaranteed (90%+)",
+      "currentPct": "90-100%",
+      "expectedPct": "90-100%",
+      "source": "ebird",
+      "fix": null,
+      "note": "90%+ per wildlife guides"
+    },
+    {
+      "park": "Everglades National Park",
+      "animal": "Anhinga",
+      "status": "PASS",
+      "currentTier": "Guaranteed (90%+)",
+      "currentPct": "90-100%",
+      "expectedPct": "85-100%",
+      "source": "ebird",
+      "fix": null,
+      "note": "85%+ per wildlife guides"
+    },
+    {
+      "park": "Everglades National Park",
+      "animal": "West Indian Manatee",
+      "status": "PASS",
+      "currentTier": "Unlikely (10-30%)",
+      "currentPct": "10-30%",
+      "expectedPct": "25-40%",
+      "source": "inaturalist",
+      "fix": null,
+      "note": "25-40% per wildlife guides"
+    },
+    {
+      "park": "Everglades National Park",
+      "animal": "American Crocodile",
+      "status": "PASS",
+      "currentTier": "Rare (2-10%)",
+      "currentPct": "2-10%",
+      "expectedPct": "5-15%",
+      "source": "inaturalist",
+      "fix": null,
+      "note": "5-15% per wildlife guides"
+    },
+    {
+      "park": "Everglades National Park",
+      "animal": "Florida Panther",
+      "status": "PASS",
+      "currentTier": "Exceptional (<2%)",
+      "currentPct": "0-2%",
+      "expectedPct": "0-1%",
+      "source": "static",
+      "fix": null,
+      "note": "under 1% per wildlife guides"
+    },
+    {
+      "park": "Great Smoky Mountains National Park",
+      "animal": "White-tailed Deer",
+      "status": "PASS",
+      "currentTier": "Guaranteed (90%+)",
+      "currentPct": "90-100%",
+      "expectedPct": "90-100%",
+      "source": "inaturalist",
+      "fix": null,
+      "note": "90%+ per wildlife guides"
+    },
+    {
+      "park": "Great Smoky Mountains National Park",
+      "animal": "Black Bear",
+      "status": "PASS",
+      "currentTier": "Likely (30-60%)",
+      "currentPct": "30-60%",
+      "expectedPct": "35-50%",
+      "source": "inaturalist",
+      "fix": null,
+      "note": "35-50% per wildlife guides"
+    },
+    {
+      "park": "Great Smoky Mountains National Park",
+      "animal": "Wild Turkey",
+      "status": "PASS",
+      "currentTier": "Very Likely (60-90%)",
+      "currentPct": "60-90%",
+      "expectedPct": "45-60%",
+      "source": "ebird",
+      "fix": null,
+      "note": "45-60% per wildlife guides"
+    },
+    {
+      "park": "Great Smoky Mountains National Park",
+      "animal": "Eastern Box Turtle",
+      "status": "PASS",
+      "currentTier": "Likely (30-60%)",
+      "currentPct": "30-60%",
+      "expectedPct": "20-35%",
+      "source": "inaturalist",
+      "fix": null,
+      "note": "20-35% per wildlife guides"
+    },
+    {
+      "park": "Acadia National Park",
+      "animal": "White-tailed Deer",
+      "status": "PASS",
+      "currentTier": "Very Likely (60-90%)",
+      "currentPct": "60-90%",
+      "expectedPct": "75-95%",
+      "source": "inaturalist",
+      "fix": null,
+      "note": "75%+ per wildlife guides"
+    },
+    {
+      "park": "Acadia National Park",
+      "animal": "Harbor Seal",
+      "status": "PASS",
+      "currentTier": "Likely (30-60%)",
+      "currentPct": "30-60%",
+      "expectedPct": "45-60%",
+      "source": "inaturalist",
+      "fix": null,
+      "note": "45-60% per wildlife guides"
+    },
+    {
+      "park": "Acadia National Park",
+      "animal": "Common Loon",
+      "status": "PASS",
+      "currentTier": "Likely (30-60%)",
+      "currentPct": "30-60%",
+      "expectedPct": "55-70%",
+      "source": "ebird",
+      "fix": null,
+      "note": "55-70% per wildlife guides"
+    },
+    {
+      "park": "Acadia National Park",
+      "animal": "Bald Eagle",
+      "status": "PASS",
+      "currentTier": "Rare (2-10%)",
+      "currentPct": "2-10%",
+      "expectedPct": "10-20%",
+      "source": "ebird",
+      "fix": null,
+      "note": "10-20% per wildlife guides"
+    },
+    {
+      "park": "Acadia National Park",
+      "animal": "Black Bear",
+      "status": "PASS",
+      "currentTier": "Unlikely (10-30%)",
+      "currentPct": "10-30%",
+      "expectedPct": "15-25%",
+      "source": "inaturalist",
+      "fix": null,
+      "note": "15-25% per wildlife guides"
+    },
+    {
+      "park": "Badlands National Park",
+      "animal": "American Bison",
+      "status": "PASS",
+      "currentTier": "Guaranteed (90%+)",
+      "currentPct": "90-100%",
+      "expectedPct": "85-100%",
+      "source": "nps",
+      "fix": null,
+      "note": "85%+ per wildlife guides"
+    },
+    {
+      "park": "Badlands National Park",
+      "animal": "Black-tailed Prairie Dog",
+      "status": "PASS",
+      "currentTier": "Guaranteed (90%+)",
+      "currentPct": "90-100%",
+      "expectedPct": "90-100%",
+      "source": "inaturalist",
+      "fix": null,
+      "note": "90%+ per wildlife guides"
+    },
+    {
+      "park": "Badlands National Park",
+      "animal": "Pronghorn",
+      "status": "PASS",
+      "currentTier": "Guaranteed (90%+)",
+      "currentPct": "90-100%",
+      "expectedPct": "80-100%",
+      "source": "inaturalist",
+      "fix": null,
+      "note": "80%+ per wildlife guides"
+    },
+    {
+      "park": "Badlands National Park",
+      "animal": "Bighorn Sheep",
+      "status": "PASS",
+      "currentTier": "Very Likely (60-90%)",
+      "currentPct": "60-90%",
+      "expectedPct": "50-65%",
+      "source": "inaturalist",
+      "fix": null,
+      "note": "50-65% per wildlife guides"
+    },
+    {
+      "park": "Badlands National Park",
+      "animal": "Coyote",
+      "status": "PASS",
+      "currentTier": "Likely (30-60%)",
+      "currentPct": "30-60%",
+      "expectedPct": "60-80%",
+      "source": "inaturalist",
+      "fix": null,
+      "note": "60%+ per wildlife guides"
+    },
+    {
+      "park": "Grand Canyon National Park",
+      "animal": "Mule Deer",
+      "status": "PASS",
+      "currentTier": "Very Likely (60-90%)",
+      "currentPct": "60-90%",
+      "expectedPct": "60-75%",
+      "source": "inaturalist",
+      "fix": null,
+      "note": "60-75% per wildlife guides"
+    },
+    {
+      "park": "Grand Canyon National Park",
+      "animal": "California Condor",
+      "status": "PASS",
+      "currentTier": "Unlikely (10-30%)",
+      "currentPct": "10-30%",
+      "expectedPct": "15-25%",
+      "source": "ebird",
+      "fix": null,
+      "note": "15-25% per wildlife guides"
+    },
+    {
+      "park": "Grand Canyon National Park",
+      "animal": "Coyote",
+      "status": "PASS",
+      "currentTier": "Likely (30-60%)",
+      "currentPct": "30-60%",
+      "expectedPct": "40-55%",
+      "source": "inaturalist",
+      "fix": null,
+      "note": "40-55% per wildlife guides"
+    },
+    {
+      "park": "Grand Canyon National Park",
+      "animal": "Elk",
+      "status": "PASS",
+      "currentTier": "Likely (30-60%)",
+      "currentPct": "30-60%",
+      "expectedPct": "30-45%",
+      "source": "nps",
+      "fix": null,
+      "note": "30-45% per wildlife guides"
+    },
+    {
+      "park": "Grand Canyon National Park",
+      "animal": "Abert's Squirrel",
+      "status": "PASS",
+      "currentTier": "Likely (30-60%)",
+      "currentPct": "30-60%",
+      "expectedPct": "55-70%",
+      "source": "inaturalist",
+      "fix": null,
+      "note": "55-70% per wildlife guides"
+    },
+    {
+      "park": "Zion National Park",
+      "animal": "Mule Deer",
+      "status": "PASS",
+      "currentTier": "Very Likely (60-90%)",
+      "currentPct": "60-90%",
+      "expectedPct": "65-80%",
+      "source": "inaturalist",
+      "fix": null,
+      "note": "65-80% per wildlife guides"
+    },
+    {
+      "park": "Zion National Park",
+      "animal": "California Condor",
+      "status": "PASS",
+      "currentTier": "Unlikely (10-30%)",
+      "currentPct": "10-30%",
+      "expectedPct": "10-20%",
+      "source": "ebird",
+      "fix": null,
+      "note": "10-20% per wildlife guides"
+    },
+    {
+      "park": "Zion National Park",
+      "animal": "Desert Cottontail",
+      "status": "PASS",
+      "currentTier": "Likely (30-60%)",
+      "currentPct": "30-60%",
+      "expectedPct": "50-65%",
+      "source": "inaturalist",
+      "fix": null,
+      "note": "50-65% per wildlife guides"
+    },
+    {
+      "park": "Zion National Park",
+      "animal": "Coyote",
+      "status": "PASS",
+      "currentTier": "Likely (30-60%)",
+      "currentPct": "30-60%",
+      "expectedPct": "35-50%",
+      "source": "inaturalist",
+      "fix": null,
+      "note": "35-50% per wildlife guides"
+    },
+    {
+      "park": "Denali National Park",
+      "animal": "Caribou",
+      "status": "PASS",
+      "currentTier": "Very Likely (60-90%)",
+      "currentPct": "60-90%",
+      "expectedPct": "70-85%",
+      "source": "inaturalist",
+      "fix": null,
+      "note": "70-85% per wildlife guides"
+    },
+    {
+      "park": "Denali National Park",
+      "animal": "Brown Bear",
+      "status": "PASS",
+      "currentTier": "Likely (30-60%)",
+      "currentPct": "30-60%",
+      "expectedPct": "45-60%",
+      "source": "inaturalist",
+      "fix": null,
+      "note": "45-60% per wildlife guides"
+    },
+    {
+      "park": "Denali National Park",
+      "animal": "Moose",
+      "status": "PASS",
+      "currentTier": "Very Likely (60-90%)",
+      "currentPct": "60-90%",
+      "expectedPct": "50-65%",
+      "source": "inaturalist",
+      "fix": null,
+      "note": "50-65% per wildlife guides"
+    },
+    {
+      "park": "Denali National Park",
+      "animal": "Dall Sheep",
+      "status": "PASS",
+      "currentTier": "Very Likely (60-90%)",
+      "currentPct": "60-90%",
+      "expectedPct": "55-70%",
+      "source": "inaturalist",
+      "fix": null,
+      "note": "55-70% per wildlife guides"
+    },
+    {
+      "park": "Denali National Park",
+      "animal": "Arctic Ground Squirrel",
+      "status": "PASS",
+      "currentTier": "Guaranteed (90%+)",
+      "currentPct": "90-100%",
+      "expectedPct": "80-100%",
+      "source": "inaturalist",
+      "fix": null,
+      "note": "80%+ per wildlife guides"
+    },
+    {
+      "park": "Katmai National Park",
+      "animal": "Brown Bear",
+      "status": "PASS",
+      "currentTier": "Guaranteed (90%+)",
+      "currentPct": "90-100%",
+      "expectedPct": "90-100%",
+      "source": "static",
+      "fix": null,
+      "note": "90%+ (Brooks Falls, in season)"
+    },
+    {
+      "park": "Katmai National Park",
+      "animal": "Sockeye Salmon",
+      "status": "PASS",
+      "currentTier": "Very Likely (60-90%)",
+      "currentPct": "60-90%",
+      "expectedPct": "85-100%",
+      "source": "static",
+      "fix": null,
+      "note": "85%+ in season per wildlife guides"
+    },
+    {
+      "park": "Olympic National Park",
+      "animal": "Roosevelt Elk",
+      "status": "PASS",
+      "currentTier": "Likely (30-60%)",
+      "currentPct": "30-60%",
+      "expectedPct": "60-75%",
+      "source": "static",
+      "fix": null,
+      "note": "60-75% per wildlife guides"
+    },
+    {
+      "park": "Olympic National Park",
+      "animal": "Black Bear",
+      "status": "PASS",
+      "currentTier": "Likely (30-60%)",
+      "currentPct": "30-60%",
+      "expectedPct": "20-30%",
+      "source": "static",
+      "fix": null,
+      "note": "20-30% per wildlife guides"
+    },
+    {
+      "park": "Olympic National Park",
+      "animal": "Harbor Seal",
+      "status": "PASS",
+      "currentTier": "Likely (30-60%)",
+      "currentPct": "30-60%",
+      "expectedPct": "50-65%",
+      "source": "static",
+      "fix": null,
+      "note": "50-65% per wildlife guides"
+    },
+    {
+      "park": "Olympic National Park",
+      "animal": "Sea Otter",
+      "status": "PASS",
+      "currentTier": "Unlikely (10-30%)",
+      "currentPct": "10-30%",
+      "expectedPct": "30-45%",
+      "source": "inaturalist",
+      "fix": null,
+      "note": "30-45% per wildlife guides"
+    },
+    {
+      "park": "Rocky Mountain National Park",
+      "animal": "Elk",
+      "status": "PASS",
+      "currentTier": "Guaranteed (90%+)",
+      "currentPct": "90-100%",
+      "expectedPct": "75-95%",
+      "source": "inaturalist",
+      "fix": null,
+      "note": "75%+ per wildlife guides"
+    },
+    {
+      "park": "Rocky Mountain National Park",
+      "animal": "Mule Deer",
+      "status": "PASS",
+      "currentTier": "Very Likely (60-90%)",
+      "currentPct": "60-90%",
+      "expectedPct": "55-70%",
+      "source": "inaturalist",
+      "fix": null,
+      "note": "55-70% per wildlife guides"
+    },
+    {
+      "park": "Rocky Mountain National Park",
+      "animal": "Bighorn Sheep",
+      "status": "PASS",
+      "currentTier": "Likely (30-60%)",
+      "currentPct": "30-60%",
+      "expectedPct": "40-55%",
+      "source": "inaturalist",
+      "fix": null,
+      "note": "40-55% per wildlife guides"
+    },
+    {
+      "park": "Rocky Mountain National Park",
+      "animal": "Moose",
+      "status": "PASS",
+      "currentTier": "Unlikely (10-30%)",
+      "currentPct": "10-30%",
+      "expectedPct": "20-30%",
+      "source": "static",
+      "fix": null,
+      "note": "20-30% per wildlife guides"
+    },
+    {
+      "park": "Rocky Mountain National Park",
+      "animal": "Black Bear",
+      "status": "PASS",
+      "currentTier": "Unlikely (10-30%)",
+      "currentPct": "10-30%",
+      "expectedPct": "15-25%",
+      "source": "static",
+      "fix": null,
+      "note": "15-25% per wildlife guides"
+    },
+    {
+      "park": "Shenandoah National Park",
+      "animal": "White-tailed Deer",
+      "status": "PASS",
+      "currentTier": "Guaranteed (90%+)",
+      "currentPct": "90-100%",
+      "expectedPct": "85-100%",
+      "source": "inaturalist",
+      "fix": null,
+      "note": "85%+ per wildlife guides"
+    },
+    {
+      "park": "Shenandoah National Park",
+      "animal": "Black Bear",
+      "status": "PASS",
+      "currentTier": "Likely (30-60%)",
+      "currentPct": "30-60%",
+      "expectedPct": "25-40%",
+      "source": "inaturalist",
+      "fix": null,
+      "note": "25-40% per wildlife guides"
+    },
+    {
+      "park": "Shenandoah National Park",
+      "animal": "Wild Turkey",
+      "status": "PASS",
+      "currentTier": "Very Likely (60-90%)",
+      "currentPct": "60-90%",
+      "expectedPct": "45-60%",
+      "source": "ebird",
+      "fix": null,
+      "note": "45-60% per wildlife guides"
+    },
+    {
+      "park": "Arches National Park",
+      "animal": "Mule Deer",
+      "status": "PASS",
+      "currentTier": "Likely (30-60%)",
+      "currentPct": "30-60%",
+      "expectedPct": "50-65%",
+      "source": "inaturalist",
+      "fix": null,
+      "note": "50-65% per wildlife guides"
+    },
+    {
+      "park": "Arches National Park",
+      "animal": "Coyote",
+      "status": "PASS",
+      "currentTier": "Likely (30-60%)",
+      "currentPct": "30-60%",
+      "expectedPct": "30-45%",
+      "source": "inaturalist",
+      "fix": null,
+      "note": "30-45% per wildlife guides"
+    },
+    {
+      "park": "Arches National Park",
+      "animal": "Desert Cottontail",
+      "status": "PASS",
+      "currentTier": "Likely (30-60%)",
+      "currentPct": "30-60%",
+      "expectedPct": "45-60%",
+      "source": "inaturalist",
+      "fix": null,
+      "note": "45-60% per wildlife guides"
+    }
+  ],
+  "birdAudit": [
+    {
+      "park": "Everglades National Park",
+      "bird": "Great Blue Heron",
+      "status": "NO_CHART",
+      "hotspot": "L22040683"
+    },
+    {
+      "park": "Everglades National Park",
+      "bird": "Anhinga",
+      "status": "NO_CHART",
+      "hotspot": "L22040683"
+    },
+    {
+      "park": "Everglades National Park",
+      "bird": "Roseate Spoonbill",
+      "status": "NO_CHART",
+      "hotspot": "L22040683"
+    },
+    {
+      "park": "Everglades National Park",
+      "bird": "Osprey",
+      "status": "NO_CHART",
+      "hotspot": "L22040683"
+    },
+    {
+      "park": "Everglades National Park",
+      "bird": "Wood Stork",
+      "status": "NO_CHART",
+      "hotspot": "L22040683"
+    },
+    {
+      "park": "Acadia National Park",
+      "bird": "Common Loon",
+      "status": "NO_CHART",
+      "hotspot": "L16616637"
+    },
+    {
+      "park": "Acadia National Park",
+      "bird": "Bald Eagle",
+      "status": "NO_CHART",
+      "hotspot": "L16616637"
+    },
+    {
+      "park": "Acadia National Park",
+      "bird": "Osprey",
+      "status": "NO_CHART",
+      "hotspot": "L16616637"
+    },
+    {
+      "park": "Acadia National Park",
+      "bird": "Common Eider",
+      "status": "NO_CHART",
+      "hotspot": "L16616637"
+    },
+    {
+      "park": "Acadia National Park",
+      "bird": "Black-capped Chickadee",
+      "status": "NO_CHART",
+      "hotspot": "L16616637"
+    },
+    {
+      "park": "Great Smoky Mountains National Park",
+      "bird": "Wild Turkey",
+      "status": "NO_CHART",
+      "hotspot": "L19534239"
+    },
+    {
+      "park": "Great Smoky Mountains National Park",
+      "bird": "Pileated Woodpecker",
+      "status": "NO_CHART",
+      "hotspot": "L19534239"
+    },
+    {
+      "park": "Great Smoky Mountains National Park",
+      "bird": "Barred Owl",
+      "status": "NO_CHART",
+      "hotspot": "L19534239"
+    },
+    {
+      "park": "Great Smoky Mountains National Park",
+      "bird": "Eastern Towhee",
+      "status": "NO_CHART",
+      "hotspot": "L19534239"
+    },
+    {
+      "park": "Yellowstone National Park",
+      "bird": "Bald Eagle",
+      "status": "NO_CHART",
+      "hotspot": "L6176864"
+    },
+    {
+      "park": "Yellowstone National Park",
+      "bird": "Sandhill Crane",
+      "status": "NO_CHART",
+      "hotspot": "L6176864"
+    },
+    {
+      "park": "Yellowstone National Park",
+      "bird": "Common Raven",
+      "status": "NO_CHART",
+      "hotspot": "L6176864"
+    },
+    {
+      "park": "Yellowstone National Park",
+      "bird": "Osprey",
+      "status": "NO_CHART",
+      "hotspot": "L6176864"
+    },
+    {
+      "park": "Grand Canyon National Park",
+      "bird": "California Condor",
+      "status": "NO_CHART",
+      "hotspot": "L16140060"
+    },
+    {
+      "park": "Grand Canyon National Park",
+      "bird": "Steller's Jay",
+      "status": "NO_CHART",
+      "hotspot": "L16140060"
+    },
+    {
+      "park": "Grand Canyon National Park",
+      "bird": "Common Raven",
+      "status": "NO_CHART",
+      "hotspot": "L16140060"
+    },
+    {
+      "park": "Grand Canyon National Park",
+      "bird": "Peregrine Falcon",
+      "status": "NO_CHART",
+      "hotspot": "L16140060"
+    },
+    {
+      "park": "Zion National Park",
+      "bird": "California Condor",
+      "status": "NO_CHART",
+      "hotspot": "L1447599"
+    },
+    {
+      "park": "Zion National Park",
+      "bird": "Peregrine Falcon",
+      "status": "NO_CHART",
+      "hotspot": "L1447599"
+    },
+    {
+      "park": "Zion National Park",
+      "bird": "White-throated Swift",
+      "status": "NO_CHART",
+      "hotspot": "L1447599"
+    },
+    {
+      "park": "Zion National Park",
+      "bird": "Canyon Wren",
+      "status": "NO_CHART",
+      "hotspot": "L1447599"
+    },
+    {
+      "park": "Badlands National Park",
+      "bird": "Burrowing Owl",
+      "status": "NO_CHART",
+      "hotspot": "L3875628"
+    },
+    {
+      "park": "Badlands National Park",
+      "bird": "Western Meadowlark",
+      "status": "NO_CHART",
+      "hotspot": "L3875628"
+    },
+    {
+      "park": "Badlands National Park",
+      "bird": "Northern Harrier",
+      "status": "NO_CHART",
+      "hotspot": "L3875628"
+    },
+    {
+      "park": "Olympic National Park",
+      "bird": "Bald Eagle",
+      "status": "NO_CHART",
+      "hotspot": "L27655073"
+    },
+    {
+      "park": "Olympic National Park",
+      "bird": "Steller's Jay",
+      "status": "NO_CHART",
+      "hotspot": "L27655073"
+    },
+    {
+      "park": "Olympic National Park",
+      "bird": "Common Raven",
+      "status": "NO_CHART",
+      "hotspot": "L27655073"
+    },
+    {
+      "park": "Olympic National Park",
+      "bird": "Pigeon Guillemot",
+      "status": "NO_CHART",
+      "hotspot": "L27655073"
+    },
+    {
+      "park": "Rocky Mountain National Park",
+      "bird": "American Dipper",
+      "status": "NO_CHART",
+      "hotspot": "L142617"
+    },
+    {
+      "park": "Rocky Mountain National Park",
+      "bird": "Steller's Jay",
+      "status": "NO_CHART",
+      "hotspot": "L142617"
+    },
+    {
+      "park": "Rocky Mountain National Park",
+      "bird": "Clark's Nutcracker",
+      "status": "NO_CHART",
+      "hotspot": "L142617"
+    },
+    {
+      "park": "Rocky Mountain National Park",
+      "bird": "White-tailed Ptarmigan",
+      "status": "NO_CHART",
+      "hotspot": "L142617"
+    },
+    {
+      "park": "Shenandoah National Park",
+      "bird": "Wild Turkey",
+      "status": "NO_CHART",
+      "hotspot": "L159390"
+    },
+    {
+      "park": "Shenandoah National Park",
+      "bird": "Pileated Woodpecker",
+      "status": "NO_CHART",
+      "hotspot": "L159390"
+    },
+    {
+      "park": "Shenandoah National Park",
+      "bird": "Ovenbird",
+      "status": "NO_CHART",
+      "hotspot": "L159390"
+    },
+    {
+      "park": "Shenandoah National Park",
+      "bird": "Wood Thrush",
+      "status": "NO_CHART",
+      "hotspot": "L159390"
+    },
+    {
+      "park": "Glacier National Park",
+      "bird": "Common Raven",
+      "status": "NO_CHART",
+      "hotspot": "L9867399"
+    },
+    {
+      "park": "Glacier National Park",
+      "bird": "Steller's Jay",
+      "status": "NO_CHART",
+      "hotspot": "L9867399"
+    },
+    {
+      "park": "Glacier National Park",
+      "bird": "Clark's Nutcracker",
+      "status": "NO_CHART",
+      "hotspot": "L9867399"
+    },
+    {
+      "park": "Glacier National Park",
+      "bird": "Osprey",
+      "status": "NO_CHART",
+      "hotspot": "L9867399"
+    },
+    {
+      "park": "Denali National Park",
+      "bird": "Willow Ptarmigan",
+      "status": "NO_CHART",
+      "hotspot": null
+    },
+    {
+      "park": "Denali National Park",
+      "bird": "Common Raven",
+      "status": "NO_CHART",
+      "hotspot": null
+    },
+    {
+      "park": "Denali National Park",
+      "bird": "Arctic Tern",
+      "status": "NO_CHART",
+      "hotspot": null
+    }
+  ],
+  "systemicIssues": [
+    {
+      "type": "RARE_ANIMAL_COMMON",
+      "park": "Everglades National Park",
+      "detail": "\"Jaguar Guapote\" is Unlikely (10-30%) — seems too high for this species",
+      "severity": "HIGH",
+      "animal": "Jaguar Guapote",
+      "currentRarity": "unlikely"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Denali National Park",
+      "detail": "Only 1 Guaranteed animals out of 757 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Acadia National Park",
+      "detail": "Only 0 Guaranteed animals out of 758 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Shenandoah National Park",
+      "detail": "Only 1 Guaranteed animals out of 469 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "New River Gorge National Park",
+      "detail": "Only 1 Guaranteed animals out of 678 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Cuyahoga Valley National Park",
+      "detail": "Only 1 Guaranteed animals out of 538 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Isle Royale National Park",
+      "detail": "Only 0 Guaranteed animals out of 711 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Great Smoky Mountains National Park",
+      "detail": "Only 1 Guaranteed animals out of 577 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "COMMON_ANIMAL_RARE",
+      "park": "Great Smoky Mountains National Park",
+      "detail": "\"Squirrel Tree Frog\" is Exceptional (<2%) — seems too low for this species",
+      "severity": "LOW",
+      "animal": "Squirrel Tree Frog",
+      "currentRarity": "exceptional"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Biscayne National Park",
+      "detail": "Only 1 Guaranteed animals out of 613 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Mammoth Cave National Park",
+      "detail": "Only 1 Guaranteed animals out of 512 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Voyageurs National Park",
+      "detail": "Only 1 Guaranteed animals out of 709 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "COMMON_ANIMAL_RARE",
+      "park": "Voyageurs National Park",
+      "detail": "\"White-tailed Deer\" is Rare (2-10%) — seems too low for this species",
+      "severity": "LOW",
+      "animal": "White-tailed Deer",
+      "currentRarity": "rare"
+    },
+    {
+      "type": "COMMON_ANIMAL_RARE",
+      "park": "Voyageurs National Park",
+      "detail": "\"White-tailed Deer\" is Rare (2-10%) — seems too low for this species",
+      "severity": "LOW",
+      "animal": "White-tailed Deer",
+      "currentRarity": "rare"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Indiana Dunes National Park",
+      "detail": "Only 1 Guaranteed animals out of 531 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "COMMON_ANIMAL_RARE",
+      "park": "Badlands National Park",
+      "detail": "\"White-tailed Deer\" is Rare (2-10%) — seems too low for this species",
+      "severity": "LOW",
+      "animal": "White-tailed Deer",
+      "currentRarity": "rare"
+    },
+    {
+      "type": "COMMON_ANIMAL_RARE",
+      "park": "Badlands National Park",
+      "detail": "\"White-tailed Deer\" is Rare (2-10%) — seems too low for this species",
+      "severity": "LOW",
+      "animal": "White-tailed Deer",
+      "currentRarity": "rare"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Wind Cave National Park",
+      "detail": "Only 1 Guaranteed animals out of 434 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "COMMON_ANIMAL_RARE",
+      "park": "Wind Cave National Park",
+      "detail": "\"White-tailed Deer\" is Rare (2-10%) — seems too low for this species",
+      "severity": "LOW",
+      "animal": "White-tailed Deer",
+      "currentRarity": "rare"
+    },
+    {
+      "type": "COMMON_ANIMAL_RARE",
+      "park": "Wind Cave National Park",
+      "detail": "\"White-tailed Deer\" is Rare (2-10%) — seems too low for this species",
+      "severity": "LOW",
+      "animal": "White-tailed Deer",
+      "currentRarity": "rare"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Theodore Roosevelt National Park",
+      "detail": "Only 1 Guaranteed animals out of 417 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "COMMON_ANIMAL_RARE",
+      "park": "Theodore Roosevelt National Park",
+      "detail": "\"White-tailed Deer\" is Rare (2-10%) — seems too low for this species",
+      "severity": "LOW",
+      "animal": "White-tailed Deer",
+      "currentRarity": "rare"
+    },
+    {
+      "type": "COMMON_ANIMAL_RARE",
+      "park": "Theodore Roosevelt National Park",
+      "detail": "\"White-tailed Deer\" is Rare (2-10%) — seems too low for this species",
+      "severity": "LOW",
+      "animal": "White-tailed Deer",
+      "currentRarity": "rare"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Gateway Arch National Park",
+      "detail": "Only 0 Guaranteed animals out of 358 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Grand Canyon National Park",
+      "detail": "Only 0 Guaranteed animals out of 510 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "COMMON_ANIMAL_RARE",
+      "park": "Grand Canyon National Park",
+      "detail": "\"American Bison\" is Exceptional (<2%) — seems too low for this species",
+      "severity": "LOW",
+      "animal": "American Bison",
+      "currentRarity": "exceptional"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Zion National Park",
+      "detail": "Only 0 Guaranteed animals out of 461 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Bryce Canyon National Park",
+      "detail": "Only 0 Guaranteed animals out of 667 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "COMMON_ANIMAL_RARE",
+      "park": "Bryce Canyon National Park",
+      "detail": "\"Rabbitbrush stem gall moth\" is Exceptional (<2%) — seems too low for this species",
+      "severity": "LOW",
+      "animal": "Rabbitbrush stem gall moth",
+      "currentRarity": "exceptional"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Arches National Park",
+      "detail": "Only 0 Guaranteed animals out of 246 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Canyonlands National Park",
+      "detail": "Only 0 Guaranteed animals out of 528 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Capitol Reef National Park",
+      "detail": "Only 0 Guaranteed animals out of 232 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Mesa Verde National Park",
+      "detail": "Only 1 Guaranteed animals out of 210 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "COMMON_ANIMAL_RARE",
+      "park": "Mesa Verde National Park",
+      "detail": "\"Gunnison's Prairie Dog\" is Rare (2-10%) — seems too low for this species",
+      "severity": "LOW",
+      "animal": "Gunnison's Prairie Dog",
+      "currentRarity": "rare"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Petrified Forest National Park",
+      "detail": "Only 0 Guaranteed animals out of 298 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "RARE_ANIMAL_COMMON",
+      "park": "Petrified Forest National Park",
+      "detail": "\"Bobcat\" is Unlikely (10-30%) — seems too high for this species",
+      "severity": "LOW",
+      "animal": "Bobcat",
+      "currentRarity": "unlikely"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Saguaro National Park",
+      "detail": "Only 1 Guaranteed animals out of 341 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "RARE_ANIMAL_COMMON",
+      "park": "Saguaro National Park",
+      "detail": "\"Bobcat\" is Unlikely (10-30%) — seems too high for this species",
+      "severity": "LOW",
+      "animal": "Bobcat",
+      "currentRarity": "unlikely"
+    },
+    {
+      "type": "RARE_ANIMAL_COMMON",
+      "park": "Saguaro National Park",
+      "detail": "\"Mountain Lion\" is Unlikely (10-30%) — seems too high for this species",
+      "severity": "LOW",
+      "animal": "Mountain Lion",
+      "currentRarity": "unlikely"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "White Sands National Park",
+      "detail": "Only 0 Guaranteed animals out of 608 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Guadalupe Mountains National Park",
+      "detail": "Only 0 Guaranteed animals out of 262 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Big Bend National Park",
+      "detail": "Only 0 Guaranteed animals out of 359 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "RARE_ANIMAL_COMMON",
+      "park": "Big Bend National Park",
+      "detail": "\"Bobcat\" is Unlikely (10-30%) — seems too high for this species",
+      "severity": "LOW",
+      "animal": "Bobcat",
+      "currentRarity": "unlikely"
+    },
+    {
+      "type": "RARE_ANIMAL_COMMON",
+      "park": "Big Bend National Park",
+      "detail": "\"Mountain Lion\" is Unlikely (10-30%) — seems too high for this species",
+      "severity": "LOW",
+      "animal": "Mountain Lion",
+      "currentRarity": "unlikely"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Grand Teton National Park",
+      "detail": "Only 1 Guaranteed animals out of 201 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "COMMON_ANIMAL_RARE",
+      "park": "Grand Teton National Park",
+      "detail": "\"White-tailed Deer\" is Rare (2-10%) — seems too low for this species",
+      "severity": "LOW",
+      "animal": "White-tailed Deer",
+      "currentRarity": "rare"
+    },
+    {
+      "type": "COMMON_ANIMAL_RARE",
+      "park": "Grand Teton National Park",
+      "detail": "\"White-tailed Deer\" is Rare (2-10%) — seems too low for this species",
+      "severity": "LOW",
+      "animal": "White-tailed Deer",
+      "currentRarity": "rare"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Glacier National Park",
+      "detail": "Only 0 Guaranteed animals out of 170 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Great Sand Dunes National Park",
+      "detail": "Only 1 Guaranteed animals out of 231 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Black Canyon of the Gunnison National Park",
+      "detail": "Only 0 Guaranteed animals out of 206 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Olympic National Park",
+      "detail": "Only 0 Guaranteed animals out of 224 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "North Cascades National Park",
+      "detail": "Only 0 Guaranteed animals out of 598 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Mount Rainier National Park",
+      "detail": "Only 0 Guaranteed animals out of 610 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Crater Lake National Park",
+      "detail": "Only 0 Guaranteed animals out of 612 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Redwood National Park",
+      "detail": "Only 0 Guaranteed animals out of 228 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Lassen Volcanic National Park",
+      "detail": "Only 0 Guaranteed animals out of 923 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Yosemite National Park",
+      "detail": "Only 1 Guaranteed animals out of 226 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "RARE_ANIMAL_COMMON",
+      "park": "Yosemite National Park",
+      "detail": "\"Bobcat\" is Likely (30-60%) — seems too high for this species",
+      "severity": "HIGH",
+      "animal": "Bobcat",
+      "currentRarity": "likely"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Kings Canyon National Park",
+      "detail": "Only 0 Guaranteed animals out of 235 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Sequoia National Park",
+      "detail": "Only 0 Guaranteed animals out of 940 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Joshua Tree National Park",
+      "detail": "Only 0 Guaranteed animals out of 242 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Death Valley National Park",
+      "detail": "Only 0 Guaranteed animals out of 261 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Channel Islands National Park",
+      "detail": "Only 1 Guaranteed animals out of 260 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Pinnacles National Park",
+      "detail": "Only 0 Guaranteed animals out of 236 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "RARE_ANIMAL_COMMON",
+      "park": "Pinnacles National Park",
+      "detail": "\"Bobcat\" is Unlikely (10-30%) — seems too high for this species",
+      "severity": "LOW",
+      "animal": "Bobcat",
+      "currentRarity": "unlikely"
+    },
+    {
+      "type": "RARE_ANIMAL_COMMON",
+      "park": "Kenai Fjords National Park",
+      "detail": "\"Sea Otter\" is Guaranteed (90%+) — seems too high for this species",
+      "severity": "HIGH",
+      "animal": "Sea Otter",
+      "currentRarity": "guaranteed"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Glacier Bay National Park",
+      "detail": "Only 1 Guaranteed animals out of 213 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "RARE_ANIMAL_COMMON",
+      "park": "Glacier Bay National Park",
+      "detail": "\"Sea Otter\" is Very Likely (60-90%) — seems too high for this species",
+      "severity": "LOW",
+      "animal": "Sea Otter",
+      "currentRarity": "very_likely"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Katmai National Park",
+      "detail": "Only 1 Guaranteed animals out of 616 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "RARE_ANIMAL_COMMON",
+      "park": "Katmai National Park",
+      "detail": "\"Brown Bear\" is Guaranteed (90%+) — seems too high for this species",
+      "severity": "HIGH",
+      "animal": "Brown Bear",
+      "currentRarity": "guaranteed"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Wrangell-St. Elias National Park",
+      "detail": "Only 1 Guaranteed animals out of 613 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Lake Clark National Park",
+      "detail": "Only 1 Guaranteed animals out of 604 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "RARE_ANIMAL_COMMON",
+      "park": "Lake Clark National Park",
+      "detail": "\"Brown Bear\" is Guaranteed (90%+) — seems too high for this species",
+      "severity": "HIGH",
+      "animal": "Brown Bear",
+      "currentRarity": "guaranteed"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Gates of the Arctic National Park",
+      "detail": "Only 0 Guaranteed animals out of 605 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Kobuk Valley National Park",
+      "detail": "Only 0 Guaranteed animals out of 597 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Hawaii Volcanoes National Park",
+      "detail": "Only 0 Guaranteed animals out of 356 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Haleakalā National Park",
+      "detail": "Only 1 Guaranteed animals out of 354 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "National Park of American Samoa",
+      "detail": "Only 0 Guaranteed animals out of 114 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Virgin Islands National Park",
+      "detail": "Only 0 Guaranteed animals out of 356 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Carlsbad Caverns National Park",
+      "detail": "Only 1 Guaranteed animals out of 533 total — seems too few",
+      "severity": "MEDIUM"
+    },
+    {
+      "type": "UNDER_ESTIMATED_GUARANTEED",
+      "park": "Great Basin National Park",
+      "detail": "Only 0 Guaranteed animals out of 394 total — seems too few",
+      "severity": "MEDIUM"
+    }
+  ],
+  "highImpactFallbacks": [
+    {
+      "park": "Everglades National Park",
+      "animal": "Anhinga",
+      "rarity": "Guaranteed (90%+)",
+      "type": "hotspot-fallback-likely"
+    },
+    {
+      "park": "Everglades National Park",
+      "animal": "Snowy Egret",
+      "rarity": "Very Likely (60-90%)",
+      "type": "hotspot-fallback-likely"
+    },
+    {
+      "park": "Everglades National Park",
+      "animal": "Great Blue Heron",
+      "rarity": "Guaranteed (90%+)",
+      "type": "hotspot-fallback-likely"
+    },
+    {
+      "park": "Shenandoah National Park",
+      "animal": "Wild Turkey",
+      "rarity": "Very Likely (60-90%)",
+      "type": "hotspot-fallback-likely"
+    },
+    {
+      "park": "Isle Royale National Park",
+      "animal": "Common Loon",
+      "rarity": "Very Likely (60-90%)",
+      "type": "hotspot-fallback-likely"
+    },
+    {
+      "park": "Great Smoky Mountains National Park",
+      "animal": "Wild Turkey",
+      "rarity": "Very Likely (60-90%)",
+      "type": "hotspot-fallback-likely"
+    },
+    {
+      "park": "Biscayne National Park",
+      "animal": "Double-crested Cormorant",
+      "rarity": "Very Likely (60-90%)",
+      "type": "hotspot-fallback-likely"
+    },
+    {
+      "park": "Biscayne National Park",
+      "animal": "Brown Pelican",
+      "rarity": "Very Likely (60-90%)",
+      "type": "hotspot-fallback-likely"
+    },
+    {
+      "park": "Dry Tortugas National Park",
+      "animal": "Brown Noddy",
+      "rarity": "Guaranteed (90%+)",
+      "type": "hotspot-fallback-likely"
+    },
+    {
+      "park": "Dry Tortugas National Park",
+      "animal": "Sooty Tern",
+      "rarity": "Guaranteed (90%+)",
+      "type": "hotspot-fallback-likely"
+    },
+    {
+      "park": "Dry Tortugas National Park",
+      "animal": "Magnificent Frigatebird",
+      "rarity": "Very Likely (60-90%)",
+      "type": "hotspot-fallback-likely"
+    },
+    {
+      "park": "Voyageurs National Park",
+      "animal": "Common Loon",
+      "rarity": "Guaranteed (90%+)",
+      "type": "hotspot-fallback-likely"
+    },
+    {
+      "park": "Voyageurs National Park",
+      "animal": "Bald Eagle",
+      "rarity": "Very Likely (60-90%)",
+      "type": "hotspot-fallback-likely"
+    },
+    {
+      "park": "Indiana Dunes National Park",
+      "animal": "Sandhill Crane",
+      "rarity": "Very Likely (60-90%)",
+      "type": "hotspot-fallback-likely"
+    },
+    {
+      "park": "Grand Canyon National Park",
+      "animal": "Common Raven",
+      "rarity": "Very Likely (60-90%)",
+      "type": "hotspot-fallback-likely"
+    },
+    {
+      "park": "Bryce Canyon National Park",
+      "animal": "Common Raven",
+      "rarity": "Very Likely (60-90%)",
+      "type": "hotspot-fallback-likely"
+    },
+    {
+      "park": "Mesa Verde National Park",
+      "animal": "Wild Turkey",
+      "rarity": "Very Likely (60-90%)",
+      "type": "hotspot-fallback-likely"
+    },
+    {
+      "park": "Saguaro National Park",
+      "animal": "Gambel's Quail",
+      "rarity": "Guaranteed (90%+)",
+      "type": "hotspot-fallback-likely"
+    },
+    {
+      "park": "Saguaro National Park",
+      "animal": "Gila Woodpecker",
+      "rarity": "Very Likely (60-90%)",
+      "type": "hotspot-fallback-likely"
+    },
+    {
+      "park": "Saguaro National Park",
+      "animal": "Cactus Wren",
+      "rarity": "Very Likely (60-90%)",
+      "type": "hotspot-fallback-likely"
+    },
+    {
+      "park": "Yosemite National Park",
+      "animal": "Steller's Jay",
+      "rarity": "Very Likely (60-90%)",
+      "type": "hotspot-fallback-likely"
+    },
+    {
+      "park": "Kenai Fjords National Park",
+      "animal": "Tufted Puffin",
+      "rarity": "Very Likely (60-90%)",
+      "type": "hotspot-fallback-likely"
+    },
+    {
+      "park": "Kenai Fjords National Park",
+      "animal": "Horned Puffin",
+      "rarity": "Very Likely (60-90%)",
+      "type": "hotspot-fallback-likely"
+    },
+    {
+      "park": "Hawaii Volcanoes National Park",
+      "animal": "Hawaiian Goose",
+      "rarity": "Very Likely (60-90%)",
+      "type": "hotspot-fallback-likely"
+    },
+    {
+      "park": "Haleakalā National Park",
+      "animal": "Hawaiian Goose",
+      "rarity": "Guaranteed (90%+)",
+      "type": "hotspot-fallback-likely"
+    }
+  ]
+}
