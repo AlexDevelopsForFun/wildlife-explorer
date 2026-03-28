@@ -211,6 +211,14 @@ const UNDERREPORT_CORRECTIONS = {
 // Keywords identifying raptors/owls (other than Bald Eagle/Osprey handled above)
 const RAPTOR_OWL_KEYWORDS = ['hawk', 'owl', 'falcon', 'kite', 'harrier', 'kestrel', 'merlin', 'eagle', 'vulture', 'condor'];
 
+// Birds that should NEVER be classified as Exceptional — they are regularly seen
+// at most parks and the raptor correction factor can incorrectly push them there.
+export const NEVER_EXCEPTIONAL_BIRDS = new Set([
+  'Turkey Vulture', 'Red-tailed Hawk', 'Cooper\'s Hawk', 'Sharp-shinned Hawk',
+  'American Kestrel', 'Northern Harrier', 'Osprey', 'Broad-winged Hawk',
+  'Red-shouldered Hawk', 'Northern Saw-whet Owl', 'Barred Owl', 'Great Horned Owl',
+]);
+
 // Returns the multiplicative correction factor for a species name.
 // Values < 1 reduce frequency (charismatic), > 1 boost it (under-reported), 1 = no change.
 export function getCorrectionFactor(name) {
@@ -1157,13 +1165,13 @@ const GBIF_CLASS_TYPE = {
   insecta: 'insect', actinopterygii: 'marine', chondrichthyes: 'marine',
 };
 
-export async function fetchGbif(lat, lng, locId, taxonKey = null) {
-  const cacheKey = `gbif_v3_${locId}${taxonKey != null ? `_t${taxonKey}` : ''}`;
+export async function fetchGbif(lat, lng, locId, taxonKey = null, { d = 0.14 } = {}) {
+  const dSuffix = d !== 0.14 ? `_d${Math.round(d * 100)}` : '';
+  const cacheKey = `gbif_v3_${locId}${taxonKey != null ? `_t${taxonKey}` : ''}${dSuffix}`;
   const cached = cacheGet(cacheKey);
   if (cached) return cached;
 
   try {
-    const d = 0.14; // ~15 km bounding box
     const taxonParam = taxonKey != null ? `&taxonKey=${taxonKey}` : '';
     const url =
       `https://api.gbif.org/v1/occurrence/search` +
@@ -1351,9 +1359,15 @@ export function deduplicateAnimals(animals) {
       ? group.find(a => a.source === 'ebird' && a.rarity)
       : null;
 
+    // If primary is a curated (hardcoded) animal, always preserve its rarity.
+    // Only use eBird rarity for live-only animals.
+    const rarity = primary._curated
+      ? primary.rarity
+      : (ebirdEntry?.rarity ?? primary.rarity);
+
     return {
       ...primary,
-      rarity:         ebirdEntry?.rarity ?? primary.rarity,
+      rarity,
       source:         primary.source, // primary source (most observations)
       sources:        allSources,     // all sources that observed this animal
       scientificName: sciName,
@@ -1375,8 +1389,8 @@ export function mergeAnimals(hardcoded, liveList) {
   if (!liveList?.length) {
     return hardcoded.map(a =>
       a.source
-        ? { ...a, sources: a.sources ?? [a.source] }
-        : { ...a, source: 'estimated', sources: ['estimated'] }
+        ? { ...a, sources: a.sources ?? [a.source], _curated: true }
+        : { ...a, source: 'estimated', sources: ['estimated'], _curated: true }
     );
   }
 
@@ -1388,6 +1402,7 @@ export function mergeAnimals(hardcoded, liveList) {
       // API confirmed this species — upgrade source, sources, debug, scientific name.
       // Keep curated funFact, rarity, seasons from the hardcoded entry.
       // Copy migrationStatus + photoUrl from live if hardcoded doesn't have them.
+      // _curated: true prevents the enriched useMemo from overwriting rarity with live data.
       return {
         ...a,
         source:          live.source,
@@ -1396,12 +1411,13 @@ export function mergeAnimals(hardcoded, liveList) {
         scientificName:  live.scientificName ?? a.scientificName ?? null,
         migrationStatus: a.migrationStatus ?? live.migrationStatus ?? null,
         photoUrl:        a.photoUrl !== undefined ? a.photoUrl : (live.photoUrl ?? null),
+        _curated:        true,
       };
     }
     // No API confirmation — preserve existing source or mark as estimated
     return a.source
-      ? { ...a, sources: a.sources ?? [a.source] }
-      : { ...a, source: 'estimated', sources: ['estimated'] };
+      ? { ...a, sources: a.sources ?? [a.source], _curated: true }
+      : { ...a, source: 'estimated', sources: ['estimated'], _curated: true };
   });
 
   // Append novel live-only species not present in the hardcoded list
@@ -1422,20 +1438,38 @@ export function mergeAnimals(hardcoded, liveList) {
  *  to surface more species in species-rich parks like Everglades, Great Smoky, etc.)
  */
 const TYPE_CAPS = {
-  bird:      15,
-  mammal:    15,
-  reptile:   10,
-  amphibian: 10,
-  insect:     8,
-  marine:    10,
-  other:      5,
+  bird:      482,
+  mammal:     60,
+  reptile:    80,
+  amphibian:  40,
+  insect:     60,
+  marine:     50,
+  other:      20,
 };
 
+// Rarity sort order: best (guaranteed) first
+const _RARITY_SORT = { guaranteed: 0, very_likely: 1, likely: 2, unlikely: 3, rare: 4, exceptional: 5 };
+// Template funFact patterns — animals with these are live-API-only (lower priority)
+const _isTemplateFact = f => !f || /^(Appears on|Verified in|Recorded|Last reported)/.test(f);
+
 export function balanceAnimals(animals) {
+  // Sort by priority before applying caps:
+  // 1. Curated (rich hand-written funFact) before live-API template entries
+  // 2. Within each group: guaranteed → very_likely → ... → exceptional
+  // 3. Then by observation count descending (most-observed first)
+  const sorted = [...animals].sort((a, b) => {
+    const ac = _isTemplateFact(a.funFact) ? 1 : 0;
+    const bc = _isTemplateFact(b.funFact) ? 1 : 0;
+    if (ac !== bc) return ac - bc;
+    const ar = _RARITY_SORT[a.rarity] ?? 6;
+    const br = _RARITY_SORT[b.rarity] ?? 6;
+    if (ar !== br) return ar - br;
+    return (b._debug?.obsCount ?? b.frequency ?? 0) - (a._debug?.obsCount ?? a.frequency ?? 0);
+  });
   const counts = {};
-  return animals.filter(a => {
+  return sorted.filter(a => {
     const t = a.animalType ?? 'other';
     counts[t] = (counts[t] ?? 0) + 1;
-    return counts[t] <= (TYPE_CAPS[t] ?? 4);
+    return counts[t] <= (TYPE_CAPS[t] ?? 20);
   });
 }

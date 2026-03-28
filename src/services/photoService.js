@@ -41,17 +41,36 @@ function parseCredit(attribution) {
     .trim() || null;
 }
 
+// Only accept animal taxa — reject plants, fungi, bacteria, etc.
+const ANIMAL_ICONIC = new Set([
+  'Mammalia','Aves','Reptilia','Amphibia','Actinopterygii',
+  'Insecta','Arachnida','Mollusca','Animalia','Elasmobranchii',
+  'Echinodermata','Annelida','Arthropoda','Chromista',
+]);
+function isAnimalTaxon(taxon) {
+  if (!taxon) return false;
+  if (taxon.iconic_taxon_name === 'Plantae') return false;
+  if (taxon.iconic_taxon_name === 'Fungi') return false;
+  if (taxon.iconic_taxon_name === 'Protozoa') return false;
+  if (taxon.iconic_taxon_name === 'Bacteria') return false;
+  if (ANIMAL_ICONIC.has(taxon.iconic_taxon_name)) return true;
+  const anc = taxon.ancestry ?? '';
+  return anc.includes('/1/') || anc.startsWith('1/') || anc === '1';
+}
+
 // ── iNaturalist ───────────────────────────────────────────────────────────────
 // Uses the taxa/autocomplete endpoint — returns default_photo in a single call.
 // iNat medium_url images are reliably sized (≥ 200px), so we skip the size check.
+// Fetches per_page=10 so we can skip any plant/fungi that sort before the animal.
 async function tryInat(animalName) {
   try {
     const res = await fetch(
-      `https://api.inaturalist.org/v1/taxa/autocomplete?q=${encodeURIComponent(animalName)}&per_page=5&locale=en`
+      `https://api.inaturalist.org/v1/taxa/autocomplete?q=${encodeURIComponent(animalName)}&per_page=10&locale=en`
     );
     if (!res.ok) return null;
     const { results } = await res.json();
     for (const taxon of (results ?? [])) {
+      if (!isAnimalTaxon(taxon)) continue;   // skip plants, fungi, etc.
       const p = taxon.default_photo;
       if (!p?.medium_url) continue;
       // Derive large URL by swapping the size segment in the iNat CDN path

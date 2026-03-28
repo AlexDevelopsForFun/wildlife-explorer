@@ -8,7 +8,7 @@ import 'leaflet.markercluster';
 import { wildlifeLocations, SEASONS, RARITY, ANIMAL_TYPES, STATE_NAMES } from './wildlifeData';
 import { classifyAnimalSubtype, getSubtypeDefs } from './utils/subcategories';
 import {
-  mergeAnimals, balanceAnimals,
+  mergeAnimals, balanceAnimals, NEVER_EXCEPTIONAL_BIRDS,
   getCorrectionFactor, getMonthlyFrequency, getSeasonalFreq,
   rarityFromChecklist, getSeasonsFromBarChart, applyRarityOverride,
   fetchInatMonthlyHist,
@@ -450,10 +450,11 @@ const PHOTO_PLACEHOLDER = {
 // Higher = more exciting / visitor-recognisable.
 function getCharismaScore(name, animalType) {
   const n = (name ?? '').toLowerCase();
-  if (/\b(bison|buffalo|grizzly|bear|wolf|wolves|alligator|crocodile|moose|elk|wapiti|mountain lion|puma|cougar|jaguar|panther|wolverine|manatee)\b/.test(n)) return 10;
+  if (/\b(california condor|florida panther|gray wolf|grizzly bear|brown bear|wolverine)\b/.test(n)) return 11;
+  if (/\b(bison|buffalo|grizzly|bear|wolf|wolves|alligator|crocodile|moose|elk|wapiti|mountain lion|puma|cougar|jaguar|panther|wolverine|manatee|california condor|javelina|peccary)\b/.test(n)) return 10;
   if (/\b(manatee|whale|dolphin|orca|shark|sea lion|walrus|sea otter|steller)\b/.test(n)) return 9;
-  if (/\b(bald eagle|golden eagle|eagle|condor|peregrine|falcon|osprey)\b/.test(n)) return 9;
-  if (/\b(hawk|owl|vulture|kite|harrier|merlin|kestrel)\b/.test(n)) return 8;
+  if (/\b(bald eagle|golden eagle|eagle|condor|peregrine|falcon|osprey|roadrunner)\b/.test(n)) return 9;
+  if (/\b(hawk|owl|vulture|kite|harrier|merlin|kestrel|quail|gambel|gila woodpecker|cactus wren)\b/.test(n)) return 8;
   if (/\b(puffin|flamingo|spoonbill|whooping crane|sandhill crane|roseate|pelican|frigate|booby)\b/.test(n)) return 8;
   if (/\b(seal|harbor seal|grey seal|fur seal|sea turtle|leatherback|loggerhead)\b/.test(n)) return 8;
   if (/\b(fox|coyote|bobcat|lynx|otter|beaver|pronghorn|bighorn|mountain goat|caribou|muskox|bison|deer|elk|moose)\b/.test(n)) return 7;
@@ -482,7 +483,15 @@ function iconicSortFn(a, b) {
     return (_RARITY_ORDER[a.rarity] ?? 5) - (_RARITY_ORDER[b.rarity] ?? 5);
   }
 
-  // Tier 2: guaranteed/very_likely mammals
+  // Tier 2: exceptional animals — rare but exciting, once-in-a-lifetime
+  const aIsExc = a.rarity === 'exceptional';
+  const bIsExc = b.rarity === 'exceptional';
+  if (aIsExc !== bIsExc) return aIsExc ? -1 : 1;
+  if (aIsExc) {
+    return getCharismaScore(b.name, b.animalType) - getCharismaScore(a.name, a.animalType);
+  }
+
+  // Tier 3: guaranteed/very_likely mammals
   const aTopMammal = a.animalType === 'mammal' && (a.rarity === 'guaranteed' || a.rarity === 'very_likely');
   const bTopMammal = b.animalType === 'mammal' && (b.rarity === 'guaranteed' || b.rarity === 'very_likely');
   if (aTopMammal !== bTopMammal) return aTopMammal ? -1 : 1;
@@ -492,7 +501,7 @@ function iconicSortFn(a, b) {
     return getCharismaScore(b.name, b.animalType) - getCharismaScore(a.name, a.animalType);
   }
 
-  // Tier 3: rare animals — exciting even if hard to see
+  // Tier 4: rare animals — exciting even if hard to see
   const aIsRare = a.rarity === 'rare';
   const bIsRare = b.rarity === 'rare';
   if (aIsRare !== bIsRare) return aIsRare ? -1 : 1;
@@ -500,7 +509,7 @@ function iconicSortFn(a, b) {
     return getCharismaScore(b.name, b.animalType) - getCharismaScore(a.name, a.animalType);
   }
 
-  // Tier 4: everything else — charisma descending, then rarity ascending
+  // Tier 5: everything else — charisma descending, then rarity ascending
   const cd = getCharismaScore(b.name, b.animalType) - getCharismaScore(a.name, a.animalType);
   if (cd !== 0) return cd;
   return (_RARITY_ORDER[a.rarity] ?? 5) - (_RARITY_ORDER[b.rarity] ?? 5);
@@ -623,8 +632,15 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location }) {
   // Generic per-type placeholder — avoids showing 🦌 deer for every mammal
   const placeholderEmoji = PHOTO_PLACEHOLDER[animal.animalType] ?? '🐾';
 
+  const isExceptional = animal.rarity === 'exceptional';
+
   return (
-    <div className={`animal-card${isEstimated ? ' animal-card--estimated' : ''}${expanded && photo ? ' animal-card--photo-open' : ''}`}>
+    <div className={`animal-card${isEstimated ? ' animal-card--estimated' : ''}${expanded && photo ? ' animal-card--photo-open' : ''}${isExceptional ? ' animal-card--exceptional' : ''}`}>
+
+      {/* Once-in-a-lifetime banner for exceptional animals */}
+      {isExceptional && (
+        <div className="animal-card__exc-banner">⭐ ONCE IN A LIFETIME</div>
+      )}
 
       {/* Expanded full-width photo — shown above the card content when clicked */}
       {expanded && photo && (
@@ -1063,6 +1079,75 @@ function formatCacheAge(ts) {
   return `${days} days ago`;
 }
 
+// ── Rarity Spectrum Bar ────────────────────────────────────────────────────────
+// A proportional horizontal bar showing how many animals are in each rarity tier.
+// Clicking a segment filters to that rarity. Shows total count on hover.
+const SPECTRUM_CONFIG = [
+  { key: 'guaranteed',  color: '#1a7a3c', label: 'Guaranteed',  emoji: '🔵' },
+  { key: 'very_likely', color: '#2d9e56', label: 'Very Likely', emoji: '🟢' },
+  { key: 'likely',      color: '#5aab3f', label: 'Likely',      emoji: '🟡' },
+  { key: 'unlikely',    color: '#e0820a', label: 'Unlikely',    emoji: '🟠' },
+  { key: 'rare',        color: '#c0392b', label: 'Rare',        emoji: '🔴' },
+  { key: 'exceptional', color: '#7c3aed', label: 'Exceptional', emoji: '⭐' },
+];
+
+function RaritySpectrumBar({ animals, activeRarity, onSelectRarity }) {
+  const counts = useMemo(() => {
+    const c = {};
+    for (const a of animals) c[a.rarity] = (c[a.rarity] ?? 0) + 1;
+    return c;
+  }, [animals]);
+
+  const total = animals.length;
+  if (total === 0) return null;
+
+  return (
+    <div className="rarity-spectrum">
+      <div className="rarity-spectrum__bar">
+        {SPECTRUM_CONFIG.map(({ key, color, label, emoji }) => {
+          const count = counts[key] ?? 0;
+          if (count === 0) return null;
+          const pct = (count / total * 100).toFixed(1);
+          const isActive = activeRarity === key;
+          return (
+            <button
+              key={key}
+              className={`rarity-spectrum__seg${isActive ? ' rarity-spectrum__seg--active' : ''}`}
+              style={{ flex: count, background: color + (isActive ? '' : 'cc'), outline: isActive ? `2px solid ${color}` : 'none' }}
+              title={`${emoji} ${label}: ${count} species (${pct}%) — click to filter`}
+              onClick={() => onSelectRarity(isActive ? 'all' : key)}
+              aria-pressed={isActive}
+            />
+          );
+        })}
+      </div>
+      <div className="rarity-spectrum__legend">
+        {SPECTRUM_CONFIG.map(({ key, color, label, emoji }) => {
+          const count = counts[key] ?? 0;
+          if (count === 0) return null;
+          return (
+            <button
+              key={key}
+              className={`rarity-spectrum__pill${activeRarity === key ? ' rarity-spectrum__pill--active' : ''}`}
+              style={{ '--seg-color': color }}
+              onClick={() => onSelectRarity(activeRarity === key ? 'all' : key)}
+              title={`Filter to ${label} only`}
+            >
+              <span className="rarity-spectrum__dot" style={{ background: color }} />
+              {count}
+            </button>
+          );
+        })}
+        {activeRarity !== 'all' && (
+          <button className="rarity-spectrum__clear" onClick={() => onSelectRarity('all')}>
+            ✕ all
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
   isLive, sources, isLoading, debugMode, stats, barChart, cacheTs,
   loadingProgress, refreshLocation,
@@ -1255,14 +1340,30 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
         : getSeasonalFreq(periods, season);
       const correctedFreq = Math.min(1, rawFreq * factor);
       const periodLabel   = season === 'all' ? monthName : season;
-      const computedRarity = applyRarityOverride(location.id, a.name, rarityFromChecklist(correctedFreq));
+
+      // Curated (hardcoded) animals keep their hand-set rarity — don't override with eBird.
+      // Live-only birds: cap exceptional at rare (eBird <2% ≠ "once in a lifetime" for common birds).
+      // NEVER_EXCEPTIONAL_BIRDS: specific common raptors/owls that should never show as exceptional.
+      let computedRarity;
+      if (a._curated) {
+        computedRarity = applyRarityOverride(location.id, a.name, a.rarity);
+      } else {
+        let ebirdRarity = rarityFromChecklist(correctedFreq);
+        // Live-only animals cannot be Exceptional — only hand-curated entries can.
+        // Extra floor for NEVER_EXCEPTIONAL_BIRDS regardless of raw frequency.
+        if (ebirdRarity === 'exceptional' || NEVER_EXCEPTIONAL_BIRDS.has(a.name)) {
+          ebirdRarity = 'rare';
+        }
+        computedRarity = applyRarityOverride(location.id, a.name, ebirdRarity);
+      }
+
       return {
         ...a,
         displaySeasons,
         rarity:        computedRarity,
         _barChartFreq: correctedFreq,
         _rawBarFreq:   rawFreq,
-        funFact: (a.source === 'ebird' || a.sources?.includes('ebird'))
+        funFact: (!a._curated && (a.source === 'ebird' || a.sources?.includes('ebird')))
           ? `Appears on ${Math.round(rawFreq * 100)}% of ${periodLabel} eBird checklists at this location.`
           : a.funFact,
       };
@@ -1271,12 +1372,17 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
     if (a.frequency != null && factor !== 1) {
       // Fallback path: apply correction to the existing raw frequency
       const correctedFreq = Math.min(1, a.frequency * factor);
-      const computedRarity = applyRarityOverride(location.id, a.name, rarityFromChecklist(correctedFreq));
+      let ebirdRarity = rarityFromChecklist(correctedFreq);
+      // Live-only animals cannot be Exceptional — only hand-curated entries can
+      if (!a._curated && ebirdRarity === 'exceptional') ebirdRarity = 'rare';
+      const computedRarity = applyRarityOverride(location.id, a.name, ebirdRarity);
       return { ...a, displaySeasons, rarity: computedRarity };
     }
 
     // Apply park-specific override (e.g. Bison at Yellowstone = guaranteed)
-    const overriddenRarity = applyRarityOverride(location.id, a.name, a.rarity);
+    // Live-only animals: cap exceptional at rare — only curated entries can be exceptional
+    const baseRarity = (!a._curated && a.rarity === 'exceptional') ? 'rare' : a.rarity;
+    const overriddenRarity = applyRarityOverride(location.id, a.name, baseRarity);
     return { ...a, displaySeasons, rarity: overriddenRarity };
   }), [effectiveAnimals, barChart, barChartLC, season, currentMonth, monthName, location.id]);
 
@@ -1316,13 +1422,12 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
     return counts;
   }, [seasonFiltered, popupType]);
 
-  // "Show all" toggle for the default uncapped view; display page size for filtered views.
-  const [showAll,      setShowAll]      = useState(false);
-  const [displayLimit, setDisplayLimit] = useState(50);
+  // Display page size — 100 initially, +100 per Load More click.
+  const [displayLimit, setDisplayLimit] = useState(100);
 
   // Reset paging whenever the location or any filter changes
-  useEffect(() => { setShowAll(false); setDisplayLimit(50); }, [location.id]);
-  useEffect(() => { setDisplayLimit(50); }, [popupType, popupSubtype, popupSeason, popupRarity, search, popupSort]);
+  useEffect(() => { setDisplayLimit(100); }, [location.id]);
+  useEffect(() => { setDisplayLimit(100); }, [popupType, popupSubtype, popupSeason, popupRarity, search, popupSort]);
 
   // Popup-local filtering + sorting (independent of global header filters).
   // Returns the full sorted list — slicing is handled in render based on state.
@@ -1347,13 +1452,6 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
     }
 
     if (popupRarity !== 'all') result = result.filter(a => a.rarity === popupRarity);
-
-    // On 'iconic-first' and 'common-first' sorts, exceptional animals are shown
-    // exclusively in the Rare Finds section below with special ExceptionalCard styling.
-    // On other sorts (rarest-first, a-z) they integrate naturally into the main list.
-    if ((popupSort === 'iconic-first' || popupSort === 'common-first') && popupRarity === 'all') {
-      result = result.filter(a => a.rarity !== 'exceptional');
-    }
 
     if (search.trim()) {
       const q = search.toLowerCase();
@@ -1554,6 +1652,15 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
         )}
       </div>
 
+      {/* ── Rarity spectrum bar ── */}
+      {isLive && (
+        <RaritySpectrumBar
+          animals={seasonFiltered}
+          activeRarity={popupRarity}
+          onSelectRarity={setPopupRarity}
+        />
+      )}
+
       {/* ── Type tabs ── */}
       <div className="lp__tabs-wrapper">
         {tabsCanScrollLeft && (
@@ -1681,7 +1788,7 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
         </div>
       </div>
 
-      {/* ── Single scroll container: animal list + Rare Finds section ── */}
+      {/* ── Single scroll container: animal list ── */}
       <div className="lp__scroll">
         <div className="lp__body">
           {!isLive && isLoading && (
@@ -1703,26 +1810,26 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
                 </p>
               );
             }
-            // Default view (no filters): cap at 20, show "Show all" button
-            const isDefaultCapped = !isFiltered && !showAll && filtered.length > 20;
-            // Filtered view: paginate at displayLimit, never cut off entirely
-            const visibleList = isDefaultCapped
-              ? filtered.slice(0, 20)
-              : filtered.slice(0, displayLimit);
-            const hasMore = !isDefaultCapped && displayLimit < filtered.length;
+            const visibleList = filtered.slice(0, displayLimit);
+            const remaining   = filtered.length - displayLimit;
+            const hasMore     = displayLimit < filtered.length;
+            const typeLabel   = popupType !== 'all' ? (ANIMAL_TYPES[popupType]?.label ?? popupType) : 'species';
 
             return (
               <>
+                <div className="lp__showing-count">
+                  Showing {Math.min(displayLimit, filtered.length)} of {filtered.length} {typeLabel}
+                </div>
                 {visibleList.map((a, i) => <AnimalCard key={`${a.name}-${i}`} animal={a} debugMode={debugMode} seasonalFreqs={seasonalFreqs} location={location} />)}
-                {isDefaultCapped && (
-                  <button className="lp__show-all-btn" onClick={() => setShowAll(true)}>
-                    Show all {filtered.length} species ↓
-                  </button>
-                )}
                 {hasMore && (
-                  <button className="lp__load-more-btn" onClick={() => setDisplayLimit(d => d + 50)}>
-                    Load more · {filtered.length - displayLimit} remaining
-                  </button>
+                  <div className="lp__load-more-row">
+                    <button className="lp__load-more-btn" onClick={() => setDisplayLimit(d => d + 100)}>
+                      Load 100 more · {remaining} remaining
+                    </button>
+                    <button className="lp__view-all-btn" onClick={() => setDisplayLimit(filtered.length)}>
+                      View all {filtered.length} {typeLabel}
+                    </button>
+                  </div>
                 )}
               </>
             );
@@ -1736,28 +1843,6 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
             </div>
           )}
         </div>
-
-        {/* ── Rare Finds highlight section ───────────────────────────────────
-             Shown on 'Most Iconic' and 'Most Common' sorts with rarity = 'all'
-             (exceptional animals are excluded from the main list in those modes
-             and displayed here with special ExceptionalCard styling instead).
-             On other sorts (rarest-first, a-z) they integrate into the main
-             list naturally. Fully filter-aware.                               ── */}
-        {isLive && exceptionalAnimals.length > 0 && (popupSort === 'iconic-first' || popupSort === 'common-first') && popupRarity === 'all' && (
-          <div className="lp__exceptional">
-            <div className="lp__exceptional-title">
-              {rareFindTitle}
-            </div>
-            <p className="lp__exceptional-sub">
-              These animals have been documented at this park but are extremely rarely seen by visitors. A sighting is once-in-a-lifetime lucky.
-            </p>
-            <div className="lp__exceptional-cards">
-              {exceptionalAnimals.map((a, i) => (
-                <ExceptionalCard key={`exc-${a.name}-${i}`} animal={a} seasonalFreqs={seasonalFreqs} location={location} />
-              ))}
-            </div>
-          </div>
-        )}
 
         {/* ── Report a Sighting ─────────────────────────────────────────────
              Shows a compact form; saves to localStorage with 👤 badge.     ── */}
@@ -2023,7 +2108,7 @@ export default function App() {
     const out = {};
     wildlifeLocations.forEach(loc => {
       const live = liveData[loc.id]?.animals ?? null;
-      out[loc.id] = mergeAnimals(loc.animals, live);
+      out[loc.id] = balanceAnimals(mergeAnimals(loc.animals, live));
     });
     return out;
   }, [liveData]);

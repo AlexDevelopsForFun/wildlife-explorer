@@ -83,15 +83,34 @@ function parseCredit(attribution) {
   return attribution.split(',')[0].replace(/^\(c\)\s*/i, '').replace(/^©\s*\d*\s*/i, '').trim() || null;
 }
 
+// Only accept animal taxa — reject plants, fungi, bacteria, etc.
+const ANIMAL_ICONIC = new Set([
+  'Mammalia','Aves','Reptilia','Amphibia','Actinopterygii',
+  'Insecta','Arachnida','Mollusca','Animalia','Elasmobranchii',
+  'Echinodermata','Annelida','Arthropoda','Chromista',
+]);
+function isAnimalTaxon(taxon) {
+  if (!taxon) return false;
+  if (taxon.iconic_taxon_name === 'Plantae') return false;
+  if (taxon.iconic_taxon_name === 'Fungi') return false;
+  if (taxon.iconic_taxon_name === 'Protozoa') return false;
+  if (taxon.iconic_taxon_name === 'Bacteria') return false;
+  if (ANIMAL_ICONIC.has(taxon.iconic_taxon_name)) return true;
+  const anc = taxon.ancestry ?? '';
+  if (anc.includes('/1/') || anc.startsWith('1/') || anc === '1') return true;
+  return false;
+}
+
 async function tryInat(query) {
   try {
     const res = await fetch(
-      `https://api.inaturalist.org/v1/taxa/autocomplete?q=${encodeURIComponent(query)}&per_page=5&locale=en`,
+      `https://api.inaturalist.org/v1/taxa/autocomplete?q=${encodeURIComponent(query)}&per_page=10&locale=en`,
       { signal: AbortSignal.timeout(8000) }
     );
     if (!res.ok) return null;
     const { results } = await res.json();
     for (const taxon of results ?? []) {
+      if (!isAnimalTaxon(taxon)) continue;   // skip plants, fungi, etc.
       const p = taxon.default_photo;
       if (!p?.medium_url) continue;
       return {

@@ -328,7 +328,7 @@ export function useLiveData(locations) {
           runNext();
         });
 
-        // ── 4. GBIF — fallback / mammal supplement ────────────────────────────
+        // ── 4. GBIF — fallback / mammal supplement / wide-net ────────────────
         const hasFrequencySource = sources.includes('ebird') || sources.includes('inaturalist');
         const mammalCount = livePool.filter(a => a.animalType === 'mammal').length;
         if (!hasFrequencySource) {
@@ -338,6 +338,15 @@ export function useLiveData(locations) {
           const gbifMammals = await fetchGbif(loc.lat, loc.lng, `${loc.id}_mm`, 732);
           if (gbifMammals?.length) {
             livePool.push(...gbifMammals);
+            if (!sources.includes('gbif')) sources.push('gbif');
+          }
+        }
+        // wideNet parks (remote/sparse): also run GBIF with a large bounding box
+        // (~90 km) to supplement iNat observations that are scarce in these areas.
+        if (loc.wideNet) {
+          const gbifWide = await fetchGbif(loc.lat, loc.lng, `${loc.id}_wide`, null, { d: 0.9 });
+          if (gbifWide?.length) {
+            livePool.push(...gbifWide);
             if (!sources.includes('gbif')) sources.push('gbif');
           }
         }
