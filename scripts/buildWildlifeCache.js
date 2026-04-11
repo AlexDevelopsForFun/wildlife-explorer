@@ -144,37 +144,284 @@ function rarityFromChecklist(freq) {
   return 'exceptional';
 }
 
+// ── Park groups for park-aware charisma correction ───────────────────────────
+// Bears: divisor depends on how dense the bear population actually is.
+const BEAR_HIGH_PARKS   = new Set([
+  'katmai', 'lakeclark', 'glacierbay', 'denali', 'glacier', 'yellowstone',
+  'wrangellstelias', 'wrangell', 'gatesofthearctic', 'kobukvalley',
+]);
+const BEAR_MEDIUM_PARKS = new Set([
+  'greatsmokymountains', 'shenandoah', 'newrivergorge', 'cuyahogavalley',
+  'olympic', 'mountrainier', 'sequoia', 'kingscanyon', 'yosemite',
+  'lassenvolcanic', 'redwood', 'northcascades', 'craterlake',
+]);
+// Elk: lighter correction at parks where elk are everywhere.
+const ELK_HIGH_PARKS = new Set([
+  'yellowstone', 'rockymountain', 'grandteton', 'greatsmokymountains', 'redwood',
+]);
+// Bison: no correction at parks where they are genuinely guaranteed.
+const BISON_HIGH_PARKS = new Set([
+  'yellowstone', 'badlands', 'grandteton', 'theodoreroosevelt', 'windcave',
+]);
+// Mountain goat: lighter correction where they are reliably visible.
+const GOAT_PARKS = new Set(['glacier', 'olympic', 'mountrainier', 'northcascades', 'craterlake']);
+// Eastern parks: deer are genuinely abundant — no correction needed.
+const EASTERN_PARKS = new Set([
+  'acadia', 'shenandoah', 'greatsmokymountains', 'cuyahogavalley', 'newrivergorge',
+  'mammothcave', 'congaree', 'indianadunes', 'isleroyale', 'voyageurs',
+  'hotsprings', 'gatewayarch', 'everglades', 'biscayne', 'drytortugas',
+]);
+
+// ── Park-to-county FIPS mapping for eBird county-level historic frequency ────
+// Each park maps to its primary county (visitor center / main entrance).
+// Format: eBird region code 'US-{ST}-{3digitFIPS}' for CONUS/HI/AK.
+// Territories use territory-level codes (sparse county data).
+// Parks sharing a county reuse the same API results — no double-fetch.
+const PARK_COUNTY_MAP = {
+  // ── Wyoming / Montana / Idaho ─────────────────────────────────────────────
+  yellowstone:          'US-WY-029',  // Park County, WY (Mammoth/Old Faithful entrance)
+  grandteton:           'US-WY-039',  // Teton County, WY
+  // ── Southeast / Florida ───────────────────────────────────────────────────
+  everglades:           'US-FL-025',  // Dade County, FL (Homestead entrance)
+  biscayne:             'US-FL-025',  // Dade County, FL
+  drytortugas:          'US-FL-087',  // Monroe County, FL
+  congaree:             'US-SC-079',  // Richland County, SC
+  // ── Appalachian / East ────────────────────────────────────────────────────
+  greatsmokymountains:  'US-TN-155',  // Sevier County, TN (Gatlinburg entrance)
+  shenandoah:           'US-VA-113',  // Madison County, VA
+  acadia:               'US-ME-009',  // Hancock County, ME
+  newrivergorge:        'US-WV-019',  // Fayette County, WV
+  cuyahogavalley:       'US-OH-153',  // Summit County, OH
+  mammothcave:          'US-KY-061',  // Edmonson County, KY
+  isleroyale:           'US-MI-083',  // Keweenaw County, MI
+  voyageurs:            'US-MN-071',  // Koochiching County, MN (but sparse — St. Louis fallback)
+  indianadunes:         'US-IN-127',  // Porter County, IN
+  hotsprings:           'US-AR-051',  // Garland County, AR
+  gatewayarch:          'US-MO-510',  // St. Louis City, MO (independent city)
+  // ── Great Plains ──────────────────────────────────────────────────────────
+  badlands:             'US-SD-071',  // Jackson County, SD (but sparse — Pennington better)
+  windcave:             'US-SD-033',  // Custer County, SD
+  theodoreroosevelt:    'US-ND-007',  // Billings County, ND
+  // ── Rocky Mountain ────────────────────────────────────────────────────────
+  rockymountain:        'US-CO-069',  // Larimer County, CO
+  glacier:              'US-MT-029',  // Flathead County, MT
+  greatsanddunes:       'US-CO-003',  // Alamosa County, CO
+  blackcanyon:          'US-CO-085',  // Montrose County, CO
+  // ── Grand Canyon / Utah / Arizona / New Mexico ────────────────────────────
+  grandcanyon:          'US-AZ-005',  // Coconino County, AZ
+  zion:                 'US-UT-053',  // Washington County, UT
+  brycecanyon:          'US-UT-017',  // Garfield County, UT
+  arches:               'US-UT-019',  // Grand County, UT
+  canyonlands:          'US-UT-019',  // Grand County, UT (shares with Arches)
+  capitolreef:          'US-UT-055',  // Wayne County, UT
+  mesaverde:            'US-CO-083',  // Montezuma County, CO
+  petrifiedforest:      'US-AZ-017',  // Navajo County, AZ
+  saguaro:              'US-AZ-019',  // Pima County, AZ
+  whitesands:           'US-NM-035',  // Otero County, NM
+  guadalupemountains:   'US-TX-109',  // Culberson County, TX
+  bigbend:              'US-TX-043',  // Brewster County, TX
+  greatbasin:           'US-NV-033',  // White Pine County, NV
+  carlsbadcaverns:      'US-NM-015',  // Eddy County, NM
+  joshuatree:           'US-CA-065',  // Riverside County, CA
+  deathvalley:          'US-CA-027',  // Inyo County, CA
+  // ── Pacific Northwest ─────────────────────────────────────────────────────
+  olympic:              'US-WA-009',  // Clallam County, WA
+  northcascades:        'US-WA-073',  // Whatcom County, WA
+  mountrainier:         'US-WA-053',  // Pierce County, WA
+  craterlake:           'US-OR-035',  // Klamath County, OR
+  redwood:              'US-CA-015',  // Del Norte County, CA
+  // ── California / Sierra Nevada ────────────────────────────────────────────
+  lassenvolcanic:       'US-CA-089',  // Shasta County, CA
+  yosemite:             'US-CA-043',  // Mariposa County, CA
+  kingscanyon:          'US-CA-019',  // Fresno County, CA
+  sequoia:              'US-CA-107',  // Tulare County, CA
+  channelislands:       'US-CA-083',  // Santa Barbara County, CA
+  pinnacles:            'US-CA-069',  // San Benito County, CA
+  // ── Alaska ────────────────────────────────────────────────────────────────
+  denali:               'US-AK-068',  // Denali Borough
+  katmai:               'US-AK-164',  // Lake and Peninsula Borough
+  glacierbay:           'US-AK-105',  // Hoonah-Angoon Census Area
+  kenaifjords:          'US-AK-122',  // Kenai Peninsula Borough
+  wrangellstelias:      'US-AK-261',  // Valdez-Cordova Census Area
+  lakeclark:            'US-AK-122',  // Kenai Peninsula Borough (nearest with data)
+  gatesofthearctic:     'US-AK-090',  // Fairbanks North Star Borough (nearest with data)
+  kobukvalley:          'US-AK-188',  // Northwest Arctic Borough
+  // ── Hawaii ────────────────────────────────────────────────────────────────
+  hawaiivolcanoes:      'US-HI-001',  // Hawaii County (Big Island)
+  haleakala:            'US-HI-009',  // Maui County
+  // ── Territories ───────────────────────────────────────────────────────────
+  americansamoa:        'AS',         // Territory level — sparse county data
+  virginislands:        'US-VI-020',  // St. Croix district (try county first)
+};
+
+// Fallback county codes for parks in sparse counties (<20 valid sample dates).
+// Maps to a nearby higher-activity county or state-level code.
+const PARK_COUNTY_FALLBACK = {
+  // ── Previously existing fallbacks ─────────────────────────────────────────
+  voyageurs:         'US-MN-137',  // St. Louis County (Duluth area — much more birding)
+  badlands:          'US-SD-103',  // Pennington County (Rapid City — high activity)
+  theodoreroosevelt: 'US-ND-015',  // Burleigh County (Bismarck)
+  kobukvalley:       'US-AK-090',  // Fairbanks North Star Borough
+  americansamoa:     'AS',         // territory level is already the fallback
+  virginislands:     'US-VI',      // territory level
+  gatewayarch:       'US-MO-189',  // St. Louis County (if city code fails)
+  // ── New fallbacks for parks that returned sparse/null county data ─────────
+  everglades:        'US-FL-087',  // Monroe County (covers Flamingo / main park area)
+  biscayne:          'US-FL-087',  // Monroe County (adjacent to Biscayne, better data)
+  shenandoah:        'US-VA-015',  // Augusta County (west side of Shenandoah, more birding)
+  denali:            'US-AK-090',  // Fairbanks North Star Borough (much more eBird activity)
+  carlsbadcaverns:   'US-NM-015',  // Eddy County (same primary — try state-level next)
+  newrivergorge:     'US-WV-025',  // Greenbrier County (adjacent, more birding activity)
+  mammothcave:       'US-KY-227',  // Warren County (Bowling Green — nearby, more data)
+  windcave:          'US-SD-103',  // Pennington County (Rapid City — high activity)
+  capitolreef:       'US-UT-041',  // Sevier County (adjacent, more populated)
+  guadalupemountains:'US-TX-141',  // El Paso County (nearest with robust eBird data)
+  greatsanddunes:    'US-CO-021',  // Costilla County → try Pueblo US-CO-101 (more data)
+  glacierbay:        'US-AK-110',  // Juneau Borough (nearest city with eBird data)
+  katmai:            'US-AK-122',  // Kenai Peninsula (nearest populated area)
+  wrangellstelias:   'US-AK-170',  // Matanuska-Susitna Borough (nearest with data)
+};
+
+// ── Park-to-county fit factor ───────────────────────────────────────────────
+// Replaces the flat 0.7x correction. Accounts for how well the county's
+// bird community represents what a park visitor will actually encounter.
+// Higher = park dominates its county; Lower = park is tiny relative to county.
+const PARK_COUNTY_FIT = {
+  // ── Parks where park ≈ county (large parks in rural counties) — 0.85 ──────
+  yellowstone: 0.85, denali: 0.85, deathvalley: 0.85, everglades: 0.85,
+  bigbend: 0.85, gatesofthearctic: 0.85, wrangellstelias: 0.85,
+  katmai: 0.85, lakeclark: 0.85, glacierbay: 0.85, kobukvalley: 0.85,
+  // ── Parks that are a major portion of county — 0.7 ────────────────────────
+  grandcanyon: 0.7, glacier: 0.7, olympic: 0.7, rockymountain: 0.7,
+  grandteton: 0.7, yosemite: 0.7, sequoia: 0.7, kingscanyon: 0.7,
+  northcascades: 0.7, canyonlands: 0.7, capitolreef: 0.7, zion: 0.7,
+  brycecanyon: 0.7, arches: 0.7, mesaverde: 0.7, greatbasin: 0.7,
+  craterlake: 0.7, mountrainier: 0.7, lassenvolcanic: 0.7, redwood: 0.7,
+  voyageurs: 0.7, isleroyale: 0.7, theodoreroosevelt: 0.7, badlands: 0.7,
+  windcave: 0.7, petrifiedforest: 0.7, whitesands: 0.7, saguaro: 0.7,
+  carlsbadcaverns: 0.7,
+  // ── Parks that are a small fraction of county — 0.55 ──────────────────────
+  greatsmokymountains: 0.55, shenandoah: 0.55, acadia: 0.55,
+  joshuatree: 0.55, pinnacles: 0.55, channelislands: 0.55, congaree: 0.55,
+  cuyahogavalley: 0.55, indianadunes: 0.55, newrivergorge: 0.55,
+  mammothcave: 0.55, greatsanddunes: 0.55, blackcanyon: 0.55,
+  guadalupemountains: 0.55, drytortugas: 0.55, kenaifjords: 0.55,
+  // ── Parks that are tiny relative to county — 0.4 ──────────────────────────
+  hotsprings: 0.4, gatewayarch: 0.4, virginislands: 0.4,
+  americansamoa: 0.4, biscayne: 0.4, haleakala: 0.4, hawaiivolcanoes: 0.4,
+};
+// Default fit factor for any park not listed above
+const DEFAULT_COUNTY_FIT = 0.7;
+
 // ── Charisma correction for iNat observation counts ──────────────────────────
 // Over-reported charismatic species inflate raw counts; divide to normalise.
-function applyCharismaCorrection(obsCount, name) {
+// locId enables park-aware corrections: bears are ÷2 at Katmai, ÷5 at Shenandoah.
+// Squirrel correction removed entirely — people don't over-report squirrels.
+function applyCharismaCorrection(obsCount, name, locId = '') {
   if (!name || !obsCount) return obsCount ?? 0;
   const lower = name.toLowerCase();
-  // Individual high-charisma species
-  if (/\bbald eagle\b/.test(lower))                          return obsCount / 5;
-  if (/\b(wolf|wolves|gray wolf|grey wolf)\b/.test(lower))   return obsCount / 4;
-  if (/\b(whale|dolphin|porpoise|orca)\b/.test(lower))       return obsCount / 4;
-  if (/\b(bear)\b/.test(lower))                              return obsCount / 5;
-  // Raptor/owl family (excluding Bald Eagle, already handled)
+  // Bald Eagle — always ÷5 (iconic, logged on every visit everywhere)
+  if (/\bbald eagle\b/.test(lower))                                          return obsCount / 5;
+  // Wolf/whale/dolphin — always high charisma
+  if (/\b(wolf|wolves|gray wolf|grey wolf)\b/.test(lower))                   return obsCount / 4;
+  if (/\b(whale|dolphin|porpoise|orca)\b/.test(lower))                       return obsCount / 4;
+  // Bear — park-aware divisor
+  if (/\b(bear)\b/.test(lower)) {
+    if (BEAR_HIGH_PARKS.has(locId))   return obsCount / 2;   // bears genuinely common here
+    if (BEAR_MEDIUM_PARKS.has(locId)) return obsCount / 3;   // moderate population
+    return obsCount / 5;                                      // bears rare at other parks
+  }
+  // Raptor/owl family (excluding Bald Eagle, already handled above)
   if (/\b(hawk|owl|falcon|kite|harrier|kestrel|merlin|osprey|eagle|vulture|condor)\b/.test(lower)) return obsCount / 3;
-  if (/\b(bison|buffalo)\b/.test(lower))                     return obsCount / 2;
-  if (/\b(elk|moose|alligator|crocodile)\b/.test(lower))    return obsCount / 2;
-  if (/\b(deer|squirrel)\b/.test(lower))                     return obsCount / 1.5;
-  // Under-reported: small/cryptic species
-  if (/\b(mouse|mice|vole|shrew|mole)\b/.test(lower))        return obsCount * 5;
-  if (/\bbat\b/.test(lower))                                 return obsCount * 4;
-  if (/\bsnake\b/.test(lower))                               return obsCount * 2;
+  // Bison — park-aware: no correction where bison are guaranteed
+  if (/\b(bison|buffalo)\b/.test(lower)) {
+    if (BISON_HIGH_PARKS.has(locId)) return obsCount;        // bison are genuinely guaranteed
+    return obsCount / 2;
+  }
+  // Elk — park-aware: lighter correction where elk are everywhere
+  if (/\belk\b/.test(lower)) {
+    if (ELK_HIGH_PARKS.has(locId)) return obsCount / 1.5;
+    return obsCount / 2;
+  }
+  // Moose/alligator/crocodile — keep ÷2
+  if (/\b(moose|alligator|crocodile)\b/.test(lower))                         return obsCount / 2;
+  // Mountain goat — park-aware
+  if (/\bmountain goat\b/.test(lower)) {
+    if (GOAT_PARKS.has(locId)) return obsCount / 1.5;
+    return obsCount / 2;
+  }
+  // Coyote — mildly over-reported by wildlife photographers
+  if (/\bcoyote\b/.test(lower))                                               return obsCount / 1.5;
+  // Deer — park-aware: no correction in eastern parks (genuinely abundant)
+  if (/\bdeer\b/.test(lower)) {
+    if (EASTERN_PARKS.has(locId)) return obsCount;           // no correction needed
+    return obsCount / 1.5;
+  }
+  // Squirrel — correction removed: people don't over-report squirrels
+  // Under-reported: small/cryptic species — multiply to correct under-counting
+  if (/\b(mouse|mice|vole|shrew|mole)\b/.test(lower))                        return obsCount * 5;
+  if (/\bbat\b/.test(lower))                                                  return obsCount * 4;
+  if (/\bsnake\b/.test(lower))                                                return obsCount * 2;
   return obsCount;
 }
 
-// Absolute iNat observation count → visit-probability tier, with charisma correction.
-// Conservative thresholds: only truly abundant species reach guaranteed/very_likely.
-function rarityFromObsCount(obsCount, name = '') {
-  const corrected = applyCharismaCorrection(obsCount, name);
-  if (corrected >= 2000) return 'guaranteed';
-  if (corrected >= 500)  return 'very_likely';
-  if (corrected >= 100)  return 'likely';
-  if (corrected >= 20)   return 'unlikely';
-  if (corrected >= 5)    return 'rare';
+// ── Park visitation tiers for observation count threshold normalization ────────
+// A mammal with 300 iNat obs at Voyageurs NP (70k visitors/yr) is far more
+// significant than 300 at Yellowstone (4M visitors/yr). Normalize accordingly.
+// Tier 1 (>3M/yr): use full thresholds — high observer density, counts are reliable
+// Tier 2 (1–3M/yr): thresholds × 0.6 — moderate observer density
+// Tier 3 (<1M/yr): thresholds × 0.3 — sparse observers, every record counts more
+const TIER1_PARKS = new Set([
+  'yellowstone', 'greatsmokymountains', 'grandcanyon', 'zion', 'rockymountain',
+]);
+const TIER2_PARKS = new Set([
+  'acadia', 'glacier', 'yosemite', 'grandteton', 'joshuatree', 'olympic',
+]);
+// All other parks are Tier 3 (thresholds × 0.3)
+
+// Absolute iNat observation count → visit-probability tier, with charisma correction
+// and park-aware threshold normalization.
+function rarityFromObsCount(obsCount, name = '', locId = '') {
+  const corrected = applyCharismaCorrection(obsCount, name, locId);
+  // Normalize thresholds by park visitation tier
+  const mul = TIER1_PARKS.has(locId) ? 1.0 : TIER2_PARKS.has(locId) ? 0.6 : 0.3;
+  if (corrected >= 2000 * mul) return 'guaranteed';
+  if (corrected >= 500  * mul) return 'very_likely';
+  if (corrected >= 100  * mul) return 'likely';
+  if (corrected >= 20   * mul) return 'unlikely';
+  if (corrected >= 5    * mul) return 'rare';
+  return 'exceptional';
+}
+
+// ── Insect-specific charisma corrections ────────────────────────────────────
+// Insects have fundamentally different observation patterns than vertebrates:
+// fewer people photograph them, so iNat counts are lower. These corrections
+// account for systematic under/over-reporting by insect type.
+function applyInsectCharismaCorrection(obsCount, name) {
+  if (!name || !obsCount) return obsCount ?? 0;
+  const lower = name.toLowerCase();
+  if (/\b(butterfly|swallowtail|monarch|admiral|fritillary|skipper|hairstreak|blue|copper|sulphur|white|lady|painted lady|buckeye|viceroy|checkerspot|crescent|comma|cloak|tortoiseshell|metalmark|elfin|azure)\b/.test(lower)) return obsCount / 1.5;
+  if (/\b(dragonfly|damselfly|darner|skimmer|meadowhawk|pennant|dasher|pondhawk|clubtail|whiteface|saddlebags|glider|bluet|dancer|spreadwing|jewelwing)\b/.test(lower)) return obsCount;
+  if (/\b(beetle|weevil|ladybug|lady beetle|firefly|lightning bug|ant|wasp|hornet|yellowjacket|sawfly|longhorn|scarab|stag beetle|ground beetle|carrion)\b/.test(lower)) return obsCount * 3;
+  if (/\b(moth|sphinx|hawk moth|silkmoth|luna|polyphemus|cecropia|io moth|underwing|tussock|tiger moth|woolly bear|inchworm|geometer|noctuid)\b/.test(lower)) return obsCount * 2;
+  if (/\b(grasshopper|cricket|katydid|locust|mormon cricket|camel cricket|band-winged)\b/.test(lower)) return obsCount * 2;
+  if (/\bfirefl/i.test(lower)) return obsCount * 2;
+  return obsCount;
+}
+
+// ── Insect-specific rarity thresholds ───────────────────────────────────────
+// Lower thresholds than mammals (500/150/30/10/3 vs 2000/500/100/20/5) because
+// insects are photographed less frequently on iNaturalist.
+// Multiplier capped at 0.5 to prevent tiny parks from inflating guaranteed.
+function insectRarityFromObsCount(obsCount, name = '', locId = '') {
+  const corrected = applyInsectCharismaCorrection(obsCount, name);
+  const rawMul = TIER1_PARKS.has(locId) ? 1.0 : TIER2_PARKS.has(locId) ? 0.6 : 0.3;
+  const mul = Math.max(0.5, rawMul);
+  if (corrected >= 500 * mul) return 'guaranteed';
+  if (corrected >= 150 * mul) return 'very_likely';
+  if (corrected >= 30  * mul) return 'likely';
+  if (corrected >= 10  * mul) return 'unlikely';
+  if (corrected >= 3   * mul) return 'rare';
   return 'exceptional';
 }
 
@@ -267,11 +514,13 @@ function getSeasonsFromMonthlyHistogram(monthCounts, threshold = 0.05) {
 // Previously used peak/total fraction which measured temporal concentration, not
 // abundance — a species with 20 obs all in one month hit "guaranteed" incorrectly.
 // Now uses total obs count with charisma correction, same scale as rarityFromObsCount.
-function rarityFromInatHistogram(monthCounts, name = '') {
+function rarityFromInatHistogram(monthCounts, name = '', locId = '', animalType = '') {
   if (!monthCounts) return null;
   const total = Object.values(monthCounts).reduce((s, v) => s + (v ?? 0), 0);
-  if (total < 5) return null; // insufficient data — fall back to rarityFromObsCount
-  return rarityFromObsCount(total, name);
+  if (total < 5) return null;
+  return animalType === 'insect'
+    ? insectRarityFromObsCount(total, name, locId)
+    : rarityFromObsCount(total, name, locId);
 }
 
 function isTaxonomicJunk(name) {
@@ -320,12 +569,14 @@ function slim(a, source = 'static') {
     emoji:          a.emoji          ?? '🐾',
     animalType:     a.animalType     ?? 'other',
     rarity:         a.rarity         ?? 'likely',
+    raritySource:   a.raritySource   ?? 'unknown',
     seasons:        a.seasons        ?? ['spring', 'summer', 'fall'],
     scientificName: a.scientificName ?? null,
     funFact:        a.funFact        ?? null,
     photoUrl:       a.photoUrl       ?? null,
     source:         sources[0],
     sources,
+    ...(a.migrationStatus ? { migrationStatus: a.migrationStatus } : {}),
   };
 }
 
@@ -450,6 +701,153 @@ const NPS_TAXON_MAP = {
   'marine invertebrate': { animalType: 'marine',    emoji: '🦑' },
 };
 
+// ── eBird county-level historic frequency sampling ──────────────────────────
+// Samples 48 dates (1st, 8th, 15th, 22nd of each month) for the most recent
+// full year using eBird's /data/obs/{region}/historic and /product/stats APIs.
+// Returns { [comName]: { rawFreq, peakFreq, seasons, migrationStatus } }
+// where rawFreq = dates_present / valid_dates, peakFreq = max seasonal freq.
+
+const SAMPLE_DAYS = [1, 8, 15, 22]; // 4 per month = 48 per year
+const SEASON_MONTH_MAP = {
+  spring: [3, 4, 5],
+  summer: [6, 7, 8],
+  fall:   [9, 10, 11],
+  winter: [12, 1, 2],
+};
+const MIN_CHECKLISTS_PER_DATE = 5;  // skip dates with <5 checklists
+const MIN_VALID_DATES = 20;         // need ≥20 valid sample dates for reliable freq
+
+// In-memory cache: countyCode → Promise<countyFreqMap>
+// Prevents double-fetching when multiple parks share a county.
+const _countyDataCache = new Map();
+
+async function fetchCountyHistoricData(countyCode) {
+  // Return cached result (or in-flight promise) if available
+  if (_countyDataCache.has(countyCode)) return _countyDataCache.get(countyCode);
+
+  const promise = _fetchCountyHistoricDataImpl(countyCode);
+  _countyDataCache.set(countyCode, promise);
+  return promise;
+}
+
+async function _fetchCountyHistoricDataImpl(countyCode) {
+  if (!EBIRD_KEY) return null;
+
+  // Use most recent full year
+  const now = new Date();
+  const year = now.getFullYear() - 1; // e.g. 2025 if running in 2026
+
+  const hdrs = { headers: { 'X-eBirdApiToken': EBIRD_KEY } };
+  const speciesDateMap = new Map(); // comName → Set of date indices where observed
+  let validDates = 0;
+  let totalDates = 0;
+
+  // Track which months had valid dates (for seasonal breakdown)
+  const monthValidDates = {};       // month → count of valid dates
+  const speciesMonthMap = new Map(); // comName → { month → count }
+
+  for (let month = 1; month <= 12; month++) {
+    for (const day of SAMPLE_DAYS) {
+      totalDates++;
+
+      // 1. Check stats — skip dates with too few checklists
+      const statsUrl = `https://api.ebird.org/v2/product/stats/${countyCode}/${year}/${month}/${day}`;
+      const stats = await safeFetch(statsUrl, hdrs);
+      await sleep(200);
+
+      const numChecklists = stats?.numChecklists ?? 0;
+      if (numChecklists < MIN_CHECKLISTS_PER_DATE) {
+        continue; // skip — unreliable sampling
+      }
+      validDates++;
+      monthValidDates[month] = (monthValidDates[month] ?? 0) + 1;
+
+      // 2. Fetch historic observations for this date
+      const obsUrl = `https://api.ebird.org/v2/data/obs/${countyCode}/historic/${year}/${month}/${day}`;
+      const obs = await safeFetch(obsUrl, hdrs);
+      await sleep(600); // 800ms total between pairs (200+600)
+
+      if (!Array.isArray(obs)) continue;
+
+      for (const o of obs) {
+        if (!o.comName) continue;
+        // Track overall presence
+        if (!speciesDateMap.has(o.comName)) speciesDateMap.set(o.comName, 0);
+        speciesDateMap.set(o.comName, speciesDateMap.get(o.comName) + 1);
+        // Track monthly presence
+        if (!speciesMonthMap.has(o.comName)) speciesMonthMap.set(o.comName, {});
+        const mMap = speciesMonthMap.get(o.comName);
+        mMap[month] = (mMap[month] ?? 0) + 1;
+      }
+    }
+  }
+
+  console.log(`    [county ${countyCode}] ${validDates}/${totalDates} valid dates, ${speciesDateMap.size} species`);
+
+  if (validDates < MIN_VALID_DATES) {
+    console.log(`    [county ${countyCode}] ⚠ too few valid dates (${validDates} < ${MIN_VALID_DATES}) — returning null for fallback`);
+    return null;
+  }
+
+  // Build frequency map
+  const freqMap = {};
+  for (const [comName, datesPresent] of speciesDateMap) {
+    const rawFreq = datesPresent / validDates;
+
+    // Compute per-season frequency: dates_present_in_season / valid_dates_in_season
+    const seasonFreqs = {};
+    const monthData = speciesMonthMap.get(comName) ?? {};
+    for (const [season, months] of Object.entries(SEASON_MONTH_MAP)) {
+      let seasonPresent = 0;
+      let seasonValid = 0;
+      for (const m of months) {
+        seasonValid += monthValidDates[m] ?? 0;
+        seasonPresent += monthData[m] ?? 0;
+      }
+      seasonFreqs[season] = seasonValid > 0 ? seasonPresent / seasonValid : 0;
+    }
+
+    const peakFreq = Math.max(...Object.values(seasonFreqs));
+
+    // Derive seasons array (present in a season if freq ≥ 10%)
+    const presentSeasons = Object.entries(seasonFreqs)
+      .filter(([, f]) => f >= 0.10)
+      .map(([s]) => s);
+    const seasons = presentSeasons.length === 4 ? ['year_round']
+      : presentSeasons.length > 0 ? presentSeasons
+      : ['spring', 'summer', 'fall']; // fallback if no season meets threshold
+
+    // Derive migrationStatus from seasonal presence
+    let migrationStatus;
+    const hasSpring = seasonFreqs.spring >= 0.10;
+    const hasSummer = seasonFreqs.summer >= 0.10;
+    const hasFall   = seasonFreqs.fall   >= 0.10;
+    const hasWinter = seasonFreqs.winter >= 0.10;
+
+    if (hasSpring && hasSummer && hasFall && hasWinter) {
+      migrationStatus = 'year_round';
+    } else if ((hasSpring || hasSummer) && !hasWinter) {
+      migrationStatus = 'summer_resident';
+    } else if (hasWinter && !hasSummer) {
+      migrationStatus = 'winter_visitor';
+    } else if ((hasSpring || hasFall) && !hasSummer && !hasWinter) {
+      migrationStatus = 'migratory';
+    } else {
+      migrationStatus = 'year_round'; // default if pattern is unclear
+    }
+
+    freqMap[comName] = {
+      rawFreq,
+      peakFreq,
+      seasonFreqs,
+      seasons,
+      migrationStatus,
+    };
+  }
+
+  return freqMap;
+}
+
 // ── eBird: find nearest hotspot (used only by thin-park retry) ───────────────
 async function getEbirdHotspot(lat, lng) {
   if (!EBIRD_KEY) return null;
@@ -534,7 +932,7 @@ async function loadEbirdTaxonomy() {
 //      with the full state-level list (e.g. US-UT) — guaranteed comprehensive.
 // This ensures remote parks (Canyonlands etc.) still get 200+ birds while
 // well-studied parks keep their accurate location-specific lists.
-async function getEbirdHistorical(lat, lng, stateCode, barChart = null) {
+async function getEbirdHistorical(lat, lng, stateCode, barChart = null, countyFreqMap = null, locId = '') {
   if (!EBIRD_KEY) return [];
   const taxonomy = await loadEbirdTaxonomy();
   if (!Object.keys(taxonomy).length) return [];
@@ -589,26 +987,34 @@ async function getEbirdHistorical(lat, lng, stateCode, barChart = null) {
         ?? barChartLC?.[t.comName?.toLowerCase()]
         ?? null;
 
-      let seasons, rarity, frequency;
+      let seasons, rarity, frequency, raritySource, migrationStatus;
+      const countyData = countyFreqMap?.[t.comName] ?? null;
+
       if (periods) {
         // Gold-standard path: derive seasons and rarity from real eBird frequency data.
         const derived = getSeasonsFromBarChartBuild(periods);
         seasons   = derived ?? ['spring', 'summer', 'fall'];  // null → assume 3-season
         const peak = peakSeasonalFreqBuild(periods);
         frequency  = peak;
-        // Apply charisma correction before mapping to rarity — charismatic species
-        // (Bald Eagle, raptors) are over-reported on checklists vs actual encounter rate.
         const correctedPeak = peak * ebirdCharismaCorrectionFactor(t.comName);
-        rarity     = rarityFromFreq(correctedPeak);
+        rarity        = rarityFromFreq(correctedPeak);
+        raritySource  = 'ebird_st';
+      } else if (countyData) {
+        // County-level historic frequency — real data from 48-date sampling.
+        seasons        = countyData.seasons;
+        frequency      = countyData.peakFreq;
+        migrationStatus = countyData.migrationStatus;
+        const correctedFreq = frequency * (PARK_COUNTY_FIT[locId] ?? DEFAULT_COUNTY_FIT) * ebirdCharismaCorrectionFactor(t.comName);
+        rarity         = rarityFromFreq(correctedFreq);
+        raritySource   = 'ebird_county_freq';
       } else {
-        // No bar chart data: binary fallback — apply charisma correction to the
-        // proxy frequency so charismatic species (eagles, raptors) get a lower tier
-        // than ordinary hotspot birds even without real frequency data.
+        // No bar chart or county data: binary fallback.
         seasons   = ['spring', 'summer', 'fall', 'winter'];
         const baseFq      = isHotspot ? 0.4 : 0.15;
         const correctedFq = baseFq * ebirdCharismaCorrectionFactor(t.comName);
         rarity    = rarityFromFreq(correctedFq);
         frequency = correctedFq;
+        raritySource = 'ebird_binary';
       }
 
       return {
@@ -620,7 +1026,9 @@ async function getEbirdHistorical(lat, lng, stateCode, barChart = null) {
         bestSeason:     'spring',
         source:         'ebird',
         rarity,
+        raritySource,
         frequency,
+        migrationStatus: migrationStatus ?? null,
         funFact:        isHotspot
           ? `Confirmed at this park's eBird hotspot.`
           : `Recorded in this region (eBird historical checklist).`,
@@ -644,7 +1052,7 @@ async function getEbirdObsWide(lat, lng) {
       name: o.comName, scientificName: o.sciName ?? null,
       emoji: '🐦', animalType: 'bird',
       seasons: ['spring', 'summer', 'fall', 'winter'], bestSeason: 'spring',
-      rarity: 'very_likely', frequency: 0.7,
+      rarity: 'very_likely', raritySource: 'ebird_recent', frequency: 0.7,
       funFact: `Recently reported within 15 km of this park (eBird).`,
     }));
 }
@@ -744,7 +1152,7 @@ async function getInatPlaceId(loc) {
 // noQualityFilter: when true, omits quality_grade=research — used for remote
 //   parks (e.g. Gates of the Arctic, Kobuk Valley, North Cascades) where
 //   research-grade observations are extremely sparse. All grades are included.
-async function getInatSpecies(lat, lng, taxonKey, wideNet = false, placeId = null, noQualityFilter = false) {
+async function getInatSpecies(lat, lng, taxonKey, wideNet = false, placeId = null, noQualityFilter = false, locId = '') {
   const isIconic   = taxonKey in ICONIC_TAXA;
   const isSubgroup = taxonKey in INAT_SUBGROUP_IDS;
   if (!isIconic && !isSubgroup) return [];
@@ -795,8 +1203,12 @@ async function getInatSpecies(lat, lng, taxonKey, wideNet = false, placeId = nul
         seasons:        ['spring', 'summer', 'fall', 'winter'],
         bestSeason:     'summer',
         source:         'inaturalist',
-        // Absolute observation count → rarity (avoids relative-scarcity distortion)
-        rarity:         rarityFromObsCount(r.count),
+        // Absolute observation count → rarity (park-aware, with charisma correction)
+        // Insects use separate thresholds (lower) to account for under-reporting.
+        rarity:         typeInfo.type === 'insect'
+          ? insectRarityFromObsCount(r.count, name, locId)
+          : rarityFromObsCount(r.count, name, locId),
+        raritySource:   'inat_corrected',
         funFact:        `${r.count} research-grade iNaturalist observations at this park.`,
         // Internal fields for histogram enrichment in fetchPark — stripped by slim().
         _taxonId:       taxon.id ?? null,
@@ -893,68 +1305,9 @@ async function getNpsTopics(parkCode) {
   return animals;
 }
 
-// ── NPS: complete species inventory with full pagination ──────────────────────
-// NOTE: /v1/species endpoint returns 404 — kept here for reference only.
-// The working path is getNpsTopics above, wired into fetchPark.
-async function getNpsSpecies(parkCode) {
-  if (!NPS_KEY || !parkCode) return [];
-  const allAnimals = [];
-  let start = 0;
-
-  while (true) {
-    const url =
-      `https://developer.nps.gov/api/v1/species` +
-      `?parkCode=${parkCode}&limit=500&start=${start}`;
-    const data = await safeFetch(url, { headers: { 'X-Api-Key': NPS_KEY } });
-    if (!data?.data?.length) break;
-
-    for (const sp of data.data) {
-      // NPS API uses categoryName (e.g. "Bird", "Mammal") — taxonCode is unreliable
-      const taxonLower = (sp.categoryName ?? sp.taxonCode ?? '').toLowerCase();
-      const typeInfo = Object.entries(NPS_TAXON_MAP)
-        .find(([k]) => taxonLower.includes(k))?.[1];
-      if (!typeInfo) continue;
-
-      const sciName = sp.sciName ?? null;
-      if (!sciName || !/^[A-Z][a-z]+ [a-z]/.test(sciName)) continue;
-
-      // commonNames may be an array or a single string depending on NPS API version
-      let commonName = null;
-      if (Array.isArray(sp.commonNames)) {
-        commonName = sp.commonNames.find(n => n?.trim() && !isTaxonomicJunk(n)) ?? null;
-      } else if (typeof sp.commonNames === 'string' && sp.commonNames.trim()) {
-        commonName = isTaxonomicJunk(sp.commonNames) ? null : sp.commonNames.trim();
-      }
-      if (!commonName) continue;
-
-      const abundanceLower = (sp.abundance ?? '').toLowerCase();
-      let rarity = 'unlikely';
-      if (abundanceLower === 'abundant') rarity = 'very_likely';
-      else if (abundanceLower === 'common') rarity = 'likely';
-      else if (abundanceLower === 'rare') rarity = 'rare';
-      else if (abundanceLower === 'accidental' || abundanceLower === 'extirpated') rarity = 'exceptional';
-
-      allAnimals.push({
-        name:           commonName,
-        scientificName: sciName,
-        emoji:          typeInfo.emoji,
-        animalType:     typeInfo.animalType,
-        seasons:        ['spring', 'summer', 'fall', 'winter'],
-        bestSeason:     'summer',
-        rarity,
-        funFact:        `Listed in the NPS species inventory for ${parkCode.toUpperCase()}.`,
-      });
-    }
-
-    start += data.data.length;
-    const total = parseInt(data.total ?? '0', 10);
-    if (start >= total || data.data.length < 500) break;
-    await sleep(800); // NPS rate limit between pages
-    console.log(`    [NPS ${parkCode}] page 2+ … ${start}/${total}`);
-  }
-
-  return allAnimals;
-}
+// getNpsSpecies removed — NPS /v1/species endpoint returns 404 and the abundance
+// field it provided was unreliable. Wildlife data now comes from getNpsTopics
+// (curated topic tags) + eBird county frequency + iNat observation counts.
 
 // ── GBIF: occurrence records near a point ─────────────────────────────────────
 const GBIF_TYPE_MAP = {
@@ -1040,6 +1393,21 @@ function dedup(animals) {
     });
     const mergedSeasons = specificSeasonMember?.seasons ?? primary.seasons;
 
+    // Derive migrationStatus from merged seasons so it stays consistent
+    let mergedMigration = primary.migrationStatus;
+    if (specificSeasonMember && specificSeasonMember !== primary) {
+      const s = mergedSeasons;
+      if (s.includes('year_round') || s.length === 4) {
+        mergedMigration = 'year_round';
+      } else if ((s.includes('spring') || s.includes('summer')) && !s.includes('winter')) {
+        mergedMigration = 'summer_resident';
+      } else if (s.includes('winter') && !s.includes('summer')) {
+        mergedMigration = 'winter_visitor';
+      } else if ((s.includes('spring') || s.includes('fall')) && !s.includes('summer') && !s.includes('winter')) {
+        mergedMigration = 'migratory';
+      }
+    }
+
     // For birds: keep eBird-derived rarity — iNat obs counts at popular parks
     // inflate charismatic birds (eagle photos) far beyond real encounter probability.
     // For non-birds: propagate iNat obs-count rarity if eBird only has binary likely/unlikely.
@@ -1047,11 +1415,11 @@ function dedup(animals) {
     const inatMember = primary.animalType !== 'bird'
       ? g.find(a => a.source === 'inaturalist' && a.rarity && !BINARY_RARITIES.has(a.rarity))
       : null;
-    const mergedRarity = (BINARY_RARITIES.has(primary.rarity) && inatMember)
-      ? inatMember.rarity
-      : primary.rarity;
+    const useInat = BINARY_RARITIES.has(primary.rarity) && inatMember;
+    const mergedRarity       = useInat ? inatMember.rarity       : primary.rarity;
+    const mergedRaritySource = useInat ? inatMember.raritySource  : primary.raritySource;
 
-    return { ...primary, seasons: mergedSeasons, rarity: mergedRarity, sources: allSources.length ? allSources : undefined };
+    return { ...primary, seasons: mergedSeasons, rarity: mergedRarity, raritySource: mergedRaritySource, sources: allSources.length ? allSources : undefined, ...(mergedMigration ? { migrationStatus: mergedMigration } : {}) };
   });
 }
 
@@ -1074,16 +1442,18 @@ function applyMammalRarityFloor(deduped) {
     if (a._priority === 0) continue;              // curated hardcoded animal — skip
     const obs = a._count ?? 0;
     if (obs >= 25 && (a.rarity === 'exceptional' || a.rarity === 'rare')) {
-      a.rarity = 'unlikely';                      // well-documented mammal: min unlikely
+      a.rarity       = 'unlikely';                // well-documented mammal: min unlikely
+      a.raritySource = 'inat_floor';
     } else if (obs >= 5 && a.rarity === 'exceptional') {
-      a.rarity = 'rare';                          // confirmed mammal: min rare
+      a.rarity       = 'rare';                    // confirmed mammal: min rare
+      a.raritySource = 'inat_floor';
     }
   }
 }
 
 // ── Per-park fetch ────────────────────────────────────────────────────────────
-async function fetchPark(loc, { noQualityFilter = false } = {}) {
-  console.log(`  [${loc.id}] fetching…${noQualityFilter ? ' [no quality filter]' : ''}`);
+async function fetchPark(loc, { noQualityFilter = false, countyFreqMap = null } = {}) {
+  console.log(`  [${loc.id}] fetching…${noQualityFilter ? ' [no quality filter]' : ''}${countyFreqMap ? ` [county freq: ${Object.keys(countyFreqMap).length} spp]` : ''}`);
   const pool = [];
   const stateCode = loc.stateCodes?.[0] ?? null;
 
@@ -1093,13 +1463,13 @@ async function fetchPark(loc, { noQualityFilter = false } = {}) {
   try {
     // ── 1. Hardcoded animals first (highest quality, always shown) ──
     if (loc.animals?.length) {
-      loc.animals.forEach(a => pool.push({ ...a, _priority: 0 }));
+      loc.animals.forEach(a => pool.push({ ...a, _priority: 0, raritySource: 'curated' }));
     }
 
     // ── 2. NPS topic tags (national parks only, working endpoint) ──────
     if (loc.npsCode) {
       const npsAnimals = await getNpsTopics(loc.npsCode);
-      npsAnimals.forEach(a => pool.push({ ...a, _priority: 0 })); // same priority as hardcoded
+      npsAnimals.forEach(a => pool.push({ ...a, _priority: 0, raritySource: 'nps' })); // same priority as hardcoded
       if (npsAnimals.length) console.log(`  [${loc.id}] NPS topics: ${npsAnimals.length} animals`);
       await sleep(300);
     }
@@ -1117,7 +1487,7 @@ async function fetchPark(loc, { noQualityFilter = false } = {}) {
     await sleep(300);
 
     // ── 4. eBird: union of nearby hotspot spplists + state supplement ──
-    const ebirdBirds = await getEbirdHistorical(loc.lat, loc.lng, stateCode, parkBarChart);
+    const ebirdBirds = await getEbirdHistorical(loc.lat, loc.lng, stateCode, parkBarChart, countyFreqMap, loc.id);
     ebirdBirds.forEach(a => pool.push({ ...a, _priority: 1 }));
     await sleep(300);
 
@@ -1145,7 +1515,7 @@ async function fetchPark(loc, { noQualityFilter = false } = {}) {
     ];
     for (const pair of taxaGroups) {
       const results = await Promise.all(
-        pair.map(t => getInatSpecies(loc.lat, loc.lng, t, useWide, inatPlaceId, noQualityFilter))
+        pair.map(t => getInatSpecies(loc.lat, loc.lng, t, useWide, inatPlaceId, noQualityFilter, loc.id))
       );
       results.flat().forEach(a => pool.push({ ...a, _priority: 2 }));
       await sleep(1500);
@@ -1204,7 +1574,7 @@ async function fetchPark(loc, { noQualityFilter = false } = {}) {
             await sleep(300);
           }
           const derivedSeasons = getSeasonsFromMonthlyHistogram(hist);
-          const derivedRarity  = rarityFromInatHistogram(hist, a.name ?? '');
+          const derivedRarity  = rarityFromInatHistogram(hist, a.name ?? '', loc.id, a.animalType ?? '');
           // Update ALL pool entries with this sciName (eBird + iNat duplicates)
           const sciLower = a.scientificName.toLowerCase().trim();
           for (const p of pool) {
@@ -1214,7 +1584,10 @@ async function fetchPark(loc, { noQualityFilter = false } = {}) {
             // parks inflate wildly (thousands of eagle photos) and don't reflect the
             // probability a casual visitor will encounter the species.
             // Only override rarity for non-birds where eBird data isn't available.
-            if (derivedRarity && p.animalType !== 'bird') p.rarity = derivedRarity;
+            if (derivedRarity && p.animalType !== 'bird') {
+              p.rarity       = derivedRarity;
+              p.raritySource = 'inat_corrected';
+            }
           }
         }
       }
@@ -1255,7 +1628,7 @@ async function fetchParkWide(loc) {
     }
     await sleep(400);
 
-    const ebirdBirds = await getEbirdHistorical(loc.lat, loc.lng, stateCode, parkBarChart);
+    const ebirdBirds = await getEbirdHistorical(loc.lat, loc.lng, stateCode, parkBarChart, null, loc.id);
     ebirdBirds.forEach(a => pool.push({ ...a, _priority: 1 }));
     await sleep(400);
 
@@ -1272,7 +1645,7 @@ async function fetchParkWide(loc) {
     ];
     for (const pair of taxaGroups) {
       const results = await Promise.all(
-        pair.map(t => getInatSpecies(loc.lat, loc.lng, t, true, inatPlaceId)) // wideNet=true: 50km, 365d
+        pair.map(t => getInatSpecies(loc.lat, loc.lng, t, true, inatPlaceId, false, loc.id))
       );
       results.flat().forEach(a => pool.push({ ...a, _priority: 3 }));
       await sleep(1500);
@@ -1342,6 +1715,51 @@ async function main() {
     }
   }
 
+  // ── Pre-fetch county-level eBird historic frequency data ───────────────────
+  // Fetches 48 dates of stats+historic per unique county. Shared counties are
+  // fetched once and reused. Falls back to alternate county if primary is sparse.
+  const countyFreqByPark = {};  // locId → countyFreqMap
+  {
+    // Collect unique counties needed for parks being processed
+    const countiesToFetch = new Map(); // countyCode → [parkIds]
+    for (const loc of locationsToProcess) {
+      const county = PARK_COUNTY_MAP[loc.id];
+      if (!county) continue;
+      if (!countiesToFetch.has(county)) countiesToFetch.set(county, []);
+      countiesToFetch.get(county).push(loc.id);
+    }
+
+    console.log(`\n📊 Fetching county-level eBird frequency data…`);
+    console.log(`   Unique counties: ${countiesToFetch.size}`);
+    console.log(`   API calls: ~${countiesToFetch.size * 96} (48 stats + 48 historic per county)\n`);
+
+    for (const [countyCode, parkIds] of countiesToFetch) {
+      console.log(`  Fetching county ${countyCode} (for ${parkIds.join(', ')})…`);
+      let freqMap = await fetchCountyHistoricData(countyCode);
+
+      // Fallback to alternate county if primary was too sparse
+      if (!freqMap && PARK_COUNTY_FALLBACK[parkIds[0]]) {
+        const fallback = PARK_COUNTY_FALLBACK[parkIds[0]];
+        if (fallback !== countyCode) {
+          console.log(`    → Falling back to ${fallback}`);
+          freqMap = await fetchCountyHistoricData(fallback);
+        }
+      }
+
+      if (freqMap) {
+        for (const pid of parkIds) {
+          countyFreqByPark[pid] = freqMap;
+        }
+        console.log(`    ✓ ${Object.keys(freqMap).length} species with frequency data`);
+      } else {
+        console.log(`    ✗ No usable county data — birds will use binary fallback`);
+      }
+    }
+
+    const parksWithCountyData = Object.keys(countyFreqByPark).length;
+    console.log(`\n   County data ready for ${parksWithCountyData}/${locationsToProcess.length} parks\n`);
+  }
+
   const BATCH = 1; // one park at a time — eliminates iNat 429 rate-limiting on histogram calls
   const BATCH_DELAY = 3000; // ms between batches (increased from 1500 for rate-limit headroom)
 
@@ -1350,7 +1768,10 @@ async function main() {
     console.log(`Batch ${Math.floor(i / BATCH) + 1}/${Math.ceil(locationsToProcess.length / BATCH)}: ${batch.map(l => l.id).join(', ')}`);
 
     const results = await Promise.all(
-      batch.map(loc => fetchPark(loc, { noQualityFilter: NO_QUALITY_SET.has(loc.id) }))
+      batch.map(loc => fetchPark(loc, {
+        noQualityFilter: NO_QUALITY_SET.has(loc.id),
+        countyFreqMap: countyFreqByPark[loc.id] ?? null,
+      }))
     );
     batch.forEach((loc, idx) => {
       cache[loc.id] = { animals: results[idx], builtAt };
@@ -1382,7 +1803,7 @@ async function main() {
     if (!cache[locId]) continue;
     cache[locId].animals = cache[locId].animals.map(a => {
       const override = overrides[a.name];
-      return override ? { ...a, rarity: override } : a;
+      return override ? { ...a, rarity: override, raritySource: 'override' } : a;
     });
   }
 

@@ -9,13 +9,14 @@ import { wildlifeLocations, SEASONS, RARITY, ANIMAL_TYPES, STATE_NAMES } from '.
 import { classifyAnimalSubtype, getSubtypeDefs } from './utils/subcategories';
 import {
   mergeAnimals, balanceAnimals, NEVER_EXCEPTIONAL_BIRDS,
-  getCorrectionFactor, getMonthlyFrequency, getSeasonalFreq,
-  rarityFromChecklist, getSeasonsFromBarChart, applyRarityOverride,
+  getCorrectionFactor, getMonthlyFrequency,
+  rarityFromChecklist, applyRarityOverride,
   fetchInatMonthlyHist,
 } from './services/apiService';
 import { useLiveData } from './hooks/useLiveData';
 import { useNpsParks } from './hooks/useNpsParks';
-import { WILDLIFE_CACHE, WILDLIFE_CACHE_BUILT_AT } from './data/wildlifeCache.js';
+import { WILDLIFE_CACHE, WILDLIFE_CACHE_BUILT_AT } from './data/wildlifeCacheLoader.js';
+import { useSecondaryCache } from './hooks/useSecondaryCache.js';
 import { fetchAnimalPhoto } from './services/photoService';
 import { needsGeneratedDescription } from './services/descriptionService';
 
@@ -411,10 +412,140 @@ function WhatActiveNow() {
   );
 }
 
+// ── About modal ────────────────────────────────────────────────────────────────
+function AboutModal({ onClose, scrollTo }) {
+  const bodyRef = useRef(null);
+
+  useEffect(() => {
+    if (scrollTo && bodyRef.current) {
+      const el = bodyRef.current.querySelector(`[data-section="${scrollTo}"]`);
+      if (el) setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
+    }
+  }, [scrollTo]);
+
+  // Close on Escape
+  useEffect(() => {
+    const handler = e => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [onClose]);
+
+  return (
+    <>
+      <div className="about-overlay" onClick={onClose} />
+      <div className="about-modal" role="dialog" aria-modal="true" aria-label="About US Wildlife Explorer">
+        <button className="about-modal__close" onClick={onClose} aria-label="Close">X</button>
+        <div className="about-modal__body" ref={bodyRef}>
+
+          <div className="about-modal__hero">
+            <span className="about-modal__hero-icon">🌿</span>
+            <h2 className="about-modal__hero-title">US Wildlife Explorer</h2>
+            <p className="about-modal__hero-sub">Your guide to wildlife encounters in America's national parks</p>
+          </div>
+
+          {/* Section 1 */}
+          <section className="about-section" data-section="why">
+            <h3 className="about-section__title">Why I Built This</h3>
+            <div className="about-section__body">
+              <p>I love visiting national parks and always wondered what animals I might actually see on my trip. Before every visit I'd spend hours searching forums and park websites trying to figure out what wildlife to look for.</p>
+              <p>I wanted one simple tool that answers: <em>"If I visit this park today, what are my chances of seeing each animal?"</em></p>
+              <p>This is that tool — built for fellow wildlife enthusiasts, hikers, and national park lovers.</p>
+            </div>
+          </section>
+
+          {/* Section 2 */}
+          <section className="about-section" data-section="methodology">
+            <h3 className="about-section__title">How We Calculate Encounter Probability</h3>
+            <div className="about-section__body">
+              <p>Our rarity ratings represent the <strong>estimated probability of seeing an animal on a single-day visit</strong> to the park.</p>
+
+              <div className="about-rarity-grid">
+                <div className="about-rarity-item"><span className="about-badge" style={{color:'#1d4ed8',background:'#1d4ed818',borderColor:'#1d4ed844'}}>🔵 Guaranteed</span> <span className="about-rarity-pct">90%+</span> Almost certain to see</div>
+                <div className="about-rarity-item"><span className="about-badge" style={{color:'#15803d',background:'#15803d18',borderColor:'#15803d44'}}>🟢 Very Likely</span> <span className="about-rarity-pct">60-90%</span> Probably will see</div>
+                <div className="about-rarity-item"><span className="about-badge" style={{color:'#b45309',background:'#b4530918',borderColor:'#b4530944'}}>🟡 Likely</span> <span className="about-rarity-pct">30-60%</span> Good chance</div>
+                <div className="about-rarity-item"><span className="about-badge" style={{color:'#c2410c',background:'#c2410c18',borderColor:'#c2410c44'}}>🟠 Unlikely</span> <span className="about-rarity-pct">10-30%</span> Possible with luck</div>
+                <div className="about-rarity-item"><span className="about-badge" style={{color:'#b91c1c',background:'#b91c1c18',borderColor:'#b91c1c44'}}>🔴 Rare</span> <span className="about-rarity-pct">2-10%</span> Lucky sighting</div>
+                <div className="about-rarity-item"><span className="about-badge" style={{color:'#7c3aed',background:'#7c3aed18',borderColor:'#7c3aed44'}}>⭐ Exceptional</span> <span className="about-rarity-pct">&lt;2%</span> Once in a lifetime</div>
+              </div>
+
+              <h4 className="about-subsection">Data by Category</h4>
+              <ul className="about-list">
+                <li><strong>Birds:</strong> eBird data from the Cornell Lab of Ornithology — county-level checklist frequency sampled across 48 dates per year, adjusted with a park-specific correction factor that accounts for how much of the county the park occupies.</li>
+                <li><strong>Mammals, reptiles, amphibians:</strong> iNaturalist research-grade observation data with species-specific correction factors that account for reporting bias (people over-report exciting animals like bears and under-report common ones like mice).</li>
+                <li><strong>Insects:</strong> Calibrated thresholds that account for the significant under-reporting of insects on citizen science platforms.</li>
+                <li><strong>Manual overrides:</strong> Park ranger reports for flagship species like Bison at Yellowstone, Alligator at Everglades, and others where we have high-confidence encounter data.</li>
+              </ul>
+            </div>
+          </section>
+
+          {/* Section 3 */}
+          <section className="about-section" data-section="sources">
+            <h3 className="about-section__title">Our Data Sources</h3>
+            <div className="about-section__body">
+              <div className="about-sources-grid">
+                <div className="about-source-card">
+                  <div className="about-source-card__icon">🐦</div>
+                  <div className="about-source-card__name">Cornell Lab of Ornithology</div>
+                  <div className="about-source-card__desc">Bird checklist frequency and seasonal presence across 10,000+ species</div>
+                  <a className="about-source-card__link" href="https://ebird.org" target="_blank" rel="noopener noreferrer">ebird.org</a>
+                </div>
+                <div className="about-source-card">
+                  <div className="about-source-card__icon">🌿</div>
+                  <div className="about-source-card__name">iNaturalist</div>
+                  <div className="about-source-card__desc">Research-grade wildlife observations from millions of citizen scientists</div>
+                  <a className="about-source-card__link" href="https://www.inaturalist.org" target="_blank" rel="noopener noreferrer">inaturalist.org</a>
+                </div>
+                <div className="about-source-card">
+                  <div className="about-source-card__icon">🏛️</div>
+                  <div className="about-source-card__name">National Park Service</div>
+                  <div className="about-source-card__desc">Official park information and ranger-curated species descriptions</div>
+                  <a className="about-source-card__link" href="https://www.nps.gov" target="_blank" rel="noopener noreferrer">nps.gov</a>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Section 4 */}
+          <section className="about-section" data-section="migration">
+            <h3 className="about-section__title">Migration Badges</h3>
+            <div className="about-section__body">
+              <div className="about-migration-grid">
+                <div className="about-migration-item"><span className="about-migration-badge about-migration-badge--resident">🏠 Year Round</span> Lives here all year; can be seen on any visit.</div>
+                <div className="about-migration-item"><span className="about-migration-badge about-migration-badge--summer">🌤️ Summer Resident</span> Breeds here in summer, migrates south for winter. Best seen May through August.</div>
+                <div className="about-migration-item"><span className="about-migration-badge about-migration-badge--winter">❄️ Winter Visitor</span> Arrives from the north in fall, winters here. Best seen November through March.</div>
+                <div className="about-migration-item"><span className="about-migration-badge about-migration-badge--migratory">🔀 Migratory</span> Passes through during migration. Timing your visit to peak migration increases chances.</div>
+              </div>
+              <p className="about-note">Timing your visit to the right season dramatically changes what wildlife you'll see.</p>
+            </div>
+          </section>
+
+          {/* Section 5 */}
+          <section className="about-section" data-section="limitations">
+            <h3 className="about-section__title">Limitations & Transparency</h3>
+            <div className="about-section__body">
+              <ul className="about-list about-list--compact">
+                <li>Encounter probability is an <strong>estimate</strong>, not a guarantee — actual sightings depend on weather, time of day, trail choice, and luck.</li>
+                <li>Some parks have sparser data than others, particularly remote Alaska and territory parks.</li>
+                <li>Bird data is our most accurate category thanks to eBird's comprehensive checklist system.</li>
+                <li>Mammal and insect probabilities are less precise due to lower reporting rates on citizen science platforms.</li>
+                <li>We continuously improve our data and methodology.</li>
+              </ul>
+            </div>
+          </section>
+
+          <div className="about-modal__footer">
+            <p>Built with care for the wildlife-watching community.</p>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
 // ── Welcome splash screen ──────────────────────────────────────────────────────
 // Shown only on the very first visit (localStorage key wm_visited).
 // Dismissed by clicking the button; never shown again.
-function SplashScreen({ onDismiss }) {
+function SplashScreen({ onDismiss, onAbout }) {
   return (
     <div className="splash" role="dialog" aria-modal="true" aria-label="Welcome to US Wildlife Explorer">
       <div className="splash__content">
@@ -423,6 +554,9 @@ function SplashScreen({ onDismiss }) {
         <p className="splash__tagline">Discover wildlife across America's parks</p>
         <button className="splash__btn" onClick={onDismiss} autoFocus>
           Explore the Map →
+        </button>
+        <button className="splash__about-link" onClick={() => { onDismiss(); onAbout(); }}>
+          About this project
         </button>
       </div>
     </div>
@@ -605,7 +739,7 @@ function resolveAnimalSources(animal) {
 }
 
 // ── Animal card ───────────────────────────────────────────────────────────────
-function AnimalCard({ animal, debugMode, seasonalFreqs, location }) {
+function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout }) {
   const r = RARITY[animal.rarity] ?? RARITY.rare;
   const t = ANIMAL_TYPES[animal.animalType];
 
@@ -697,6 +831,14 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location }) {
             >
               {r.emoji} {r.label}{r.probability ? ` · ${r.probability}` : ''}{r.star ? ' ✦' : ''}
             </span>
+            {openAbout && (
+              <button
+                className="rarity-help-btn"
+                onClick={() => openAbout('methodology')}
+                title="Learn how we calculate encounter probability"
+                aria-label="How is this calculated?"
+              >?</button>
+            )}
             {/* Multi-season badges: one per season, or single 🌀 Year Round */}
             {(animal.displaySeasons ?? [animal.bestSeason ?? 'spring']).map(sk => {
               const sd = (sk === 'year-round' || sk === 'year_round')
@@ -822,6 +964,14 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location }) {
           <p className="animal-card__fact">{animal.funFact}</p>
           <span className="description-source">🏛️ Park Naturalist</span>
         </>
+      )}
+
+      {/* Park-specific visitor tip */}
+      {animal.parkTip && (
+        <div className="animal-card__park-tip">
+          <p className="animal-card__park-tip-text">{animal.parkTip}</p>
+          <span className="park-tip-source">📍 Visitor Tip</span>
+        </div>
       )}
 
       {/* Source tags — one badge per source; multiple when confirmed by >1 API */}
@@ -1034,6 +1184,14 @@ function ExceptionalCard({ animal, seasonalFreqs, location }) {
         </>
       )}
 
+      {/* Park-specific visitor tip */}
+      {animal.parkTip && (
+        <div className="animal-card__park-tip">
+          <p className="animal-card__park-tip-text">{animal.parkTip}</p>
+          <span className="park-tip-source">📍 Visitor Tip</span>
+        </div>
+      )}
+
       {/* Source badges — same logic as AnimalCard */}
       {(() => {
         const excSources = resolveAnimalSources(animal);
@@ -1149,11 +1307,12 @@ function RaritySpectrumBar({ animals, activeRarity, onSelectRarity }) {
 }
 
 function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
-  isLive, sources, isLoading, debugMode, stats, barChart, cacheTs,
+  isLive, sources, isLoading, debugMode, stats, cacheTs,
   loadingProgress, refreshLocation,
   popupType, setPopupType, popupSort, setPopupSort,
   popupSeason, setPopupSeason, popupRarity, setPopupRarity,
-  popupSubtype, setPopupSubtype }) {
+  popupSubtype, setPopupSubtype,
+  activeTypes, focusedType, openAbout }) {
   const POPUP_PROGRESS_GROUPS = ['birds', 'mammals', 'reptiles', 'amphibians', 'insects', 'marine'];
   const PROGRESS_EMOJI = { birds: '🐦', mammals: '🦌', reptiles: '🐊', amphibians: '🐸', insects: '🦋', marine: '🐋' };
 
@@ -1202,7 +1361,7 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
     const ro = new ResizeObserver(updateSubtypeArrows);
     ro.observe(el);
     return () => { el.removeEventListener('scroll', updateSubtypeArrows); ro.disconnect(); };
-  }, [updateSubtypeArrows, popupType]); // re-attach when popupType changes (subtype bar mounts/unmounts)
+  }, [updateSubtypeArrows, focusedType]); // re-attach when focusedType changes (subtype bar mounts/unmounts)
 
   // ── User sightings ─────────────────────────────────────────────────────────
   // Persisted per-park in localStorage; reloaded whenever the popup changes park.
@@ -1239,15 +1398,6 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
     setSightings(updated);
     localStorage.setItem(`wildlife_sightings_${location.id}`, JSON.stringify(updated));
   };
-
-  // Build a case-insensitive bar chart lookup to handle minor name differences
-  // between the recent-obs and bar-chart endpoints.
-  const barChartLC = useMemo(() => {
-    if (!barChart) return null;
-    const m = {};
-    Object.entries(barChart).forEach(([k, v]) => { m[k.toLowerCase()] = v; });
-    return m;
-  }, [barChart]);
 
   // ── iNat seasonal frequencies for bird cards ─────────────────────────────
   // { scientificNameLower → { spring, summer, fall, winter, total } | null }
@@ -1315,59 +1465,19 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.id, effectiveAnimals]);
 
-  // Enrich every animal with seasonally-accurate, corrected rarity where possible:
-  //   • Animals with bar chart data → bar chart frequency + correction factor + new thresholds
+  // Enrich every animal with corrected rarity where possible:
   //   • Animals with a raw frequency field + correction needed → corrected static rarity
   //   • Everything else → rarity from the animal object unchanged
+  // Note: bar-chart enrichment was removed — the eBird barChart proxy never worked.
+  // Rarity is now pre-computed at build time using county-level eBird frequency data.
   const enriched = useMemo(() => effectiveAnimals.map(a => {
-    const periods = barChart?.[a.name] ?? barChartLC?.[a.name?.toLowerCase()] ?? null;
     const factor  = getCorrectionFactor(a.name);
 
-    // Compute displaySeasons: which seasons is this animal present in?
-    // Bar-chart animals: derive from eBird data using 5% threshold per season.
-    // Hardcoded animals: normalise seasons[] — all-4 or explicit 'year-round' → ['year-round'].
-    const displaySeasons = periods
-      ? getSeasonsFromBarChart(periods, factor)
-      : (() => {
-          const s = a.seasons ?? ['spring'];
-          return (s.includes('year-round') || s.includes('year_round')) ? ['year-round'] : s;
-        })();
-
-    if (periods) {
-      // Gold-standard path: eBird bar chart frequency for this season/month
-      const rawFreq      = season === 'all'
-        ? getMonthlyFrequency(periods, currentMonth)
-        : getSeasonalFreq(periods, season);
-      const correctedFreq = Math.min(1, rawFreq * factor);
-      const periodLabel   = season === 'all' ? monthName : season;
-
-      // Curated (hardcoded) animals keep their hand-set rarity — don't override with eBird.
-      // Live-only birds: cap exceptional at rare (eBird <2% ≠ "once in a lifetime" for common birds).
-      // NEVER_EXCEPTIONAL_BIRDS: specific common raptors/owls that should never show as exceptional.
-      let computedRarity;
-      if (a._curated) {
-        computedRarity = applyRarityOverride(location.id, a.name, a.rarity);
-      } else {
-        let ebirdRarity = rarityFromChecklist(correctedFreq);
-        // Live-only animals cannot be Exceptional — only hand-curated entries can.
-        // Extra floor for NEVER_EXCEPTIONAL_BIRDS regardless of raw frequency.
-        if (ebirdRarity === 'exceptional' || NEVER_EXCEPTIONAL_BIRDS.has(a.name)) {
-          ebirdRarity = 'rare';
-        }
-        computedRarity = applyRarityOverride(location.id, a.name, ebirdRarity);
-      }
-
-      return {
-        ...a,
-        displaySeasons,
-        rarity:        computedRarity,
-        _barChartFreq: correctedFreq,
-        _rawBarFreq:   rawFreq,
-        funFact: (!a._curated && (a.source === 'ebird' || a.sources?.includes('ebird')))
-          ? `Appears on ${Math.round(rawFreq * 100)}% of ${periodLabel} eBird checklists at this location.`
-          : a.funFact,
-      };
-    }
+    // Compute displaySeasons: normalise seasons[] — all-4 or explicit 'year-round' → ['year-round'].
+    const displaySeasons = (() => {
+      const s = a.seasons ?? ['spring'];
+      return (s.includes('year-round') || s.includes('year_round')) ? ['year-round'] : s;
+    })();
 
     if (a.frequency != null && factor !== 1) {
       // Fallback path: apply correction to the existing raw frequency
@@ -1384,7 +1494,7 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
     const baseRarity = (!a._curated && a.rarity === 'exceptional') ? 'rare' : a.rarity;
     const overriddenRarity = applyRarityOverride(location.id, a.name, baseRarity);
     return { ...a, displaySeasons, rarity: overriddenRarity };
-  }), [effectiveAnimals, barChart, barChartLC, season, currentMonth, monthName, location.id]);
+  }), [effectiveAnimals, season, currentMonth, monthName, location.id]);
 
   // Total counts across the full enriched list — used as denominators in tab badges
   const totalTypeCounts = useMemo(() => {
@@ -1412,32 +1522,36 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
 
   // Season-aware count per subtype for the active animal-type tab
   const subtypeCounts = useMemo(() => {
-    if (!getSubtypeDefs(popupType)) return null;
-    const pool = popupType === 'all' ? seasonFiltered : seasonFiltered.filter(a => a.animalType === popupType);
+    if (!focusedType || !getSubtypeDefs(focusedType)) return null;
+    const pool = seasonFiltered.filter(a => a.animalType === focusedType);
     const counts = {};
     pool.forEach(a => {
       const sub = classifyAnimalSubtype(a);
       counts[sub] = (counts[sub] ?? 0) + 1;
     });
     return counts;
-  }, [seasonFiltered, popupType]);
+  }, [seasonFiltered, focusedType]);
 
   // Display page size — 100 initially, +100 per Load More click.
   const [displayLimit, setDisplayLimit] = useState(100);
 
   // Reset paging whenever the location or any filter changes
   useEffect(() => { setDisplayLimit(100); }, [location.id]);
-  useEffect(() => { setDisplayLimit(100); }, [popupType, popupSubtype, popupSeason, popupRarity, search, popupSort]);
+  useEffect(() => { setDisplayLimit(100); }, [activeTypes, popupSubtype, popupSeason, popupRarity, search, popupSort]);
 
   // Popup-local filtering + sorting (independent of global header filters).
   // Returns the full sorted list — slicing is handled in render based on state.
   const { display: filtered, isFiltered } = useMemo(() => {
     let result = enriched;
 
-    if (popupType !== 'all') result = result.filter(a => a.animalType === popupType);
+    // Multi-type filter: if not all types are active, filter to active ones
+    const allTypeKeys = Object.keys(ANIMAL_TYPES).filter(t => t !== 'all');
+    if (activeTypes.size < allTypeKeys.length) {
+      result = result.filter(a => activeTypes.has(a.animalType));
+    }
 
-    // Subtype filter — only when a specific subtype is selected for a supported type
-    if (popupSubtype !== 'all' && getSubtypeDefs(popupType)) {
+    // Subtype filter — only when a specific subtype is selected for a focused type
+    if (popupSubtype !== 'all' && focusedType && getSubtypeDefs(focusedType)) {
       result = result.filter(a => classifyAnimalSubtype(a) === popupSubtype);
     }
 
@@ -1472,11 +1586,11 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
     }
 
     // A "filter" is any user-driven narrowing beyond the default full list view.
-    const isFiltered = popupType !== 'all' || popupSubtype !== 'all'
+    const isFiltered = activeTypes.size < allTypeKeys.length || popupSubtype !== 'all'
       || popupSeason !== 'all' || popupRarity !== 'all' || !!search.trim();
 
     return { display: result, isFiltered };
-  }, [enriched, popupType, popupSubtype, popupSeason, popupRarity, search, popupSort]);
+  }, [enriched, activeTypes, popupSubtype, popupSeason, popupRarity, search, popupSort, focusedType]);
 
   // Exceptional animals for the Rare Finds section — fully filter-aware.
   // Applies the same type / subtype / season / search filters as the main list
@@ -1484,9 +1598,12 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
   const exceptionalAnimals = useMemo(() => {
     let result = enriched.filter(a => a.rarity === 'exceptional');
 
-    if (popupType !== 'all') result = result.filter(a => a.animalType === popupType);
+    const allTypeKeys = Object.keys(ANIMAL_TYPES).filter(t => t !== 'all');
+    if (activeTypes.size < allTypeKeys.length) {
+      result = result.filter(a => activeTypes.has(a.animalType));
+    }
 
-    if (popupSubtype !== 'all' && getSubtypeDefs(popupType)) {
+    if (popupSubtype !== 'all' && focusedType && getSubtypeDefs(focusedType)) {
       result = result.filter(a => classifyAnimalSubtype(a) === popupSubtype);
     }
 
@@ -1506,21 +1623,21 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
     }
 
     return result;
-  }, [enriched, popupType, popupSubtype, popupSeason, search]);
+  }, [enriched, activeTypes, popupSubtype, popupSeason, search, focusedType]);
 
   // Dynamic Rare Finds header — reflects the most specific active filter.
   // Priority: search > subtype > type > season > default.
   const rareFindTitle = (() => {
     if (search.trim()) return `⭐ Once in a Lifetime: "${search.trim()}"`;
 
-    const subtypeDefs = getSubtypeDefs(popupType);
+    const subtypeDefs = focusedType ? getSubtypeDefs(focusedType) : null;
     if (popupSubtype !== 'all' && subtypeDefs) {
       const def = subtypeDefs.find(d => d.key === popupSubtype);
       if (def) return `🌟 Rare ${def.label} at This Park`;
     }
 
-    if (popupType !== 'all') {
-      const typeDef = ANIMAL_TYPES[popupType];
+    if (focusedType) {
+      const typeDef = ANIMAL_TYPES[focusedType];
       if (typeDef) return `🌟 Rare ${typeDef.label} at This Park`;
     }
 
@@ -1668,22 +1785,23 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
             onClick={() => tabsRef.current?.scrollBy({ left: -150, behavior: 'smooth' })}>‹</button>
         )}
         <div className="lp__tabs" role="tablist" ref={tabsRef}>
-          {Object.entries(ANIMAL_TYPES).map(([k, { emoji, label }]) => {
+          {Object.entries(ANIMAL_TYPES).filter(([k]) => k !== 'all').map(([k, { emoji, label }]) => {
             const count   = typeCounts[k] ?? 0;
-            const isEmpty = k !== 'all' && count === 0;
+            const isEmpty = count === 0;
+            const isActive = activeTypes.has(k);
             return (
               <button
                 key={k}
                 role="tab"
-                aria-selected={popupType === k}
-                className={`lp__tab${popupType === k ? ' lp__tab--active' : ''}${isEmpty ? ' lp__tab--empty' : ''}`}
+                aria-selected={isActive}
+                className={`lp__tab${isActive ? ' lp__tab--active' : ''}${isEmpty ? ' lp__tab--empty' : ''}`}
                 onClick={(e) => { if (!isEmpty) { setPopupType(k); e.currentTarget.scrollIntoView({ behavior: 'smooth', inline: 'nearest' }); } }}
                 disabled={isEmpty}
-                title={label}
+                title={`${isActive ? 'Hide' : 'Show'} ${label}`}
               >
                 <span aria-hidden="true">{emoji}</span>
-                <span className="lp__tab-label">{k === 'all' ? 'All' : label}</span>
-                {k !== 'all' && count > 0 && (
+                <span className="lp__tab-label">{label}</span>
+                {count > 0 && (
                   <span className="lp__tab-count" title={popupSeason !== 'all' ? `${count} in ${SEASONS[popupSeason]?.label ?? popupSeason} / ${totalTypeCounts[k] ?? 0} total` : undefined}>
                     {popupSeason !== 'all' && (totalTypeCounts[k] ?? 0) !== count
                       ? `${count}/${totalTypeCounts[k] ?? 0}`
@@ -1693,6 +1811,16 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
               </button>
             );
           })}
+          {/* Show All button — appears when not all types are active */}
+          {activeTypes.size < Object.keys(ANIMAL_TYPES).length - 1 && (
+            <button
+              className="lp__tab lp__tab--show-all"
+              onClick={() => setPopupType('all')}
+              title="Show all animal types"
+            >
+              <span className="lp__tab-label">All</span>
+            </button>
+          )}
         </div>
         {tabsCanScrollRight && (
           <button className="lp__tabs-arrow lp__tabs-arrow--right" aria-hidden="true" tabIndex={-1}
@@ -1701,16 +1829,16 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
       </div>
 
       {/* ── Subtype filter bar — only for birds, mammals, reptiles ── */}
-      {getSubtypeDefs(popupType) && (
+      {focusedType && getSubtypeDefs(focusedType) && (
         <div className="lp__subtypes-wrapper">
           {subtypesCanScrollLeft && (
             <button className="lp__subtypes-arrow lp__subtypes-arrow--left" aria-hidden="true" tabIndex={-1}
               onClick={() => subtypesRef.current?.scrollBy({ left: -150, behavior: 'smooth' })}>‹</button>
           )}
           <div className="lp__subtypes" role="group" aria-label="Animal subcategory" ref={subtypesRef}>
-            {getSubtypeDefs(popupType).map(({ key, emoji, label }) => {
+            {getSubtypeDefs(focusedType).map(({ key, emoji, label }) => {
               const count   = key === 'all'
-                ? (typeCounts[popupType] ?? 0)
+                ? (typeCounts[focusedType] ?? 0)
                 : (subtypeCounts?.[key] ?? 0);
               const isEmpty = key !== 'all' && count === 0;
               return (
@@ -1813,14 +1941,14 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
             const visibleList = filtered.slice(0, displayLimit);
             const remaining   = filtered.length - displayLimit;
             const hasMore     = displayLimit < filtered.length;
-            const typeLabel   = popupType !== 'all' ? (ANIMAL_TYPES[popupType]?.label ?? popupType) : 'species';
+            const typeLabel   = focusedType ? (ANIMAL_TYPES[focusedType]?.label ?? focusedType) : 'species';
 
             return (
               <>
                 <div className="lp__showing-count">
                   Showing {Math.min(displayLimit, filtered.length)} of {filtered.length} {typeLabel}
                 </div>
-                {visibleList.map((a, i) => <AnimalCard key={`${a.name}-${i}`} animal={a} debugMode={debugMode} seasonalFreqs={seasonalFreqs} location={location} />)}
+                {visibleList.map((a, i) => <AnimalCard key={`${a.name}-${i}`} animal={a} debugMode={debugMode} seasonalFreqs={seasonalFreqs} location={location} openAbout={openAbout} />)}
                 {hasMore && (
                   <div className="lp__load-more-row">
                     <button className="lp__load-more-btn" onClick={() => setDisplayLimit(d => d + 100)}>
@@ -1981,6 +2109,7 @@ function MapLegend() {
 
 // ── Main app ──────────────────────────────────────────────────────────────────
 export default function App() {
+  const secondaryReady = useSecondaryCache();
   const [season,       setSeason]       = useState('all');
   const [rarity,       setRarity]       = useState('all');
   const [animalType,   setAnimalType]   = useState('all');
@@ -1988,12 +2117,38 @@ export default function App() {
   const [debugMode,    setDebugMode]    = useState(false);
 
   // Popup-local filter preferences (persist across popup open/close)
-  const [popupType,    setPopupType]    = useState('all');
+  // Multi-select type filter: Set of active animal types (persists across popups within session)
+  const DEFAULT_ACTIVE_TYPES = new Set(['bird', 'mammal']);
+  const [activeTypes, setActiveTypes] = useState(DEFAULT_ACTIVE_TYPES);
+  // popupType is derived: 'all' when all types active, single type when exactly 1, otherwise 'multi'
+  const popupType = activeTypes.size === Object.keys(ANIMAL_TYPES).length - 1 ? 'all'  // minus 'all' key
+    : activeTypes.size === 1 ? [...activeTypes][0]
+    : 'multi';
+  // For subtype bar compatibility — only show subtypes when exactly 1 type is selected
+  const focusedType = activeTypes.size === 1 ? [...activeTypes][0] : null;
+  const setPopupType = (k) => {
+    // Clicking 'all' activates everything; clicking a specific type toggles it
+    if (k === 'all') {
+      const allKeys = Object.keys(ANIMAL_TYPES).filter(t => t !== 'all');
+      setActiveTypes(new Set(allKeys));
+    } else {
+      setActiveTypes(prev => {
+        const next = new Set(prev);
+        if (next.has(k)) {
+          // Don't allow deselecting the last type
+          if (next.size > 1) next.delete(k);
+        } else {
+          next.add(k);
+        }
+        return next;
+      });
+    }
+  };
   const [popupSort,    setPopupSort]    = useState('iconic-first');
   const [popupRarity,  setPopupRarity]  = useState('all');
   const [popupSubtype, setPopupSubtype] = useState('all');
-  // Reset subtype whenever the animal-type tab changes
-  useEffect(() => { setPopupSubtype('all'); }, [popupType]);
+  // Reset subtype whenever the focused type changes
+  useEffect(() => { setPopupSubtype('all'); }, [focusedType]);
   const [popupSeason, setPopupSeason] = useState(() => {
     const m = new Date().getMonth() + 1;
     if (m >= 3 && m <= 5) return 'spring';
@@ -2020,6 +2175,25 @@ export default function App() {
   // Tracks whether the user has zoomed into a specific state polygon.
   // Controls visibility of the "View Full Map" reset button.
   const [stateZoomed, setStateZoomed] = useState(false);
+
+  // Theme toggle — localStorage > prefers-color-scheme > light
+  const [darkMode, setDarkMode] = useState(() => {
+    try {
+      const stored = localStorage.getItem('wm_theme');
+      if (stored) return stored === 'dark';
+      return window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
+    } catch { return false; }
+  });
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light');
+    try { localStorage.setItem('wm_theme', darkMode ? 'dark' : 'light'); } catch {}
+  }, [darkMode]);
+
+  // About modal
+  const [showAbout, setShowAbout] = useState(false);
+  const [aboutScrollTo, setAboutScrollTo] = useState(null);
+  const openAbout = useCallback((section = null) => { setAboutScrollTo(section); setShowAbout(true); }, []);
+  const closeAbout = useCallback(() => { setShowAbout(false); setAboutScrollTo(null); }, []);
 
   // Welcome splash — shown only on first visit, gated by localStorage.
   const [showSplash, setShowSplash] = useState(() => {
@@ -2129,10 +2303,14 @@ export default function App() {
     return Object.fromEntries(
       allLocs.map(loc => [
         loc.id,
-        createPinIcon(loc.locationType, false, false, zoomTier),
+        createPinIcon(
+          loc.locationType, false,
+          !secondaryReady && !WILDLIFE_CACHE[loc.id],  // show loading dot for unpopulated parks
+          zoomTier
+        ),
       ])
     );
-  }, [npsParks, zoomTier]);
+  }, [npsParks, zoomTier, secondaryReady]);
 
   // Collect unique state codes across all locations for the dropdown
   const allStateCodes = useMemo(() => {
@@ -2224,7 +2402,7 @@ export default function App() {
       )}
 
       {/* ── Welcome splash (first visit only) ── */}
-      {showSplash && <SplashScreen onDismiss={dismissSplash} />}
+      {showSplash && <SplashScreen onDismiss={dismissSplash} onAbout={() => openAbout()} />}
 
       {/* ── Debug mode banner ── */}
       {debugMode && (
@@ -2248,6 +2426,12 @@ export default function App() {
                 {debugMode && <span className="hdr__debug-pill">🐛 DEBUG</span>}
               </p>
             </div>
+            <button className="hdr__about-btn" onClick={() => openAbout()} title="About this project" aria-label="About">
+              <span className="hdr__about-icon">i</span> About
+            </button>
+            <button className="hdr__theme-btn" onClick={() => setDarkMode(d => !d)} title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'} aria-label="Toggle theme">
+              {darkMode ? '☀️' : '🌙'}
+            </button>
           </div>
 
           {/* All filters */}
@@ -2316,8 +2500,13 @@ export default function App() {
         {showZoomHint && <div className="zoom-hint">Zoom in to explore parks</div>}
         <MapContainer center={[39.5, -98.35]} zoom={4} style={{ height: '100%', width: '100%' }}>
           <TileLayer
-            url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+            key={darkMode ? 'dark' : 'light'}
+            url={darkMode
+              ? "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
+              : "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"}
+            attribution={darkMode
+              ? '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+              : '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'}
           />
 
           {/* Capture map instance so the View Full Map button can call map.setView() */}
@@ -2378,7 +2567,6 @@ export default function App() {
                 isLoading={loading.has(openPopup.loc.id)}
                 debugMode={debugMode}
                 stats={liveData[openPopup.loc.id]?.stats}
-                barChart={liveData[openPopup.loc.id]?.barChart}
                 cacheTs={liveData[openPopup.loc.id]?._cacheTs ?? null}
                 popupType={popupType}       setPopupType={setPopupType}
                 popupSort={popupSort}       setPopupSort={setPopupSort}
@@ -2387,6 +2575,8 @@ export default function App() {
                 popupSeason={popupSeason}   setPopupSeason={setPopupSeason}
                 popupRarity={popupRarity}   setPopupRarity={setPopupRarity}
                 popupSubtype={popupSubtype} setPopupSubtype={setPopupSubtype}
+                activeTypes={activeTypes}   focusedType={focusedType}
+                openAbout={openAbout}
               />
             </div>
           </>
@@ -2419,6 +2609,9 @@ export default function App() {
           </div>
         )}
       </main>
+
+      {/* ── About modal ── */}
+      {showAbout && <AboutModal onClose={closeAbout} scrollTo={aboutScrollTo} />}
     </div>
   );
 }

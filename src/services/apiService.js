@@ -526,49 +526,10 @@ export async function fetchEbirdHotspot(lat, lng) {
 //
 // Parsed from the tab-separated CSV that the barChart endpoint returns.
 // ─────────────────────────────────────────────────────────────────────────────
-export async function fetchEbirdBarChart(hotspotCode, locId) {
-  if (!hotspotCode) return null;
-  const cacheKey = `ebird_barchart_v3_${locId}`;
-  const cached = cacheGet(cacheKey);
-  if (cached) return cached;
-
-  try {
-    const apiKey = import.meta.env.VITE_EBIRD_API_KEY;
-    const res = await fetch(
-      `/ebird-chart/v2/product/barChart?r=${hotspotCode}&bYear=2014&eYear=2024&bMonth=1&eMonth=12`,
-      { headers: { 'X-eBirdApiToken': apiKey } }
-    );
-    if (!res.ok) throw new Error(`eBird barChart ${res.status}`);
-    const text = await res.text();
-
-    // CSV format: each data row is tab-separated with the species name in col 0
-    // (may include scientific name in parentheses) and 48 frequency values in cols 1-48.
-    // Header and metadata rows have fewer than 10 tab-separated columns — skip them.
-    const barChart = {};
-    for (const line of text.split('\n')) {
-      const cols = line.split('\t');
-      if (cols.length < 10) continue;
-      const rawName = cols[0].trim();
-      if (!rawName || rawName.toLowerCase() === 'species') continue;
-      // Strip scientific name in parentheses: "Bald Eagle (Haliaeetus leucocephalus)" → "Bald Eagle"
-      const comName = rawName.replace(/\s*\([^)]+\)\s*$/, '').trim();
-      if (!comName) continue;
-      const freqs = [];
-      for (let i = 1; i <= 48; i++) {
-        const v = parseFloat(cols[i]);
-        freqs.push(isNaN(v) ? 0 : v);
-      }
-      if (freqs.some(v => v > 0)) barChart[comName] = freqs; // skip all-zero rows
-    }
-
-    if (Object.keys(barChart).length === 0) return null;
-    cacheSet(cacheKey, barChart);
-    return barChart;
-  } catch (err) {
-    console.warn('[eBird barChart]', err.message);
-    return null;
-  }
-}
+// fetchEbirdBarChart removed — the /v2/product/barChart endpoint requires
+// server-side TLS session cookies that the Vercel proxy could never provide,
+// so this function always returned null. County-level historic frequency data
+// (fetched at build time via buildWildlifeCache.js) replaced this approach.
 
 // ─────────────────────────────────────────────────────────────────────────────
 // eBird  — bird observations via the geo/recent endpoint.
@@ -926,15 +887,13 @@ export async function fetchInatMonthlyHist(lat, lng, locId, scientificName) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// NPS — species inventory from the NPS Data API v1.
+// NPS — wildlife data from the NPS Data API.
 //
-// Primary:  /species?parkCode={code}  — full species list with common name,
-//           scientific name, taxonCode, and abundance field.
-// Fallback: /parks?fields=topics  — curated wildlife topic tags (used when
-//           the species endpoint returns empty or errors).
+// The /v1/species endpoint returns 404 (no longer available). The only working
+// wildlife path is /parks?fields=topics which returns curated topic tags.
+// getNpsTopics maps these tags (e.g. 'Bison', 'Wolves') to species entries.
 //
 // Returns { animals, _stats } | null.
-// API docs: https://www.nps.gov/subjects/developer/api-documentation.htm
 // ─────────────────────────────────────────────────────────────────────────────
 
 // Map NPS taxonCode (lowercase) → { animalType, emoji }
@@ -1411,6 +1370,7 @@ export function mergeAnimals(hardcoded, liveList) {
         scientificName:  live.scientificName ?? a.scientificName ?? null,
         migrationStatus: a.migrationStatus ?? live.migrationStatus ?? null,
         photoUrl:        a.photoUrl !== undefined ? a.photoUrl : (live.photoUrl ?? null),
+        parkTip:         live.parkTip ?? a.parkTip ?? null,
         _curated:        true,
       };
     }

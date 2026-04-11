@@ -1,0 +1,2619 @@
+[
+  {
+    "name": "Acanthocephala terminalis",
+    "sciName": "Acanthocephala terminalis",
+    "type": "insect",
+    "parks": [
+      "shenandoah",
+      "newrivergorge",
+      "cuyahogavalley",
+      "greatsmokymountains",
+      "congaree",
+      "mammothcave",
+      "indianadunes",
+      "gatewayarch",
+      "hotsprings"
+    ]
+  },
+  {
+    "name": "Dasymutilla vestita",
+    "sciName": "Dasymutilla vestita",
+    "type": "insect",
+    "parks": [
+      "yellowstone",
+      "badlands",
+      "theodoreroosevelt",
+      "grandcanyon",
+      "zion",
+      "brycecanyon",
+      "carlsbadcaverns",
+      "greatbasin"
+    ]
+  },
+  {
+    "name": "Dasymutilla bioculata",
+    "sciName": "Dasymutilla bioculata",
+    "type": "insect",
+    "parks": [
+      "indianadunes",
+      "badlands",
+      "theodoreroosevelt",
+      "zion",
+      "brycecanyon"
+    ]
+  },
+  {
+    "name": "Arhopalus asperatus",
+    "sciName": "Arhopalus asperatus",
+    "type": "insect",
+    "parks": [
+      "yellowstone",
+      "denali",
+      "windcave",
+      "greatbasin"
+    ]
+  },
+  {
+    "name": "Leptoglossus oppositus",
+    "sciName": "Leptoglossus oppositus",
+    "type": "insect",
+    "parks": [
+      "newrivergorge",
+      "mammothcave",
+      "gatewayarch",
+      "carlsbadcaverns"
+    ]
+  },
+  {
+    "name": "Gnathacmaeops pratensis",
+    "sciName": "Gnathacmaeops pratensis",
+    "type": "insect",
+    "parks": [
+      "yellowstone",
+      "denali",
+      "greatbasin"
+    ]
+  },
+  {
+    "name": "Cuban bird grasshopper",
+    "sciName": "Schistocerca serialis",
+    "type": "insect",
+    "parks": [
+      "everglades",
+      "biscayne",
+      "drytortugas"
+    ]
+  },
+  {
+    "name": "Parancistrocerus fulvipes",
+    "sciName": "Parancistrocerus fulvipes",
+    "type": "insect",
+    "parks": [
+      "biscayne",
+      "drytortugas",
+      "gatewayarch"
+    ]
+  },
+  {
+    "name": "Xanthoteras eburneum",
+    "sciName": "Xanthoteras eburneum",
+    "type": "insect",
+    "parks": [
+      "grandcanyon",
+      "zion",
+      "brycecanyon"
+    ]
+  },
+  {
+    "name": "Etorofus propinquus",
+    "sciName": "Etorofus propinquus",
+    "type": "insect",
+    "parks": [
+      "grandcanyon",
+      "brycecanyon",
+      "greatbasin"
+    ]
+  },
+  {
+    "name": "Vella fallax",
+    "sciName": "Vella fallax",
+    "type": "insect",
+    "parks": [
+      "grandcanyon",
+      "zion",
+      "brycecanyon"
+    ]
+  },
+  {
+    "name": "Acmaeodera diffusa",
+    "sciName": "Acmaeodera diffusa",
+    "type": "insect",
+    "parks": [
+      "grandcanyon",
+      "zion",
+      "brycecanyon"
+    ]
+  },
+  {
+    "name": "Adejeania vexatrix",
+    "sciName": "Adejeania vexatrix",
+    "type": "insect",
+    "parks": [
+      "yellowstone",
+      "greatbasin"
+    ]
+  },
+  {
+    "name": "Pachyta lamed",
+    "sciName": "Pachyta lamed",
+    "type": "insect",
+    "parks": [
+      "yellowstone",
+      "denali"
+    ]
+  },
+  {
+    "name": "Marsh meadow grasshopper",
+    "sciName": "Pseudochorthippus curtipennis",
+    "type": "insect",
+    "parks": [
+      "yellowstone",
+      "acadia"
+    ]
+  },
+  {
+    "name": "Rhagovelia plumbea",
+    "sciName": "Rhagovelia plumbea",
+    "type": "insect",
+    "parks": [
+      "everglades",
+      "biscayne"
+    ]
+  },
+  {
+    "name": "Chilocampyla dyariella",
+    "sciName": "Chilocampyla dyariella",
+    "type": "insect",
+    "parks": [
+      "everglades",
+      "biscayne"
+    ]
+  },
+  {
+    "name": "Acrolophus walsinghami",
+    "sciName": "Acrolophus walsinghami",
+    "type": "insect",
+    "parks": [
+      "everglades",
+      "drytortugas"
+    ]
+  },
+  {
+    "name": "Belostoma lutarium",
+    "sciName": "Belostoma lutarium",
+    "type": "insect",
+    "parks": [
+      "everglades",
+      "biscayne"
+    ]
+  },
+  {
+    "name": "Judolia montivagans",
+    "sciName": "Judolia montivagans",
+    "type": "insect",
+    "parks": [
+      "denali",
+      "isleroyale"
+    ]
+  },
+  {
+    "name": "Mesembrina latreillii",
+    "sciName": "Mesembrina latreillii",
+    "type": "insect",
+    "parks": [
+      "denali",
+      "greatsmokymountains"
+    ]
+  },
+  {
+    "name": "Physocephala tibialis",
+    "sciName": "Physocephala tibialis",
+    "type": "insect",
+    "parks": [
+      "shenandoah",
+      "cuyahogavalley"
+    ]
+  },
+  {
+    "name": "Evodinus monticola",
+    "sciName": "Evodinus monticola",
+    "type": "insect",
+    "parks": [
+      "isleroyale",
+      "voyageurs"
+    ]
+  },
+  {
+    "name": "Tylozygus geometricus",
+    "sciName": "Tylozygus geometricus",
+    "type": "insect",
+    "parks": [
+      "greatsmokymountains",
+      "congaree"
+    ]
+  },
+  {
+    "name": "Microbembex monodonta",
+    "sciName": "Microbembex monodonta",
+    "type": "insect",
+    "parks": [
+      "drytortugas",
+      "indianadunes"
+    ]
+  },
+  {
+    "name": "Zonitis sayi",
+    "sciName": "Zonitis sayi",
+    "type": "insect",
+    "parks": [
+      "badlands",
+      "windcave"
+    ]
+  },
+  {
+    "name": "Boreocanthon praticola",
+    "sciName": "Boreocanthon praticola",
+    "type": "insect",
+    "parks": [
+      "badlands",
+      "theodoreroosevelt"
+    ]
+  },
+  {
+    "name": "Prionus fissicornis",
+    "sciName": "Prionus fissicornis",
+    "type": "insect",
+    "parks": [
+      "badlands",
+      "windcave"
+    ]
+  },
+  {
+    "name": "Promachus fitchii",
+    "sciName": "Promachus fitchii",
+    "type": "insect",
+    "parks": [
+      "badlands",
+      "windcave"
+    ]
+  },
+  {
+    "name": "Embaphion muricatum",
+    "sciName": "Embaphion muricatum",
+    "type": "insect",
+    "parks": [
+      "badlands",
+      "theodoreroosevelt"
+    ]
+  },
+  {
+    "name": "Sphex lucae",
+    "sciName": "Sphex lucae",
+    "type": "insect",
+    "parks": [
+      "badlands",
+      "theodoreroosevelt"
+    ]
+  },
+  {
+    "name": "Dasymutilla asopus",
+    "sciName": "Dasymutilla asopus",
+    "type": "insect",
+    "parks": [
+      "badlands",
+      "theodoreroosevelt"
+    ]
+  },
+  {
+    "name": "Ashgray blister beetle",
+    "sciName": "Epicauta fabricii",
+    "type": "insect",
+    "parks": [
+      "badlands",
+      "theodoreroosevelt"
+    ]
+  },
+  {
+    "name": "Neoneides muticus",
+    "sciName": "Neoneides muticus",
+    "type": "insect",
+    "parks": [
+      "windcave",
+      "greatbasin"
+    ]
+  },
+  {
+    "name": "Trichodes simulator",
+    "sciName": "Trichodes simulator",
+    "type": "insect",
+    "parks": [
+      "theodoreroosevelt",
+      "zion"
+    ]
+  },
+  {
+    "name": "Eleodes pilosa",
+    "sciName": "Eleodes pilosa",
+    "type": "insect",
+    "parks": [
+      "grandcanyon",
+      "zion"
+    ]
+  },
+  {
+    "name": "Chauliognathus fasciatus",
+    "sciName": "Chauliognathus fasciatus",
+    "type": "insect",
+    "parks": [
+      "grandcanyon",
+      "zion"
+    ]
+  },
+  {
+    "name": "Western red bat",
+    "sciName": "Lasiurus frantzii",
+    "type": "mammal",
+    "parks": [
+      "grandcanyon",
+      "channelislands"
+    ]
+  },
+  {
+    "name": "Cucullia dorsalis",
+    "sciName": "Cucullia dorsalis",
+    "type": "insect",
+    "parks": [
+      "zion",
+      "greatbasin"
+    ]
+  },
+  {
+    "name": "Okanagana magnifica",
+    "sciName": "Okanagana magnifica",
+    "type": "insect",
+    "parks": [
+      "zion",
+      "brycecanyon"
+    ]
+  },
+  {
+    "name": "Formica subpolita",
+    "sciName": "Formica subpolita",
+    "type": "insect",
+    "parks": [
+      "brycecanyon",
+      "greatbasin"
+    ]
+  },
+  {
+    "name": "Zopherus uteanus",
+    "sciName": "Zopherus uteanus",
+    "type": "insect",
+    "parks": [
+      "brycecanyon",
+      "greatbasin"
+    ]
+  },
+  {
+    "name": "Polystoechotes punctata",
+    "sciName": "Polystoechotes punctata",
+    "type": "insect",
+    "parks": [
+      "brycecanyon",
+      "greatbasin"
+    ]
+  },
+  {
+    "name": "Laphria fernaldi",
+    "sciName": "Laphria fernaldi",
+    "type": "insect",
+    "parks": [
+      "brycecanyon",
+      "greatbasin"
+    ]
+  },
+  {
+    "name": "Meris alticola",
+    "sciName": "Meris alticola",
+    "type": "insect",
+    "parks": [
+      "brycecanyon",
+      "greatbasin"
+    ]
+  },
+  {
+    "name": "Acmaeodera knowltoni",
+    "sciName": "Acmaeodera knowltoni",
+    "type": "insect",
+    "parks": [
+      "brycecanyon",
+      "greatbasin"
+    ]
+  },
+  {
+    "name": "Ambrysus mormon",
+    "sciName": "Ambrysus mormon",
+    "type": "insect",
+    "parks": [
+      "yellowstone"
+    ]
+  },
+  {
+    "name": "Bembix amoena",
+    "sciName": "Bembix amoena",
+    "type": "insect",
+    "parks": [
+      "yellowstone"
+    ]
+  },
+  {
+    "name": "Pachyrhinus elegans",
+    "sciName": "Pachyrhinus elegans",
+    "type": "insect",
+    "parks": [
+      "yellowstone"
+    ]
+  },
+  {
+    "name": "Red turnip beetle",
+    "sciName": "Entomoscelis americana",
+    "type": "insect",
+    "parks": [
+      "yellowstone"
+    ]
+  },
+  {
+    "name": "Ephydra bruesi",
+    "sciName": "Ephydra bruesi",
+    "type": "insect",
+    "parks": [
+      "yellowstone"
+    ]
+  },
+  {
+    "name": "Cyrtopogon willistoni",
+    "sciName": "Cyrtopogon willistoni",
+    "type": "insect",
+    "parks": [
+      "yellowstone"
+    ]
+  },
+  {
+    "name": "Largus davisi",
+    "sciName": "Largus davisi",
+    "type": "insect",
+    "parks": [
+      "everglades"
+    ]
+  },
+  {
+    "name": "Melipotis florida",
+    "sciName": "Melipotis florida",
+    "type": "insect",
+    "parks": [
+      "everglades"
+    ]
+  },
+  {
+    "name": "Neogerris hesione",
+    "sciName": "Neogerris hesione",
+    "type": "insect",
+    "parks": [
+      "everglades"
+    ]
+  },
+  {
+    "name": "Grallipeza nebulosa",
+    "sciName": "Grallipeza nebulosa",
+    "type": "insect",
+    "parks": [
+      "everglades"
+    ]
+  },
+  {
+    "name": "Aptenopedes clara",
+    "sciName": "Aptenopedes clara",
+    "type": "insect",
+    "parks": [
+      "everglades"
+    ]
+  },
+  {
+    "name": "Hemeroblemma opigena",
+    "sciName": "Hemeroblemma opigena",
+    "type": "insect",
+    "parks": [
+      "everglades"
+    ]
+  },
+  {
+    "name": "Plagioneurus univittatus",
+    "sciName": "Plagioneurus univittatus",
+    "type": "insect",
+    "parks": [
+      "everglades"
+    ]
+  },
+  {
+    "name": "Hydrobiomorpha casta",
+    "sciName": "Hydrobiomorpha casta",
+    "type": "insect",
+    "parks": [
+      "everglades"
+    ]
+  },
+  {
+    "name": "Nemognatha punctulata",
+    "sciName": "Nemognatha punctulata",
+    "type": "insect",
+    "parks": [
+      "everglades"
+    ]
+  },
+  {
+    "name": "Pelonomus obscurus",
+    "sciName": "Pelonomus obscurus",
+    "type": "insect",
+    "parks": [
+      "everglades"
+    ]
+  },
+  {
+    "name": "Augocoris illustris",
+    "sciName": "Augocoris illustris",
+    "type": "insect",
+    "parks": [
+      "everglades"
+    ]
+  },
+  {
+    "name": "Stephomyia eugeniae",
+    "sciName": "Stephomyia eugeniae",
+    "type": "insect",
+    "parks": [
+      "everglades"
+    ]
+  },
+  {
+    "name": "Tylozygus bifidus",
+    "sciName": "Tylozygus bifidus",
+    "type": "insect",
+    "parks": [
+      "everglades"
+    ]
+  },
+  {
+    "name": "Condylostylus pruinosus",
+    "sciName": "Condylostylus pruinosus",
+    "type": "insect",
+    "parks": [
+      "everglades"
+    ]
+  },
+  {
+    "name": "Opisthius richardsoni",
+    "sciName": "Opisthius richardsoni",
+    "type": "insect",
+    "parks": [
+      "denali"
+    ]
+  },
+  {
+    "name": "Formica aserva",
+    "sciName": "Formica aserva",
+    "type": "insect",
+    "parks": [
+      "denali"
+    ]
+  },
+  {
+    "name": "Gerris pingreensis",
+    "sciName": "Gerris pingreensis",
+    "type": "insect",
+    "parks": [
+      "denali"
+    ]
+  },
+  {
+    "name": "Carabus truncaticollis",
+    "sciName": "Carabus truncaticollis",
+    "type": "insect",
+    "parks": [
+      "denali"
+    ]
+  },
+  {
+    "name": "Mesembrina decipiens",
+    "sciName": "Mesembrina decipiens",
+    "type": "insect",
+    "parks": [
+      "denali"
+    ]
+  },
+  {
+    "name": "Arctia subnebulosa",
+    "sciName": "Arctia subnebulosa",
+    "type": "insect",
+    "parks": [
+      "denali"
+    ]
+  },
+  {
+    "name": "Alberta leafroller",
+    "sciName": "Archips alberta",
+    "type": "insect",
+    "parks": [
+      "denali"
+    ]
+  },
+  {
+    "name": "Eulithis destinata",
+    "sciName": "Eulithis destinata",
+    "type": "insect",
+    "parks": [
+      "denali"
+    ]
+  },
+  {
+    "name": "Glischrochilus vittatus",
+    "sciName": "Glischrochilus vittatus",
+    "type": "insect",
+    "parks": [
+      "denali"
+    ]
+  },
+  {
+    "name": "Grammoptera subargentata",
+    "sciName": "Grammoptera subargentata",
+    "type": "insect",
+    "parks": [
+      "denali"
+    ]
+  },
+  {
+    "name": "Melanchra pulverulenta",
+    "sciName": "Melanchra pulverulenta",
+    "type": "insect",
+    "parks": [
+      "denali"
+    ]
+  },
+  {
+    "name": "Nebria nivalis",
+    "sciName": "Nebria nivalis",
+    "type": "insect",
+    "parks": [
+      "denali"
+    ]
+  },
+  {
+    "name": "Thanatophilus sagax",
+    "sciName": "Thanatophilus sagax",
+    "type": "insect",
+    "parks": [
+      "denali"
+    ]
+  },
+  {
+    "name": "Xestia liquidaria",
+    "sciName": "Xestia liquidaria",
+    "type": "insect",
+    "parks": [
+      "denali"
+    ]
+  },
+  {
+    "name": "Scopula cajanderi",
+    "sciName": "Scopula cajanderi",
+    "type": "insect",
+    "parks": [
+      "denali"
+    ]
+  },
+  {
+    "name": "Clepsis moeschleriana",
+    "sciName": "Clepsis moeschleriana",
+    "type": "insect",
+    "parks": [
+      "denali"
+    ]
+  },
+  {
+    "name": "Hemipenthes morioides",
+    "sciName": "Hemipenthes morioides",
+    "type": "insect",
+    "parks": [
+      "denali"
+    ]
+  },
+  {
+    "name": "Hippodamia arctica",
+    "sciName": "Hippodamia arctica",
+    "type": "insect",
+    "parks": [
+      "denali"
+    ]
+  },
+  {
+    "name": "Limnoporus rufoscutellatus",
+    "sciName": "Limnoporus rufoscutellatus",
+    "type": "insect",
+    "parks": [
+      "denali"
+    ]
+  },
+  {
+    "name": "Sympistis zetterstedtii",
+    "sciName": "Sympistis zetterstedtii",
+    "type": "insect",
+    "parks": [
+      "denali"
+    ]
+  },
+  {
+    "name": "Dasineura epilobii",
+    "sciName": "Dasineura epilobii",
+    "type": "insect",
+    "parks": [
+      "denali"
+    ]
+  },
+  {
+    "name": "Compsobata kennicotti",
+    "sciName": "Compsobata kennicotti",
+    "type": "insect",
+    "parks": [
+      "denali"
+    ]
+  },
+  {
+    "name": "Sonronius maculipes",
+    "sciName": "Sonronius maculipes",
+    "type": "insect",
+    "parks": [
+      "denali"
+    ]
+  },
+  {
+    "name": "European fire ant",
+    "sciName": "Myrmica rubra",
+    "type": "insect",
+    "parks": [
+      "acadia"
+    ]
+  },
+  {
+    "name": "Penthetria heteroptera",
+    "sciName": "Penthetria heteroptera",
+    "type": "insect",
+    "parks": [
+      "shenandoah"
+    ]
+  },
+  {
+    "name": "Carabus goryi",
+    "sciName": "Carabus goryi",
+    "type": "insect",
+    "parks": [
+      "shenandoah"
+    ]
+  },
+  {
+    "name": "Nepalomyia nigricornis",
+    "sciName": "Nepalomyia nigricornis",
+    "type": "insect",
+    "parks": [
+      "shenandoah"
+    ]
+  },
+  {
+    "name": "Hybos reversus",
+    "sciName": "Hybos reversus",
+    "type": "insect",
+    "parks": [
+      "shenandoah"
+    ]
+  },
+  {
+    "name": "Juriniopsis adusta",
+    "sciName": "Juriniopsis adusta",
+    "type": "insect",
+    "parks": [
+      "shenandoah"
+    ]
+  },
+  {
+    "name": "Cladura flavoferruginea",
+    "sciName": "Cladura flavoferruginea",
+    "type": "insect",
+    "parks": [
+      "shenandoah"
+    ]
+  },
+  {
+    "name": "Piezogaster calcarator",
+    "sciName": "Piezogaster calcarator",
+    "type": "insect",
+    "parks": [
+      "cuyahogavalley"
+    ]
+  },
+  {
+    "name": "Xestoleptura tibialis",
+    "sciName": "Xestoleptura tibialis",
+    "type": "insect",
+    "parks": [
+      "isleroyale"
+    ]
+  },
+  {
+    "name": "Phytomyza aralivora",
+    "sciName": "Phytomyza aralivora",
+    "type": "insect",
+    "parks": [
+      "isleroyale"
+    ]
+  },
+  {
+    "name": "Stratiomys badia",
+    "sciName": "Stratiomys badia",
+    "type": "insect",
+    "parks": [
+      "isleroyale"
+    ]
+  },
+  {
+    "name": "Ancistrocerus capra",
+    "sciName": "Ancistrocerus capra",
+    "type": "insect",
+    "parks": [
+      "isleroyale"
+    ]
+  },
+  {
+    "name": "Provancherana tripunctata",
+    "sciName": "Provancherana tripunctata",
+    "type": "insect",
+    "parks": [
+      "greatsmokymountains"
+    ]
+  },
+  {
+    "name": "Sumitrosis inaequalis",
+    "sciName": "Sumitrosis inaequalis",
+    "type": "insect",
+    "parks": [
+      "greatsmokymountains"
+    ]
+  },
+  {
+    "name": "Evacanthus bellaustralis",
+    "sciName": "Evacanthus bellaustralis",
+    "type": "insect",
+    "parks": [
+      "greatsmokymountains"
+    ]
+  },
+  {
+    "name": "Sphex nudus",
+    "sciName": "Sphex nudus",
+    "type": "insect",
+    "parks": [
+      "greatsmokymountains"
+    ]
+  },
+  {
+    "name": "Dikraneura angustata",
+    "sciName": "Dikraneura angustata",
+    "type": "insect",
+    "parks": [
+      "greatsmokymountains"
+    ]
+  },
+  {
+    "name": "Chrysopilus connexus",
+    "sciName": "Chrysopilus connexus",
+    "type": "insect",
+    "parks": [
+      "greatsmokymountains"
+    ]
+  },
+  {
+    "name": "Draeculacephala balli",
+    "sciName": "Draeculacephala balli",
+    "type": "insect",
+    "parks": [
+      "greatsmokymountains"
+    ]
+  },
+  {
+    "name": "Megischus brunneus",
+    "sciName": "Megischus brunneus",
+    "type": "insect",
+    "parks": [
+      "biscayne"
+    ]
+  },
+  {
+    "name": "Anthrax aterrimus",
+    "sciName": "Anthrax aterrimus",
+    "type": "insect",
+    "parks": [
+      "biscayne"
+    ]
+  },
+  {
+    "name": "Elateropsis scabrosus",
+    "sciName": "Elateropsis scabrosus",
+    "type": "insect",
+    "parks": [
+      "biscayne"
+    ]
+  },
+  {
+    "name": "Lygropia fusalis",
+    "sciName": "Lygropia fusalis",
+    "type": "insect",
+    "parks": [
+      "biscayne"
+    ]
+  },
+  {
+    "name": "Eucosmophora pithecellobiae",
+    "sciName": "Eucosmophora pithecellobiae",
+    "type": "insect",
+    "parks": [
+      "biscayne"
+    ]
+  },
+  {
+    "name": "Asphondylia borrichiae",
+    "sciName": "Asphondylia borrichiae",
+    "type": "insect",
+    "parks": [
+      "biscayne"
+    ]
+  },
+  {
+    "name": "Zelus cervicalis",
+    "sciName": "Zelus cervicalis",
+    "type": "insect",
+    "parks": [
+      "biscayne"
+    ]
+  },
+  {
+    "name": "Megachile inimica",
+    "sciName": "Megachile inimica",
+    "type": "insect",
+    "parks": [
+      "biscayne"
+    ]
+  },
+  {
+    "name": "Tyrissa multilinea",
+    "sciName": "Tyrissa multilinea",
+    "type": "insect",
+    "parks": [
+      "biscayne"
+    ]
+  },
+  {
+    "name": "Meunieriella avicenniae",
+    "sciName": "Meunieriella avicenniae",
+    "type": "insect",
+    "parks": [
+      "biscayne"
+    ]
+  },
+  {
+    "name": "Griburius larvatus",
+    "sciName": "Griburius larvatus",
+    "type": "insect",
+    "parks": [
+      "biscayne"
+    ]
+  },
+  {
+    "name": "Seagrape borer",
+    "sciName": "Hexeris enhydris",
+    "type": "insect",
+    "parks": [
+      "biscayne"
+    ]
+  },
+  {
+    "name": "Neoclytus senilis",
+    "sciName": "Neoclytus senilis",
+    "type": "insect",
+    "parks": [
+      "biscayne"
+    ]
+  },
+  {
+    "name": "Coelioxys slossoni",
+    "sciName": "Coelioxys slossoni",
+    "type": "insect",
+    "parks": [
+      "biscayne"
+    ]
+  },
+  {
+    "name": "Marmara guilandinella",
+    "sciName": "Marmara guilandinella",
+    "type": "insect",
+    "parks": [
+      "biscayne"
+    ]
+  },
+  {
+    "name": "Phyllocnistis meliacella",
+    "sciName": "Phyllocnistis meliacella",
+    "type": "insect",
+    "parks": [
+      "biscayne"
+    ]
+  },
+  {
+    "name": "Liriomyza avicenniae",
+    "sciName": "Liriomyza avicenniae",
+    "type": "insect",
+    "parks": [
+      "biscayne"
+    ]
+  },
+  {
+    "name": "Odontomyia rufipes",
+    "sciName": "Odontomyia rufipes",
+    "type": "insect",
+    "parks": [
+      "biscayne"
+    ]
+  },
+  {
+    "name": "Camponotus inaequalis",
+    "sciName": "Camponotus inaequalis",
+    "type": "insect",
+    "parks": [
+      "drytortugas"
+    ]
+  },
+  {
+    "name": "Polycesta goryi",
+    "sciName": "Polycesta goryi",
+    "type": "insect",
+    "parks": [
+      "drytortugas"
+    ]
+  },
+  {
+    "name": "Condylostylus longicornis",
+    "sciName": "Condylostylus longicornis",
+    "type": "insect",
+    "parks": [
+      "drytortugas"
+    ]
+  },
+  {
+    "name": "Caribbean scoliid wasp",
+    "sciName": "Dielis dorsata",
+    "type": "insect",
+    "parks": [
+      "drytortugas"
+    ]
+  },
+  {
+    "name": "Melipotis prolata",
+    "sciName": "Melipotis prolata",
+    "type": "insect",
+    "parks": [
+      "drytortugas"
+    ]
+  },
+  {
+    "name": "Brochymena myops",
+    "sciName": "Brochymena myops",
+    "type": "insect",
+    "parks": [
+      "congaree"
+    ]
+  },
+  {
+    "name": "Catocala carissima",
+    "sciName": "Catocala carissima",
+    "type": "insect",
+    "parks": [
+      "congaree"
+    ]
+  },
+  {
+    "name": "Ormenoides venusta",
+    "sciName": "Ormenoides venusta",
+    "type": "insect",
+    "parks": [
+      "congaree"
+    ]
+  },
+  {
+    "name": "Phanaeus triangularis",
+    "sciName": "Phanaeus triangularis",
+    "type": "insect",
+    "parks": [
+      "congaree"
+    ]
+  },
+  {
+    "name": "Phytomyza opacae",
+    "sciName": "Phytomyza opacae",
+    "type": "insect",
+    "parks": [
+      "congaree"
+    ]
+  },
+  {
+    "name": "Phyllocnistis insignis",
+    "sciName": "Phyllocnistis insignis",
+    "type": "insect",
+    "parks": [
+      "congaree"
+    ]
+  },
+  {
+    "name": "Marmara smilacisella",
+    "sciName": "Marmara smilacisella",
+    "type": "insect",
+    "parks": [
+      "congaree"
+    ]
+  },
+  {
+    "name": "Chrysopilus velutinus",
+    "sciName": "Chrysopilus velutinus",
+    "type": "insect",
+    "parks": [
+      "mammothcave"
+    ]
+  },
+  {
+    "name": "Xylomya simillima",
+    "sciName": "Xylomya simillima",
+    "type": "insect",
+    "parks": [
+      "mammothcave"
+    ]
+  },
+  {
+    "name": "Belostoma flumineum",
+    "sciName": "Belostoma flumineum",
+    "type": "insect",
+    "parks": [
+      "voyageurs"
+    ]
+  },
+  {
+    "name": "Trachysida mutabilis",
+    "sciName": "Trachysida mutabilis",
+    "type": "insect",
+    "parks": [
+      "voyageurs"
+    ]
+  },
+  {
+    "name": "Aulacidea hieracii",
+    "sciName": "Aulacidea hieracii",
+    "type": "insect",
+    "parks": [
+      "voyageurs"
+    ]
+  },
+  {
+    "name": "Podium luctuosum",
+    "sciName": "Podium luctuosum",
+    "type": "insect",
+    "parks": [
+      "indianadunes"
+    ]
+  },
+  {
+    "name": "Philonix fulvicollis",
+    "sciName": "Philonix fulvicollis",
+    "type": "insect",
+    "parks": [
+      "indianadunes"
+    ]
+  },
+  {
+    "name": "Chrysanthrax cypris",
+    "sciName": "Chrysanthrax cypris",
+    "type": "insect",
+    "parks": [
+      "indianadunes"
+    ]
+  },
+  {
+    "name": "Asphondylia rudbeckiaeconspicua",
+    "sciName": "Asphondylia rudbeckiaeconspicua",
+    "type": "insect",
+    "parks": [
+      "indianadunes"
+    ]
+  },
+  {
+    "name": "Trigonaspis quercusforticorne",
+    "sciName": "Trigonaspis quercusforticorne",
+    "type": "insect",
+    "parks": [
+      "indianadunes"
+    ]
+  },
+  {
+    "name": "Russula silvestris",
+    "sciName": "Russula silvestris",
+    "type": "other",
+    "parks": [
+      "indianadunes"
+    ]
+  },
+  {
+    "name": "Anthophora affabilis",
+    "sciName": "Anthophora affabilis",
+    "type": "insect",
+    "parks": [
+      "badlands"
+    ]
+  },
+  {
+    "name": "Megachile fortis",
+    "sciName": "Megachile fortis",
+    "type": "insect",
+    "parks": [
+      "badlands"
+    ]
+  },
+  {
+    "name": "American cochineal bug",
+    "sciName": "Dactylopius confusus",
+    "type": "insect",
+    "parks": [
+      "badlands"
+    ]
+  },
+  {
+    "name": "Andrena nigerrima",
+    "sciName": "Andrena nigerrima",
+    "type": "insect",
+    "parks": [
+      "badlands"
+    ]
+  },
+  {
+    "name": "Dianthidium concinnum",
+    "sciName": "Dianthidium concinnum",
+    "type": "insect",
+    "parks": [
+      "badlands"
+    ]
+  },
+  {
+    "name": "Andrena cragini",
+    "sciName": "Andrena cragini",
+    "type": "insect",
+    "parks": [
+      "badlands"
+    ]
+  },
+  {
+    "name": "Brachynomada grindeliae",
+    "sciName": "Brachynomada grindeliae",
+    "type": "insect",
+    "parks": [
+      "badlands"
+    ]
+  },
+  {
+    "name": "Pseudomethoca propinqua",
+    "sciName": "Pseudomethoca propinqua",
+    "type": "insect",
+    "parks": [
+      "badlands"
+    ]
+  },
+  {
+    "name": "Andrena pallidiscopa",
+    "sciName": "Andrena pallidiscopa",
+    "type": "insect",
+    "parks": [
+      "badlands"
+    ]
+  },
+  {
+    "name": "Andrena anograe",
+    "sciName": "Andrena anograe",
+    "type": "insect",
+    "parks": [
+      "badlands"
+    ]
+  },
+  {
+    "name": "Anthophora occidentalis",
+    "sciName": "Anthophora occidentalis",
+    "type": "insect",
+    "parks": [
+      "badlands"
+    ]
+  },
+  {
+    "name": "Capraita thyamoides",
+    "sciName": "Capraita thyamoides",
+    "type": "insect",
+    "parks": [
+      "badlands"
+    ]
+  },
+  {
+    "name": "Megacyllene powersi",
+    "sciName": "Megacyllene powersi",
+    "type": "insect",
+    "parks": [
+      "windcave"
+    ]
+  },
+  {
+    "name": "Rabdophaga rosacea",
+    "sciName": "Rabdophaga rosacea",
+    "type": "insect",
+    "parks": [
+      "windcave"
+    ]
+  },
+  {
+    "name": "Idaea gemmata",
+    "sciName": "Idaea gemmata",
+    "type": "insect",
+    "parks": [
+      "windcave"
+    ]
+  },
+  {
+    "name": "Carbonifera goldenrod gall midge",
+    "sciName": "Asteromyia carbonifera",
+    "type": "insect",
+    "parks": [
+      "windcave"
+    ]
+  },
+  {
+    "name": "Schinia simplex",
+    "sciName": "Schinia simplex",
+    "type": "insect",
+    "parks": [
+      "windcave"
+    ]
+  },
+  {
+    "name": "Lampria rubriventris",
+    "sciName": "Lampria rubriventris",
+    "type": "insect",
+    "parks": [
+      "windcave"
+    ]
+  },
+  {
+    "name": "Panagaeus fasciatus",
+    "sciName": "Panagaeus fasciatus",
+    "type": "insect",
+    "parks": [
+      "windcave"
+    ]
+  },
+  {
+    "name": "Chrysops fulvaster",
+    "sciName": "Chrysops fulvaster",
+    "type": "insect",
+    "parks": [
+      "windcave"
+    ]
+  },
+  {
+    "name": "Glena nigricaria",
+    "sciName": "Glena nigricaria",
+    "type": "insect",
+    "parks": [
+      "windcave"
+    ]
+  },
+  {
+    "name": "Stenomorpha opaca",
+    "sciName": "Stenomorpha opaca",
+    "type": "insect",
+    "parks": [
+      "theodoreroosevelt"
+    ]
+  },
+  {
+    "name": "Eleodes carbonaria",
+    "sciName": "Eleodes carbonaria",
+    "type": "insect",
+    "parks": [
+      "theodoreroosevelt"
+    ]
+  },
+  {
+    "name": "Trirhabda attenuata",
+    "sciName": "Trirhabda attenuata",
+    "type": "insect",
+    "parks": [
+      "theodoreroosevelt"
+    ]
+  },
+  {
+    "name": "Fine striped sweat bee",
+    "sciName": "Agapostemon subtilior",
+    "type": "insect",
+    "parks": [
+      "theodoreroosevelt"
+    ]
+  },
+  {
+    "name": "Proctacanthella cacopiloga",
+    "sciName": "Proctacanthella cacopiloga",
+    "type": "insect",
+    "parks": [
+      "theodoreroosevelt"
+    ]
+  },
+  {
+    "name": "Antistrophus pisum",
+    "sciName": "Antistrophus pisum",
+    "type": "insect",
+    "parks": [
+      "theodoreroosevelt"
+    ]
+  },
+  {
+    "name": "Brachynemurus abdominalis",
+    "sciName": "Brachynemurus abdominalis",
+    "type": "insect",
+    "parks": [
+      "theodoreroosevelt"
+    ]
+  },
+  {
+    "name": "Lasiopogon quadrivittatus",
+    "sciName": "Lasiopogon quadrivittatus",
+    "type": "insect",
+    "parks": [
+      "theodoreroosevelt"
+    ]
+  },
+  {
+    "name": "Chlorochroa faceta",
+    "sciName": "Chlorochroa faceta",
+    "type": "insect",
+    "parks": [
+      "theodoreroosevelt"
+    ]
+  },
+  {
+    "name": "Philolithus sordidus",
+    "sciName": "Philolithus sordidus",
+    "type": "insect",
+    "parks": [
+      "theodoreroosevelt"
+    ]
+  },
+  {
+    "name": "Stizoides renicinctus",
+    "sciName": "Stizoides renicinctus",
+    "type": "insect",
+    "parks": [
+      "theodoreroosevelt"
+    ]
+  },
+  {
+    "name": "Dasymutilla ursus",
+    "sciName": "Dasymutilla ursus",
+    "type": "insect",
+    "parks": [
+      "theodoreroosevelt"
+    ]
+  },
+  {
+    "name": "Manica invidia",
+    "sciName": "Manica invidia",
+    "type": "insect",
+    "parks": [
+      "theodoreroosevelt"
+    ]
+  },
+  {
+    "name": "Odontomyia cincta",
+    "sciName": "Odontomyia cincta",
+    "type": "insect",
+    "parks": [
+      "gatewayarch"
+    ]
+  },
+  {
+    "name": "Trepobates subnitidus",
+    "sciName": "Trepobates subnitidus",
+    "type": "insect",
+    "parks": [
+      "gatewayarch"
+    ]
+  },
+  {
+    "name": "Neokolla hieroglyphica",
+    "sciName": "Neokolla hieroglyphica",
+    "type": "insect",
+    "parks": [
+      "gatewayarch"
+    ]
+  },
+  {
+    "name": "Ancistrocerus campestris",
+    "sciName": "Ancistrocerus campestris",
+    "type": "insect",
+    "parks": [
+      "gatewayarch"
+    ]
+  },
+  {
+    "name": "Dieunomia triangulifera",
+    "sciName": "Dieunomia triangulifera",
+    "type": "insect",
+    "parks": [
+      "gatewayarch"
+    ]
+  },
+  {
+    "name": "Liometopum luctuosum",
+    "sciName": "Liometopum luctuosum",
+    "type": "insect",
+    "parks": [
+      "grandcanyon"
+    ]
+  },
+  {
+    "name": "Dasymutilla satanas",
+    "sciName": "Dasymutilla satanas",
+    "type": "insect",
+    "parks": [
+      "grandcanyon"
+    ]
+  },
+  {
+    "name": "Nemoria obliqua",
+    "sciName": "Nemoria obliqua",
+    "type": "insect",
+    "parks": [
+      "grandcanyon"
+    ]
+  },
+  {
+    "name": "Nepytia swetti",
+    "sciName": "Nepytia swetti",
+    "type": "insect",
+    "parks": [
+      "grandcanyon"
+    ]
+  },
+  {
+    "name": "Zopherus gracilis",
+    "sciName": "Zopherus gracilis",
+    "type": "insect",
+    "parks": [
+      "grandcanyon"
+    ]
+  },
+  {
+    "name": "Sicya morsicaria",
+    "sciName": "Sicya morsicaria",
+    "type": "insect",
+    "parks": [
+      "grandcanyon"
+    ]
+  },
+  {
+    "name": "Stamnodes tessellata",
+    "sciName": "Stamnodes tessellata",
+    "type": "insect",
+    "parks": [
+      "grandcanyon"
+    ]
+  },
+  {
+    "name": "Lophocampa ingens",
+    "sciName": "Lophocampa ingens",
+    "type": "insect",
+    "parks": [
+      "grandcanyon"
+    ]
+  },
+  {
+    "name": "Mydas xanthopterus",
+    "sciName": "Mydas xanthopterus",
+    "type": "insect",
+    "parks": [
+      "grandcanyon"
+    ]
+  },
+  {
+    "name": "Orimodema protracta",
+    "sciName": "Orimodema protracta",
+    "type": "insect",
+    "parks": [
+      "grandcanyon"
+    ]
+  },
+  {
+    "name": "Sabulodes niveostriata",
+    "sciName": "Sabulodes niveostriata",
+    "type": "insect",
+    "parks": [
+      "grandcanyon"
+    ]
+  },
+  {
+    "name": "Styracosceles neomexicanus",
+    "sciName": "Styracosceles neomexicanus",
+    "type": "insect",
+    "parks": [
+      "grandcanyon"
+    ]
+  },
+  {
+    "name": "Disholcaspis lacuna",
+    "sciName": "Disholcaspis lacuna",
+    "type": "insect",
+    "parks": [
+      "grandcanyon"
+    ]
+  },
+  {
+    "name": "Colpa alcione",
+    "sciName": "Colpa alcione",
+    "type": "insect",
+    "parks": [
+      "grandcanyon"
+    ]
+  },
+  {
+    "name": "Coelocnemis sulcata",
+    "sciName": "Coelocnemis sulcata",
+    "type": "insect",
+    "parks": [
+      "zion"
+    ]
+  },
+  {
+    "name": "Feron tetyanae",
+    "sciName": "Feron tetyanae",
+    "type": "insect",
+    "parks": [
+      "zion"
+    ]
+  },
+  {
+    "name": "Andricus reticulatus",
+    "sciName": "Andricus reticulatus",
+    "type": "insect",
+    "parks": [
+      "zion"
+    ]
+  },
+  {
+    "name": "Thricolepis inornata",
+    "sciName": "Thricolepis inornata",
+    "type": "insect",
+    "parks": [
+      "zion"
+    ]
+  },
+  {
+    "name": "Acmaeodera bowditchi",
+    "sciName": "Acmaeodera bowditchi",
+    "type": "insect",
+    "parks": [
+      "zion"
+    ]
+  },
+  {
+    "name": "Promachus sackeni",
+    "sciName": "Promachus sackeni",
+    "type": "insect",
+    "parks": [
+      "zion"
+    ]
+  },
+  {
+    "name": "Cynips acraspiformis",
+    "sciName": "Cynips acraspiformis",
+    "type": "insect",
+    "parks": [
+      "zion"
+    ]
+  },
+  {
+    "name": "Nemognatha scutellaris",
+    "sciName": "Nemognatha scutellaris",
+    "type": "insect",
+    "parks": [
+      "zion"
+    ]
+  },
+  {
+    "name": "Lycomorpha grotei",
+    "sciName": "Lycomorpha grotei",
+    "type": "insect",
+    "parks": [
+      "zion"
+    ]
+  },
+  {
+    "name": "Lycomorpha splendens",
+    "sciName": "Lycomorpha splendens",
+    "type": "insect",
+    "parks": [
+      "zion"
+    ]
+  },
+  {
+    "name": "Arachnis citra",
+    "sciName": "Arachnis citra",
+    "type": "insect",
+    "parks": [
+      "zion"
+    ]
+  },
+  {
+    "name": "Anomala ellipsis",
+    "sciName": "Anomala ellipsis",
+    "type": "insect",
+    "parks": [
+      "zion"
+    ]
+  },
+  {
+    "name": "Pachypsylla celtidispubescens",
+    "sciName": "Pachypsylla celtidispubescens",
+    "type": "insect",
+    "parks": [
+      "zion"
+    ]
+  },
+  {
+    "name": "Acmaeodera rubronotata",
+    "sciName": "Acmaeodera rubronotata",
+    "type": "insect",
+    "parks": [
+      "zion"
+    ]
+  },
+  {
+    "name": "Moneilema semipunctatum",
+    "sciName": "Moneilema semipunctatum",
+    "type": "insect",
+    "parks": [
+      "zion"
+    ]
+  },
+  {
+    "name": "Disholcaspis pedunculoides",
+    "sciName": "Disholcaspis pedunculoides",
+    "type": "insect",
+    "parks": [
+      "zion"
+    ]
+  },
+  {
+    "name": "Embaphion glabrum",
+    "sciName": "Embaphion glabrum",
+    "type": "insect",
+    "parks": [
+      "zion"
+    ]
+  },
+  {
+    "name": "Andricus wheeleri",
+    "sciName": "Andricus wheeleri",
+    "type": "insect",
+    "parks": [
+      "zion"
+    ]
+  },
+  {
+    "name": "Stamnodes marmorata",
+    "sciName": "Stamnodes marmorata",
+    "type": "insect",
+    "parks": [
+      "brycecanyon"
+    ]
+  },
+  {
+    "name": "Pseudomasaris vespoides",
+    "sciName": "Pseudomasaris vespoides",
+    "type": "insect",
+    "parks": [
+      "brycecanyon"
+    ]
+  },
+  {
+    "name": "Publilia modesta",
+    "sciName": "Publilia modesta",
+    "type": "insect",
+    "parks": [
+      "brycecanyon"
+    ]
+  },
+  {
+    "name": "Eleodes nigrina",
+    "sciName": "Eleodes nigrina",
+    "type": "insect",
+    "parks": [
+      "brycecanyon"
+    ]
+  },
+  {
+    "name": "Holochroa dissociarius",
+    "sciName": "Holochroa dissociarius",
+    "type": "insect",
+    "parks": [
+      "brycecanyon"
+    ]
+  },
+  {
+    "name": "Anthophora porterae",
+    "sciName": "Anthophora porterae",
+    "type": "insect",
+    "parks": [
+      "brycecanyon"
+    ]
+  },
+  {
+    "name": "Pleromelloida conserta",
+    "sciName": "Pleromelloida conserta",
+    "type": "insect",
+    "parks": [
+      "brycecanyon"
+    ]
+  },
+  {
+    "name": "Siphlonurus occidentalis",
+    "sciName": "Siphlonurus occidentalis",
+    "type": "insect",
+    "parks": [
+      "brycecanyon"
+    ]
+  },
+  {
+    "name": "Dipalta serpentina",
+    "sciName": "Dipalta serpentina",
+    "type": "insect",
+    "parks": [
+      "brycecanyon"
+    ]
+  },
+  {
+    "name": "Acanthocinus angulosus",
+    "sciName": "Acanthocinus angulosus",
+    "type": "insect",
+    "parks": [
+      "brycecanyon"
+    ]
+  },
+  {
+    "name": "Pecos desert firefly",
+    "sciName": "Microphotus pecosensis",
+    "type": "insect",
+    "parks": [
+      "brycecanyon"
+    ]
+  },
+  {
+    "name": "Phaenops gentilis",
+    "sciName": "Phaenops gentilis",
+    "type": "insect",
+    "parks": [
+      "brycecanyon"
+    ]
+  },
+  {
+    "name": "Rabbitbrush stem gall moth",
+    "sciName": "Gnorimoschema octomaculella",
+    "type": "insect",
+    "parks": [
+      "brycecanyon"
+    ]
+  },
+  {
+    "name": "Snowia montanaria",
+    "sciName": "Snowia montanaria",
+    "type": "insect",
+    "parks": [
+      "brycecanyon"
+    ]
+  },
+  {
+    "name": "Ancistrocerus albolacteus",
+    "sciName": "Ancistrocerus albolacteus",
+    "type": "insect",
+    "parks": [
+      "brycecanyon"
+    ]
+  },
+  {
+    "name": "Diplolepis spinosa",
+    "sciName": "Diplolepis spinosa",
+    "type": "insect",
+    "parks": [
+      "brycecanyon"
+    ]
+  },
+  {
+    "name": "Eleodes caudifera",
+    "sciName": "Eleodes caudifera",
+    "type": "insect",
+    "parks": [
+      "brycecanyon"
+    ]
+  },
+  {
+    "name": "Cyrtopogon jemezi",
+    "sciName": "Cyrtopogon jemezi",
+    "type": "insect",
+    "parks": [
+      "brycecanyon"
+    ]
+  },
+  {
+    "name": "Eleodes wheeleri",
+    "sciName": "Eleodes wheeleri",
+    "type": "insect",
+    "parks": [
+      "brycecanyon"
+    ]
+  },
+  {
+    "name": "Ibalia montana",
+    "sciName": "Ibalia montana",
+    "type": "insect",
+    "parks": [
+      "brycecanyon"
+    ]
+  },
+  {
+    "name": "Euploea lewinii",
+    "sciName": "Euploea lewinii",
+    "type": "insect",
+    "parks": [
+      "americansamoa"
+    ]
+  },
+  {
+    "name": "Telostylinus lineolatus",
+    "sciName": "Telostylinus lineolatus",
+    "type": "insect",
+    "parks": [
+      "americansamoa"
+    ]
+  },
+  {
+    "name": "Lithurgus scabrosus",
+    "sciName": "Lithurgus scabrosus",
+    "type": "insect",
+    "parks": [
+      "americansamoa"
+    ]
+  },
+  {
+    "name": "Aegus tutuilensis",
+    "sciName": "Aegus tutuilensis",
+    "type": "insect",
+    "parks": [
+      "americansamoa"
+    ]
+  },
+  {
+    "name": "Baeturia maddisoni",
+    "sciName": "Baeturia maddisoni",
+    "type": "insect",
+    "parks": [
+      "americansamoa"
+    ]
+  },
+  {
+    "name": "Lallemandana navigans",
+    "sciName": "Lallemandana navigans",
+    "type": "insect",
+    "parks": [
+      "americansamoa"
+    ]
+  },
+  {
+    "name": "Mischocyttarus phthisicus",
+    "sciName": "Mischocyttarus phthisicus",
+    "type": "insect",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Cylindera suturalis",
+    "sciName": "Cylindera suturalis",
+    "type": "insect",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Stictia signata",
+    "sciName": "Stictia signata",
+    "type": "insect",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Composia credula",
+    "sciName": "Composia credula",
+    "type": "insect",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Crematogaster steinheili",
+    "sciName": "Crematogaster steinheili",
+    "type": "insect",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Pepsis ruficornis",
+    "sciName": "Pepsis ruficornis",
+    "type": "insect",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Centris haemorrhoidalis",
+    "sciName": "Centris haemorrhoidalis",
+    "type": "insect",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Oncopeltus aulicus",
+    "sciName": "Oncopeltus aulicus",
+    "type": "insect",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Loxa viridis",
+    "sciName": "Loxa viridis",
+    "type": "insect",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Centris decolorata",
+    "sciName": "Centris decolorata",
+    "type": "insect",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Horama pretus",
+    "sciName": "Horama pretus",
+    "type": "insect",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Jadera sanguinolenta",
+    "sciName": "Jadera sanguinolenta",
+    "type": "insect",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Neocompsa cylindricollis",
+    "sciName": "Neocompsa cylindricollis",
+    "type": "insect",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Neoclytus araneiformis",
+    "sciName": "Neoclytus araneiformis",
+    "type": "insect",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Stizocera vanzwaluwenburgi",
+    "sciName": "Stizocera vanzwaluwenburgi",
+    "type": "insect",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Runibia caribeana",
+    "sciName": "Runibia caribeana",
+    "type": "insect",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Pentacora signoreti",
+    "sciName": "Pentacora signoreti",
+    "type": "insect",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Orphulella punctata",
+    "sciName": "Orphulella punctata",
+    "type": "insect",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Piezosternum subulatum",
+    "sciName": "Piezosternum subulatum",
+    "type": "insect",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Limnogonus franciscanus",
+    "sciName": "Limnogonus franciscanus",
+    "type": "insect",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Chlorida festiva",
+    "sciName": "Chlorida festiva",
+    "type": "insect",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Arthromastix lauralis",
+    "sciName": "Arthromastix lauralis",
+    "type": "insect",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Cosmosoma achemonides",
+    "sciName": "Cosmosoma achemonides",
+    "type": "insect",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Tetyra antillarum",
+    "sciName": "Tetyra antillarum",
+    "type": "insect",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Clonistria modesta",
+    "sciName": "Clonistria modesta",
+    "type": "insect",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Clonistria calamus",
+    "sciName": "Clonistria calamus",
+    "type": "insect",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Liriomyza commelinae",
+    "sciName": "Liriomyza commelinae",
+    "type": "insect",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Agamemnon cornutus",
+    "sciName": "Agamemnon cornutus",
+    "type": "insect",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Phyllophaga plaei",
+    "sciName": "Phyllophaga plaei",
+    "type": "insect",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Bicyrtes spinosus",
+    "sciName": "Bicyrtes spinosus",
+    "type": "insect",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Liriomyza schmidti",
+    "sciName": "Liriomyza schmidti",
+    "type": "insect",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Camponotus ustus",
+    "sciName": "Camponotus ustus",
+    "type": "insect",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Plectromerus fasciatus",
+    "sciName": "Plectromerus fasciatus",
+    "type": "insect",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Platylus dilatatus",
+    "sciName": "Platylus dilatatus",
+    "type": "insect",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Ochrimnus laevus",
+    "sciName": "Ochrimnus laevus",
+    "type": "insect",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Leptogenys arcuata",
+    "sciName": "Leptogenys arcuata",
+    "type": "insect",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Doru albipes",
+    "sciName": "Doru albipes",
+    "type": "insect",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Strongylium paddai",
+    "sciName": "Strongylium paddai",
+    "type": "insect",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Stippled clingfish",
+    "sciName": "Gobiesox punctulatus",
+    "type": "marine",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Greenband goby",
+    "sciName": "Tigrigobius multifasciatus",
+    "type": "marine",
+    "parks": [
+      "virginislands"
+    ]
+  },
+  {
+    "name": "Phyllocnistis vitegenella",
+    "sciName": "Phyllocnistis vitegenella",
+    "type": "insect",
+    "parks": [
+      "hotsprings"
+    ]
+  },
+  {
+    "name": "Phylloxera spinosa",
+    "sciName": "Phylloxera spinosa",
+    "type": "insect",
+    "parks": [
+      "hotsprings"
+    ]
+  },
+  {
+    "name": "Acmaeodera tubulus",
+    "sciName": "Acmaeodera tubulus",
+    "type": "insect",
+    "parks": [
+      "hotsprings"
+    ]
+  },
+  {
+    "name": "Nectopsyche exquisita",
+    "sciName": "Nectopsyche exquisita",
+    "type": "insect",
+    "parks": [
+      "hotsprings"
+    ]
+  },
+  {
+    "name": "Taeniaptera trivittata",
+    "sciName": "Taeniaptera trivittata",
+    "type": "insect",
+    "parks": [
+      "hotsprings"
+    ]
+  },
+  {
+    "name": "Euaresta festiva",
+    "sciName": "Euaresta festiva",
+    "type": "insect",
+    "parks": [
+      "hotsprings"
+    ]
+  },
+  {
+    "name": "Canthon viridis",
+    "sciName": "Canthon viridis",
+    "type": "insect",
+    "parks": [
+      "hotsprings"
+    ]
+  },
+  {
+    "name": "Catocala ulalume",
+    "sciName": "Catocala ulalume",
+    "type": "insect",
+    "parks": [
+      "hotsprings"
+    ]
+  },
+  {
+    "name": "Dicaelus sculptilis",
+    "sciName": "Dicaelus sculptilis",
+    "type": "insect",
+    "parks": [
+      "hotsprings"
+    ]
+  },
+  {
+    "name": "Tachytrechus angustipennis",
+    "sciName": "Tachytrechus angustipennis",
+    "type": "insect",
+    "parks": [
+      "hotsprings"
+    ]
+  },
+  {
+    "name": "Pepsis grossa",
+    "sciName": "Pepsis grossa",
+    "type": "insect",
+    "parks": [
+      "hotsprings"
+    ]
+  },
+  {
+    "name": "Phyllocnistis liquidambarisella",
+    "sciName": "Phyllocnistis liquidambarisella",
+    "type": "insect",
+    "parks": [
+      "hotsprings"
+    ]
+  },
+  {
+    "name": "Acmaeodera opacula",
+    "sciName": "Acmaeodera opacula",
+    "type": "insect",
+    "parks": [
+      "carlsbadcaverns"
+    ]
+  },
+  {
+    "name": "Lampetis drummondi",
+    "sciName": "Lampetis drummondi",
+    "type": "insect",
+    "parks": [
+      "carlsbadcaverns"
+    ]
+  },
+  {
+    "name": "Euodynerus annulatus",
+    "sciName": "Euodynerus annulatus",
+    "type": "insect",
+    "parks": [
+      "carlsbadcaverns"
+    ]
+  },
+  {
+    "name": "Eleodes longicollis",
+    "sciName": "Eleodes longicollis",
+    "type": "insect",
+    "parks": [
+      "carlsbadcaverns"
+    ]
+  },
+  {
+    "name": "Pygarctia lorula",
+    "sciName": "Pygarctia lorula",
+    "type": "insect",
+    "parks": [
+      "carlsbadcaverns"
+    ]
+  },
+  {
+    "name": "Chauliognathus discus",
+    "sciName": "Chauliognathus discus",
+    "type": "insect",
+    "parks": [
+      "carlsbadcaverns"
+    ]
+  },
+  {
+    "name": "Neoclytus mucronatus",
+    "sciName": "Neoclytus mucronatus",
+    "type": "insect",
+    "parks": [
+      "carlsbadcaverns"
+    ]
+  },
+  {
+    "name": "Mallophora fautrix",
+    "sciName": "Mallophora fautrix",
+    "type": "insect",
+    "parks": [
+      "carlsbadcaverns"
+    ]
+  },
+  {
+    "name": "Hermetia hunteri",
+    "sciName": "Hermetia hunteri",
+    "type": "insect",
+    "parks": [
+      "carlsbadcaverns"
+    ]
+  },
+  {
+    "name": "Sphex ashmeadi",
+    "sciName": "Sphex ashmeadi",
+    "type": "insect",
+    "parks": [
+      "carlsbadcaverns"
+    ]
+  },
+  {
+    "name": "Euodynerus pratensis",
+    "sciName": "Euodynerus pratensis",
+    "type": "insect",
+    "parks": [
+      "carlsbadcaverns"
+    ]
+  },
+  {
+    "name": "Stenaspis solitaria",
+    "sciName": "Stenaspis solitaria",
+    "type": "insect",
+    "parks": [
+      "carlsbadcaverns"
+    ]
+  },
+  {
+    "name": "Dasymutilla scitula",
+    "sciName": "Dasymutilla scitula",
+    "type": "insect",
+    "parks": [
+      "greatbasin"
+    ]
+  },
+  {
+    "name": "Hebata nigra",
+    "sciName": "Hebata nigra",
+    "type": "insect",
+    "parks": [
+      "greatbasin"
+    ]
+  },
+  {
+    "name": "Ericydeus lautus",
+    "sciName": "Ericydeus lautus",
+    "type": "insect",
+    "parks": [
+      "greatbasin"
+    ]
+  },
+  {
+    "name": "Camponotus sansabeanus",
+    "sciName": "Camponotus sansabeanus",
+    "type": "insect",
+    "parks": [
+      "greatbasin"
+    ]
+  },
+  {
+    "name": "Rhynocoris ventralis",
+    "sciName": "Rhynocoris ventralis",
+    "type": "insect",
+    "parks": [
+      "greatbasin"
+    ]
+  },
+  {
+    "name": "Neospondylis upiformis",
+    "sciName": "Neospondylis upiformis",
+    "type": "insect",
+    "parks": [
+      "greatbasin"
+    ]
+  },
+  {
+    "name": "Pyrausta fodinalis",
+    "sciName": "Pyrausta fodinalis",
+    "type": "insect",
+    "parks": [
+      "greatbasin"
+    ]
+  },
+  {
+    "name": "Sympistis albifasciata",
+    "sciName": "Sympistis albifasciata",
+    "type": "insect",
+    "parks": [
+      "greatbasin"
+    ]
+  }
+]

@@ -3,7 +3,6 @@
   "outputDirectory": "dist",
   "framework": "vite",
   "rewrites": [
-    { "source": "/nps-api/:path*",      "destination": "/api/nps-proxy" },
-    { "source": "/ebird-chart/:path*",  "destination": "/api/ebird-chart-proxy" }
+    { "source": "/nps-api/:path*",      "destination": "/api/nps-proxy" }
   ]
 }

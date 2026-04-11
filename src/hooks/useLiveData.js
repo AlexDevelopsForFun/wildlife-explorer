@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import {
-  fetchEbirdHotspot, fetchEbirdBarChart, fetchEbird, fetchINat, fetchNps, fetchGbif,
+  fetchEbirdHotspot, fetchEbird, fetchINat, fetchNps, fetchGbif,
   deduplicateAnimals, getCorrectionFactor, getMonthlyFrequency, rarityFromChecklist,
   locationCacheGet, locationCacheSet,
 } from '../services/apiService';
-import { WILDLIFE_CACHE, WILDLIFE_CACHE_BUILT_AT } from '../data/wildlifeCache.js';
+import { WILDLIFE_CACHE, WILDLIFE_CACHE_BUILT_AT } from '../data/wildlifeCacheLoader.js';
 
 // ── Weekly stale-bundle eviction ──────────────────────────────────────────────
 // If the static bundle is older than 7 days, all loc_v1_* localStorage entries
@@ -120,6 +120,7 @@ function applyBundleEnrichment(list, bundledAnimals) {
       description:       b.description       ?? a.description,
       descriptionSource: b.descriptionSource ?? a.descriptionSource,
       funFact:           b.funFact           ?? a.funFact,
+      parkTip:           b.parkTip           ?? a.parkTip,
     };
   });
 }
@@ -192,7 +193,7 @@ export function useLiveData(locations) {
 
       const sources = [];
       let livePool = [], ebirdChecklists = null, ebirdHistoricalSpecies = null,
-          inatObservations = 0, barChart = null;
+          inatObservations = 0;
 
       // Static bundle for this location — used in emitPartial + final merge.
       const bundledAnimals = WILDLIFE_CACHE[loc.id]?.animals ?? [];
@@ -205,7 +206,7 @@ export function useLiveData(locations) {
         setLiveData(prev => ({
           ...prev,
           [loc.id]: {
-            animals, sources: [...sources], barChart,
+            animals, sources: [...sources],
             stats: { ebirdChecklists, ebirdHistoricalSpecies, inatObservations, speciesCounts: {} },
             _partial: true,
           },
@@ -213,15 +214,8 @@ export function useLiveData(locations) {
       };
 
       try {
-        // ── 0. eBird hotspot + bar chart ────────────────────────────────────
+        // ── 0. eBird hotspot code ────────────────────────────────────────────
         const hotspotCode = await fetchEbirdHotspot(loc.lat, loc.lng);
-
-        if (hotspotCode) {
-          barChart = await fetchEbirdBarChart(hotspotCode, loc.id);
-          // Note: fetchEbirdBarChart returns null — the /v2/product/barChart
-          // endpoint is inaccessible server-side (TLS/session restrictions).
-          // Sanity-check logging is done below after the eBird geo fetch.
-        }
 
         // ── 1. NPS species list (national parks only) ───────────────────────
         if (loc.npsCode) {
@@ -375,12 +369,11 @@ export function useLiveData(locations) {
           `[Wildlife] ${loc.name}: ${animals.length} species | ${breakdown}` +
           ` | eBird: ${ebirdChecklists ?? 'n/a'} checklists` +
           ` | iNat: ${inatObservations} obs` +
-          ` | barChart: ${barChart ? Object.keys(barChart).length + ' spp' : 'none'}` +
           ` | sources: ${sources.join(', ')}`
         );
 
         const finalResult = {
-          animals, sources, barChart,
+          animals, sources,
           stats: { ebirdChecklists, ebirdHistoricalSpecies, inatObservations, speciesCounts },
           // No _partial flag — this is the final committed result
         };

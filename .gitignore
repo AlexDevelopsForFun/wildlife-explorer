@@ -26,6 +26,14 @@ Thumbs.db
 # ── eBird S&T GeoTIFF cache (large binary files, re-downloaded automatically) ─
 scripts/geotiff-cache/
 
+# ── Local script caches & scratch files (regenerated from wildlifeCache.js) ──
+scripts/_*.cjs
+scripts/_county_cache/
+scripts/parkTips-cache.json
+scripts/tipTargets.json
+scripts/photoFetch-cache.json
+scripts/rarityAudit_log.txt
+
 # ── Claude Code local config ──────────────────────────────────────────────────
 .claude/
 
