@@ -1521,3 +1521,49 @@ export function balanceAnimals(animals) {
     return counts[t] <= (TYPE_CAPS[t] ?? 20);
   });
 }
+
+// ── Runtime geographic outlier filter ───────────────────────────────────────
+// Removes species that clearly don't belong at a park based on geographic range.
+// Catches live API garbage (e.g., GBIF returning "Arctic Wolf" at Biscayne from
+// misidentified observations or escaped pets).
+const _ALASKA = new Set([
+  'denali','gatesofthearctic','glacierbay','katmai','kenaifjords',
+  'kobukvalley','lakeclark','wrangellstelias',
+]);
+const _TROPICAL = new Set([
+  'everglades','biscayne','drytortugas','virginislands','americansamoa',
+  'haleakala','hawaiivolcanoes',
+]);
+const _HAWAII = new Set(['haleakala','hawaiivolcanoes']);
+const _FLORIDA = new Set(['everglades','biscayne','drytortugas']);
+// Species → set of park keys where they are BLOCKED (never show)
+// Format: lowercase animal name → function(parkKey) returning true if BLOCKED
+const _GEO_BLOCKS = [
+  { names: ['arctic wolf','arctic fox','arctic hare','muskox','musk ox','walrus','pacific walrus'],
+    blocked: p => !_ALASKA.has(p) },
+  { names: ['polar bear'],
+    blocked: () => true },
+  { names: ['dall sheep',"dall's sheep"],
+    blocked: p => !_ALASKA.has(p) },
+  { names: ['caribou','reindeer'],
+    blocked: p => !_ALASKA.has(p) },
+  { names: ['marine iguana'],
+    blocked: () => true },
+  { names: ['snowy owl'],
+    blocked: p => _TROPICAL.has(p) },
+  { names: ['hawaiian monk seal','nene','hawaiian goose','hawaiian hoary bat'],
+    blocked: p => !_HAWAII.has(p) },
+];
+const _GEO_MAP = new Map();
+for (const rule of _GEO_BLOCKS) {
+  for (const n of rule.names) _GEO_MAP.set(n, rule.blocked);
+}
+
+export function filterGeographicOutliers(animals, parkKey) {
+  if (!parkKey) return animals;
+  const key = parkKey.toLowerCase().replace(/[^a-z]/g, '');
+  return animals.filter(a => {
+    const check = _GEO_MAP.get(a.name.toLowerCase());
+    return !check || !check(key);
+  });
+}

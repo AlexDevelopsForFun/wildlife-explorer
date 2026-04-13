@@ -8,7 +8,7 @@ import 'leaflet.markercluster';
 import { wildlifeLocations, SEASONS, RARITY, ANIMAL_TYPES, STATE_NAMES } from './wildlifeData';
 import { classifyAnimalSubtype, getSubtypeDefs } from './utils/subcategories';
 import {
-  mergeAnimals, balanceAnimals, NEVER_EXCEPTIONAL_BIRDS,
+  mergeAnimals, balanceAnimals, filterGeographicOutliers, NEVER_EXCEPTIONAL_BIRDS,
   getCorrectionFactor, getMonthlyFrequency,
   rarityFromChecklist, applyRarityOverride,
   fetchInatMonthlyHist,
@@ -2316,7 +2316,7 @@ export default function App() {
     const out = {};
     wildlifeLocations.forEach(loc => {
       const live = liveData[loc.id]?.animals ?? null;
-      out[loc.id] = balanceAnimals(mergeAnimals(loc.animals, live));
+      out[loc.id] = balanceAnimals(filterGeographicOutliers(mergeAnimals(loc.animals, live), loc.id));
     });
     return out;
   }, [liveData]);
