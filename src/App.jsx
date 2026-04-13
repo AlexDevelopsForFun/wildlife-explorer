@@ -2289,8 +2289,35 @@ export default function App() {
   useEffect(() => { liveDataRef.current = liveData; }, [liveData]);
   useEffect(() => { loadingRef.current  = loading;  }, [loading]);
 
+  // Refs for global toolbar filters — lets handlePopupOpen read current values
+  // without adding them to its dependency array (avoids MarkerLayer re-binds).
+  const rarityRef     = useRef(rarity);
+  const seasonRef     = useRef(season);
+  const animalTypeRef = useRef(animalType);
+  useEffect(() => { rarityRef.current     = rarity; },     [rarity]);
+  useEffect(() => { seasonRef.current     = season; },     [season]);
+  useEffect(() => { animalTypeRef.current = animalType; }, [animalType]);
+
   const handlePopupOpen = useCallback((loc) => {
     setOpenPopup({ loc });
+
+    // Sync global toolbar filters → popup-local filters on every open.
+    // When global is 'all', reset to popup defaults; when specific, inherit.
+    setPopupRarity(rarityRef.current);
+
+    if (seasonRef.current !== 'all') {
+      setPopupSeason(seasonRef.current);
+    } else {
+      const m = new Date().getMonth() + 1;
+      setPopupSeason(m >= 3 && m <= 5 ? 'spring' : m >= 6 && m <= 8 ? 'summer' : m >= 9 && m <= 11 ? 'fall' : 'winter');
+    }
+
+    if (animalTypeRef.current !== 'all') {
+      setActiveTypes(new Set([animalTypeRef.current]));
+    } else {
+      setActiveTypes(new Set(['bird', 'mammal']));
+    }
+
     // Bypass the stagger queue if this location has no data yet
     if (!liveDataRef.current[loc.id] && !loadingRef.current.has(loc.id)) {
       refreshLocation(loc.id);
