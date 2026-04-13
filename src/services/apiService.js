@@ -1254,23 +1254,58 @@ function normSci(name) {
   return parts.length >= 2 ? `${parts[0]} ${parts[1]}` : parts[0];
 }
 
+// ── Common-name alias map for deduplication ─────────────────────────────────
+// Maps variant names to their canonical form so that "American Black Bear" and
+// "Black Bear" (both Ursus americanus) are grouped as the same species.
+const NAME_ALIAS_MAP = new Map([
+  ['american black bear', 'black bear'],
+  ['american elk',        'elk'],
+  ['wapiti',              'elk'],
+  ['american moose',      'moose'],
+  ['grey wolf',           'gray wolf'],
+  ['timber wolf',         'gray wolf'],
+  ['cougar',              'mountain lion'],
+  ['puma',                'mountain lion'],
+  ['harbour seal',        'harbor seal'],
+  ['grey fox',            'gray fox'],
+  ['gray jay',            'canada jay'],
+  ['grey jay',            'canada jay'],
+  ['white-tail deer',     'white-tailed deer'],
+  ['whitetail deer',      'white-tailed deer'],
+  ['red tailed hawk',     'red-tailed hawk'],
+  ['buffalo',             'american bison'],
+  ['brown bear',          'grizzly bear'],  // merges at runtime; cache keeps regional names
+]);
+
+// Canonicalise a common name: alias lookup, then strip directional prefixes.
+function canonName(name) {
+  if (!name) return '';
+  const low = name.toLowerCase().trim();
+  return NAME_ALIAS_MAP.get(low) ?? low;
+}
+
 export function deduplicateAnimals(animals) {
-  // Two-pass grouping: by common name AND normalised scientific name.
+  // Three-pass grouping: by alias-canonicalised name, then by normalised
+  // scientific name, then by exact common name.
   const groups       = new Map();  // groupKey → [animals]
   const sciNameToKey = new Map();  // normalised sciName → canonical groupKey
+  const aliasToKey   = new Map();  // canonName → groupKey
 
   // Filter invalid entries before deduplication so garbage never reaches the UI
   animals = animals.filter(a => isValidAnimalEntry(a));
 
   animals.forEach(a => {
-    const nameKey = a.name.toLowerCase().trim();
-    const sciKey  = normSci(a.scientificName);
+    const nameKey  = a.name.toLowerCase().trim();
+    const sciKey   = normSci(a.scientificName);
+    const aliasKey = canonName(a.name);
 
     // 1. Try to find an existing group via scientific name
     let groupKey = sciKey && sciNameToKey.has(sciKey) ? sciNameToKey.get(sciKey) : null;
-    // 2. Fall back to exact common-name match
+    // 2. Try alias-canonicalised name
+    if (!groupKey && aliasToKey.has(aliasKey)) groupKey = aliasToKey.get(aliasKey);
+    // 3. Fall back to exact common-name match
     if (!groupKey && groups.has(nameKey)) groupKey = nameKey;
-    // 3. No match — start a new group keyed by common name
+    // 4. No match — start a new group keyed by common name
     if (!groupKey) groupKey = nameKey;
 
     if (!groups.has(groupKey)) groups.set(groupKey, []);
@@ -1278,6 +1313,8 @@ export function deduplicateAnimals(animals) {
 
     // Register this scientific name so future synonyms find this group
     if (sciKey && !sciNameToKey.has(sciKey)) sciNameToKey.set(sciKey, groupKey);
+    // Register alias key
+    if (!aliasToKey.has(aliasKey)) aliasToKey.set(aliasKey, groupKey);
   });
 
   return [...groups.values()].map(group => {
@@ -1334,6 +1371,27 @@ export function deduplicateAnimals(animals) {
   });
 }
 
+// ── Placeholder detection ───────────────────────────────────────────────────
+// Returns true if a funFact/description is a database citation rather than a
+// real natural history description. Used to prevent live API placeholder text
+// from overwriting curated cache descriptions.
+const _PLACEHOLDER_RES = [
+  /GBIF/i,
+  /human observation records/i,
+  /Recorded\s+\d+\s+times.*near this location/i,
+  /Confirmed at this park/i,
+  /eBird hotspot/i,
+  /research-grade iNaturalist/i,
+  /iNaturalist observations/i,
+  /Officially documented/i,
+  /NPS wildlife registry/i,
+  /Verified in/i,
+];
+export function isPlaceholderDescription(text) {
+  if (!text) return true;
+  return _PLACEHOLDER_RES.some(re => re.test(text));
+}
+
 /**
  * Merge live animals into hardcoded list.
  *
@@ -1341,6 +1399,8 @@ export function deduplicateAnimals(animals) {
  * • If live API data confirms a hardcoded species by name, the hardcoded animal
  *   is upgraded: source, sources, _debug, and scientificName are replaced with
  *   live data, so the UI shows a real source tag + scientific name subtitle.
+ * • Live placeholder descriptions (GBIF citations, etc.) NEVER overwrite
+ *   curated cache descriptions. descriptionSource is corrected accordingly.
  * • Hardcoded animals with no API match get source='estimated', sources=['estimated'].
  * • Novel live-only animals are appended; balanceAnimals() caps per type downstream.
  */
@@ -1353,17 +1413,40 @@ export function mergeAnimals(hardcoded, liveList) {
     );
   }
 
-  const liveMap = new Map(liveList.map(a => [a.name.toLowerCase(), a]));
+  // Build live lookup keyed by both exact name AND canonical alias
+  const liveMap = new Map();
+  for (const a of liveList) {
+    liveMap.set(a.name.toLowerCase(), a);
+    const alias = canonName(a.name);
+    if (!liveMap.has(alias)) liveMap.set(alias, a);
+  }
 
   const merged = hardcoded.map(a => {
-    const live = liveMap.get(a.name.toLowerCase());
+    // Try exact name first, then canonical alias
+    const live = liveMap.get(a.name.toLowerCase()) ?? liveMap.get(canonName(a.name));
     if (live) {
       // API confirmed this species — upgrade source, sources, debug, scientific name.
       // Keep curated funFact, rarity, seasons from the hardcoded entry.
       // Copy migrationStatus + photoUrl from live if hardcoded doesn't have them.
       // _curated: true prevents the enriched useMemo from overwriting rarity with live data.
+      //
+      // Description protection: never let a live placeholder overwrite a real cached
+      // description. Only adopt live funFact if the cache has none or also a placeholder.
+      const cachedHasReal   = a.funFact && !isPlaceholderDescription(a.funFact);
+      const liveHasReal     = live.funFact && !isPlaceholderDescription(live.funFact);
+      const funFact         = cachedHasReal ? a.funFact
+                            : liveHasReal  ? live.funFact
+                            :                a.funFact ?? live.funFact ?? null;
+      // Fix descriptionSource: placeholder text is never "Park Naturalist"
+      let descriptionSource = a.descriptionSource ?? live.descriptionSource ?? null;
+      if (descriptionSource === 'Park Naturalist' && isPlaceholderDescription(funFact)) {
+        descriptionSource = live.source ?? a.source ?? null;
+      }
+
       return {
         ...a,
+        funFact,
+        descriptionSource,
         source:          live.source,
         sources:         live.sources ?? [live.source],
         _debug:          live._debug,
@@ -1380,10 +1463,15 @@ export function mergeAnimals(hardcoded, liveList) {
       : { ...a, source: 'estimated', sources: ['estimated'], _curated: true };
   });
 
-  // Append novel live-only species not present in the hardcoded list
-  const known = new Set(hardcoded.map(a => a.name.toLowerCase()));
+  // Append novel live-only species not present in the hardcoded list.
+  // Check both exact name and canonical alias to avoid duplicates.
+  const known = new Set();
+  for (const a of hardcoded) {
+    known.add(a.name.toLowerCase());
+    known.add(canonName(a.name));
+  }
   const novel = liveList
-    .filter(a => !known.has(a.name.toLowerCase()))
+    .filter(a => !known.has(a.name.toLowerCase()) && !known.has(canonName(a.name)))
     .map(a => ({ ...a, sources: a.sources ?? [a.source ?? 'estimated'] }));
 
   return [...merged, ...novel];

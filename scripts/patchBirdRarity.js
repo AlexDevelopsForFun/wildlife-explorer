@@ -179,31 +179,35 @@ const PARK_COUNTY_FALLBACK = {
 };
 
 // ── Per-park county-to-park correction factors ─────────────────────────────
+// User-specified values for top 15 parks; remaining estimated by acreage.
 const PARK_COUNTY_FIT = {
-  // 0.85 — park ≈ county
-  yellowstone: 0.85, denali: 0.85, deathvalley: 0.85, everglades: 0.85,
-  bigbend: 0.85, gatesofthearctic: 0.85, wrangellstelias: 0.85,
-  katmai: 0.85, lakeclark: 0.85, glacierbay: 0.85, kobukvalley: 0.85,
-  // 0.7 — major portion of county
-  grandcanyon: 0.7, glacier: 0.7, olympic: 0.7, rockymountain: 0.7,
-  grandteton: 0.7, yosemite: 0.7, sequoia: 0.7, kingscanyon: 0.7,
-  northcascades: 0.7, canyonlands: 0.7, capitolreef: 0.7, zion: 0.7,
-  brycecanyon: 0.7, arches: 0.7, mesaverde: 0.7, greatbasin: 0.7,
-  craterlake: 0.7, mountrainier: 0.7, lassenvolcanic: 0.7, redwood: 0.7,
-  voyageurs: 0.7, isleroyale: 0.7, theodoreroosevelt: 0.7, badlands: 0.7,
-  windcave: 0.7, petrifiedforest: 0.7, whitesands: 0.7, saguaro: 0.7,
-  carlsbadcaverns: 0.7,
-  // 0.55 — small fraction of county
-  greatsmokymountains: 0.55, shenandoah: 0.55, acadia: 0.55,
-  joshuatree: 0.55, pinnacles: 0.55, channelislands: 0.55, congaree: 0.55,
-  cuyahogavalley: 0.55, indianadunes: 0.55, newrivergorge: 0.55,
-  mammothcave: 0.55, greatsanddunes: 0.55, blackcanyon: 0.55,
-  guadalupemountains: 0.55, drytortugas: 0.55, kenaifjords: 0.55,
-  // 0.4 — tiny relative to county
-  hotsprings: 0.4, gatewayarch: 0.4, virginislands: 0.4,
-  americansamoa: 0.4, biscayne: 0.4, haleakala: 0.4, hawaiivolcanoes: 0.4,
+  // User-specified fit factors (top 15)
+  yellowstone: 0.90, grandteton: 0.85, glacier: 0.80, denali: 0.75,
+  greatsmokymountains: 0.70, yosemite: 0.65, olympic: 0.65,
+  grandcanyon: 0.60, everglades: 0.55, zion: 0.50, rockymountain: 0.50,
+  shenandoah: 0.45, acadia: 0.30, cuyahogavalley: 0.20, hotsprings: 0.15,
+  // >500K acres → 0.75
+  deathvalley: 0.75, bigbend: 0.75, gatesofthearctic: 0.75,
+  wrangellstelias: 0.75, katmai: 0.75, lakeclark: 0.75,
+  glacierbay: 0.75, kobukvalley: 0.75,
+  // >100K acres → 0.60
+  northcascades: 0.60, canyonlands: 0.60, capitolreef: 0.60,
+  sequoia: 0.60, kingscanyon: 0.60, mountrainier: 0.60,
+  craterlake: 0.60, redwood: 0.60, lassenvolcanic: 0.60,
+  joshuatree: 0.60, voyageurs: 0.60, isleroyale: 0.60,
+  theodoreroosevelt: 0.60, badlands: 0.60, mesaverde: 0.60,
+  whitesands: 0.60, guadalupemountains: 0.60, greatbasin: 0.60,
+  carlsbadcaverns: 0.60, petrifiedforest: 0.60, saguaro: 0.60,
+  windcave: 0.60, kenaifjords: 0.60, hawaiivolcanoes: 0.60,
+  channelislands: 0.60, mammothcave: 0.60, greatsanddunes: 0.60,
+  // >10K acres → 0.40
+  brycecanyon: 0.40, arches: 0.40, pinnacles: 0.40, blackcanyon: 0.40,
+  congaree: 0.40, newrivergorge: 0.40, indianadunes: 0.40,
+  haleakala: 0.40, biscayne: 0.40, drytortugas: 0.40,
+  // <10K acres → 0.25
+  gatewayarch: 0.25, americansamoa: 0.25, virginislands: 0.25,
 };
-const DEFAULT_COUNTY_FIT = 0.7;
+const DEFAULT_COUNTY_FIT = 0.60;
 
 // ── Rarity overrides (replicated from buildWildlifeCache.js) ────────────────
 const RARITY_OVERRIDES = {
@@ -215,7 +219,7 @@ const RARITY_OVERRIDES = {
   drytortugas:           { 'Sooty Tern': 'guaranteed', 'Brown Noddy': 'guaranteed', 'Magnificent Frigatebird': 'very_likely', 'American Alligator': 'exceptional' },
   greatsmokymountains:   { 'White-tailed Deer': 'guaranteed', 'Black Bear': 'likely', 'Wild Turkey': 'very_likely' },
   shenandoah:            { 'White-tailed Deer': 'guaranteed', 'Wild Turkey': 'very_likely', 'Black Bear': 'likely' },
-  acadia:                { 'American Herring Gull': 'guaranteed', 'Bald Eagle': 'rare', 'White-tailed Deer': 'very_likely', 'Harbor Seal': 'likely', 'Common Loon': 'likely' },
+  acadia:                { 'American Herring Gull': 'guaranteed', 'Bald Eagle': 'rare', 'White-tailed Deer': 'very_likely', 'Harbor Seal': 'likely', 'Common Loon': 'likely', 'Atlantic Puffin': 'unlikely' },
   olympic:               { 'Mule Deer': 'guaranteed', 'Bald Eagle': 'likely', 'Roosevelt Elk': 'likely', 'Harbor Seal': 'likely', 'Olympic Marmot': 'very_likely', 'Canada Jay': 'very_likely' },
   isleroyale:            { 'Moose': 'likely', 'Common Loon': 'guaranteed' },
   newrivergorge:         { 'White-tailed Deer': 'guaranteed', 'Black Bear': 'likely' },
@@ -229,11 +233,11 @@ const RARITY_OVERRIDES = {
   badlands:              { 'American Bison': 'guaranteed', 'Pronghorn': 'guaranteed', 'Black-tailed Prairie Dog': 'guaranteed' },
   windcave:              { 'American Bison': 'guaranteed', 'Pronghorn': 'very_likely', 'Black-tailed Prairie Dog': 'very_likely' },
   theodoreroosevelt:     { 'American Bison': 'guaranteed', 'Pronghorn': 'very_likely', 'Black-tailed Prairie Dog': 'very_likely', 'Wild Horse': 'very_likely' },
-  rockymountain:         { 'American Elk': 'guaranteed', 'Elk': 'guaranteed', 'Mule Deer': 'very_likely', 'Bighorn Sheep': 'likely' },
+  rockymountain:         { 'American Elk': 'guaranteed', 'Elk': 'guaranteed', 'Mule Deer': 'very_likely', 'Rocky Mountain Bighorn Sheep': 'likely' },
   yosemite:              { 'California Ground Squirrel': 'guaranteed', "Steller's Jay": 'very_likely', 'Mule Deer': 'very_likely', 'Black Bear': 'unlikely' },
   saguaro:               { "Gambel's Quail": 'guaranteed', 'Cactus Wren': 'very_likely', 'Gila Woodpecker': 'very_likely' },
   grandcanyon:           { 'Common Raven': 'guaranteed', 'Rock Squirrel': 'very_likely', 'Mule Deer': 'very_likely', 'Elk': 'likely', 'American Bison': 'exceptional' },
-  zion:                  { 'Rock Squirrel': 'guaranteed', 'Mule Deer': 'very_likely', 'Desert Cottontail': 'likely', 'Coyote': 'likely' },
+  zion:                  { 'Rock Squirrel': 'guaranteed', 'Mule Deer': 'very_likely', 'Desert Cottontail': 'likely', 'Coyote': 'likely', 'Desert Bighorn Sheep': 'likely' },
   brycecanyon:           { 'Utah Prairie Dog': 'guaranteed', "Common Golden-mantled Ground Squirrel": 'guaranteed', 'Mule Deer': 'very_likely', 'Common Raven': 'very_likely', 'Pronghorn': 'very_likely' },
   arches:                { 'Common Raven': 'guaranteed', 'Mule Deer': 'likely', 'Coyote': 'likely', 'Desert Cottontail': 'likely' },
   canyonlands:           { 'Common Raven': 'guaranteed', 'Common Side-blotched Lizard': 'very_likely', 'Mule Deer': 'likely' },
@@ -255,7 +259,7 @@ const RARITY_OVERRIDES = {
   lassenvolcanic:        { "Steller's Jay": 'guaranteed', "Common Golden-mantled Ground Squirrel": 'very_likely' },
   bigbend:               { 'Greater Roadrunner': 'guaranteed', 'Mexican Jay': 'very_likely', 'Cactus Wren': 'very_likely' },
   carlsbadcaverns:       { 'Mexican Free-tailed Bat': 'guaranteed' },
-  denali:                { 'Brown Bear': 'likely', 'Caribou': 'very_likely', 'Moose': 'very_likely', 'Dall Sheep': 'very_likely', 'Arctic Ground Squirrel': 'guaranteed', 'Grizzly Bear': 'likely' },
+  denali:                { 'Grizzly Bear': 'unlikely', 'Caribou': 'very_likely', 'Moose': 'very_likely', 'Dall Sheep': 'very_likely', 'Arctic Ground Squirrel': 'guaranteed' },
   katmai:                { 'Brown Bear': 'guaranteed' },
   glacierbay:            { 'Humpback Whale': 'very_likely', 'Harbor Seal': 'guaranteed', 'Sea Otter': 'very_likely' },
   kenaifjords:           { 'Sea Otter': 'guaranteed', 'Harbor Seal': 'guaranteed', 'Tufted Puffin': 'very_likely', 'Horned Puffin': 'very_likely', 'Orca': 'unlikely' },

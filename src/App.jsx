@@ -344,66 +344,100 @@ function StateParkCounts({ geoData, locationsByState }) {
   return null;
 }
 
-// ── "What's Active Now" rotating banner ───────────────────────────────────────
-// Shows season-appropriate wildlife activity messages that rotate every 5 s
-// with a smooth fade. Always reflects the real-world season, not the filter.
-const ACTIVE_NOW_MSGS = {
-  spring: [
-    'Bear cubs emerging with mothers in Great Smoky Mountains',
-    'Gray Whales migrating north past Point Reyes',
-    'Elk calving season begins in Yellowstone',
-    'Warblers arriving at Acadia in peak numbers',
-    'Wildflowers blooming across Great Smoky Mountains',
+// ── "What's Active Now" month-aware rotating banner ───────────────────────────
+// Shows month-appropriate wildlife events that rotate every 10 s with a smooth
+// fade. Uses new Date().getMonth() so it always reflects the real calendar month.
+const SEASONAL_EVENTS = {
+  0: [ // January
+    'Bald Eagles gathering at their winter roosts across the Pacific Northwest',
+    'Gray Whales beginning their southbound migration along the California coast',
+    'Manatees congregating at warm water springs in Florida',
   ],
-  summer: [
-    'Bison rut peaks in Yellowstone — bulls bugling',
-    'Bald Eagle nesting active in Denali backcountry',
-    'Sea Turtle nesting season on Florida beaches',
-    'Monarch Butterflies begin eastern migration',
-    'Harbor Seal pups learning to swim in Channel Islands',
+  1: [ // February
+    'Great Horned Owls nesting — listen for hooting at dusk in forests nationwide',
+    'Bald Eagles actively nesting across the northern states',
+    'Gray Whales with calves heading south past Point Reyes',
   ],
-  fall: [
-    'Elk rut in Yellowstone — bulls bugling at dawn',
-    'Monarch Butterflies peak at Point Reyes in October',
-    'Bears fattening up before winter hibernation',
-    'Sandhill Cranes staging in Yellowstone valleys',
-    'Hawk migration peaks at Shenandoah ridge',
+  2: [ // March
+    'Spring migration beginning — warblers and songbirds returning to eastern parks',
+    'Gray Whales migrating north past Point Reyes with newborn calves',
+    'Osprey returning to nest platforms along the Atlantic coast',
   ],
-  winter: [
-    'Humpback Whales feeding off Channel Islands',
-    'American Alligators basking in Everglades winter sun',
-    'Bison breaking through snow to graze in Yellowstone',
-    'Bald Eagles fishing open water in Denali',
-    'Manatees gathering in warm Florida springs',
+  3: [ // April
+    'Peak spring bird migration — warblers flooding through eastern and Gulf Coast parks',
+    'Wildflower blooms attracting butterflies across desert parks',
+    'Black bears emerging from hibernation in Smoky Mountains and Shenandoah',
+  ],
+  4: [ // May
+    'Elk calving season at Yellowstone and Grand Teton',
+    'Synchronous fireflies beginning their 2-week display at Great Smoky Mountains',
+    'Puffins arriving at Acadia\'s offshore islands for nesting season',
+  ],
+  5: [ // June
+    'Synchronous fireflies peaking at Great Smoky Mountains — lottery required',
+    'Mountain goat kids visible at Glacier National Park',
+    'Sea turtle nesting season along Gulf Coast and Florida beaches',
+  ],
+  6: [ // July
+    'Brown bears fishing for salmon at Brooks Falls in Katmai',
+    'Humpback whales feeding in Glacier Bay and Kenai Fjords',
+    'Monarch butterflies breeding across northern parks',
+  ],
+  7: [ // August
+    'Brown bears at peak salmon fishing in Katmai and Denali',
+    'Shorebird fall migration beginning along Atlantic coast',
+    'Perseid meteor showers — perfect for nocturnal wildlife viewing',
+  ],
+  8: [ // September
+    'Elk bugling season at Yellowstone and Rocky Mountain',
+    'Monarch butterflies beginning southbound migration through central states',
+    'Fall hawk migration peaking at Acadia and Shenandoah',
+  ],
+  9: [ // October
+    'Elk rut continuing at Yellowstone — bulls bugling at dawn and dusk',
+    'Salmon spawning runs visible at Olympic, Redwood, and North Cascades',
+    'Fall bird migration peaking — warblers and sparrows heading south',
+  ],
+  10: [ // November
+    'Bald Eagles congregating along rivers in the Pacific Northwest',
+    'Manatees moving to warm water refuges in Everglades and Biscayne',
+    'Snowy Owls arriving at northern coastal parks for winter',
+  ],
+  11: [ // December
+    'Bald Eagles at peak winter concentrations along major rivers',
+    'Gray Whale southbound migration visible from Point Reyes and Channel Islands',
+    'Manatees at warm water springs — best viewing at Everglades',
   ],
 };
 
-function getCurrentSeason() {
-  const m = new Date().getMonth(); // 0 = Jan
-  if (m >= 2 && m <= 4) return 'spring';
-  if (m >= 5 && m <= 7) return 'summer';
-  if (m >= 8 && m <= 10) return 'fall';
-  return 'winter';
-}
+const MONTH_LABELS = [
+  'January ❄️', 'February ❄️', 'March 🌸', 'April 🌸', 'May 🌸', 'June ☀️',
+  'July ☀️', 'August ☀️', 'September 🍂', 'October 🍂', 'November 🍂', 'December ❄️',
+];
 
 function WhatActiveNow() {
-  const msgs                 = ACTIVE_NOW_MSGS[getCurrentSeason()];
+  const [month, setMonth]    = useState(() => new Date().getMonth());
+  const msgs                 = SEASONAL_EVENTS[month];
   const [idx,  setIdx]       = useState(0);
   const [faded, setFaded]    = useState(false);
 
   useEffect(() => {
-    const t = setInterval(() => {
+    // Rotate messages every 10 seconds
+    const rotate = setInterval(() => {
       setFaded(true);
       setTimeout(() => { setIdx(i => (i + 1) % msgs.length); setFaded(false); }, 340);
-    }, 5000);
-    return () => clearInterval(t);
+    }, 10000);
+    // Check if the calendar month changed every 60 seconds
+    const monthCheck = setInterval(() => {
+      const now = new Date().getMonth();
+      setMonth(prev => { if (prev !== now) { setIdx(0); return now; } return prev; });
+    }, 60000);
+    return () => { clearInterval(rotate); clearInterval(monthCheck); };
   }, [msgs.length]);
-
-  const seasonLabel = { spring: 'Spring 🌸', summer: 'Summer ☀️', fall: 'Fall 🍂', winter: 'Winter ❄️' }[getCurrentSeason()];
 
   return (
     <div className="active-now" aria-live="polite" aria-atomic="true">
-      <span className="active-now__season">{seasonLabel}</span>
+      <span className="active-now__season">{MONTH_LABELS[month]}</span>
       <span className="active-now__sep">·</span>
       <span className={`active-now__msg${faded ? ' active-now__msg--out' : ''}`}>
         {msgs[idx]}
