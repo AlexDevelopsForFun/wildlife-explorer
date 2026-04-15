@@ -1,0 +1,557 @@
+{
+  "summary": {
+    "large": 218,
+    "small": 544,
+    "rodent": 318,
+    "bat": 91,
+    "marine": 24
+  },
+  "total": 1195,
+  "misclassified": [
+    {
+      "name": "American Beaver",
+      "current": "small",
+      "correct": "rodent",
+      "parks": [
+        "yellowstone",
+        "denali",
+        "acadia",
+        "shenandoah",
+        "newrivergorge",
+        "cuyahogavalley",
+        "isleroyale",
+        "greatsmokymountains",
+        "congaree",
+        "mammothcave",
+        "voyageurs",
+        "indianadunes",
+        "badlands",
+        "theodoreroosevelt",
+        "grandcanyon",
+        "zion",
+        "arches",
+        "canyonlands",
+        "capitolreef",
+        "bigbend",
+        "grandteton",
+        "rockymountain",
+        "glacier",
+        "olympic",
+        "redwood",
+        "yosemite",
+        "greatbasin"
+      ]
+    },
+    {
+      "name": "North American Porcupine",
+      "current": "small",
+      "correct": "rodent",
+      "parks": [
+        "yellowstone",
+        "denali",
+        "acadia",
+        "badlands",
+        "windcave",
+        "theodoreroosevelt",
+        "grandcanyon",
+        "zion",
+        "capitolreef",
+        "petrifiedforest",
+        "whitesands",
+        "guadalupemountains",
+        "grandteton",
+        "redwood",
+        "yosemite",
+        "carlsbadcaverns"
+      ]
+    },
+    {
+      "name": "Western Deer Mouse",
+      "current": "large",
+      "correct": "rodent",
+      "parks": [
+        "yellowstone",
+        "grandcanyon",
+        "zion",
+        "mesaverde",
+        "petrifiedforest",
+        "grandteton",
+        "rockymountain",
+        "glacier",
+        "olympic",
+        "redwood",
+        "yosemite",
+        "greatbasin"
+      ]
+    },
+    {
+      "name": "Groundhog",
+      "current": "small",
+      "correct": "rodent",
+      "parks": [
+        "acadia",
+        "shenandoah",
+        "newrivergorge",
+        "cuyahogavalley",
+        "greatsmokymountains",
+        "mammothcave",
+        "voyageurs",
+        "indianadunes",
+        "gatewayarch",
+        "hotsprings"
+      ]
+    },
+    {
+      "name": "White-tailed Antelope Squirrel",
+      "current": "large",
+      "correct": "rodent",
+      "parks": [
+        "grandcanyon",
+        "zion",
+        "brycecanyon",
+        "arches",
+        "canyonlands",
+        "capitolreef",
+        "mesaverde",
+        "petrifiedforest",
+        "greatbasin"
+      ]
+    },
+    {
+      "name": "Long-eared Myotis",
+      "current": "small",
+      "correct": "bat",
+      "parks": [
+        "yellowstone",
+        "grandcanyon",
+        "zion",
+        "grandteton",
+        "rockymountain",
+        "greatbasin"
+      ]
+    },
+    {
+      "name": "Pinyon Deermouse",
+      "current": "large",
+      "correct": "rodent",
+      "parks": [
+        "canyonlands",
+        "petrifiedforest",
+        "redwood",
+        "yosemite",
+        "greatbasin"
+      ]
+    },
+    {
+      "name": "Eastern Deermouse",
+      "current": "large",
+      "correct": "rodent",
+      "parks": [
+        "acadia",
+        "cuyahogavalley",
+        "isleroyale",
+        "indianadunes"
+      ]
+    },
+    {
+      "name": "White-tailed Jackrabbit",
+      "current": "large",
+      "correct": "small",
+      "parks": [
+        "yellowstone",
+        "badlands",
+        "yosemite"
+      ]
+    },
+    {
+      "name": "Fringed Myotis",
+      "current": "small",
+      "correct": "bat",
+      "parks": [
+        "grandcanyon",
+        "petrifiedforest",
+        "bigbend"
+      ]
+    },
+    {
+      "name": "Yuma Myotis",
+      "current": "small",
+      "correct": "bat",
+      "parks": [
+        "zion",
+        "bigbend",
+        "yosemite"
+      ]
+    },
+    {
+      "name": "Mountain Beaver",
+      "current": "small",
+      "correct": "rodent",
+      "parks": [
+        "olympic",
+        "redwood",
+        "yosemite"
+      ]
+    },
+    {
+      "name": "Western Small-footed Myotis",
+      "current": "small",
+      "correct": "bat",
+      "parks": [
+        "yellowstone",
+        "greatbasin"
+      ]
+    },
+    {
+      "name": "Eastern Small-footed Myotis",
+      "current": "small",
+      "correct": "bat",
+      "parks": [
+        "acadia",
+        "shenandoah"
+      ]
+    },
+    {
+      "name": "California Myotis",
+      "current": "small",
+      "correct": "bat",
+      "parks": [
+        "petrifiedforest",
+        "bigbend"
+      ]
+    },
+    {
+      "name": "Brush Deermouse",
+      "current": "large",
+      "correct": "rodent",
+      "parks": [
+        "petrifiedforest",
+        "yosemite"
+      ]
+    },
+    {
+      "name": "Long-legged Myotis",
+      "current": "small",
+      "correct": "bat",
+      "parks": [
+        "yellowstone"
+      ]
+    },
+    {
+      "name": "Northern Myotis",
+      "current": "small",
+      "correct": "bat",
+      "parks": [
+        "cuyahogavalley"
+      ]
+    },
+    {
+      "name": "White-tailed Prairie Dog",
+      "current": "large",
+      "correct": "rodent",
+      "parks": [
+        "arches"
+      ]
+    },
+    {
+      "name": "Nutria",
+      "current": "small",
+      "correct": "rodent",
+      "parks": [
+        "bigbend"
+      ]
+    },
+    {
+      "name": "Cave Myotis",
+      "current": "small",
+      "correct": "bat",
+      "parks": [
+        "bigbend"
+      ]
+    },
+    {
+      "name": "Cactus Deermouse",
+      "current": "large",
+      "correct": "rodent",
+      "parks": [
+        "bigbend"
+      ]
+    },
+    {
+      "name": "Northwestern Deer Mouse",
+      "current": "large",
+      "correct": "rodent",
+      "parks": [
+        "olympic"
+      ]
+    },
+    {
+      "name": "Gambel's Deer Mouse",
+      "current": "large",
+      "correct": "rodent",
+      "parks": [
+        "yosemite"
+      ]
+    },
+    {
+      "name": "Southern Deer Mouse",
+      "current": "large",
+      "correct": "rodent",
+      "parks": [
+        "carlsbadcaverns"
+      ]
+    }
+  ],
+  "unknown": [
+    {
+      "name": "Desert Cottontail",
+      "current": "small",
+      "parks": [
+        "badlands",
+        "windcave",
+        "theodoreroosevelt",
+        "grandcanyon",
+        "zion",
+        "arches",
+        "canyonlands",
+        "capitolreef",
+        "mesaverde",
+        "petrifiedforest",
+        "saguaro",
+        "whitesands",
+        "guadalupemountains",
+        "bigbend",
+        "carlsbadcaverns",
+        "greatbasin"
+      ]
+    },
+    {
+      "name": "Mountain Cottontail",
+      "current": "small",
+      "parks": [
+        "yellowstone",
+        "badlands",
+        "windcave",
+        "theodoreroosevelt",
+        "grandcanyon",
+        "zion",
+        "brycecanyon",
+        "arches",
+        "mesaverde",
+        "petrifiedforest",
+        "grandteton",
+        "rockymountain",
+        "greatbasin"
+      ]
+    },
+    {
+      "name": "Domestic Cat",
+      "current": "small",
+      "parks": [
+        "everglades",
+        "shenandoah",
+        "cuyahogavalley",
+        "greatsmokymountains",
+        "biscayne",
+        "congaree",
+        "indianadunes",
+        "brycecanyon",
+        "canyonlands",
+        "capitolreef",
+        "redwood",
+        "yosemite",
+        "virginislands"
+      ]
+    },
+    {
+      "name": "Eastern Cottontail",
+      "current": "small",
+      "parks": [
+        "shenandoah",
+        "newrivergorge",
+        "cuyahogavalley",
+        "greatsmokymountains",
+        "congaree",
+        "mammothcave",
+        "indianadunes",
+        "badlands",
+        "windcave",
+        "theodoreroosevelt",
+        "gatewayarch",
+        "olympic"
+      ]
+    },
+    {
+      "name": "Domestic Horse",
+      "current": "small",
+      "parks": [
+        "badlands",
+        "theodoreroosevelt",
+        "grandcanyon",
+        "brycecanyon",
+        "arches",
+        "mesaverde",
+        "petrifiedforest",
+        "bigbend",
+        "glacier",
+        "yosemite"
+      ]
+    },
+    {
+      "name": "Domestic Dog",
+      "current": "small",
+      "parks": [
+        "everglades",
+        "greatsmokymountains",
+        "zion",
+        "brycecanyon",
+        "capitolreef",
+        "bigbend",
+        "grandteton",
+        "virginislands"
+      ]
+    },
+    {
+      "name": "Eurasian Wild Pig",
+      "current": "small",
+      "parks": [
+        "everglades",
+        "greatsmokymountains",
+        "congaree",
+        "guadalupemountains",
+        "bigbend",
+        "virginislands",
+        "carlsbadcaverns"
+      ]
+    },
+    {
+      "name": "Donkey",
+      "current": "small",
+      "parks": [
+        "badlands",
+        "windcave",
+        "grandcanyon",
+        "canyonlands",
+        "saguaro",
+        "bigbend",
+        "virginislands"
+      ]
+    },
+    {
+      "name": "Mountain Goat",
+      "current": "small",
+      "parks": [
+        "yellowstone",
+        "grandteton",
+        "rockymountain",
+        "glacier",
+        "olympic"
+      ]
+    },
+    {
+      "name": "Domestic Cattle",
+      "current": "small",
+      "parks": [
+        "theodoreroosevelt",
+        "petrifiedforest",
+        "bigbend",
+        "grandteton",
+        "virginislands"
+      ]
+    },
+    {
+      "name": "Collared Peccary",
+      "current": "small",
+      "parks": [
+        "grandcanyon",
+        "petrifiedforest",
+        "guadalupemountains",
+        "carlsbadcaverns"
+      ]
+    },
+    {
+      "name": "Domestic Goat",
+      "current": "small",
+      "parks": [
+        "newrivergorge",
+        "congaree",
+        "virginislands"
+      ]
+    },
+    {
+      "name": "Aoudad",
+      "current": "small",
+      "parks": [
+        "guadalupemountains",
+        "bigbend",
+        "carlsbadcaverns"
+      ]
+    },
+    {
+      "name": "Appalachian Cottontail",
+      "current": "small",
+      "parks": [
+        "shenandoah",
+        "greatsmokymountains"
+      ]
+    },
+    {
+      "name": "Wild Horse",
+      "current": "small",
+      "parks": [
+        "badlands",
+        "theodoreroosevelt"
+      ]
+    },
+    {
+      "name": "Javelina",
+      "current": "small",
+      "parks": [
+        "saguaro",
+        "bigbend"
+      ]
+    },
+    {
+      "name": "Florida Panther",
+      "current": "small",
+      "parks": [
+        "everglades"
+      ]
+    },
+    {
+      "name": "Dall Sheep",
+      "current": "small",
+      "parks": [
+        "denali"
+      ]
+    },
+    {
+      "name": "Gemsbok",
+      "current": "small",
+      "parks": [
+        "whitesands"
+      ]
+    },
+    {
+      "name": "Holzner Cottontail",
+      "current": "small",
+      "parks": [
+        "bigbend"
+      ]
+    },
+    {
+      "name": "Small Indian Mongoose",
+      "current": "small",
+      "parks": [
+        "virginislands"
+      ]
+    },
+    {
+      "name": "Domestic Sheep",
+      "current": "small",
+      "parks": [
+        "virginislands"
+      ]
+    }
+  ]
+}

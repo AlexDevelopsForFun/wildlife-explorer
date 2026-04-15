@@ -28,7 +28,7 @@ export const REPTILE_SUBTYPES = [
   { key: 'crocodilian', emoji: '🐊', label: 'Crocodilians' },
 ];
 
-// ── Keyword lists ─────────────────────────────────────────────────────────────
+// ── Bird keyword lists ────────────────────────────────────────────────────────
 
 const RAPTOR_KW = [
   'hawk', 'eagle', 'falcon', 'osprey', 'kite', 'harrier', 'vulture',
@@ -69,35 +69,88 @@ const SONGBIRD_KW = [
   'martin', 'swift', 'nighthawk', 'nightjar', 'whip-poor-will',
 ];
 
-// ── Mammal keywords ───────────────────────────────────────────────────────────
+// ── Mammal keyword lists ──────────────────────────────────────────────────────
 
-const BAT_KW = ['bat'];
+// Bat identifiers — includes genus names and common suffixes
+const BAT_KW = [
+  'bat', 'myotis', 'pipistrelle', 'free-tailed bat', 'big-eared bat',
+  'evening bat', 'yellow bat', 'red bat', 'hoary bat', 'silver-haired bat',
+  'cave bat',
+];
 
 const MARINE_MAMMAL_KW = [
   'seal', 'sea lion', 'walrus', 'whale', 'dolphin', 'porpoise',
   'manatee', 'dugong', 'sea otter',
 ];
 
+// Names containing any of these should NEVER be classified as "large" —
+// checked BEFORE LARGE_MAMMAL_KW to prevent greedy keyword collisions
+// (e.g., "Deermouse" matching "deer", "White-tailed Prairie Dog" matching
+// "white-tailed deer" — but these lists avoid that; kept as a safety net).
+const LARGE_EXCLUDE = [
+  'deermouse', 'deer mouse', 'antelope squirrel', 'prairie dog',
+];
+
+// Large ungulates, big carnivores, and cat/cattle-size mammals.
+// No bare 'deer' keyword — use specific species phrases to avoid matching
+// "Deermouse", "Deer Mouse", etc.
 const LARGE_MAMMAL_KW = [
-  'bear', 'bison', 'elk', 'moose', 'deer', 'wolf', 'mountain lion',
-  'cougar', 'puma', 'jaguar', 'bighorn', 'pronghorn', 'wild boar',
-  'mule deer', 'white-tailed', 'whitetail', 'caribou', 'reindeer',
-  'musk ox', 'wolverine',
+  // Bears & large carnivores
+  'bear', 'wolf', 'wolverine',
+  'mountain lion', 'cougar', 'puma', 'panther', 'jaguar',
+  // Bovids & related ungulates
+  'bison', 'bighorn', 'dall sheep', 'mountain goat', 'goat',
+  'cattle', 'aoudad', 'gemsbok', 'sheep',
+  // Cervids (deer family) — explicit species names only
+  'elk', 'moose', 'caribou', 'reindeer', 'musk ox',
+  'white-tailed deer', 'mule deer', 'black-tailed deer',
+  'sika deer', 'fallow deer', 'red deer', 'roe deer', 'axis deer',
+  'key deer',
+  // Pronghorn & suids
+  'pronghorn',
+  'wild boar', 'wild pig', 'feral pig', 'peccary', 'javelina',
+  // Equids — 'horse' matches domestic, wild, feral variants
+  'horse', 'donkey', 'burro',
 ];
 
 const RODENT_KW = [
-  'mouse', 'rat', 'squirrel', 'chipmunk', 'vole', 'lemming', 'marmot',
-  'prairie dog', 'pocket gopher', 'kangaroo rat', 'kangaroo mouse',
-  'wood rat', 'woodrat', 'packrat', 'jumping mouse', 'harvest mouse',
+  // Muroids
+  'mouse', 'mice', 'rat', 'vole', 'lemming',
+  // Sciurids
+  'squirrel', 'chipmunk', 'marmot', 'prairie dog',
+  // Castorimorphs & others
+  'pocket gopher', 'gopher',
+  'kangaroo rat', 'kangaroo mouse',
+  'wood rat', 'woodrat', 'packrat',
+  'jumping mouse', 'harvest mouse',
+  // Explicit Deermouse match — ensures RODENT catches them first
+  'deermouse', 'deer mouse',
+  // Large rodents often mis-categorised
+  'beaver', 'mountain beaver', 'porcupine',
+  'groundhog', 'woodchuck', 'nutria',
 ];
 
 const SMALL_MAMMAL_KW = [
-  'fox', 'coyote', 'bobcat', 'lynx', 'mink', 'river otter', 'weasel',
-  'badger', 'skunk', 'raccoon', 'opossum', 'porcupine', 'muskrat',
-  'beaver', 'groundhog', 'woodchuck', 'nutria', 'ringtail', 'coati',
+  // Canids & small felids
+  'fox', 'coyote', 'bobcat', 'lynx',
+  // Mustelids
+  'mink', 'river otter', 'weasel', 'badger', 'marten', 'fisher',
+  'ermine', 'stoat',
+  // Mephitids
+  'skunk',
+  // Procyonids
+  'raccoon', 'ringtail', 'coati',
+  // Misc
+  'opossum', 'muskrat',
+  // Lagomorphs — rabbits, hares, pikas (NOT rodents)
+  'jackrabbit', 'cottontail', 'rabbit', 'hare', 'pika',
+  // Eulipotyphla — shrews, moles
+  'shrew', 'mole',
+  // Xenarthra
+  'armadillo',
 ];
 
-// ── Reptile keywords ──────────────────────────────────────────────────────────
+// ── Reptile keyword lists ─────────────────────────────────────────────────────
 
 const SNAKE_KW = [
   'snake', 'racer', 'ratsnake', 'kingsnake', 'garter', 'copperhead',
@@ -135,10 +188,15 @@ export function classifyBirdSubtype(name) {
   return 'perching';
 }
 
+// Priority: bat → marine → (excluded?) → large → rodent → small → default(small)
+// The exclude check prevents "Deermouse" from being classified as "large"
+// just because substring matching would otherwise find a broader keyword.
 export function classifyMammalSubtype(name) {
+  const lc = (name ?? '').toLowerCase();
   if (hasKw(name, BAT_KW))           return 'bat';
   if (hasKw(name, MARINE_MAMMAL_KW)) return 'marine';
-  if (hasKw(name, LARGE_MAMMAL_KW))  return 'large';
+  const excluded = LARGE_EXCLUDE.some(kw => lc.includes(kw));
+  if (!excluded && hasKw(name, LARGE_MAMMAL_KW)) return 'large';
   if (hasKw(name, RODENT_KW))        return 'rodent';
   if (hasKw(name, SMALL_MAMMAL_KW))  return 'small';
   return 'small'; // default for unrecognised mammals
