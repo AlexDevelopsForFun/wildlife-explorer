@@ -4,6 +4,9 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster';
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
+import { track } from '@vercel/analytics';
 
 import { wildlifeLocations, SEASONS, RARITY, ANIMAL_TYPES, STATE_NAMES } from './wildlifeData';
 import { classifyAnimalSubtype, getSubtypeDefs } from './utils/subcategories';
@@ -839,7 +842,11 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout }) {
             // Photo loaded — clickable thumbnail with hover credit
             <button
               className="photo-thumb photo-thumb--img"
-              onClick={() => setExpanded(prev => !prev)}
+              onClick={() => setExpanded(prev => {
+                const next = !prev;
+                if (next) track('animal_view', { animal: animal.name, park: location.name, rarity: animal.rarity });
+                return next;
+              })}
               aria-label={`${expanded ? 'Collapse' : 'Expand'} photo of ${animal.name}`}
             >
               <img src={photo.url} alt={animal.name} />
@@ -1356,6 +1363,7 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
   // Search resets when popup switches to a different location
   const [search, setSearch] = useState('');
   useEffect(() => { setSearch(''); }, [location.id]);
+  const searchTrackTimerRef = useRef(null);
 
   // ── Tab-bar scroll-hint arrows ───────────────────────────────────────────
   const tabsRef = useRef(null);
@@ -1414,6 +1422,7 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
 
   const submitSighting = () => {
     if (!sightingDraft.animal.trim()) return;
+    track('report_sighting', { animal: sightingDraft.animal.trim(), park: location.name });
     const entry = {
       id:        Date.now(),
       animal:    sightingDraft.animal.trim(),
@@ -1941,7 +1950,19 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
             type="search"
             placeholder="Search species…"
             value={search}
-            onChange={e => setSearch(e.target.value)}
+            onChange={e => {
+              const q = e.target.value;
+              setSearch(q);
+              clearTimeout(searchTrackTimerRef.current);
+              if (q.trim()) {
+                searchTrackTimerRef.current = setTimeout(() =>
+                  track('search', { query: q.trim(), park: location.name }), 1000);
+              }
+            }}
+            onBlur={() => {
+              clearTimeout(searchTrackTimerRef.current);
+              if (search.trim()) track('search', { query: search.trim(), park: location.name });
+            }}
             aria-label="Search species"
           />
           {search && (
@@ -2226,7 +2247,7 @@ export default function App() {
   // About modal
   const [showAbout, setShowAbout] = useState(false);
   const [aboutScrollTo, setAboutScrollTo] = useState(null);
-  const openAbout = useCallback((section = null) => { setAboutScrollTo(section); setShowAbout(true); }, []);
+  const openAbout = useCallback((section = null) => { track('about_open'); setAboutScrollTo(section); setShowAbout(true); }, []);
   const closeAbout = useCallback(() => { setShowAbout(false); setAboutScrollTo(null); }, []);
 
   // Welcome splash — shown only on first visit, gated by localStorage.
@@ -2299,6 +2320,7 @@ export default function App() {
   useEffect(() => { animalTypeRef.current = animalType; }, [animalType]);
 
   const handlePopupOpen = useCallback((loc) => {
+    track('park_click', { park: loc.name, state: loc.stateCodes?.[0] ?? 'unknown' });
     setOpenPopup({ loc });
 
     // Sync global toolbar filters → popup-local filters on every open.
@@ -2490,7 +2512,7 @@ export default function App() {
             <button className="hdr__about-btn" onClick={() => openAbout()} title="About this project" aria-label="About">
               <span className="hdr__about-icon">i</span> About
             </button>
-            <button className="hdr__theme-btn" onClick={() => setDarkMode(d => !d)} title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'} aria-label="Toggle theme">
+            <button className="hdr__theme-btn" onClick={() => { track('theme_toggle', { theme: darkMode ? 'light' : 'dark' }); setDarkMode(d => !d); }} title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'} aria-label="Toggle theme">
               {darkMode ? '☀️' : '🌙'}
             </button>
           </div>
@@ -2504,7 +2526,7 @@ export default function App() {
                 <span className="filter-group__label">Season</span>
                 <div className="filter-group__btns">
                   {Object.entries(SEASONS).map(([k, { label, emoji, color }]) => (
-                    <FilterBtn key={k} active={season === k} onClick={() => setSeason(k)} emoji={emoji} label={label} activeColor={color} />
+                    <FilterBtn key={k} active={season === k} onClick={() => { setSeason(k); track('season_filter', { season: k }); }} emoji={emoji} label={label} activeColor={color} />
                   ))}
                 </div>
               </div>
@@ -2513,7 +2535,7 @@ export default function App() {
                 <span className="filter-group__label">Rarity</span>
                 <div className="filter-group__btns">
                   {Object.entries(RARITY).map(([k, { label, emoji, color }]) => (
-                    <FilterBtn key={k} active={rarity === k} onClick={() => setRarity(k)} emoji={emoji} label={label} activeColor={color} />
+                    <FilterBtn key={k} active={rarity === k} onClick={() => { setRarity(k); track('rarity_filter', { rarity: k }); }} emoji={emoji} label={label} activeColor={color} />
                   ))}
                 </div>
               </div>
@@ -2525,7 +2547,7 @@ export default function App() {
                 <span className="filter-group__label">Animal Type</span>
                 <div className="filter-group__btns">
                   {Object.entries(ANIMAL_TYPES).map(([k, { label, emoji, color }]) => (
-                    <FilterBtn key={k} active={animalType === k} onClick={() => setAnimalType(k)} emoji={emoji} label={label} activeColor={color} title={label} />
+                    <FilterBtn key={k} active={animalType === k} onClick={() => { setAnimalType(k); track('type_filter', { type: k }); }} emoji={emoji} label={label} activeColor={color} title={label} />
                   ))}
                 </div>
               </div>
@@ -2671,6 +2693,10 @@ export default function App() {
 
       {/* ── About modal ── */}
       {showAbout && <AboutModal onClose={closeAbout} scrollTo={aboutScrollTo} />}
+
+      {/* ── Vercel Analytics & Speed Insights ── */}
+      <Analytics />
+      <SpeedInsights />
     </div>
   );
 }

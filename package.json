@@ -13,6 +13,8 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.82.0",
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
     "geotiff": "^3.0.5",
     "leaflet": "^1.9.4",
     "leaflet.markercluster": "^1.5.3",
