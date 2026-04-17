@@ -8,9 +8,7 @@
 
 ## Screenshot
 
-<!-- Add a screenshot: take one at https://wildlife-explorer-theta.vercel.app, save it as
-     docs/screenshot.png, then replace this comment block with:
-     ![Wildlife Explorer map showing Yellowstone popup with species list](docs/screenshot.png) -->
+![Wildlife Explorer — interactive map with park popups and species rarity](docs/screenshot.png)
 
 ---
 
