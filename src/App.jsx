@@ -194,10 +194,24 @@ function MarkerLayer({ locations, icons, onPopupOpen, onPopupClose }) {
   // are never removed from the map just because wildlife data loaded in the bg.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
+    // Detect pure-touch devices (no fine pointer / no hover). On these devices
+    // Leaflet tooltips fire on tap rather than hover, which interferes with
+    // the click-to-open-popup behavior. Skip binding on touch-only devices.
+    const isTouchOnly = window.matchMedia?.('(hover: none)').matches ?? false;
+
     const newMarkers = {};
     locations.forEach(loc => {
       const marker = L.marker([loc.lat, loc.lng], { icon: iconsRef.current[loc.id] });
       marker.on('click', () => onOpenRef.current(loc));
+      if (!isTouchOnly) {
+        marker.bindTooltip(loc.name, {
+          direction:  'top',
+          permanent:  false,
+          sticky:     false,
+          opacity:    0.95,
+          className:  'park-tooltip',
+        });
+      }
       newMarkers[loc.id] = marker;
       marker.addTo(map);
     });
