@@ -37,4 +37,9 @@ scripts/rarityAudit_log.txt
 # ── Claude Code local config ──────────────────────────────────────────────────
 .claude/
 
+# ── Vercel local config ───────────────────────────────────────────────────────
 .vercel
+
+# ── Downloaded / temp verification bundles (re-downloadable, large) ───────────
+scripts/deployed-*.js
+scripts/subcategoryAudit.json
