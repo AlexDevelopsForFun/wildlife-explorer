@@ -32,6 +32,7 @@ scripts/_county_cache/
 scripts/parkTips-cache.json
 scripts/tipTargets.json
 scripts/photoFetch-cache.json
+scripts/expandPhotos-resume.json
 scripts/rarityAudit_log.txt
 
 # ── Claude Code local config ──────────────────────────────────────────────────
