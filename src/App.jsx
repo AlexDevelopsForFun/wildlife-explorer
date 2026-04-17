@@ -21,6 +21,7 @@ import { useNpsParks } from './hooks/useNpsParks';
 import { WILDLIFE_CACHE, WILDLIFE_CACHE_BUILT_AT } from './data/wildlifeCacheLoader.js';
 import { useSecondaryCache } from './hooks/useSecondaryCache.js';
 import { fetchAnimalPhoto } from './services/photoService';
+import { BUNDLED_PHOTOS } from './data/photoCache.js';
 import { needsGeneratedDescription } from './services/descriptionService';
 
 // ── Park type colors & icons ──────────────────────────────────────────────────
@@ -173,6 +174,20 @@ const YEAR_ROUND_DISPLAY = { label: 'Year Round', emoji: '🌀', color: '#6b7280
 const STATE_NAME_TO_CODE = Object.fromEntries(
   Object.entries(STATE_NAMES).map(([code, name]) => [name, code])
 );
+
+// Wraps matching substring in <mark> for autocomplete highlight
+function highlightMatch(text, query) {
+  if (!query?.trim() || !text) return text;
+  const idx = text.toLowerCase().indexOf(query.toLowerCase());
+  if (idx < 0) return text;
+  return (
+    <>
+      {text.slice(0, idx)}
+      <mark className="sp-hl">{text.slice(idx, idx + query.length)}</mark>
+      {text.slice(idx + query.length)}
+    </>
+  );
+}
 
 // ── Marker layer ──────────────────────────────────────────────────────────────
 // Each National Park gets an individual marker at every zoom level.
@@ -459,6 +474,87 @@ function WhatActiveNow() {
       <span className={`active-now__msg${faded ? ' active-now__msg--out' : ''}`}>
         {msgs[idx]}
       </span>
+    </div>
+  );
+}
+
+// ── Species search component ──────────────────────────────────────────────────
+function SpeciesSearch({ suggestions, query, onChange, onSelect, onClear, hasFilter }) {
+  const [activeIdx,    setActiveIdx]    = useState(-1);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const containerRef = useRef(null);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handler = e => {
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        setShowDropdown(false); setActiveIdx(-1);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const handleKeyDown = e => {
+    if (!showDropdown || suggestions.length === 0) {
+      if (e.key === 'Escape') { onChange(''); onClear(); e.target.blur(); }
+      return;
+    }
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setActiveIdx(i => Math.min(i + 1, suggestions.length - 1));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setActiveIdx(i => Math.max(i - 1, -1));
+    } else if (e.key === 'Enter' && activeIdx >= 0) {
+      onSelect(suggestions[activeIdx]);
+      setShowDropdown(false); setActiveIdx(-1);
+    } else if (e.key === 'Escape') {
+      setShowDropdown(false); setActiveIdx(-1);
+    }
+  };
+
+  return (
+    <div className="sp-search" ref={containerRef}>
+      <div className="sp-search__bar">
+        <span className="sp-search__icon" aria-hidden="true">🔍</span>
+        <input
+          className="sp-search__input"
+          type="search"
+          placeholder="Find parks with… (e.g., Bald Eagle)"
+          value={query}
+          onChange={e => { onChange(e.target.value); setShowDropdown(true); setActiveIdx(-1); }}
+          onFocus={() => { if (query.trim().length >= 2) setShowDropdown(true); }}
+          onKeyDown={handleKeyDown}
+          aria-label="Search species to filter parks"
+          autoComplete="off"
+          autoCorrect="off"
+        />
+        {(query || hasFilter) && (
+          <button className="sp-search__clear"
+            onClick={() => { onChange(''); onClear(); setShowDropdown(false); setActiveIdx(-1); }}
+            aria-label="Clear species filter">✕</button>
+        )}
+      </div>
+      {showDropdown && suggestions.length > 0 && (
+        <ul className="sp-search__dropdown" role="listbox">
+          {suggestions.map((s, i) => (
+            <li key={s.name}
+              className={`sp-search__item${i === activeIdx ? ' sp-search__item--active' : ''}`}
+              role="option"
+              aria-selected={i === activeIdx}
+              onMouseDown={e => { e.preventDefault(); onSelect(s); setShowDropdown(false); setActiveIdx(-1); }}
+            >
+              {s.photoUrl && <img className="sp-search__item-photo" src={s.photoUrl} alt="" aria-hidden="true" />}
+              <div className="sp-search__item-text">
+                <span className="sp-search__item-name">{highlightMatch(s.name, query)}</span>
+                {s.sciName && <span className="sp-search__item-sci">{highlightMatch(s.sciName, query)}</span>}
+              </div>
+              <span className="sp-search__item-parks">{s.parkCount} park{s.parkCount !== 1 ? 's' : ''}</span>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
@@ -790,7 +886,7 @@ function resolveAnimalSources(animal) {
 }
 
 // ── Animal card ───────────────────────────────────────────────────────────────
-function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout }) {
+function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, highlightSpecies }) {
   const r = RARITY[animal.rarity] ?? RARITY.rare;
   const t = ANIMAL_TYPES[animal.animalType];
 
@@ -818,9 +914,10 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout }) {
   const placeholderEmoji = PHOTO_PLACEHOLDER[animal.animalType] ?? '🐾';
 
   const isExceptional = animal.rarity === 'exceptional';
+  const isHighlighted = highlightSpecies && animal.name?.toLowerCase() === highlightSpecies.toLowerCase();
 
   return (
-    <div className={`animal-card${isEstimated ? ' animal-card--estimated' : ''}${expanded && photo ? ' animal-card--photo-open' : ''}${isExceptional ? ' animal-card--exceptional' : ''}`}>
+    <div className={`animal-card${isEstimated ? ' animal-card--estimated' : ''}${expanded && photo ? ' animal-card--photo-open' : ''}${isExceptional ? ' animal-card--exceptional' : ''}${isHighlighted ? ' animal-card--highlight' : ''}`}>
 
       {/* Once-in-a-lifetime banner for exceptional animals */}
       {isExceptional && (
@@ -1367,7 +1464,7 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
   popupType, setPopupType, popupSort, setPopupSort,
   popupSeason, setPopupSeason, popupRarity, setPopupRarity,
   popupSubtype, setPopupSubtype,
-  activeTypes, focusedType, openAbout }) {
+  activeTypes, focusedType, openAbout, highlightSpecies }) {
   const POPUP_PROGRESS_GROUPS = ['birds', 'mammals', 'reptiles', 'amphibians', 'insects', 'marine'];
   const PROGRESS_EMOJI = { birds: '🐦', mammals: '🦌', reptiles: '🐊', amphibians: '🐸', insects: '🦋', marine: '🐋' };
 
@@ -1640,6 +1737,15 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
       result = [...result].sort((a, b) => (_RARITY_ORDER[b.rarity] ?? 5) - (_RARITY_ORDER[a.rarity] ?? 5));
     } else {
       result = [...result].sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    // Bubble highlighted species to the very top
+    if (highlightSpecies) {
+      const hl = highlightSpecies.toLowerCase();
+      result = [
+        ...result.filter(a => a.name?.toLowerCase() === hl),
+        ...result.filter(a => a.name?.toLowerCase() !== hl),
+      ];
     }
 
     // A "filter" is any user-driven narrowing beyond the default full list view.
@@ -2017,7 +2123,7 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
                 <div className="lp__showing-count">
                   Showing {Math.min(displayLimit, filtered.length)} of {filtered.length} {typeLabel}
                 </div>
-                {visibleList.map((a, i) => <AnimalCard key={`${a.name}-${i}`} animal={a} debugMode={debugMode} seasonalFreqs={seasonalFreqs} location={location} openAbout={openAbout} />)}
+                {visibleList.map((a, i) => <AnimalCard key={`${a.name}-${i}`} animal={a} debugMode={debugMode} seasonalFreqs={seasonalFreqs} location={location} openAbout={openAbout} highlightSpecies={highlightSpecies} />)}
                 {hasMore && (
                   <div className="lp__load-more-row">
                     <button className="lp__load-more-btn" onClick={() => setDisplayLimit(d => d + 100)}>
@@ -2226,6 +2332,10 @@ export default function App() {
     return 'winter';
   });
 
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [speciesQuery,  setSpeciesQuery]  = useState('');
+  const [speciesFilter, setSpeciesFilter] = useState(null); // selected species name string
+
   // Map ref — populated by MapController; lets buttons outside MapContainer call map.setView()
   const mapRef = useRef(null);
 
@@ -2361,6 +2471,16 @@ export default function App() {
   }, [refreshLocation]);
   const handlePopupClose = useCallback(() => setOpenPopup(null), []);
 
+  const handleSpeciesSelect = useCallback((s) => {
+    setSpeciesFilter(s.name);
+    setSpeciesQuery(s.name);
+    track('species_search', { species: s.name, parkCount: s.parkCount });
+  }, []);
+  const handleSpeciesClear = useCallback(() => {
+    setSpeciesFilter(null);
+    setSpeciesQuery('');
+  }, []);
+
   // NPS codes already covered by hardcoded wildlifeLocations — used to
   // deduplicate so the same park doesn't appear twice on the map.
   const existingNpsCodes = useMemo(() =>
@@ -2383,6 +2503,60 @@ export default function App() {
     });
     return out;
   }, [liveData]);
+
+  // ── Species → parks reverse index ────────────────────────────────────────
+  const allSpeciesList = useMemo(() => {
+    const map = new Map(); // name → { parks: Set<parkId>, sciName: string|null }
+    for (const [parkId, data] of Object.entries(WILDLIFE_CACHE)) {
+      for (const a of data.animals ?? []) {
+        if (!a.name) continue;
+        if (!map.has(a.name)) map.set(a.name, { parks: new Set(), sciName: a.scientificName ?? null });
+        map.get(a.name).parks.add(parkId);
+      }
+    }
+    const list = [...map.entries()]
+      .map(([name, v]) => ({
+        name,
+        sciName:   v.sciName,
+        parkCount: v.parks.size,
+        photoUrl:  BUNDLED_PHOTOS[name]?.url ?? null,
+      }))
+      .sort((a, b) => b.parkCount - a.parkCount);
+    return list;
+  }, []);
+
+  const speciesSuggestions = useMemo(() => {
+    if (speciesQuery.trim().length < 2) return [];
+    const q = speciesQuery.toLowerCase();
+    const exact = [], sw = [], contains = [];
+    for (const s of allSpeciesList) {
+      const n  = s.name.toLowerCase();
+      const sc = s.sciName?.toLowerCase() ?? '';
+      if (n === q)                             { exact.push(s);    continue; }
+      if (n.startsWith(q) || sc.startsWith(q)){ sw.push(s);       continue; }
+      if (n.includes(q)   || sc.includes(q))  { contains.push(s);           }
+      if (exact.length + sw.length + contains.length >= 60) break;
+    }
+    return [...exact, ...sw, ...contains].slice(0, 8);
+  }, [speciesQuery, allSpeciesList]);
+
+  const speciesFilteredParkIds = useMemo(() => {
+    if (!speciesFilter) return null;
+    const q = speciesFilter.toLowerCase();
+    const ids = new Set();
+    for (const [parkId, data] of Object.entries(WILDLIFE_CACHE)) {
+      if ((data.animals ?? []).some(a =>
+        a.name?.toLowerCase() === q || a.scientificName?.toLowerCase() === q
+      )) ids.add(parkId);
+    }
+    // Also catch any species only in wildlifeLocations static data
+    for (const loc of wildlifeLocations) {
+      if (!ids.has(loc.id) && (loc.animals ?? []).some(a => a.name?.toLowerCase() === q)) {
+        ids.add(loc.id);
+      }
+    }
+    return ids;
+  }, [speciesFilter]);
 
   // Zoom tier: 1 = dot (≤4), 2 = medium (5-6), 3 = full (≥7).
   // LIVE badge and pulse only render at tier 3 — too small to read at lower zooms.
@@ -2445,10 +2619,11 @@ export default function App() {
   );
 
   // Combined marker list for ClusterLayer
-  const allVisibleLocations = useMemo(
-    () => [...visibleLocations, ...visibleNpsParks],
-    [visibleLocations, visibleNpsParks]
-  );
+  const allVisibleLocations = useMemo(() => {
+    const all = [...visibleLocations, ...visibleNpsParks];
+    if (!speciesFilteredParkIds) return all;
+    return all.filter(loc => speciesFilteredParkIds.has(loc.id));
+  }, [visibleLocations, visibleNpsParks, speciesFilteredParkIds]);
 
   const liveCount  = Object.keys(liveData).length;
   const showPill   = season !== 'all' || rarity !== 'all' || animalType !== 'all' || selectedState !== 'all';
@@ -2467,6 +2642,19 @@ export default function App() {
     return () => clearTimeout(t);
   }, [warmDone]);
 
+  // Auto-zoom to fit filtered parks when species filter is applied
+  useEffect(() => {
+    if (!speciesFilter || !speciesFilteredParkIds || !mapRef.current) return;
+    const filteredLocs = wildlifeLocations.filter(loc => speciesFilteredParkIds.has(loc.id));
+    if (filteredLocs.length === 0) return;
+    if (filteredLocs.length === 1) {
+      mapRef.current.setView([filteredLocs[0].lat, filteredLocs[0].lng], 8);
+    } else {
+      const bounds = L.latLngBounds(filteredLocs.map(loc => [loc.lat, loc.lng]));
+      mapRef.current.fitBounds(bounds, { padding: [80, 80], maxZoom: 10 });
+    }
+  }, [speciesFilter, speciesFilteredParkIds]);
+
   // ── First-time-use / stale-cache banner ───────────────────────────────────
   // Shown when wildlifeCache.js still has the placeholder build date (script
   // has never been run) OR when fewer than 10 parks have > 5 bundled species.
@@ -2478,6 +2666,8 @@ export default function App() {
   const parksWithData  = Object.values(WILDLIFE_CACHE).filter(v => v.animals?.length > 5).length;
   const cacheIsSparse  = parksWithData < 10;
   const showBuildBanner = (cacheIsStale || cacheIsSparse) && !warmDone;
+
+  const activeFilterCount = [season, rarity, animalType, selectedState].filter(v => v !== 'all').length;
 
   return (
     <div className="app">
@@ -2529,6 +2719,26 @@ export default function App() {
             <button className="hdr__theme-btn" onClick={() => { track('theme_toggle', { theme: darkMode ? 'light' : 'dark' }); setDarkMode(d => !d); }} title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'} aria-label="Toggle theme">
               {darkMode ? '☀️' : '🌙'}
             </button>
+            <button
+              className="hdr__filter-toggle"
+              onClick={() => setMobileFiltersOpen(v => !v)}
+              aria-expanded={mobileFiltersOpen}
+              aria-label="Toggle filters"
+            >
+              {mobileFiltersOpen ? '✕ Close' : `⚙︎ Filters${activeFilterCount > 0 ? ` (${activeFilterCount})` : ''}`}
+            </button>
+          </div>
+
+          {/* Species search — desktop: inline in header; mobile: wraps full-width */}
+          <div className="hdr__species">
+            <SpeciesSearch
+              suggestions={speciesSuggestions}
+              query={speciesQuery}
+              onChange={setSpeciesQuery}
+              onSelect={handleSpeciesSelect}
+              onClear={handleSpeciesClear}
+              hasFilter={!!speciesFilter}
+            />
           </div>
 
           {/* All filters */}
@@ -2587,6 +2797,55 @@ export default function App() {
           </div>
         </div>
       </header>
+
+      {/* ── Mobile filter drawer (≤768px only) ─────────────────────── */}
+      <div className={`mobile-filter-drawer${mobileFiltersOpen ? ' mobile-filter-drawer--open' : ''}`}
+        aria-hidden={!mobileFiltersOpen}>
+        <div className="mobile-filter-drawer__inner">
+          <div className="mobile-filter-section">
+            <span className="mobile-filter-section__label">Season</span>
+            <div className="mobile-filter-btns">
+              {Object.entries(SEASONS).map(([k, { label, emoji, color }]) => (
+                <FilterBtn key={k} active={season === k}
+                  onClick={() => { setSeason(k); track('season_filter', { season: k }); }}
+                  emoji={emoji} label={label} activeColor={color} />
+              ))}
+            </div>
+          </div>
+          <div className="mobile-filter-section">
+            <span className="mobile-filter-section__label">Rarity</span>
+            <div className="mobile-filter-btns">
+              {Object.entries(RARITY).map(([k, { label, emoji, color }]) => (
+                <FilterBtn key={k} active={rarity === k}
+                  onClick={() => { setRarity(k); track('rarity_filter', { rarity: k }); }}
+                  emoji={emoji} label={label} activeColor={color} />
+              ))}
+            </div>
+          </div>
+          <div className="mobile-filter-section">
+            <span className="mobile-filter-section__label">Animal Type</span>
+            <div className="mobile-filter-btns">
+              {Object.entries(ANIMAL_TYPES).map(([k, { label, emoji, color }]) => (
+                <FilterBtn key={k} active={animalType === k}
+                  onClick={() => { setAnimalType(k); track('type_filter', { type: k }); }}
+                  emoji={emoji} label={label} activeColor={color} />
+              ))}
+            </div>
+          </div>
+          <div className="mobile-filter-section">
+            <span className="mobile-filter-section__label">State</span>
+            <select className="filter-select mobile-filter-select"
+              value={selectedState}
+              onChange={e => setSelectedState(e.target.value)}
+              aria-label="Filter by state">
+              <option value="all">🗺️ All States</option>
+              {allStateCodes.map(code => (
+                <option key={code} value={code}>{STATE_NAMES[code] ?? code}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </div>
 
       {/* ── What's Active Now rotating banner ── */}
       <WhatActiveNow />
@@ -2672,6 +2931,7 @@ export default function App() {
                 popupSubtype={popupSubtype} setPopupSubtype={setPopupSubtype}
                 activeTypes={activeTypes}   focusedType={focusedType}
                 openAbout={openAbout}
+                highlightSpecies={speciesFilter}
               />
             </div>
           </>
@@ -2692,6 +2952,18 @@ export default function App() {
 
         {/* Map legend — bottom-left corner */}
         <MapLegend />
+
+        {/* Species filter active pill */}
+        {speciesFilter && (
+          <div className="species-pill">
+            <span className="species-pill__label">🔍 {speciesFilter}</span>
+            <span className="species-pill__count">{allVisibleLocations.length} park{allVisibleLocations.length !== 1 ? 's' : ''}</span>
+            <button className="species-pill__clear" onClick={handleSpeciesClear} aria-label="Clear species filter">✕</button>
+          </div>
+        )}
+        {speciesFilter && allVisibleLocations.length === 0 && (
+          <div className="species-no-results">No parks found with "{speciesFilter}"</div>
+        )}
 
         {/* Active-filter summary pill */}
         {showPill && (

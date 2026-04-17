@@ -3081,3 +3081,308 @@ body, #root {
   .hdr__about-btn { padding: 5px 8px; gap: 0; }
   .hdr__theme-btn { width: 28px; height: 28px; font-size: 13px; }
 }
+
+/* ── Mobile filter toggle button (hidden on desktop) ────────────────────── */
+.hdr__filter-toggle {
+  display:       none;
+  align-items:   center;
+  gap:           5px;
+  padding:       6px 12px;
+  border-radius: 999px;
+  border:        2px solid rgba(255, 255, 255, 0.3);
+  background:    rgba(255, 255, 255, 0.12);
+  color:         #fff;
+  font-size:     12px;
+  font-weight:   600;
+  cursor:        pointer;
+  white-space:   nowrap;
+  flex-shrink:   0;
+  transition:    background 0.15s ease;
+}
+.hdr__filter-toggle:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+/* ── Mobile filter drawer (hidden on desktop) ────────────────────────────── */
+.mobile-filter-drawer {
+  display:    none;
+  overflow:   hidden;
+  max-height: 0;
+  background: #0a3020;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  transition: max-height 0.25s ease;
+  flex-shrink: 0;
+}
+.mobile-filter-drawer--open {
+  max-height: 520px;
+}
+.mobile-filter-drawer__inner {
+  padding: 10px 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.mobile-filter-section {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.mobile-filter-section__label {
+  font-size:      10px;
+  font-weight:    600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color:          rgba(255, 255, 255, 0.45);
+}
+.mobile-filter-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.mobile-filter-select {
+  width:     100%;
+  max-width: 260px;
+}
+
+@media (max-width: 768px) {
+  /* Show mobile-only controls */
+  .hdr__filter-toggle { display: flex; }
+  .mobile-filter-drawer { display: block; }
+
+  /* Compact header */
+  .hdr { padding: 7px 12px; }
+  .hdr__inner { gap: 8px; flex-wrap: wrap; align-items: center; }
+  .hdr__brand { gap: 8px; width: 100%; justify-content: flex-start; }
+  .hdr__logo  { font-size: 24px; }
+  .hdr__title { font-size: 14px; letter-spacing: -0.3px; }
+  .hdr__sub   { display: none; }
+
+  /* Hide desktop filter pills — replaced by drawer */
+  .hdr__filters { display: none !important; }
+
+  /* Species search: full-width below brand row */
+  .hdr__species { order: 10; width: 100%; margin-top: 2px; max-width: none; }
+
+  /* Build banner: single thin line */
+  .build-banner { padding: 4px 12px; flex-wrap: nowrap; }
+  .build-banner__sub { display: none; }
+
+  /* Ticker compact */
+  .active-now { padding: 4px 12px; font-size: 11px; min-height: 26px; }
+}
+
+/* ── Header species search slot ─────────────────────────────────────────── */
+.hdr__species {
+  flex:      1;
+  min-width: 180px;
+  max-width: 380px;
+}
+
+/* ── Species search component ────────────────────────────────────────────── */
+.sp-search {
+  position: relative;
+  width:    100%;
+}
+
+.sp-search__bar {
+  display:       flex;
+  align-items:   center;
+  gap:           6px;
+  background:    rgba(255, 255, 255, 0.12);
+  border:        1.5px solid rgba(255, 255, 255, 0.22);
+  border-radius: 8px;
+  padding:       0 8px;
+  height:        34px;
+  transition:    border-color 0.15s, background 0.15s;
+}
+.sp-search__bar:focus-within {
+  background:   rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.sp-search__icon {
+  font-size:  14px;
+  flex-shrink:0;
+  opacity:    0.7;
+}
+
+.sp-search__input {
+  flex:       1;
+  background: transparent;
+  border:     none;
+  outline:    none;
+  color:      #fff;
+  font-size:  12.5px;
+  min-width:  0;
+}
+.sp-search__input::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+/* Chrome hides the native clear button on type="search" — we use our own */
+.sp-search__input::-webkit-search-cancel-button { display: none; }
+
+.sp-search__clear {
+  background:  none;
+  border:      none;
+  color:       rgba(255, 255, 255, 0.6);
+  cursor:      pointer;
+  font-size:   14px;
+  padding:     0 2px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.sp-search__clear:hover { color: #fff; }
+
+/* Dropdown */
+.sp-search__dropdown {
+  position:      absolute;
+  top:           calc(100% + 4px);
+  left:          0;
+  right:         0;
+  background:    #1a2e22;
+  border:        1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  box-shadow:    0 8px 32px rgba(0, 0, 0, 0.45);
+  list-style:    none;
+  margin:        0;
+  padding:       4px 0;
+  z-index:       2000;
+  overflow:      hidden;
+}
+
+.sp-search__item {
+  display:     flex;
+  align-items: center;
+  gap:         8px;
+  padding:     8px 12px;
+  cursor:      pointer;
+  min-height:  44px;
+  transition:  background 0.1s;
+}
+.sp-search__item:hover,
+.sp-search__item--active {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.sp-search__item-photo {
+  width:         32px;
+  height:        32px;
+  border-radius: 4px;
+  object-fit:    cover;
+  flex-shrink:   0;
+}
+
+.sp-search__item-text {
+  flex:           1;
+  display:        flex;
+  flex-direction: column;
+  gap:            2px;
+  min-width:      0;
+}
+
+.sp-search__item-name {
+  font-size:   13px;
+  font-weight: 600;
+  color:       #f0f4f8;
+  white-space: nowrap;
+  overflow:    hidden;
+  text-overflow: ellipsis;
+}
+
+.sp-search__item-sci {
+  font-size:   11px;
+  font-style:  italic;
+  color:       rgba(255, 255, 255, 0.5);
+  white-space: nowrap;
+  overflow:    hidden;
+  text-overflow: ellipsis;
+}
+
+.sp-search__item-parks {
+  font-size:   11px;
+  color:       #86efac;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Highlight matching text */
+.sp-hl {
+  background:      rgba(134, 239, 172, 0.25);
+  color:           #86efac;
+  border-radius:   2px;
+  font-style:      inherit;
+  font-weight:     inherit;
+  padding:         0 1px;
+}
+
+/* ── Species filter pill on map ─────────────────────────────────────────── */
+.species-pill {
+  position:      absolute;
+  top:           12px;
+  left:          50%;
+  transform:     translateX(-50%);
+  z-index:       1000;
+  background:    rgba(15, 40, 25, 0.92);
+  color:         #fff;
+  padding:       7px 10px 7px 14px;
+  border-radius: 999px;
+  font-size:     13px;
+  box-shadow:    0 4px 20px rgba(0, 0, 0, 0.3);
+  white-space:   nowrap;
+  backdrop-filter: blur(8px);
+  display:       flex;
+  align-items:   center;
+  gap:           8px;
+  animation:     pillAppear 0.25s ease-out;
+  border:        1px solid rgba(134, 239, 172, 0.3);
+}
+
+.species-pill__label {
+  font-weight: 600;
+}
+
+.species-pill__count {
+  font-size:    11px;
+  opacity:      0.7;
+  padding-left: 6px;
+  border-left:  1px solid rgba(255,255,255,0.2);
+}
+
+.species-pill__clear {
+  background:  rgba(255,255,255,0.15);
+  border:      none;
+  color:       #fff;
+  cursor:      pointer;
+  font-size:   12px;
+  width:       20px;
+  height:      20px;
+  border-radius: 50%;
+  display:     flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition:  background 0.12s;
+}
+.species-pill__clear:hover { background: rgba(255,255,255,0.28); }
+
+.species-no-results {
+  position:    absolute;
+  top:         52px;
+  left:        50%;
+  transform:   translateX(-50%);
+  z-index:     1000;
+  background:  rgba(40, 20, 15, 0.9);
+  color:       #fca5a5;
+  padding:     8px 16px;
+  border-radius: 8px;
+  font-size:   13px;
+  white-space: nowrap;
+  box-shadow:  0 2px 12px rgba(0,0,0,0.25);
+}
+
+/* ── Highlighted animal card (from species search) ───────────────────────── */
+.animal-card--highlight {
+  border: 2px solid #86efac !important;
+  box-shadow: 0 0 0 3px rgba(134, 239, 172, 0.15) !important;
+}
