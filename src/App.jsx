@@ -478,6 +478,51 @@ function WhatActiveNow() {
   );
 }
 
+// ── Category (type + subtype) dropdowns ──────────────────────────────────────
+function CategoryDropdowns({ categoryType, setCategoryType, categorySubtype, setCategorySubtype, onTrack }) {
+  const subtypeDefs = getSubtypeDefs(categoryType); // null when type === 'all'
+
+  const handleTypeChange = e => {
+    const t = e.target.value;
+    setCategoryType(t);
+    setCategorySubtype('all');
+    onTrack(t, 'all');
+  };
+  const handleSubtypeChange = e => {
+    const s = e.target.value;
+    setCategorySubtype(s);
+    onTrack(categoryType, s);
+  };
+
+  return (
+    <div className="cat-dropdowns">
+      <select
+        className="cat-select"
+        value={categoryType}
+        onChange={handleTypeChange}
+        aria-label="Filter by animal category"
+      >
+        {Object.entries(ANIMAL_TYPES).map(([k, v]) => (
+          <option key={k} value={k}>{v.emoji} {v.label}</option>
+        ))}
+      </select>
+
+      {subtypeDefs && (
+        <select
+          className="cat-select"
+          value={categorySubtype}
+          onChange={handleSubtypeChange}
+          aria-label="Filter by animal subcategory"
+        >
+          {subtypeDefs.map(({ key, emoji, label }) => (
+            <option key={key} value={key}>{emoji} {label}</option>
+          ))}
+        </select>
+      )}
+    </div>
+  );
+}
+
 // ── Species search component ──────────────────────────────────────────────────
 function SpeciesSearch({ suggestions, query, onChange, onSelect, onClear, hasFilter }) {
   const [activeIdx,    setActiveIdx]    = useState(-1);
@@ -2335,6 +2380,8 @@ export default function App() {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [speciesQuery,  setSpeciesQuery]  = useState('');
   const [speciesFilter, setSpeciesFilter] = useState(null); // selected species name string
+  const [categoryType,    setCategoryType]    = useState('all');
+  const [categorySubtype, setCategorySubtype] = useState('all');
 
   // Map ref — populated by MapController; lets buttons outside MapContainer call map.setView()
   const mapRef = useRef(null);
@@ -2480,6 +2527,10 @@ export default function App() {
     setSpeciesFilter(null);
     setSpeciesQuery('');
   }, []);
+  const handleCategoryReset = useCallback(() => {
+    setCategoryType('all');
+    setCategorySubtype('all');
+  }, []);
 
   // NPS codes already covered by hardcoded wildlifeLocations — used to
   // deduplicate so the same park doesn't appear twice on the map.
@@ -2558,6 +2609,29 @@ export default function App() {
     return ids;
   }, [speciesFilter]);
 
+  // Filters parks to those containing at least one animal matching the selected
+  // type + subtype pair.  Returns null when no type is selected (no filtering).
+  const categoryFilteredParkIds = useMemo(() => {
+    if (categoryType === 'all') return null;
+    const ids = new Set();
+    for (const [parkId, data] of Object.entries(WILDLIFE_CACHE)) {
+      if ((data.animals ?? []).some(a => {
+        if (a.animalType !== categoryType) return false;
+        if (categorySubtype === 'all') return true;
+        return classifyAnimalSubtype(a) === categorySubtype;
+      })) ids.add(parkId);
+    }
+    // Also check wildlifeLocations static animals
+    for (const loc of wildlifeLocations) {
+      if (!ids.has(loc.id) && (loc.animals ?? []).some(a => {
+        if (a.animalType !== categoryType) return false;
+        if (categorySubtype === 'all') return true;
+        return classifyAnimalSubtype(a) === categorySubtype;
+      })) ids.add(loc.id);
+    }
+    return ids;
+  }, [categoryType, categorySubtype]);
+
   // Zoom tier: 1 = dot (≤4), 2 = medium (5-6), 3 = full (≥7).
   // LIVE badge and pulse only render at tier 3 — too small to read at lower zooms.
   const zoomTier = zoom <= 4 ? 1 : zoom <= 6 ? 2 : 3;
@@ -2620,10 +2694,11 @@ export default function App() {
 
   // Combined marker list for ClusterLayer
   const allVisibleLocations = useMemo(() => {
-    const all = [...visibleLocations, ...visibleNpsParks];
-    if (!speciesFilteredParkIds) return all;
-    return all.filter(loc => speciesFilteredParkIds.has(loc.id));
-  }, [visibleLocations, visibleNpsParks, speciesFilteredParkIds]);
+    let all = [...visibleLocations, ...visibleNpsParks];
+    if (speciesFilteredParkIds)  all = all.filter(loc => speciesFilteredParkIds.has(loc.id));
+    if (categoryFilteredParkIds) all = all.filter(loc => categoryFilteredParkIds.has(loc.id));
+    return all;
+  }, [visibleLocations, visibleNpsParks, speciesFilteredParkIds, categoryFilteredParkIds]);
 
   const liveCount  = Object.keys(liveData).length;
   const showPill   = season !== 'all' || rarity !== 'all' || animalType !== 'all' || selectedState !== 'all';
@@ -2667,7 +2742,8 @@ export default function App() {
   const cacheIsSparse  = parksWithData < 10;
   const showBuildBanner = (cacheIsStale || cacheIsSparse) && !warmDone;
 
-  const activeFilterCount = [season, rarity, animalType, selectedState].filter(v => v !== 'all').length;
+  const activeFilterCount = [season, rarity, animalType, selectedState].filter(v => v !== 'all').length
+    + (categoryType !== 'all' ? 1 : 0);
 
   return (
     <div className="app">
@@ -2729,8 +2805,15 @@ export default function App() {
             </button>
           </div>
 
-          {/* Species search — desktop: inline in header; mobile: wraps full-width */}
+          {/* Category dropdowns + species search — desktop: inline in header row */}
           <div className="hdr__species">
+            <CategoryDropdowns
+              categoryType={categoryType}
+              setCategoryType={setCategoryType}
+              categorySubtype={categorySubtype}
+              setCategorySubtype={setCategorySubtype}
+              onTrack={(type, subtype) => track('category_filter', { type, subtype })}
+            />
             <SpeciesSearch
               suggestions={speciesSuggestions}
               query={speciesQuery}
@@ -2802,6 +2885,16 @@ export default function App() {
       <div className={`mobile-filter-drawer${mobileFiltersOpen ? ' mobile-filter-drawer--open' : ''}`}
         aria-hidden={!mobileFiltersOpen}>
         <div className="mobile-filter-drawer__inner">
+          <div className="mobile-filter-section">
+            <span className="mobile-filter-section__label">Category</span>
+            <CategoryDropdowns
+              categoryType={categoryType}
+              setCategoryType={setCategoryType}
+              categorySubtype={categorySubtype}
+              setCategorySubtype={setCategorySubtype}
+              onTrack={(type, subtype) => track('category_filter', { type, subtype })}
+            />
+          </div>
           <div className="mobile-filter-section">
             <span className="mobile-filter-section__label">Season</span>
             <div className="mobile-filter-btns">
@@ -2953,12 +3046,28 @@ export default function App() {
         {/* Map legend — bottom-left corner */}
         <MapLegend />
 
-        {/* Species filter active pill */}
-        {speciesFilter && (
-          <div className="species-pill">
-            <span className="species-pill__label">🔍 {speciesFilter}</span>
-            <span className="species-pill__count">{allVisibleLocations.length} park{allVisibleLocations.length !== 1 ? 's' : ''}</span>
-            <button className="species-pill__clear" onClick={handleSpeciesClear} aria-label="Clear species filter">✕</button>
+        {/* Species + category filter pills — stacked vertically in the centre */}
+        {(speciesFilter || categoryType !== 'all') && (
+          <div className="filter-pills-stack">
+            {speciesFilter && (
+              <div className="species-pill">
+                <span className="species-pill__label">🔍 {speciesFilter}</span>
+                <span className="species-pill__count">{allVisibleLocations.length} park{allVisibleLocations.length !== 1 ? 's' : ''}</span>
+                <button className="species-pill__clear" onClick={handleSpeciesClear} aria-label="Clear species filter">✕</button>
+              </div>
+            )}
+            {categoryType !== 'all' && (
+              <div className="species-pill species-pill--category">
+                <span className="species-pill__label">
+                  {ANIMAL_TYPES[categoryType].emoji}{' '}
+                  {categorySubtype !== 'all'
+                    ? (getSubtypeDefs(categoryType)?.find(s => s.key === categorySubtype)?.label ?? ANIMAL_TYPES[categoryType].label)
+                    : ANIMAL_TYPES[categoryType].label}
+                </span>
+                <span className="species-pill__count">{allVisibleLocations.length} park{allVisibleLocations.length !== 1 ? 's' : ''}</span>
+                <button className="species-pill__clear" onClick={handleCategoryReset} aria-label="Clear category filter">✕</button>
+              </div>
+            )}
           </div>
         )}
         {speciesFilter && allVisibleLocations.length === 0 && (

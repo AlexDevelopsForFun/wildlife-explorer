@@ -3173,9 +3173,12 @@ body, #root {
 
 /* ── Header species search slot ─────────────────────────────────────────── */
 .hdr__species {
+  display:   flex;
+  align-items: center;
+  gap:       8px;
   flex:      1;
-  min-width: 180px;
-  max-width: 380px;
+  min-width: 220px;
+  max-width: 600px;
 }
 
 /* ── Species search component ────────────────────────────────────────────── */
@@ -3316,13 +3319,23 @@ body, #root {
   padding:         0 1px;
 }
 
+/* ── Filter pills stack (species + category) ─────────────────────────────── */
+.filter-pills-stack {
+  position:  absolute;
+  top:       12px;
+  left:      50%;
+  transform: translateX(-50%);
+  z-index:   1000;
+  display:   flex;
+  flex-direction: column;
+  align-items: center;
+  gap:       6px;
+  pointer-events: none; /* children get pointer-events back */
+}
+
 /* ── Species filter pill on map ─────────────────────────────────────────── */
 .species-pill {
-  position:      absolute;
-  top:           12px;
-  left:          50%;
-  transform:     translateX(-50%);
-  z-index:       1000;
+  position:      relative; /* inside stack wrapper */
   background:    rgba(15, 40, 25, 0.92);
   color:         #fff;
   padding:       7px 10px 7px 14px;
@@ -3336,6 +3349,13 @@ body, #root {
   gap:           8px;
   animation:     pillAppear 0.25s ease-out;
   border:        1px solid rgba(134, 239, 172, 0.3);
+  pointer-events: auto;
+}
+
+/* Category pill uses a slightly different accent colour */
+.species-pill--category {
+  border-color: rgba(147, 197, 253, 0.35);
+  background:   rgba(15, 30, 50, 0.92);
 }
 
 .species-pill__label {
@@ -3385,4 +3405,58 @@ body, #root {
 .animal-card--highlight {
   border: 2px solid #86efac !important;
   box-shadow: 0 0 0 3px rgba(134, 239, 172, 0.15) !important;
+}
+
+/* ── Category type / subtype dropdowns ───────────────────────────────────── */
+.cat-dropdowns {
+  display:   flex;
+  gap:       6px;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+}
+
+.cat-select {
+  appearance:       none;
+  -webkit-appearance: none;
+  background-color: rgba(255, 255, 255, 0.12);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23fff'/%3E%3C/svg%3E");
+  background-repeat:   no-repeat;
+  background-position: right 8px center;
+  background-size:     8px 5px;
+  border:         1px solid rgba(255, 255, 255, 0.2);
+  border-radius:  8px;
+  color:          #fff;
+  cursor:         pointer;
+  font-size:      13px;
+  font-weight:    500;
+  height:         34px;
+  padding:        0 28px 0 10px;
+  white-space:    nowrap;
+  max-width:      160px;
+  transition:     background 0.15s, border-color 0.15s;
+}
+.cat-select:hover  { background-color: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.4); }
+.cat-select:focus  { outline: 2px solid rgba(134,239,172,0.6); outline-offset: 2px; }
+.cat-select option { background: #1e3a2a; color: #f0f4f8; }
+
+/* ── Mobile: make cat-dropdowns full-width in drawer ─────────────────────── */
+@media (max-width: 768px) {
+  .cat-dropdowns {
+    width:    100%;
+    flex-wrap: wrap;
+  }
+  .cat-select {
+    flex:      1 1 140px;
+    max-width: 100%;
+    font-size: 14px;
+    height:    38px;
+  }
+}
+
+[data-theme="dark"] .cat-select {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+[data-theme="dark"] .cat-select:hover {
+  background-color: rgba(255, 255, 255, 0.15);
 }

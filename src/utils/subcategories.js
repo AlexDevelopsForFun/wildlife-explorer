@@ -28,6 +28,30 @@ export const REPTILE_SUBTYPES = [
   { key: 'crocodilian', emoji: '🐊', label: 'Crocodilians' },
 ];
 
+export const AMPHIBIAN_SUBTYPES = [
+  { key: 'all',        emoji: '🐸', label: 'All Amphibians'      },
+  { key: 'frog',       emoji: '🐸', label: 'Frogs & Toads'       },
+  { key: 'salamander', emoji: '🦎', label: 'Salamanders & Newts' },
+];
+
+export const INSECT_SUBTYPES = [
+  { key: 'all',         emoji: '🦋', label: 'All Insects'               },
+  { key: 'butterfly',   emoji: '🦋', label: 'Butterflies & Moths'       },
+  { key: 'beetle',      emoji: '🪲', label: 'Beetles'                   },
+  { key: 'dragonfly',   emoji: '🪁', label: 'Dragonflies & Damselflies'  },
+  { key: 'bee',         emoji: '🐝', label: 'Bees & Wasps'              },
+  { key: 'grasshopper', emoji: '🦗', label: 'Grasshoppers & Crickets'   },
+];
+
+export const MARINE_SUBTYPES = [
+  { key: 'all',          emoji: '🌊', label: 'All Marine Life'  },
+  { key: 'fish',         emoji: '🐟', label: 'Fish'             },
+  { key: 'shark',        emoji: '🦈', label: 'Sharks & Rays'    },
+  { key: 'invertebrate', emoji: '🦀', label: 'Invertebrates'    },
+  { key: 'marine_mammal',emoji: '🐋', label: 'Marine Mammals'   },
+  { key: 'sea_turtle',   emoji: '🐢', label: 'Sea Turtles'      },
+];
+
 // ── Bird keyword lists ────────────────────────────────────────────────────────
 
 const RAPTOR_KW = [
@@ -169,6 +193,78 @@ const TURTLE_KW = ['turtle', 'tortoise', 'terrapin'];
 
 const CROC_KW = ['crocodile', 'alligator', 'caiman'];
 
+// ── Amphibian keyword lists ───────────────────────────────────────────────────
+
+const AMPHIBIAN_FROG_KW = [
+  'frog', 'toad', 'treefrog', 'tree frog', 'bullfrog', 'chorus frog',
+  'cricket frog', 'leopard frog', 'wood frog', 'spring peeper', 'peeper',
+  'spadefoot', 'narrow-mouthed', 'narrowmouth',
+];
+
+const AMPHIBIAN_SALAMANDER_KW = [
+  'salamander', 'newt', 'siren', 'mudpuppy', 'hellbender', 'amphiuma',
+  'waterdog', 'axolotl', 'ambystoma', 'plethodon', 'desmognathus',
+  'eurycea', 'gyrinophilus', 'pseudotriton', 'necturus',
+];
+
+// ── Insect keyword lists ──────────────────────────────────────────────────────
+
+const INSECT_BUTTERFLY_KW = [
+  'butterfly', 'moth', 'skipper', 'swallowtail', 'monarch', 'admiral',
+  'fritillary', 'hairstreak', 'sulfur', 'sulphur', 'sphinx',
+  'hawk-moth', 'underwing', 'geometrid', 'inchworm', 'caterpillar',
+];
+
+const INSECT_BEETLE_KW = [
+  'beetle', 'firefly', 'lightning bug', 'weevil', 'borer', 'longhorn',
+  'lady beetle', 'ladybug', 'ladybird', 'scarab', 'click beetle',
+  'ground beetle', 'tiger beetle', 'dung beetle',
+];
+
+const INSECT_DRAGONFLY_KW = [
+  'dragonfly', 'damselfly', 'darner', 'skimmer', 'bluet', 'spreadwing',
+  'meadowhawk', 'clubtail', 'baskettail', 'whiteface', 'pondhawk',
+];
+
+const INSECT_BEE_KW = [
+  'bee', 'wasp', 'hornet', 'yellowjacket', 'yellow jacket',
+  'bumblebee', 'bumble bee', 'honeybee', 'honey bee', 'mason bee',
+  'leafcutter', 'ichneumon',
+];
+
+const INSECT_GRASSHOPPER_KW = [
+  'grasshopper', 'cricket', 'katydid', 'locust', 'cicada',
+  'walkingstick', 'walking stick', 'mantis', 'mantid', 'cockroach',
+];
+
+// ── Marine keyword lists ──────────────────────────────────────────────────────
+
+const MARINE_SHARK_KW = [
+  'shark', 'ray', 'skate', 'guitarfish', 'sawfish', 'chimaera',
+];
+
+const MARINE_TURTLE_KW = [
+  'sea turtle', 'green turtle', 'hawksbill', 'leatherback', 'loggerhead',
+  "kemp's ridley", 'olive ridley', 'flatback turtle',
+];
+
+const MARINE_INVERT_KW = [
+  'crab', 'lobster', 'shrimp', 'clam', 'oyster', 'scallop', 'mussel',
+  'sea urchin', 'starfish', 'sea star', 'jellyfish', 'octopus', 'squid',
+  'nautilus', 'barnacle', 'coral', 'anemone', 'sea cucumber',
+  'horseshoe crab', 'nudibranch', 'brittle star', 'sand dollar',
+  'sea worm', 'urchin', 'bryozoan', 'hydroid',
+];
+
+const MARINE_FISH_KW = [
+  'fish', 'trout', 'salmon', 'bass', 'perch', 'pike', 'walleye',
+  'catfish', 'sturgeon', 'eel', 'cod', 'tuna', 'mackerel', 'herring',
+  'anchovy', 'flounder', 'halibut', 'sole', 'rockfish', 'snapper',
+  'grouper', 'wrasse', 'parrotfish', 'sunfish', 'minnow', 'carp',
+  'sucker', 'darter', 'shiner', 'chub', 'seahorse', 'pipefish',
+  'goby', 'blenny', 'clownfish', 'damselfish', 'triggerfish',
+];
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function hasKw(name, keywords) {
@@ -210,22 +306,54 @@ export function classifyReptileSubtype(name) {
   return 'lizard'; // default for unrecognised reptiles
 }
 
+export function classifyAmphibianSubtype(name) {
+  if (hasKw(name, AMPHIBIAN_FROG_KW))       return 'frog';
+  if (hasKw(name, AMPHIBIAN_SALAMANDER_KW))  return 'salamander';
+  return 'frog'; // most NA amphibians are frogs/toads
+}
+
+export function classifyInsectSubtype(name) {
+  if (hasKw(name, INSECT_BUTTERFLY_KW))   return 'butterfly';
+  if (hasKw(name, INSECT_BEETLE_KW))      return 'beetle';
+  if (hasKw(name, INSECT_DRAGONFLY_KW))   return 'dragonfly';
+  if (hasKw(name, INSECT_BEE_KW))         return 'bee';
+  if (hasKw(name, INSECT_GRASSHOPPER_KW)) return 'grasshopper';
+  return 'beetle'; // default for unrecognised insects
+}
+
+// Priority: marine mammals first (reuses existing MARINE_MAMMAL_KW),
+// then sharks, sea turtles, invertebrates, fish (broadest keyword last).
+export function classifyMarineSubtype(name) {
+  if (hasKw(name, MARINE_MAMMAL_KW))  return 'marine_mammal';
+  if (hasKw(name, MARINE_SHARK_KW))   return 'shark';
+  if (hasKw(name, MARINE_TURTLE_KW))  return 'sea_turtle';
+  if (hasKw(name, MARINE_INVERT_KW))  return 'invertebrate';
+  if (hasKw(name, MARINE_FISH_KW))    return 'fish';
+  return 'fish'; // default for unrecognised marine life
+}
+
 export function classifyAnimalSubtype(animal) {
   const name = animal.name ?? '';
   switch (animal.animalType) {
-    case 'bird':    return classifyBirdSubtype(name);
-    case 'mammal':  return classifyMammalSubtype(name);
-    case 'reptile': return classifyReptileSubtype(name);
-    default:        return 'other';
+    case 'bird':      return classifyBirdSubtype(name);
+    case 'mammal':    return classifyMammalSubtype(name);
+    case 'reptile':   return classifyReptileSubtype(name);
+    case 'amphibian': return classifyAmphibianSubtype(name);
+    case 'insect':    return classifyInsectSubtype(name);
+    case 'marine':    return classifyMarineSubtype(name);
+    default:          return 'other';
   }
 }
 
 /** Returns the subtype definition array for a given animalType, or null if none. */
 export function getSubtypeDefs(animalType) {
   switch (animalType) {
-    case 'bird':    return BIRD_SUBTYPES;
-    case 'mammal':  return MAMMAL_SUBTYPES;
-    case 'reptile': return REPTILE_SUBTYPES;
-    default:        return null;
+    case 'bird':      return BIRD_SUBTYPES;
+    case 'mammal':    return MAMMAL_SUBTYPES;
+    case 'reptile':   return REPTILE_SUBTYPES;
+    case 'amphibian': return AMPHIBIAN_SUBTYPES;
+    case 'insect':    return INSECT_SUBTYPES;
+    case 'marine':    return MARINE_SUBTYPES;
+    default:          return null;
   }
 }
