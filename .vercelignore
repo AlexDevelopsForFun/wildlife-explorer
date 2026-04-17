@@ -1,0 +1,11 @@
+# Large build-time-only scripts and caches — never needed on Vercel
+scripts/geotiff-cache/
+scripts/_county_cache/
+scripts/_*.cjs
+scripts/deployed-*.js
+scripts/expandPhotos-resume.json
+scripts/photoFetch-cache.json
+scripts/parkTips-cache.json
+scripts/tipTargets.json
+scripts/description-cache.json
+scripts/*.log
