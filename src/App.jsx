@@ -1521,6 +1521,10 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
   useEffect(() => { setSearch(''); }, [location.id]);
   const searchTrackTimerRef = useRef(null);
 
+  // Mobile-only filter panel open/close state
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  useEffect(() => { setMobileFiltersOpen(false); }, [location.id]);
+
   // ── Tab-bar scroll-hint arrows ───────────────────────────────────────────
   const tabsRef = useRef(null);
   const [tabsCanScrollLeft,  setTabsCanScrollLeft]  = useState(false);
@@ -2072,8 +2076,38 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
         </div>
       )}
 
+      {/* ── Mobile-only: summary count bar ── */}
+      {isLive && (
+        <div className="lp__mobile-summary">
+          <span className="lp__mobile-summary__total">{enriched.length} species</span>
+          {isFiltered && (
+            <span className="lp__mobile-summary__filtered">· Showing {filtered.length}</span>
+          )}
+        </div>
+      )}
+
+      {/* ── Mobile-only: filter & search toggle button ── */}
+      {(() => {
+        const mobileActiveFilters = [
+          popupSort !== 'iconic-first',
+          popupRarity !== 'all',
+          !!search.trim(),
+        ].filter(Boolean).length;
+        return (
+          <button
+            className={`lp__mobile-filter-toggle${mobileFiltersOpen ? ' lp__mobile-filter-toggle--open' : ''}`}
+            onClick={() => setMobileFiltersOpen(v => !v)}
+            aria-expanded={mobileFiltersOpen}
+          >
+            {mobileFiltersOpen
+              ? '✕ Close Filters'
+              : `⚙️ Filter & Search${mobileActiveFilters > 0 ? ` (${mobileActiveFilters})` : ''}`}
+          </button>
+        );
+      })()}
+
       {/* ── Controls: sort + season filter + rarity filter + search ── */}
-      <div className="lp__controls">
+      <div className={`lp__controls${mobileFiltersOpen ? ' lp__controls--mobile-open' : ''}`}>
         <div className="lp__controls-row">
           <select
             className="lp__select"
@@ -2134,6 +2168,10 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
             <button className="lp__search-clear" onClick={() => setSearch('')} aria-label="Clear search">✕</button>
           )}
         </div>
+        {/* Mobile-only: close the filter panel */}
+        <button className="lp__filter-apply-btn" onClick={() => setMobileFiltersOpen(false)}>
+          ✓ Apply Filters
+        </button>
       </div>
 
       {/* ── Single scroll container: animal list ── */}

@@ -3460,3 +3460,148 @@ body, #root {
 [data-theme="dark"] .cat-select:hover {
   background-color: rgba(255, 255, 255, 0.15);
 }
+
+/* ── Mobile popup interior redesign (≤768px) ────────────────────────────── */
+/* Desktop elements that are hidden on mobile by default                      */
+.lp__mobile-summary        { display: none; }
+.lp__mobile-filter-toggle  { display: none; }
+.lp__filter-apply-btn      { display: none; }
+
+@media (max-width: 768px) {
+
+  /* ── 1. Compact header ──────────────────────────────────────────────────── */
+  .lp__head {
+    padding: 11px 52px 9px 16px;
+  }
+  .lp__name {
+    font-size: 14px;
+    line-height: 1.25;
+  }
+  .lp__meta { margin-top: 2px; }
+
+  /* Hide verbose header elements to save vertical space */
+  .lp__source-attr  { display: none !important; }
+  .lp__api-note     { display: none !important; }
+  .lp__breakdown    { display: none !important; }
+  .lp__progress     { display: none !important; }
+  .lp__loading      { font-size: 10px; margin-top: 3px; }
+
+  /* ── 2. Half-height rarity spectrum bar ────────────────────────────────── */
+  .rarity-spectrum        { padding: 4px 14px 3px; }
+  .rarity-spectrum__bar   { height: 5px; }
+  .rarity-spectrum__legend {
+    gap: 3px 5px;
+    margin-top: 4px;
+  }
+  .rarity-spectrum__pill {
+    font-size: 10px;
+    padding: 2px 5px;
+    gap: 3px;
+  }
+  .rarity-spectrum__dot { width: 6px; height: 6px; }
+  .rarity-spectrum__clear { font-size: 10px; padding: 2px 5px; }
+
+  /* ── 3. Compact type tabs — hide text labels, show emoji+count only ─────── */
+  .lp__tab-label { display: none; }
+  .lp__tab {
+    padding:   5px 9px;
+    gap:       3px;
+    font-size: 17px; /* larger emoji target, no label */
+  }
+  .lp__tab-count {
+    font-size: 10px;
+    padding:   1px 4px;
+  }
+  /* Reduce arrow button size on mobile */
+  .lp__tabs-arrow { font-size: 16px; width: 20px; }
+
+  /* ── 4. Hide subtype bar on mobile ─────────────────────────────────────── */
+  .lp__subtypes-wrapper { display: none; }
+
+  /* ── 5. Mobile species summary bar ─────────────────────────────────────── */
+  .lp__mobile-summary {
+    display:        flex;
+    align-items:    center;
+    gap:            6px;
+    padding:        5px 16px;
+    font-size:      12px;
+    color:          var(--text-muted);
+    background:     var(--bg-controls);
+    border-bottom:  1px solid var(--border-card);
+    flex-shrink:    0;
+  }
+  .lp__mobile-summary__total   { font-weight: 600; color: var(--text-secondary); }
+  .lp__mobile-summary__filtered { color: var(--text-muted); }
+
+  /* ── 6. Mobile filter toggle button ────────────────────────────────────── */
+  .lp__mobile-filter-toggle {
+    display:         flex;
+    align-items:     center;
+    justify-content: center;
+    width:           100%;
+    padding:         10px 16px;
+    background:      var(--bg-controls);
+    border:          none;
+    border-bottom:   1px solid var(--border-card);
+    color:           var(--text-primary);
+    font-size:       13px;
+    font-weight:     600;
+    cursor:          pointer;
+    flex-shrink:     0;
+    transition:      background 0.15s, color 0.15s;
+  }
+  .lp__mobile-filter-toggle:hover:not(.lp__mobile-filter-toggle--open) {
+    background: var(--bg-card-hover);
+  }
+  .lp__mobile-filter-toggle--open {
+    background:   var(--bg-tab-active);
+    color:        #fff;
+    border-color: var(--bg-tab-active);
+  }
+
+  /* ── 7. Collapsible controls panel ─────────────────────────────────────── */
+  .lp__controls {
+    max-height:  0;
+    overflow:    hidden;
+    padding:     0 14px;         /* keep horizontal padding; zero vertical */
+    border-bottom: none;
+    transition:  max-height 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                 padding    0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    gap:         0;
+  }
+  .lp__controls--mobile-open {
+    max-height:  360px;
+    padding:     9px 14px 10px;
+    border-bottom: 1px solid var(--border-card);
+    gap:         6px;
+  }
+
+  /* ── 8. Apply Filters button (mobile only) ─────────────────────────────── */
+  .lp__filter-apply-btn {
+    display:         flex;
+    align-items:     center;
+    justify-content: center;
+    padding:         9px 16px;
+    background:      var(--accent-green);
+    color:           #fff;
+    border:          none;
+    border-radius:   8px;
+    font-size:       13px;
+    font-weight:     600;
+    cursor:          pointer;
+    width:           100%;
+    margin-top:      2px;
+    transition:      filter 0.15s;
+  }
+  .lp__filter-apply-btn:hover { filter: brightness(1.1); }
+
+  /* ── 9. Showing count — hidden on mobile (info in summary bar) ─────────── */
+  .lp__showing-count { display: none; }
+
+  /* ── 10. Single-column animal cards on narrow phones ──────────────────── */
+  .lp__body {
+    grid-template-columns: 1fr;
+    padding: 8px 12px;
+    gap: 8px;
+  }
+}
