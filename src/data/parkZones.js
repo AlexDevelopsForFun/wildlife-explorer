@@ -53,6 +53,43 @@ export const PARK_ZONES = {
     { id: 'cataloochee',    label: 'Cataloochee Valley (elk herd)',          access: 3, lat: 35.6400, lng: -83.1000, radiusKm: 5 },
     { id: 'backcountry',    label: 'Backcountry / AT corridor',              access: 1, lat: 35.5900, lng: -83.4500, radiusKm: 15 },
   ],
+
+  rockymountain: [
+    { id: 'bear-lake',      label: 'Bear Lake / Estes Park front-country',   access: 5, lat: 40.3128, lng: -105.6460, radiusKm: 8 },
+    { id: 'trail-ridge',    label: 'Trail Ridge Road (alpine tundra)',       access: 5, lat: 40.4040, lng: -105.7580, radiusKm: 10 },
+    { id: 'wild-basin',     label: 'Wild Basin',                             access: 3, lat: 40.2107, lng: -105.5667, radiusKm: 6 },
+    { id: 'kawuneeche',     label: 'Kawuneeche Valley (west side)',          access: 3, lat: 40.3836, lng: -105.8570, radiusKm: 8 },
+    { id: 'backcountry',    label: 'Backcountry / wilderness',               access: 1, lat: 40.3400, lng: -105.7000, radiusKm: 20 },
+  ],
+
+  olympic: [
+    { id: 'hoh-rainforest', label: 'Hoh Rainforest (temperate rain)',        access: 4, lat: 47.8608, lng: -123.9349, radiusKm: 5 },
+    { id: 'hurricane-ridge',label: 'Hurricane Ridge (sub-alpine)',           access: 5, lat: 47.9714, lng: -123.4984, radiusKm: 6 },
+    { id: 'kalaloch',       label: 'Kalaloch / Pacific coast strip',         access: 4, lat: 47.6086, lng: -124.3750, radiusKm: 10 },
+    { id: 'lake-crescent',  label: 'Lake Crescent / Sol Duc',                access: 4, lat: 48.0681, lng: -123.7980, radiusKm: 8 },
+    { id: 'wilderness',     label: 'Wilderness interior',                    access: 1, lat: 47.8000, lng: -123.5000, radiusKm: 25 },
+  ],
+
+  bigbend: [
+    { id: 'chisos',         label: 'Chisos Basin / mountain',                access: 5, lat: 29.2702, lng: -103.3006, radiusKm: 8 },
+    { id: 'rio-grande',     label: 'Rio Grande Village / river corridor',    access: 4, lat: 29.1830, lng: -102.9590, radiusKm: 8 },
+    { id: 'desert',         label: 'Chihuahuan Desert flats',                access: 3, lat: 29.3300, lng: -103.2000, radiusKm: 20 },
+    { id: 'santa-elena',    label: 'Santa Elena Canyon / west',              access: 3, lat: 29.1665, lng: -103.6121, radiusKm: 6 },
+  ],
+
+  sequoia: [
+    { id: 'giant-forest',   label: 'Giant Forest (sequoia groves)',          access: 5, lat: 36.5762, lng: -118.7654, radiusKm: 5 },
+    { id: 'mineral-king',   label: 'Mineral King (sub-alpine)',              access: 3, lat: 36.4539, lng: -118.5971, radiusKm: 8 },
+    { id: 'foothills',      label: 'Foothills / chaparral',                  access: 4, lat: 36.5155, lng: -118.7870, radiusKm: 8 },
+    { id: 'high-sierra',    label: 'High Sierra / backcountry',              access: 1, lat: 36.5000, lng: -118.5000, radiusKm: 25 },
+  ],
+
+  hawaiivolcanoes: [
+    { id: 'kilauea-summit', label: 'Kīlauea Summit / Volcano village',       access: 5, lat: 19.4194, lng: -155.2885, radiusKm: 5 },
+    { id: 'chain-craters',  label: 'Chain of Craters Road (coast)',          access: 4, lat: 19.2960, lng: -155.1050, radiusKm: 10 },
+    { id: 'mauna-loa',      label: 'Mauna Loa high-elevation',               access: 2, lat: 19.4750, lng: -155.5950, radiusKm: 12 },
+    { id: 'kahuku',         label: 'Kahuku Unit (pasture / forest)',         access: 3, lat: 19.1880, lng: -155.6900, radiusKm: 8 },
+  ],
 };
 
 // Returns zones for a park, or null if park isn't zoned.

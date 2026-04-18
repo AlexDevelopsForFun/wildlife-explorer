@@ -76,6 +76,38 @@ function bboxFromCentroid(lat, lng, radiusKm) {
 
 // ── iNat: fetch species counts within a bbox ────────────────────────────────
 // Paginates through /observations/species_counts, returns { name -> obsCount }.
+// Each page retried up to 3× on network transients (this is what caused
+// Mariposa Grove to return 0 species on first build).
+async function fetchPageWithRetry(url, label, retries = 3) {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const res = await fetch(url, {
+        headers: { 'User-Agent': 'wildlife-map-zone-rarity/1.0' },
+        signal: AbortSignal.timeout(30000),
+      });
+      if (res.ok) return await res.json();
+      if ((res.status === 429 || res.status >= 500) && attempt < retries) {
+        const delay = 2000 * (attempt + 1);
+        console.warn(`      ⚠  HTTP ${res.status} on ${label} — retrying in ${delay / 1000}s`);
+        await sleep(delay);
+        continue;
+      }
+      console.warn(`      ⚠  HTTP ${res.status} on ${label} — giving up`);
+      return null;
+    } catch (err) {
+      if (attempt < retries) {
+        const delay = 2000 * (attempt + 1);
+        console.warn(`      ⚠  ${err.message} on ${label} — retrying in ${delay / 1000}s`);
+        await sleep(delay);
+        continue;
+      }
+      console.warn(`      ⚠  ${err.message} on ${label} — giving up`);
+      return null;
+    }
+  }
+  return null;
+}
+
 async function fetchZoneSpeciesCounts(bbox) {
   const out = new Map();
   let page = 1;
@@ -86,15 +118,7 @@ async function fetchZoneSpeciesCounts(bbox) {
       `swlat=${bbox.swlat}&swlng=${bbox.swlng}&nelat=${bbox.nelat}&nelng=${bbox.nelng}` +
       `&quality_grade=research&iconic_taxa=Aves,Mammalia,Reptilia,Amphibia,Actinopterygii,Insecta` +
       `&per_page=${perPage}&page=${page}`;
-    const res = await fetch(url, {
-      headers: { 'User-Agent': 'wildlife-map-zone-rarity/1.0' },
-      signal: AbortSignal.timeout(30000),
-    });
-    if (!res.ok) {
-      console.warn(`    ⚠  iNat returned ${res.status} on page ${page}`);
-      break;
-    }
-    const data = await res.json();
+    const data = await fetchPageWithRetry(url, `bbox page ${page}`);
     const results = data?.results ?? [];
     if (!results.length) break;
     for (const r of results) {

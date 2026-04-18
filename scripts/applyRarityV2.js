@@ -46,6 +46,8 @@ import {
   DEFAULT_VISITOR_EFFORT,
   computeConfidence,
   classifyActivityPeriod,
+  classifyHabitat,
+  habitatMultiplier,
   rarityFromFrequency,
 } from '../src/data/speciesMetadata.js';
 
@@ -124,6 +126,12 @@ function applyV2(animal, parkId) {
 
   // 3. Apply visitor-effort scalar.
   if (freq != null) freq = freq * EFFORT_SCALAR;
+
+  // 3b. Habitat-specificity penalty — marsh wrens in desert parks, etc.
+  const habitat = classifyHabitat(out);
+  if (freq != null) {
+    freq = freq * habitatMultiplier({ ...out, habitat }, parkId);
+  }
 
   // 4. Recency boost — if a recent-3yr count is stored and the ratio vs
   //    historical is strong, bump frequency up to 1.3×. If the recent count

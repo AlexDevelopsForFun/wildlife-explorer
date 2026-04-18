@@ -23,7 +23,11 @@ import { useSecondaryCache } from './hooks/useSecondaryCache.js';
 import { fetchAnimalPhoto } from './services/photoService';
 import { BUNDLED_PHOTOS } from './data/photoCache.js';
 import { needsGeneratedDescription } from './services/descriptionService';
-import { ACTIVITY_PERIOD_UI, CONFIDENCE_UI, rarityFromFrequency } from './data/speciesMetadata.js';
+import {
+  ACTIVITY_PERIOD_UI, CONFIDENCE_UI, rarityFromFrequency,
+  VISITOR_EFFORT, PARK_EFFORT_BASELINES, DEFAULT_VISITOR_EFFORT,
+  TIME_OF_DAY_MULTIPLIER, TIME_OF_DAY_UI,
+} from './data/speciesMetadata.js';
 import { getParkZones } from './data/parkZones.js';
 
 // ── Park type colors & icons ──────────────────────────────────────────────────
@@ -933,33 +937,52 @@ function resolveAnimalSources(animal) {
 }
 
 // ── Animal card ───────────────────────────────────────────────────────────────
-function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, highlightSpecies, activeSeason, activeZone }) {
-  // Combined zone- + season-aware rarity.
-  //   1. If an activeZone is selected AND we have zone-specific data for this
-  //      species, the zone's tier wins (iNat bbox-queried data is more precise
-  //      than park-wide averaging).
-  //   2. Otherwise if an activeSeason is selected, derive tier from the per-
-  //      season iNat histogram, falling back to 'exceptional' when the species
-  //      is not typically in the season.
-  //   3. Otherwise use the stored park-level rarity.
+function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, highlightSpecies, activeSeason, activeZone, effortRescaler = 1, visitTime = 'any' }) {
+  // Combined zone- + season- + effort- + time-of-day-aware rarity.
+  //   1. Pick base frequency: zone freq > season freq > park freq.
+  //   2. Rescale by effort multiplier (expert=1.54, casual=1.0, drive=0.54 —
+  //      relative to the casual baseline baked into the stored frequency).
+  //   3. Rescale by activity-period × time-of-day multiplier.
+  //   4. Re-map to tier.
+  const todMultiplier = useMemo(() => {
+    if (visitTime === 'any') return 1;
+    const period = animal.activityPeriod ?? 'diurnal';
+    return TIME_OF_DAY_MULTIPLIER[period]?.[visitTime] ?? 1;
+  }, [animal.activityPeriod, visitTime]);
+
   const displayRarity = useMemo(() => {
-    // Zone override
-    if (activeZone && animal.zones?.[activeZone]?.rarity) {
-      return animal.zones[activeZone].rarity;
+    const rescale = (tier, freq) => {
+      if (freq == null) return tier;                         // no freq to rescale
+      const rescaled = Math.min(Math.max(freq * effortRescaler * todMultiplier, 0), 1);
+      return rarityFromFrequency(rescaled);
+    };
+
+    // Zone override (most specific)
+    if (activeZone && animal.zones?.[activeZone]) {
+      const z = animal.zones[activeZone];
+      return rescale(z.rarity, z.frequency);
     }
-    if (!activeSeason) return animal.rarity;
-    const seasons = animal.displaySeasons ?? animal.seasons ?? [];
-    const hasSeason = seasons.includes(activeSeason) ||
-                      seasons.includes('year_round') ||
-                      seasons.includes('year-round');
-    if (!hasSeason) return 'exceptional';
-    const sciKey = animal.scientificName?.toLowerCase();
-    const seasonFreq = sciKey ? seasonalFreqs?.[sciKey]?.[activeSeason] : null;
-    if (seasonFreq != null && seasonFreq > 0) {
-      return rarityFromFrequency(seasonFreq / 100);
+
+    // Season override
+    if (activeSeason) {
+      const seasons = animal.displaySeasons ?? animal.seasons ?? [];
+      const hasSeason = seasons.includes(activeSeason) ||
+                        seasons.includes('year_round') ||
+                        seasons.includes('year-round');
+      if (!hasSeason) return 'exceptional';
+      const sciKey = animal.scientificName?.toLowerCase();
+      const seasonFreq = sciKey ? seasonalFreqs?.[sciKey]?.[activeSeason] : null;
+      if (seasonFreq != null && seasonFreq > 0) {
+        return rescale(animal.rarity, seasonFreq / 100);
+      }
+    }
+
+    // Park-level with effort rescaling
+    if (animal.frequency != null) {
+      return rescale(animal.rarity, animal.frequency);
     }
     return animal.rarity;
-  }, [animal, activeSeason, activeZone, seasonalFreqs]);
+  }, [animal, activeSeason, activeZone, seasonalFreqs, effortRescaler, todMultiplier]);
 
   const r = RARITY[displayRarity] ?? RARITY.rare;
   const t = ANIMAL_TYPES[animal.animalType];
@@ -1577,7 +1600,9 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
   popupType, setPopupType, popupSort, setPopupSort,
   popupSeason, setPopupSeason, popupRarity, setPopupRarity,
   popupSubtype, setPopupSubtype,
-  activeTypes, focusedType, openAbout, highlightSpecies }) {
+  activeTypes, focusedType, openAbout, highlightSpecies,
+  visitorEffort, setVisitorEffort,
+  visitTime, setVisitTime }) {
   const POPUP_PROGRESS_GROUPS = ['birds', 'mammals', 'reptiles', 'amphibians', 'insects', 'marine'];
   const PROGRESS_EMOJI = { birds: '🐦', mammals: '🦌', reptiles: '🐊', amphibians: '🐸', insects: '🦋', marine: '🐋' };
 
@@ -1593,6 +1618,21 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
   const availableZones = useMemo(() => getParkZones(location.id), [location.id]);
   const [popupZone, setPopupZone] = useState('all');
   useEffect(() => { setPopupZone('all'); }, [location.id]);
+
+  // Resolve the effective visitor effort for this park:
+  //   • If user picked 'auto', use park baseline (or casual default).
+  //   • Otherwise respect user choice.
+  // Build-time rarity was computed with 'casual' (0.65). When the effective
+  // effort differs, we rescale frequency by (effectiveScalar / buildScalar)
+  // and re-map to tier at render time.
+  const effectiveEffort = visitorEffort === 'auto'
+    ? (PARK_EFFORT_BASELINES[location.id] ?? DEFAULT_VISITOR_EFFORT)
+    : visitorEffort;
+  const effortRescaler = useMemo(() => {
+    const buildScalar = VISITOR_EFFORT.casual;               // build-time scalar
+    const userScalar  = VISITOR_EFFORT[effectiveEffort] ?? VISITOR_EFFORT.casual;
+    return userScalar / buildScalar;                         // 1.0 = no change
+  }, [effectiveEffort]);
 
   // Mobile-only filter panel open/close state
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
@@ -2226,6 +2266,31 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
             ))}
           </select>
         )}
+        {/* Visitor-effort picker — rescales rarity for casual vs expert users */}
+        <select
+          className="lp__select lp__select--full"
+          value={visitorEffort}
+          onChange={e => setVisitorEffort(e.target.value)}
+          aria-label="Visitor experience level"
+          title="How carefully will you be looking? Affects rarity ratings."
+        >
+          <option value="auto">🎯 Auto ({(PARK_EFFORT_BASELINES[location.id] ?? DEFAULT_VISITOR_EFFORT)})</option>
+          <option value="expert">🔭 Expert (binoculars, 45-min survey)</option>
+          <option value="casual">🚶 Casual (typical tourist stop)</option>
+          <option value="drive">🚗 Drive-through (no stops)</option>
+        </select>
+        {/* Time-of-day picker — adjusts rarity per species activity period */}
+        <select
+          className="lp__select lp__select--full"
+          value={visitTime}
+          onChange={e => setVisitTime(e.target.value)}
+          aria-label="Time of day"
+          title="When you plan to visit — adjusts rarity for nocturnal and crepuscular species"
+        >
+          {Object.entries(TIME_OF_DAY_UI).map(([k, { emoji, label }]) => (
+            <option key={k} value={k}>{emoji} {label}</option>
+          ))}
+        </select>
         {/* Rarity filter — full width row */}
         <select
           className="lp__select lp__select--full"
@@ -2301,7 +2366,7 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
                 <div className="lp__showing-count">
                   Showing {Math.min(displayLimit, filtered.length)} of {filtered.length} {typeLabel}
                 </div>
-                {visibleList.map((a, i) => <AnimalCard key={`${a.name}-${i}`} animal={a} debugMode={debugMode} seasonalFreqs={seasonalFreqs} location={location} openAbout={openAbout} highlightSpecies={highlightSpecies} activeSeason={popupSeason !== 'all' ? popupSeason : null} activeZone={popupZone !== 'all' ? popupZone : null} />)}
+                {visibleList.map((a, i) => <AnimalCard key={`${a.name}-${i}`} animal={a} debugMode={debugMode} seasonalFreqs={seasonalFreqs} location={location} openAbout={openAbout} highlightSpecies={highlightSpecies} activeSeason={popupSeason !== 'all' ? popupSeason : null} activeZone={popupZone !== 'all' ? popupZone : null} effortRescaler={effortRescaler} visitTime={visitTime} />)}
                 {hasMore && (
                   <div className="lp__load-more-row">
                     <button className="lp__load-more-btn" onClick={() => setDisplayLimit(d => d + 50)}>
@@ -2547,6 +2612,29 @@ export default function App() {
     document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light');
     try { localStorage.setItem('wm_theme', darkMode ? 'dark' : 'light'); } catch {}
   }, [darkMode]);
+
+  // Visitor-effort preference — gates how much to trust park-level rarity.
+  //   'auto'   → use PARK_EFFORT_BASELINES[park.id] ?? 'casual'
+  //   'expert' → assume dedicated observer (power birder, binoculars, 45-min survey)
+  //   'casual' → assume typical tourist with a half-hour stop
+  //   'drive'  → assume windshield tourism (drive-through, no stops)
+  // Persists in localStorage. Consumed by AnimalCard (rescales frequency).
+  const [visitorEffort, setVisitorEffort] = useState(() => {
+    try { return localStorage.getItem('wm_effort') || 'auto'; } catch { return 'auto'; }
+  });
+  useEffect(() => {
+    try { localStorage.setItem('wm_effort', visitorEffort); } catch {}
+  }, [visitorEffort]);
+
+  // Time-of-day preference — rescales rarity per activity period.
+  //   'any'/default: no adjustment
+  //   'dawn'|'morning'|'midday'|'evening'|'dusk'|'night': apply multiplier
+  const [visitTime, setVisitTime] = useState(() => {
+    try { return localStorage.getItem('wm_time') || 'any'; } catch { return 'any'; }
+  });
+  useEffect(() => {
+    try { localStorage.setItem('wm_time', visitTime); } catch {}
+  }, [visitTime]);
 
   // About modal
   const [showAbout, setShowAbout] = useState(false);
@@ -3164,6 +3252,10 @@ export default function App() {
                 activeTypes={activeTypes}   focusedType={focusedType}
                 openAbout={openAbout}
                 highlightSpecies={speciesFilter}
+                visitorEffort={visitorEffort}
+                setVisitorEffort={setVisitorEffort}
+                visitTime={visitTime}
+                setVisitTime={setVisitTime}
               />
             </div>
           </>
