@@ -884,6 +884,19 @@ function freqFromBuiltInSeasonFrequencies(sf) {
   return any ? out : null;
 }
 
+// Resolve the species' baseline "chance per typical visit" (0-1). Uses the
+// rarity tier's curated fallback unless the raw frequency field agrees and is
+// more precise. This matters for species where iNat undersamples reality
+// (e.g. large mammals): Grizzly Bear has frequency=0.0005 from iNat but
+// rarity="unlikely" after manual override — the tier fallback (0.15) is
+// far closer to true visitor encounter rate than the raw 0.05%.
+function resolveBaselineFrequency(rawFrequency, rarity) {
+  const tierFallback = RARITY_FREQ_FALLBACK[rarity] ?? 0.15;
+  const raw = rawFrequency ?? 0;
+  // Take the max so we never fall below the curated rarity tier's floor.
+  return Math.max(raw, tierFallback);
+}
+
 // Convert an iNat-histogram-style seasonal distribution (percentages of TOTAL
 // observations summing to ~100) into per-season encounter probabilities using
 // the species' baseline overall frequency.
@@ -901,7 +914,7 @@ function freqFromBuiltInSeasonFrequencies(sf) {
 function histogramToEncounterProb(hist, baseFrequency, rarity) {
   if (!hist) return hist;
   if (hist._converted) return hist; // already transformed
-  const base = baseFrequency ?? RARITY_FREQ_FALLBACK[rarity] ?? 0.15;
+  const base = resolveBaselineFrequency(baseFrequency, rarity);
   const baselinePct = base * 100;
   const keys = ['spring', 'summer', 'fall', 'winter'];
   const out = { _source: hist._source ?? 'inat_hist', _converted: true };
@@ -919,11 +932,14 @@ function histogramToEncounterProb(hist, baseFrequency, rarity) {
 }
 
 function estimateSeasonalFreqFromField(frequency, seasons, rarity) {
-  // Only flag as estimated when we had to use the rarity-tier fallback.
-  // A real numeric `frequency` from eBird/iNat is data-derived, so we treat
-  // that spread as calculated (the seasonal split comes from real checklist %).
-  const usedFallback = frequency == null;
-  const f = frequency ?? RARITY_FREQ_FALLBACK[rarity] ?? null;
+  // Flag as estimated when we lean on the rarity-tier floor rather than a
+  // species-specific numeric frequency. Use max(raw, tier floor) so curated
+  // rarity overrides (e.g. Grizzly: raw 0.05%, rarity "unlikely" floor 15%)
+  // don't show implausibly low seasonal percentages.
+  const tierFallback = RARITY_FREQ_FALLBACK[rarity] ?? null;
+  const raw = frequency ?? 0;
+  const f = Math.max(raw, tierFallback ?? 0);
+  const usedFallback = frequency == null || (tierFallback != null && tierFallback > raw);
   if (!f || f <= 0 || !seasons?.length) return null;
   const pct = Math.min(99, Math.round(f * 100));
   const active = seasons.includes('year_round')
@@ -1093,8 +1109,10 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, hig
       const sciKey = animal.scientificName?.toLowerCase();
       const distPct = sciKey ? seasonalFreqs?.[sciKey]?.[activeSeason] : null;
       if (distPct != null && distPct > 0) {
-        const base = animal.frequency ?? animal._debug?.frequency
-                  ?? RARITY_FREQ_FALLBACK[animal.rarity] ?? 0.15;
+        const base = resolveBaselineFrequency(
+          animal.frequency ?? animal._debug?.frequency,
+          animal.rarity,
+        );
         const seasonalProb = Math.min(0.99, base * (distPct / 25));
         return rescale(animal.rarity, seasonalProb);
       }
