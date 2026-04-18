@@ -2367,20 +2367,6 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
             ))}
           </select>
         </div>
-        {availableZones && availableZones.length > 1 && (
-          <select
-            className="lp__select lp__select--full"
-            value={popupZone}
-            onChange={e => setPopupZone(e.target.value)}
-            aria-label="Zone filter"
-            title="Show rarity specific to this zone of the park"
-          >
-            <option value="all">🗺️ Whole park</option>
-            {availableZones.map(z => (
-              <option key={z.id} value={z.id}>📍 {z.label}</option>
-            ))}
-          </select>
-        )}
         {/* Rarity filter — full width row */}
         <select
           className="lp__select lp__select--full"
@@ -3281,7 +3267,7 @@ function AppInner() {
         aria-hidden={!mobileFiltersOpen}>
         <div className="mobile-filter-drawer__inner">
           <div className="mobile-filter-section">
-            <span className="mobile-filter-section__label">Category</span>
+            <span className="mobile-filter-section__label">Animal Type</span>
             <CategoryDropdowns
               categoryType={categoryType}
               setCategoryType={setCategoryType}
@@ -3306,16 +3292,6 @@ function AppInner() {
               {Object.entries(RARITY).map(([k, { label, emoji, color }]) => (
                 <FilterBtn key={k} active={rarity === k}
                   onClick={() => { setRarity(k); track('rarity_filter', { rarity: k }); }}
-                  emoji={emoji} label={label} activeColor={color} />
-              ))}
-            </div>
-          </div>
-          <div className="mobile-filter-section">
-            <span className="mobile-filter-section__label">Animal Type</span>
-            <div className="mobile-filter-btns">
-              {Object.entries(ANIMAL_TYPES).map(([k, { label, emoji, color }]) => (
-                <FilterBtn key={k} active={animalType === k}
-                  onClick={() => { setAnimalType(k); track('type_filter', { type: k }); }}
                   emoji={emoji} label={label} activeColor={color} />
               ))}
             </div>
