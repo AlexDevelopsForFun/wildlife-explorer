@@ -1,4 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+
+const DEV_LOG = (...a) => { if (import.meta.env.DEV) console.log(...a); };
+const DEV_WARN = (...a) => { if (import.meta.env.DEV) console.warn(...a); };
+
 import {
   fetchEbirdHotspot, fetchEbird, fetchINat, fetchNps, fetchGbif,
   deduplicateAnimals, getCorrectionFactor, getMonthlyFrequency, rarityFromChecklist,
@@ -21,7 +25,7 @@ if (_bundleAge > SEVEN_DAYS) {
     const staleCacheKeys = Object.keys(localStorage).filter(k => k.startsWith('wm_loc_v1_'));
     staleCacheKeys.forEach(k => localStorage.removeItem(k));
     if (staleCacheKeys.length) {
-      console.log(`[useLiveData] Static bundle is ${Math.round(_bundleAge / 86400000)}d old — evicted ${staleCacheKeys.length} stale cache entries. Background refresh will run.`);
+      DEV_LOG(`[useLiveData] Static bundle is ${Math.round(_bundleAge / 86400000)}d old — evicted ${staleCacheKeys.length} stale cache entries. Background refresh will run.`);
     }
   } catch { /* localStorage unavailable */ }
 }
@@ -38,7 +42,7 @@ try {
       if (!ts || ts < _bundleBuiltAtMs) { localStorage.removeItem(k); preBundleEvicted++; }
     } catch { localStorage.removeItem(k); preBundleEvicted++; }
   });
-  if (preBundleEvicted) console.log(`[useLiveData] Evicted ${preBundleEvicted} pre-bundle cache entries — static bundle is now primary.`);
+  if (preBundleEvicted) DEV_LOG(`[useLiveData] Evicted ${preBundleEvicted} pre-bundle cache entries — static bundle is now primary.`);
 } catch { /* localStorage unavailable */ }
 
 /**
@@ -246,13 +250,13 @@ export function useLiveData(locations) {
               .sort((a, b) => b.corrected - a.corrected);
 
             const speciesSeen = ebirdResult._stats?.recentObsCount ?? ebirdResult.animals.length;
-            console.log(`\n[eBird Geo] ${loc.name} — ${speciesSeen} species seen (15km, 30d, date-based freq)`);
-            console.log('  Top 10 birds (corrected):');
+            DEV_LOG(`\n[eBird Geo] ${loc.name} — ${speciesSeen} species seen (15km, 30d, date-based freq)`);
+            DEV_LOG('  Top 10 birds (corrected):');
             birds.slice(0, 10).forEach(({ name, raw, corrected, rarity }, i) => {
               const note = Math.abs(corrected - raw) > 0.005
                 ? ` → ${(corrected * 100).toFixed(0)}% corrected`
                 : '';
-              console.log(`    ${i + 1}. [${rarity.padEnd(8)}] ${name}: ${(raw * 100).toFixed(1)}%${note}`);
+              DEV_LOG(`    ${i + 1}. [${rarity.padEnd(8)}] ${name}: ${(raw * 100).toFixed(1)}%${note}`);
             });
 
             const found = [], missing = [];
@@ -261,13 +265,13 @@ export function useLiveData(locations) {
               if (entry) found.push(entry); else missing.push(name);
             });
             if (found.length || missing.length) {
-              console.log('  Sanity-check species:');
+              DEV_LOG('  Sanity-check species:');
               found.forEach(({ name, raw, corrected, rarity }) => {
                 const factor = getCorrectionFactor(name);
                 const note   = factor !== 1 ? ` (raw ${(raw * 100).toFixed(1)}%, ×${factor.toFixed(2)} → ${(corrected * 100).toFixed(1)}%)` : '';
-                console.log(`    ✓ ${name}: ${rarity}${note}`);
+                DEV_LOG(`    ✓ ${name}: ${rarity}${note}`);
               });
-              missing.forEach(n => console.log(`    ✗ ${n}: not in 30-day eBird data for ${loc.name}`));
+              missing.forEach(n => DEV_LOG(`    ✗ ${n}: not in 30-day eBird data for ${loc.name}`));
             }
           }
         }
@@ -346,7 +350,7 @@ export function useLiveData(locations) {
         }
 
       } catch (err) {
-        console.warn(`[useLiveData] ${loc.id}:`, err.message);
+        DEV_WARN(`[useLiveData] ${loc.id}:`, err.message);
       }
 
       if (sources.length) {
@@ -365,7 +369,7 @@ export function useLiveData(locations) {
         });
 
         const breakdown = Object.entries(speciesCounts).map(([k, v]) => `${k}:${v}`).join(' ');
-        console.log(
+        DEV_LOG(
           `[Wildlife] ${loc.name}: ${animals.length} species | ${breakdown}` +
           ` | eBird: ${ebirdChecklists ?? 'n/a'} checklists` +
           ` | iNat: ${inatObservations} obs` +

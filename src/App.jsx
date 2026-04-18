@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
+import { useState, useMemo, useEffect, useRef, useCallback, Component } from 'react';
 import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -2615,8 +2615,33 @@ function MapLegend() {
   );
 }
 
+// ── Error boundary ────────────────────────────────────────────────────────────
+// Prevents a single bad cache entry or stale localStorage blob from blanking the
+// whole app. Shows a minimal retry UI with the underlying message.
+class AppErrorBoundary extends Component {
+  constructor(props) { super(props); this.state = { err: null }; }
+  static getDerivedStateFromError(err) { return { err }; }
+  componentDidCatch(err, info) {
+    if (import.meta.env.DEV) console.error('[AppErrorBoundary]', err, info);
+  }
+  render() {
+    if (!this.state.err) return this.props.children;
+    return (
+      <div className="app-error" role="alert">
+        <div className="app-error__card">
+          <h2 className="app-error__title">Something went wrong</h2>
+          <p className="app-error__msg">{String(this.state.err?.message ?? this.state.err)}</p>
+          <button className="app-error__btn" onClick={() => window.location.reload()}>
+            Reload
+          </button>
+        </div>
+      </div>
+    );
+  }
+}
+
 // ── Main app ──────────────────────────────────────────────────────────────────
-export default function App() {
+function AppInner() {
   const secondaryReady = useSecondaryCache();
   const [season,       setSeason]       = useState('all');
   const [rarity,       setRarity]       = useState('all');
@@ -3455,5 +3480,13 @@ export default function App() {
       <Analytics />
       <SpeedInsights />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <AppErrorBoundary>
+      <AppInner />
+    </AppErrorBoundary>
   );
 }

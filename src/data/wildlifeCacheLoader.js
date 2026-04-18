@@ -18,6 +18,34 @@ export const WILDLIFE_CACHE = { ...WILDLIFE_CACHE_PRIMARY };
 
 export const WILDLIFE_CACHE_BUILT_AT = "2026-03-31T23:14:51.921Z";
 
+// ── Cross-park scientificName lookup ────────────────────────────────────────
+// Some iconic curated entries (e.g. American Bison at Yellowstone) are missing
+// `scientificName`, which blocks the iNat histogram fetch and leaves cards on
+// permanent `~est`. We rebuild a name → sciName map from every other cache
+// entry that DOES have one, then backfill missing entries at load time.
+const _sciNameByName = new Map();
+function _indexSciNames(parks) {
+  for (const val of Object.values(parks)) {
+    for (const a of val?.animals ?? []) {
+      if (a?.name && a?.scientificName && !_sciNameByName.has(a.name)) {
+        _sciNameByName.set(a.name, a.scientificName);
+      }
+    }
+  }
+}
+function _backfillSciNames(parks) {
+  for (const val of Object.values(parks)) {
+    for (const a of val?.animals ?? []) {
+      if (a && a.name && !a.scientificName) {
+        const sci = _sciNameByName.get(a.name);
+        if (sci) a.scientificName = sci;
+      }
+    }
+  }
+}
+_indexSciNames(WILDLIFE_CACHE);
+_backfillSciNames(WILDLIFE_CACHE);
+
 // Tracks tier load state
 let _tier2Loaded = false;
 let _tier3Loaded = false;
@@ -53,6 +81,8 @@ export function loadTier2() {
     for (const [id, val] of Object.entries(data)) {
       WILDLIFE_CACHE[id] = val;
     }
+    _indexSciNames(data);
+    _backfillSciNames(WILDLIFE_CACHE);
     _tier2Loaded = true;
     _notify();
     return data;
@@ -68,6 +98,8 @@ export function loadTier3() {
     for (const [id, val] of Object.entries(data)) {
       WILDLIFE_CACHE[id] = val;
     }
+    _indexSciNames(data);
+    _backfillSciNames(WILDLIFE_CACHE);
     _tier3Loaded = true;
     _notify();
     if (isSecondaryLoaded()) _listeners.clear();

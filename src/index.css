@@ -1,3 +1,22 @@
+/* ── Error boundary fallback ──────────────────────────────────────────────── */
+.app-error {
+  position: fixed; inset: 0; display: grid; place-items: center;
+  background: #0c1c17; color: #e6f0ea; padding: 24px; z-index: 9999;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+.app-error__card {
+  max-width: 480px; padding: 24px; border-radius: 12px;
+  background: #13281f; border: 1px solid rgba(255,255,255,0.1);
+  text-align: center;
+}
+.app-error__title { font-size: 20px; font-weight: 700; margin-bottom: 10px; color: #ff9c6b; }
+.app-error__msg   { font-size: 14px; opacity: 0.85; margin-bottom: 18px; word-break: break-word; }
+.app-error__btn {
+  padding: 9px 18px; border-radius: 6px; border: 1px solid #3a6f52;
+  background: #2b5a40; color: #fff; cursor: pointer; font-weight: 600;
+}
+.app-error__btn:hover { background: #357a4d; }
+
 /* ── Reset & base ─────────────────────────────────────────────────────────── */
 *, *::before, *::after {
   box-sizing: border-box;
