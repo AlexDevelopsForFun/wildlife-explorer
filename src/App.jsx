@@ -972,7 +972,7 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, hig
       {/* Expanded full-width photo — shown above the card content when clicked */}
       {expanded && photo && (
         <div className="photo-full" onClick={() => setExpanded(false)}>
-          <img src={photo.largeUrl} alt={animal.name} className="photo-full__img" />
+          <img src={photo.largeUrl} alt={animal.name} className="photo-full__img" loading="lazy" decoding="async" />
           <div className="photo-full__credit">
             📷 {photo.attribution ?? photo.credit ?? photo.source}
           </div>
@@ -1005,7 +1005,7 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, hig
               })}
               aria-label={`${expanded ? 'Collapse' : 'Expand'} photo of ${animal.name}`}
             >
-              <img src={photo.url} alt={animal.name} />
+              <img src={photo.url} alt={animal.name} loading="lazy" decoding="async" />
               <div className="photo-thumb__credit">📷 {photo.credit ?? photo.source}</div>
             </button>
           )}
@@ -1138,7 +1138,8 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, hig
         </div>
       </div>
 
-      {/* Description — 3-tier hierarchy with source badge */}
+      {/* Description — 3-tier hierarchy with source badge.
+          Priority: curated funFact → enriched description → raw placeholder (fallback so the card is never blank). */}
       {needsGeneratedDescription(animal.funFact) ? (
         animal.description
           ? <>
@@ -1155,7 +1156,17 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, hig
                 </span>
               )}
             </>
-          : null
+          : animal.funFact
+            ? <>
+                <p className="animal-card__fact animal-card__fact--placeholder">{animal.funFact}</p>
+                <span className="description-source">📊 Observation record</span>
+              </>
+            : <>
+                <p className="animal-card__fact animal-card__fact--placeholder">
+                  Documented presence at {location?.name ?? 'this park'} — species description coming soon.
+                </p>
+                <span className="description-source">📊 Park record</span>
+              </>
       ) : (
         <>
           <p className="animal-card__fact">{animal.funFact}</p>
@@ -1264,7 +1275,7 @@ function ExceptionalCard({ animal, seasonalFreqs, location }) {
       {/* Full-size photo overlay — same as AnimalCard */}
       {expanded && photo && (
         <div className="photo-full" onClick={() => setExpanded(false)}>
-          <img src={photo.largeUrl} alt={animal.name} className="photo-full__img" />
+          <img src={photo.largeUrl} alt={animal.name} className="photo-full__img" loading="lazy" decoding="async" />
           <div className="photo-full__credit">
             📷 {photo.attribution ?? photo.credit ?? photo.source}
           </div>
@@ -1289,7 +1300,7 @@ function ExceptionalCard({ animal, seasonalFreqs, location }) {
               onClick={() => setExpanded(prev => !prev)}
               aria-label={`${expanded ? 'Collapse' : 'Expand'} photo of ${animal.name}`}
             >
-              <img src={photo.url} alt={animal.name} />
+              <img src={photo.url} alt={animal.name} loading="lazy" decoding="async" />
               <div className="photo-thumb__credit">📷 {photo.credit ?? photo.source}</div>
             </button>
           )}
@@ -1373,7 +1384,17 @@ function ExceptionalCard({ animal, seasonalFreqs, location }) {
                 </span>
               )}
             </>
-          : null
+          : animal.funFact
+            ? <>
+                <p className="exceptional-card__fact">{animal.funFact}</p>
+                <span className="description-source">📊 Observation record</span>
+              </>
+            : <>
+                <p className="exceptional-card__fact">
+                  Rare sighting — documented at {location?.name ?? 'this park'} but seldom observed.
+                </p>
+                <span className="description-source">📊 Park record</span>
+              </>
       ) : (
         <>
           <p className="exceptional-card__fact">{animal.funFact}</p>
@@ -1735,12 +1756,13 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
     return counts;
   }, [seasonFiltered, focusedType]);
 
-  // Display page size — 100 initially, +100 per Load More click.
-  const [displayLimit, setDisplayLimit] = useState(100);
+  // Display page size — 25 initially (reduces initial DOM + photo-fetch storm),
+  // +50 per Load More click.
+  const [displayLimit, setDisplayLimit] = useState(25);
 
   // Reset paging whenever the location or any filter changes
-  useEffect(() => { setDisplayLimit(100); }, [location.id]);
-  useEffect(() => { setDisplayLimit(100); }, [activeTypes, popupSubtype, popupSeason, popupRarity, search, popupSort]);
+  useEffect(() => { setDisplayLimit(25); }, [location.id]);
+  useEffect(() => { setDisplayLimit(25); }, [activeTypes, popupSubtype, popupSeason, popupRarity, search, popupSort]);
 
   // Popup-local filtering + sorting (independent of global header filters).
   // Returns the full sorted list — slicing is handled in render based on state.
@@ -2209,8 +2231,8 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
                 {visibleList.map((a, i) => <AnimalCard key={`${a.name}-${i}`} animal={a} debugMode={debugMode} seasonalFreqs={seasonalFreqs} location={location} openAbout={openAbout} highlightSpecies={highlightSpecies} />)}
                 {hasMore && (
                   <div className="lp__load-more-row">
-                    <button className="lp__load-more-btn" onClick={() => setDisplayLimit(d => d + 100)}>
-                      Load 100 more · {remaining} remaining
+                    <button className="lp__load-more-btn" onClick={() => setDisplayLimit(d => d + 50)}>
+                      Load 50 more · {remaining} remaining
                     </button>
                     <button className="lp__view-all-btn" onClick={() => setDisplayLimit(filtered.length)}>
                       View all {filtered.length} {typeLabel}

@@ -1,0 +1,96 @@
+name: Weekly Wildlife Cache Rebuild
+
+# Refreshes the static wildlife cache every Sunday at 06:00 UTC.
+# The job rebuilds the full dataset from eBird + iNaturalist + NPS,
+# expands the photo bundle, and opens a PR against main so changes
+# are reviewed before they ship.
+#
+# Can also be triggered manually via the Actions tab → "Run workflow".
+
+on:
+  schedule:
+    - cron: "0 6 * * 0"   # every Sunday 06:00 UTC
+  workflow_dispatch:       # manual trigger
+    inputs:
+      parks:
+        description: "Comma-separated park IDs to rebuild (leave blank for full)"
+        required: false
+        default: ""
+      skip_enrich:
+        description: "Skip slow description enrichment step"
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360      # hard cap 6 h — enrichment can run ~4 h
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Rebuild wildlife cache
+        env:
+          EBIRD_KEY: ${{ secrets.EBIRD_KEY }}
+          NPS_KEY:   ${{ secrets.NPS_KEY }}
+          PARKS:     ${{ github.event.inputs.parks }}
+        run: node scripts/buildWildlifeCache.js
+
+      - name: Split primary / secondary caches
+        run: node scripts/splitCache.js
+
+      - name: Enrich placeholder descriptions
+        if: ${{ github.event.inputs.skip_enrich != 'true' }}
+        continue-on-error: true
+        run: node scripts/enrichDescriptions.js
+
+      - name: Expand bundled photos
+        continue-on-error: true
+        run: node scripts/expandPhotos.mjs
+
+      - name: Verify production build
+        run: npm run build
+
+      - name: Detect changes
+        id: diff
+        run: |
+          if git diff --quiet src/data; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true"  >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open pull request
+        if: steps.diff.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: automated/weekly-rebuild
+          title: "chore(data): weekly wildlife cache rebuild"
+          commit-message: "chore(data): weekly wildlife cache rebuild"
+          body: |
+            Automated weekly rebuild of the wildlife cache.
+
+            - Rebuilt species lists from eBird + iNaturalist + NPS.
+            - Enriched placeholder descriptions (Wikipedia + iNat fallback).
+            - Expanded bundled photo coverage.
+            - Verified production build passes.
+
+            Review the diff under `src/data/` before merging.
+          labels: |
+            automated
+            data-refresh

@@ -124,6 +124,28 @@ function rarityFromFreq(freq) {
   return 'exceptional';
 }
 
+// Birds that should NEVER land in the 'exceptional' tier — they're regularly
+// seen at most parks, and the raptor charisma correction (÷3) can incorrectly
+// push them there when county frequency data is thin. Mirrors the
+// NEVER_EXCEPTIONAL_BIRDS set in src/services/apiService.js. Applied as a
+// post-correction floor: if we rated these 'exceptional', we bump them up to
+// at least 'rare' (real 2–10% encounter tier).
+const NEVER_EXCEPTIONAL_BIRDS = new Set([
+  'Turkey Vulture', 'Red-tailed Hawk', "Cooper's Hawk", 'Sharp-shinned Hawk',
+  'American Kestrel', 'Northern Harrier', 'Osprey', 'Broad-winged Hawk',
+  'Red-shouldered Hawk', 'Northern Saw-whet Owl', 'Barred Owl', 'Great Horned Owl',
+  'Bald Eagle',
+]);
+
+// Applies the NEVER_EXCEPTIONAL_BIRDS floor. Returns the possibly-bumped rarity
+// and a flag indicating whether we corrected it (so raritySource can be tagged).
+function applyNeverExceptionalFloor(rarity, name) {
+  if (rarity === 'exceptional' && NEVER_EXCEPTIONAL_BIRDS.has(name)) {
+    return { rarity: 'rare', corrected: true };
+  }
+  return { rarity, corrected: false };
+}
+
 // Mirrors getCorrectionFactor() in apiService.js — applied to eBird bar chart
 // frequency before mapping to rarity tier. Values < 1 reduce apparent frequency
 // for charismatic over-reported species.
@@ -1009,12 +1031,28 @@ async function getEbirdHistorical(lat, lng, stateCode, barChart = null, countyFr
         raritySource   = 'ebird_county_freq';
       } else {
         // No bar chart or county data: binary fallback.
-        seasons   = ['spring', 'summer', 'fall', 'winter'];
+        //
+        // AUDIT FIX (2026-04): previously this assigned a flat ['spring','summer','fall','winter']
+        // year-round to every species without real seasonality data, which misrepresents
+        // migrants as residents. We now pick a conservative 3-season window (spring-summer-fall)
+        // for hotspot birds (more likely to be breeders) and a 2-season shoulder window
+        // (spring + fall) for wider-area records (more likely migrants). Seasons are marked
+        // as _seasonsEstimated so the UI can flag this downstream.
+        seasons   = isHotspot ? ['spring', 'summer', 'fall'] : ['spring', 'fall'];
         const baseFq      = isHotspot ? 0.4 : 0.15;
         const correctedFq = baseFq * ebirdCharismaCorrectionFactor(t.comName);
         rarity    = rarityFromFreq(correctedFq);
         frequency = correctedFq;
         raritySource = 'ebird_binary';
+      }
+
+      // AUDIT FIX (2026-04): apply the NEVER_EXCEPTIONAL_BIRDS floor — common
+      // raptors/vultures should never land in 'exceptional' when the raptor
+      // correction factor (÷3) over-deflates their frequency in thin county data.
+      const floored = applyNeverExceptionalFloor(rarity, t.comName);
+      if (floored.corrected) {
+        rarity = floored.rarity;
+        raritySource = raritySource + '+never_exc_floor';
       }
 
       return {
@@ -1023,6 +1061,8 @@ async function getEbirdHistorical(lat, lng, stateCode, barChart = null, countyFr
         emoji:          '🐦',
         animalType:     'bird',
         seasons,
+        // Flag downstream UI: seasons are a conservative guess, not real data.
+        ...(raritySource === 'ebird_binary' ? { seasonsEstimated: true } : {}),
         bestSeason:     'spring',
         source:         'ebird',
         rarity,
