@@ -26,7 +26,7 @@ import { needsGeneratedDescription } from './services/descriptionService';
 import {
   ACTIVITY_PERIOD_UI, CONFIDENCE_UI, rarityFromFrequency,
   VISITOR_EFFORT, PARK_EFFORT_BASELINES, DEFAULT_VISITOR_EFFORT,
-  TIME_OF_DAY_MULTIPLIER, TIME_OF_DAY_UI,
+  TIME_OF_DAY_MULTIPLIER, TIME_OF_DAY_UI, classifyActivityPeriod,
 } from './data/speciesMetadata.js';
 import { getParkZones } from './data/parkZones.js';
 
@@ -969,6 +969,46 @@ function resolveAnimalSources(animal) {
   return hasReal ? inferred.filter(s => _REAL_SRCS.has(s)) : inferred;
 }
 
+// ── Fallback activity period + visitor tip (always renderable) ──────────────
+// Returns one of 'diurnal' | 'crepuscular' | 'nocturnal' | 'cathemeral' for
+// every animal by classifying via name > keyword > animalType default.
+function resolveActivityPeriod(animal) {
+  if (animal?.activityPeriod && ACTIVITY_PERIOD_UI[animal.activityPeriod]) {
+    return animal.activityPeriod;
+  }
+  return classifyActivityPeriod(animal);
+}
+
+const TYPE_HABITAT_HINT = {
+  bird:      'treetops, open sky, and water edges',
+  mammal:    'meadows, forest edges, and quiet trails',
+  reptile:   'sunny rocks, logs, and trail edges',
+  amphibian: 'ponds, streams, and damp leaf litter',
+  insect:    'wildflowers, streams, and sunny clearings',
+  fish:      'clear streams, lake edges, and tide pools',
+  marine:    'shorelines, tide pools, and offshore waters',
+};
+
+function composeFallbackTip(animal, period) {
+  const seasons = animal.displaySeasons ?? animal.seasons ?? [];
+  const yearRound = seasons.includes('year-round') || seasons.includes('year_round') || seasons.length >= 4;
+  const seasonList = seasons
+    .filter(s => s !== 'year-round' && s !== 'year_round')
+    .map(s => s.replace('_', ' '));
+  const seasonPhrase = yearRound || !seasonList.length
+    ? 'year-round'
+    : seasonList.length === 1
+      ? `in ${seasonList[0]}`
+      : `in ${seasonList.slice(0, -1).join(', ')} and ${seasonList[seasonList.length - 1]}`;
+  const activityPhrase = period === 'diurnal'     ? 'during daylight hours'
+                       : period === 'crepuscular' ? 'at dawn and dusk'
+                       : period === 'nocturnal'   ? 'after dark'
+                       :                            'any time of day';
+  const habitat = TYPE_HABITAT_HINT[animal.animalType] ?? 'trails and quiet overlooks';
+  const scan = seasonPhrase === 'year-round' ? 'Scan' : `Visit ${seasonPhrase} and scan`;
+  return `${scan} ${habitat} — most active ${activityPhrase}. Binoculars help.`;
+}
+
 // ── Animal card ───────────────────────────────────────────────────────────────
 function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, highlightSpecies, activeSeason, activeZone, effortRescaler = 1, visitTime = 'any' }) {
   // Combined zone- + season- + effort- + time-of-day-aware rarity.
@@ -1257,17 +1297,25 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, hig
         </>
       )}
 
-      {/* Park-specific visitor tip */}
-      {animal.parkTip && (
-        <div className="animal-card__park-tip">
-          <p className="animal-card__park-tip-text">{animal.parkTip}</p>
-          <span className="park-tip-source">📍 Visitor Tip</span>
-        </div>
-      )}
-
-      {/* Best-time-to-view + seasons/migration/sources footer */}
+      {/* Park-specific visitor tip — falls back to auto-composed when absent */}
       {(() => {
-        const ap = animal.activityPeriod && ACTIVITY_PERIOD_UI[animal.activityPeriod];
+        const period  = resolveActivityPeriod(animal);
+        const tipText = animal.parkTip ?? composeFallbackTip(animal, period);
+        const isAuto  = !animal.parkTip;
+        return (
+          <div className="animal-card__park-tip">
+            <p className="animal-card__park-tip-text">{tipText}</p>
+            <span className="park-tip-source" title={isAuto ? 'Composed from seasons + activity period' : 'Park-specific tip'}>
+              📍 Visitor Tip
+            </span>
+          </div>
+        );
+      })()}
+
+      {/* Best-time-to-view — classified from name/keyword/type when missing */}
+      {(() => {
+        const period = resolveActivityPeriod(animal);
+        const ap = ACTIVITY_PERIOD_UI[period];
         if (!ap) return null;
         return (
           <div className="best-time" title={ap.tooltip}>
@@ -1515,13 +1563,29 @@ function ExceptionalCard({ animal, seasonalFreqs, location }) {
         </>
       )}
 
-      {/* Park-specific visitor tip */}
-      {animal.parkTip && (
-        <div className="animal-card__park-tip">
-          <p className="animal-card__park-tip-text">{animal.parkTip}</p>
-          <span className="park-tip-source">📍 Visitor Tip</span>
-        </div>
-      )}
+      {/* Visitor tip + Best time to view — always rendered (auto when missing) */}
+      {(() => {
+        const period  = resolveActivityPeriod(animal);
+        const tipText = animal.parkTip ?? composeFallbackTip(animal, period);
+        const isAuto  = !animal.parkTip;
+        const ap      = ACTIVITY_PERIOD_UI[period];
+        return (
+          <>
+            <div className="animal-card__park-tip">
+              <p className="animal-card__park-tip-text">{tipText}</p>
+              <span className="park-tip-source" title={isAuto ? 'Composed from seasons + activity period' : 'Park-specific tip'}>
+                📍 Visitor Tip
+              </span>
+            </div>
+            {ap && (
+              <div className="best-time" title={ap.tooltip}>
+                <span className="best-time__label">Best time to view</span>
+                <span className="best-time__value">{ap.emoji} {ap.label}</span>
+              </div>
+            )}
+          </>
+        );
+      })()}
 
       {/* Muted footer: sources only — exceptionals rarely have season data worth surfacing here */}
       {(() => {
