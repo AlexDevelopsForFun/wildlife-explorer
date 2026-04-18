@@ -1776,6 +1776,42 @@ body, #root {
   font-style: italic;
 }
 
+/* Small emoji glyph sitting inside rarity badge */
+.rarity-badge__glyph {
+  display: inline-block;
+  font-size: 9px;
+  margin-right: 4px;
+  line-height: 1;
+  vertical-align: middle;
+  filter: saturate(0.85);
+}
+
+/* ── "Best time to view" — per-animal prominent line ──────────────────── */
+.best-time {
+  margin-top: 8px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--bg-tip, #e8f5ee);
+  border: 1px solid var(--border-tip, #d1eddb);
+  font-size: 12px;
+  line-height: 1.4;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: help;
+}
+.best-time__label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-tip-badge, #52796f);
+}
+.best-time__value {
+  font-weight: 600;
+  color: var(--text-tip, #2d6a4f);
+}
+
 /* ── Consolidated muted footer ─────────────────────────────────────────────
    Replaces the old pill row (source-tags, verified-badge, season/migration
    badges). One muted line: seasons · migration · activity · via sources.  */
@@ -3388,6 +3424,18 @@ body, #root {
   padding:       4px 0;
   z-index:       2000;
   overflow:      hidden;
+}
+
+.sp-search__kicker {
+  padding: 6px 12px 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 4px;
+  pointer-events: none;
 }
 
 .sp-search__item {

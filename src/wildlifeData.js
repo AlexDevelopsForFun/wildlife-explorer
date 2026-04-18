@@ -10,25 +10,24 @@
 // in lightness/chroma so tier differences read as a gradient, not six competing
 // signals. Rarity is the only attribute that gets saturated color in the UI.
 export const RARITY = {
-  all:         { label: 'All',          emoji: '',  color: '#6b7280', subLabel: '',                     probability: '',       star: false },
-  guaranteed:  { label: 'Guaranteed',   emoji: '',  color: '#1a6640', subLabel: 'Almost certain to see', probability: '90%+',   star: false },
-  very_likely: { label: 'Very Likely',  emoji: '',  color: '#4a8557', subLabel: 'Probably will see',     probability: '60-90%', star: false },
-  likely:      { label: 'Likely',       emoji: '',  color: '#8a7a3e', subLabel: 'Good chance',           probability: '30-60%', star: false },
-  unlikely:    { label: 'Unlikely',     emoji: '',  color: '#a06a44', subLabel: 'Possible with luck',    probability: '10-30%', star: false },
-  rare:        { label: 'Rare',         emoji: '',  color: '#9a5248', subLabel: 'Lucky sighting',        probability: '2-10%',  star: false },
-  exceptional: { label: 'Exceptional',  emoji: '',  color: '#7a4e6e', subLabel: 'Once in a lifetime',    probability: '<2%',    star: true  },
+  all:         { label: 'All',          emoji: '',    color: '#6b7280', subLabel: '',                     probability: '',       star: false },
+  guaranteed:  { label: 'Guaranteed',   emoji: '🟢', color: '#1a6640', subLabel: 'Almost certain to see', probability: '90%+',   star: false },
+  very_likely: { label: 'Very Likely',  emoji: '🟩', color: '#4a8557', subLabel: 'Probably will see',     probability: '60-90%', star: false },
+  likely:      { label: 'Likely',       emoji: '🟡', color: '#8a7a3e', subLabel: 'Good chance',           probability: '30-60%', star: false },
+  unlikely:    { label: 'Unlikely',     emoji: '🟠', color: '#a06a44', subLabel: 'Possible with luck',    probability: '10-30%', star: false },
+  rare:        { label: 'Rare',         emoji: '🔴', color: '#9a5248', subLabel: 'Lucky sighting',        probability: '2-10%',  star: false },
+  exceptional: { label: 'Exceptional',  emoji: '⭐', color: '#7a4e6e', subLabel: 'Once in a lifetime',    probability: '<2%',    star: true  },
 };
 
 // ── Seasons ───────────────────────────────────────────────────────────────────
-// Demoted to grayscale — season is secondary metadata; rarity is the signal.
-// The previous saturated quadruple (green/orange/red/blue) was competing with
-// the rarity ramp at equal weight.
+// Subtle seasonal tint — enough personality to cue the season at a glance
+// without competing with the rarity ramp for attention.
 export const SEASONS = {
-  all:    { label: 'All Seasons', emoji: '',  color: '#6b7280' },
-  spring: { label: 'Spring',      emoji: '',  color: '#6b7280' },
-  summer: { label: 'Summer',      emoji: '',  color: '#6b7280' },
-  fall:   { label: 'Fall',        emoji: '',  color: '#6b7280' },
-  winter: { label: 'Winter',      emoji: '',  color: '#6b7280' },
+  all:    { label: 'All Seasons', emoji: '',    color: '#6b7280' },
+  spring: { label: 'Spring',      emoji: '🌸', color: '#ec9ab9' },
+  summer: { label: 'Summer',      emoji: '☀️', color: '#d49232' },
+  fall:   { label: 'Fall',        emoji: '🍂', color: '#b5611e' },
+  winter: { label: 'Winter',      emoji: '❄️', color: '#5ba0c8' },
 };
 
 // ── Animal types ──────────────────────────────────────────────────────────────

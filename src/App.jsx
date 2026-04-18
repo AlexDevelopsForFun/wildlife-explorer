@@ -125,24 +125,24 @@ const SOURCE_LONG = {
   estimated:   'Park Records',
 };
 
-// Sources demoted to a single muted tone — they render as a footer line
-// ("via NPS, iNat") rather than colored pills competing with rarity.
+// Source attribution — quiet tint + small glyph so provenance is legible but
+// doesn't compete with the rarity signal for attention.
 const SOURCE_COLORS = {
-  ebird:       '#6b7280',
-  inaturalist: '#6b7280',
+  ebird:       '#4a7a8a',
+  inaturalist: '#5a7a4a',
   gbif:        '#6b7280',
-  nps:         '#6b7280',
+  nps:         '#5c6f52',
   static:      '#6b7280',
-  estimated:   '#6b7280',
+  estimated:   '#9ca3af',
 };
 
 const SOURCE_ICONS = {
-  ebird:       '',
-  inaturalist: '',
-  gbif:        '',
-  nps:         '',
-  static:      '',
-  estimated:   '',
+  ebird:       '🔭',
+  inaturalist: '🌿',
+  gbif:        '🌐',
+  nps:         '🏛️',
+  static:      '📋',
+  estimated:   '📊',
 };
 
 const SOURCE_TOOLTIPS = {
@@ -174,7 +174,7 @@ const DESC_SOURCE_LABEL = {
 
 // ── Year-round display config ─────────────────────────────────────────────────
 // Not part of SEASONS (which drives the filter dropdown) — display-only.
-const YEAR_ROUND_DISPLAY = { label: 'Year Round', emoji: '', color: '#6b7280' };
+const YEAR_ROUND_DISPLAY = { label: 'Year Round', emoji: '🌀', color: '#6b7280' };
 
 // ── State name → postal code reverse lookup ───────────────────────────────────
 // The PublicaMundi GeoJSON uses full state names (e.g. "New Jersey") not codes.
@@ -531,7 +531,7 @@ function CategoryDropdowns({ categoryType, setCategoryType, categorySubtype, set
 }
 
 // ── Species search component ──────────────────────────────────────────────────
-function SpeciesSearch({ suggestions, query, onChange, onSelect, onClear, hasFilter }) {
+function SpeciesSearch({ suggestions, query, onChange, onSelect, onClear, hasFilter, categoryActive, categoryLabel }) {
   const [activeIdx,    setActiveIdx]    = useState(-1);
   const [showDropdown, setShowDropdown] = useState(false);
   const containerRef = useRef(null);
@@ -566,6 +566,10 @@ function SpeciesSearch({ suggestions, query, onChange, onSelect, onClear, hasFil
     }
   };
 
+  const placeholder = categoryActive
+    ? `Browse ${categoryLabel?.toLowerCase() ?? 'species'} or search by name…`
+    : 'Find parks with… (e.g., Bald Eagle)';
+
   return (
     <div className="sp-search" ref={containerRef}>
       <div className="sp-search__bar">
@@ -573,10 +577,11 @@ function SpeciesSearch({ suggestions, query, onChange, onSelect, onClear, hasFil
         <input
           className="sp-search__input"
           type="search"
-          placeholder="Find parks with… (e.g., Bald Eagle)"
+          placeholder={placeholder}
           value={query}
           onChange={e => { onChange(e.target.value); setShowDropdown(true); setActiveIdx(-1); }}
-          onFocus={() => { if (query.trim().length >= 2) setShowDropdown(true); }}
+          onFocus={() => { if (query.trim().length >= 2 || categoryActive) setShowDropdown(true); }}
+          onClick={() => { if (query.trim().length >= 2 || categoryActive) setShowDropdown(true); }}
           onKeyDown={handleKeyDown}
           aria-label="Search species to filter parks"
           autoComplete="off"
@@ -590,6 +595,11 @@ function SpeciesSearch({ suggestions, query, onChange, onSelect, onClear, hasFil
       </div>
       {showDropdown && suggestions.length > 0 && (
         <ul className="sp-search__dropdown" role="listbox">
+          {categoryActive && query.trim().length < 2 && (
+            <li className="sp-search__kicker" aria-hidden="true">
+              Top {categoryLabel?.toLowerCase() ?? 'species'} — click to filter parks
+            </li>
+          )}
           {suggestions.map((s, i) => (
             <li key={s.name}
               className={`sp-search__item${i === activeIdx ? ' sp-search__item--active' : ''}`}
@@ -856,6 +866,23 @@ const RARITY_FREQ_FALLBACK = {
   unlikely: 0.15, rare: 0.04, exceptional: 0.01,
 };
 
+// Convert per-season encounter probabilities (0–1, from eBird Status & Trends)
+// into a pseudo-histogram (percentages summing to 100) for the badge display.
+// Marked isBuiltIn so the UI doesn't append the "~est" flag — this is real data.
+function freqFromBuiltInSeasonFrequencies(sf) {
+  if (!sf) return null;
+  const keys = ['spring', 'summer', 'fall', 'winter'];
+  const total = keys.reduce((sum, k) => sum + (sf[k] ?? 0), 0);
+  if (total <= 0) return null;
+  const out = { _source: 'ebird_st' };
+  for (const k of keys) {
+    const v = sf[k];
+    if (v == null) continue;
+    out[k] = Math.round((v / total) * 100);
+  }
+  return out;
+}
+
 function estimateSeasonalFreqFromField(frequency, seasons, rarity) {
   const f = frequency ?? RARITY_FREQ_FALLBACK[rarity] ?? null;
   if (!f || f <= 0 || !seasons?.length) return null;
@@ -1089,6 +1116,7 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, hig
               className={`rarity-badge${r.star ? ' rarity-badge--exceptional' : ''}`}
               style={{ color: r.color, background: r.color + '14', borderColor: r.color + '33' }}
             >
+              {r.emoji && <span className="rarity-badge__glyph" aria-hidden="true">{r.emoji}</span>}
               {r.label}{r.probability ? ` · ${r.probability}` : ''}{r.star ? ' ✦' : ''}
               {/* Confidence dot — signals how much data backs this rating. */}
               {animal.confidence && CONFIDENCE_UI[animal.confidence] && (
@@ -1115,13 +1143,20 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, hig
               const sciKey = animal.scientificName?.toLowerCase();
               // histFreq: null = fetched but <5 obs; undefined = not yet fetched / no sciName
               const histFreq = sciKey ? seasonalFreqs?.[sciKey] : undefined;
+              // Priority: live iNat histogram > prebuilt eBird S&T > rarity-tier estimate.
+              // Using the prebuilt S&T data avoids the ~est flag for ~19k birds where
+              // seasonal probabilities were computed at build time.
+              const builtInFreq = histFreq == null
+                ? freqFromBuiltInSeasonFrequencies(animal.seasonFrequencies)
+                : null;
               const freq = (histFreq != null && histFreq !== undefined)
                 ? histFreq
-                : estimateSeasonalFreqFromField(
-                    animal.frequency ?? animal._debug?.frequency,
-                    animal.seasons,
-                    animal.rarity,
-                  );
+                : (builtInFreq
+                    ?? estimateSeasonalFreqFromField(
+                      animal.frequency ?? animal._debug?.frequency,
+                      animal.seasons,
+                      animal.rarity,
+                    ));
               if (!freq) {
                 // Exceptional animals always show a chance estimate even without season data
                 if (animal.rarity !== 'exceptional') return null;
@@ -1226,7 +1261,17 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, hig
         </div>
       )}
 
-      {/* Muted footer: seasons · migration · activity · sources — consolidated from the legacy pill row */}
+      {/* Best-time-to-view + seasons/migration/sources footer */}
+      {(() => {
+        const ap = animal.activityPeriod && ACTIVITY_PERIOD_UI[animal.activityPeriod];
+        if (!ap) return null;
+        return (
+          <div className="best-time" title={ap.tooltip}>
+            <span className="best-time__label">Best time to view</span>
+            <span className="best-time__value">{ap.emoji} {ap.label}</span>
+          </div>
+        );
+      })()}
       {(() => {
         const segments = [];
         const displaySeasons = animal.displaySeasons ?? [animal.bestSeason ?? 'spring'];
@@ -1241,21 +1286,17 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, hig
           const mb = ms ? MIGRATION_BADGES[ms] : null;
           if (mb) segments.push(<span key="mig" title={mb.tooltip}>{mb.label}</span>);
         }
-        if (animal.activityPeriod && animal.activityPeriod !== 'diurnal' && ACTIVITY_PERIOD_UI[animal.activityPeriod]) {
-          segments.push(
-            <span key="act" title={ACTIVITY_PERIOD_UI[animal.activityPeriod].tooltip}>
-              {ACTIVITY_PERIOD_UI[animal.activityPeriod].label}
-            </span>
-          );
-        }
         if (sources.length) {
-          const sourceText = 'via ' + sources.map(s => SOURCE_LABELS[s] ?? s).join(', ');
+          const sourceParts = sources.map(s => {
+            const icon = SOURCE_ICONS[s];
+            return `${icon ? icon + ' ' : ''}${SOURCE_LABELS[s] ?? s}`;
+          });
           segments.push(
             <span
               key="src"
               title={sources.length >= 2 ? 'Presence confirmed by two or more independent databases' : (SOURCE_TOOLTIPS[sources[0]] ?? '')}
             >
-              {sourceText}{sources.length >= 2 ? ' · verified' : ''}
+              via {sourceParts.join(', ')}{sources.length >= 2 ? ' · ✓ verified' : ''}
             </span>
           );
         }
@@ -1758,20 +1799,34 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
     const birds = [...top250, ...excExtras]; // total: ~250 + handful of exc. vertebrates
     if (!birds.length) return;
     let alive = true;
-    (async () => {
-      for (const bird of birds) {
-        if (!alive) break;
+    const CONCURRENCY = 6;
+    // Skip species that already have real built-in season data (eBird S&T) —
+    // their badges are accurate without a live fetch and we can drop ~19k birds
+    // worth of network calls on popup open. The lazy fetch still runs for the
+    // remainder so iNat-specific histograms get layered in when available.
+    const queue = birds.filter(b => {
+      const key = b.scientificName.toLowerCase();
+      if (freqFetchedRef.current.has(key)) return false;
+      if (b.seasonFrequencies && b.seasonFrequenciesSource === 'ebird_st') return false;
+      return true;
+    });
+    let cursor = 0;
+    const worker = async () => {
+      while (alive) {
+        const idx = cursor++;
+        if (idx >= queue.length) return;
+        const bird = queue[idx];
         const key = bird.scientificName.toLowerCase();
         if (freqFetchedRef.current.has(key)) continue;
         freqFetchedRef.current.add(key);
         const result = await fetchInatMonthlyHist(
           location.lat, location.lng, location.id, bird.scientificName,
         );
-        if (!alive) break;
+        if (!alive) return;
         setSeasonalFreqs(prev => ({ ...prev, [key]: result }));
-        await new Promise(r => setTimeout(r, 150));
       }
-    })();
+    };
+    Promise.all(Array.from({ length: CONCURRENCY }, worker));
     return () => { alive = false; };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.id, effectiveAnimals]);
@@ -2261,31 +2316,6 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
             ))}
           </select>
         )}
-        {/* Visitor-effort picker — rescales rarity for casual vs expert users */}
-        <select
-          className="lp__select lp__select--full"
-          value={visitorEffort}
-          onChange={e => setVisitorEffort(e.target.value)}
-          aria-label="Visitor experience level"
-          title="How carefully will you be looking? Affects rarity ratings."
-        >
-          <option value="auto">🎯 Auto ({(PARK_EFFORT_BASELINES[location.id] ?? DEFAULT_VISITOR_EFFORT)})</option>
-          <option value="expert">🔭 Expert (binoculars, 45-min survey)</option>
-          <option value="casual">🚶 Casual (typical tourist stop)</option>
-          <option value="drive">🚗 Drive-through (no stops)</option>
-        </select>
-        {/* Time-of-day picker — adjusts rarity per species activity period */}
-        <select
-          className="lp__select lp__select--full"
-          value={visitTime}
-          onChange={e => setVisitTime(e.target.value)}
-          aria-label="Time of day"
-          title="When you plan to visit — adjusts rarity for nocturnal and crepuscular species"
-        >
-          {Object.entries(TIME_OF_DAY_UI).map(([k, { emoji, label }]) => (
-            <option key={k} value={k}>{emoji} {label}</option>
-          ))}
-        </select>
         {/* Rarity filter — full width row */}
         <select
           className="lp__select lp__select--full"
@@ -2773,11 +2803,19 @@ export default function App() {
 
   // ── Species → parks reverse index ────────────────────────────────────────
   const allSpeciesList = useMemo(() => {
-    const map = new Map(); // name → { parks: Set<parkId>, sciName: string|null }
+    // name → { parks: Set<parkId>, sciName, animalType, subtype }
+    const map = new Map();
     for (const [parkId, data] of Object.entries(WILDLIFE_CACHE)) {
       for (const a of data.animals ?? []) {
         if (!a.name) continue;
-        if (!map.has(a.name)) map.set(a.name, { parks: new Set(), sciName: a.scientificName ?? null });
+        if (!map.has(a.name)) {
+          map.set(a.name, {
+            parks: new Set(),
+            sciName: a.scientificName ?? null,
+            animalType: a.animalType ?? null,
+            subtype: classifyAnimalSubtype(a),
+          });
+        }
         map.get(a.name).parks.add(parkId);
       }
     }
@@ -2785,6 +2823,8 @@ export default function App() {
       .map(([name, v]) => ({
         name,
         sciName:   v.sciName,
+        animalType:v.animalType,
+        subtype:   v.subtype,
         parkCount: v.parks.size,
         photoUrl:  BUNDLED_PHOTOS[name]?.url ?? null,
       }))
@@ -2793,10 +2833,26 @@ export default function App() {
   }, []);
 
   const speciesSuggestions = useMemo(() => {
-    if (speciesQuery.trim().length < 2) return [];
-    const q = speciesQuery.toLowerCase();
+    const q = speciesQuery.trim().toLowerCase();
+    const catActive = categoryType !== 'all';
+    // When neither query nor category is active, no suggestions.
+    if (q.length < 2 && !catActive) return [];
+
+    // Pre-filter by category/subtype if the user has narrowed the picker.
+    let pool = allSpeciesList;
+    if (catActive) {
+      pool = pool.filter(s => {
+        if (s.animalType !== categoryType) return false;
+        if (categorySubtype !== 'all' && s.subtype !== categorySubtype) return false;
+        return true;
+      });
+    }
+
+    // No query: browse mode — show top-20 species in the chosen category.
+    if (q.length < 2) return pool.slice(0, 20);
+
     const exact = [], sw = [], contains = [];
-    for (const s of allSpeciesList) {
+    for (const s of pool) {
       const n  = s.name.toLowerCase();
       const sc = s.sciName?.toLowerCase() ?? '';
       if (n === q)                             { exact.push(s);    continue; }
@@ -2804,8 +2860,8 @@ export default function App() {
       if (n.includes(q)   || sc.includes(q))  { contains.push(s);           }
       if (exact.length + sw.length + contains.length >= 60) break;
     }
-    return [...exact, ...sw, ...contains].slice(0, 8);
-  }, [speciesQuery, allSpeciesList]);
+    return [...exact, ...sw, ...contains].slice(0, catActive ? 20 : 8);
+  }, [speciesQuery, allSpeciesList, categoryType, categorySubtype]);
 
   const speciesFilteredParkIds = useMemo(() => {
     if (!speciesFilter) return null;
@@ -3019,6 +3075,14 @@ export default function App() {
                 onSelect={handleSpeciesSelect}
                 onClear={handleSpeciesClear}
                 hasFilter={!!speciesFilter}
+                categoryActive={categoryType !== 'all'}
+                categoryLabel={
+                  categoryType !== 'all'
+                    ? (categorySubtype !== 'all'
+                        ? (getSubtypeDefs(categoryType)?.find(s => s.key === categorySubtype)?.label ?? ANIMAL_TYPES[categoryType]?.label)
+                        : ANIMAL_TYPES[categoryType]?.label)
+                    : null
+                }
               />
             </div>
 
