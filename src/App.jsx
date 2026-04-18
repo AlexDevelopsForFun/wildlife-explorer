@@ -3117,15 +3117,11 @@ function AppInner() {
   // Shown when wildlifeCache.js still has the placeholder build date (script
   // has never been run) OR when fewer than 10 parks have > 5 bundled species.
   // The banner disappears automatically once background API fetches complete.
-  // Banner fires only for a truly unbuilt cache (placeholder date or missing
-  // bundled data) — not for a merely-old build. A bundled cache is always
-  // shipped with the app; "staleness" by age doesn't mean the UI is broken,
-  // it just means the numbers may be slightly out of date.
-  const CACHE_PLACEHOLDER_DATE = '2026-03-14T00:00:00.000Z';
-  const cacheIsUnbuilt = WILDLIFE_CACHE_BUILT_AT === CACHE_PLACEHOLDER_DATE;
-  const parksWithData  = Object.values(WILDLIFE_CACHE).filter(v => v.animals?.length > 5).length;
-  const cacheIsSparse  = parksWithData < 10;
-  const showBuildBanner = (cacheIsUnbuilt || cacheIsSparse) && !warmDone;
+  // Banner shows while live fetches are still in progress so the user has
+  // a visible signal that data is loading. On repeat visits localStorage
+  // serves most of this instantly and the banner disappears almost right
+  // away; on first visit it lingers for the ~60s warm-up.
+  const showBuildBanner = !warmDone && warmPct < 100;
 
   const activeFilterCount = [season, rarity, animalType, selectedState].filter(v => v !== 'all').length
     + (categoryType !== 'all' ? 1 : 0);
