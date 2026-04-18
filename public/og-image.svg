@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="US Wildlife Explorer — interactive map of 63 national parks">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0c3823"/>
+      <stop offset="100%" stop-color="#1a5c38"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.02"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- subtle topo lines -->
+  <g stroke="#ffffff" stroke-opacity="0.05" fill="none" stroke-width="1.5">
+    <path d="M-20 480 C 200 440, 400 520, 620 460 S 1000 420, 1220 480"/>
+    <path d="M-20 520 C 220 480, 420 560, 640 500 S 1020 460, 1220 520"/>
+    <path d="M-20 560 C 240 520, 440 600, 660 540 S 1040 500, 1220 560"/>
+    <path d="M-20 600 C 260 560, 460 640, 680 580 S 1060 540, 1220 600"/>
+  </g>
+
+  <!-- pin markers -->
+  <g font-family="'Segoe UI Emoji','Apple Color Emoji',system-ui,sans-serif" font-size="34" text-anchor="middle">
+    <circle cx="200" cy="200" r="34" fill="#ffffff"/>
+    <text x="200" y="212">🦬</text>
+    <circle cx="980" cy="170" r="34" fill="#ffffff"/>
+    <text x="980" y="182">🦅</text>
+    <circle cx="1060" cy="420" r="34" fill="#ffffff"/>
+    <text x="1060" y="432">🐻</text>
+    <circle cx="140" cy="430" r="34" fill="#ffffff"/>
+    <text x="140" y="442">🐺</text>
+  </g>
+
+  <!-- leaf accent -->
+  <g transform="translate(80,70)" font-family="system-ui,sans-serif" font-size="56">
+    <text fill="#9ee6a9">🌿</text>
+  </g>
+
+  <!-- title block -->
+  <g font-family="'Segoe UI','SF Pro Display',-apple-system,system-ui,sans-serif" fill="#ffffff">
+    <text x="600" y="305" text-anchor="middle" font-size="84" font-weight="800" letter-spacing="-1">US Wildlife Explorer</text>
+    <text x="600" y="370" text-anchor="middle" font-size="34" font-weight="500" fill="#d8efd8">63 national parks · 32,000+ species · live rarity data</text>
+  </g>
+
+  <!-- url pill -->
+  <g transform="translate(600 450)">
+    <rect x="-185" y="-30" rx="30" ry="30" width="370" height="60" fill="#ffffff"/>
+    <text x="0" y="9" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="26" font-weight="700" fill="#0c3823">wildlifeexplorer.us</text>
+  </g>
+</svg>

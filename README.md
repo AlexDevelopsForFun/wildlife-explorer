@@ -2,7 +2,7 @@
 
 **Interactive map of all 63 US National Parks with 32,000+ wildlife species, probability-based rarity ratings, and seasonal migration data.**
 
-🌐 **[wildlife-explorer-theta.vercel.app](https://wildlife-explorer-theta.vercel.app)**
+🌐 **[wildlifeexplorer.us](https://wildlifeexplorer.us)**
 
 ---
 
