@@ -125,22 +125,24 @@ const SOURCE_LONG = {
   estimated:   'Park Records',
 };
 
+// Sources demoted to a single muted tone — they render as a footer line
+// ("via NPS, iNat") rather than colored pills competing with rarity.
 const SOURCE_COLORS = {
-  ebird:       '#0891b2',
-  inaturalist: '#16a34a',
-  gbif:        '#ca8a04',
-  nps:         '#ea580c',
-  static:      '#ea580c', // same as nps — park records
-  estimated:   '#ea580c',
+  ebird:       '#6b7280',
+  inaturalist: '#6b7280',
+  gbif:        '#6b7280',
+  nps:         '#6b7280',
+  static:      '#6b7280',
+  estimated:   '#6b7280',
 };
 
 const SOURCE_ICONS = {
-  ebird:       '🐦',
-  inaturalist: '🌿',
-  gbif:        '🔬',
-  nps:         '🏛️',
-  static:      '🏛️',
-  estimated:   '🏛️',
+  ebird:       '',
+  inaturalist: '',
+  gbif:        '',
+  nps:         '',
+  static:      '',
+  estimated:   '',
 };
 
 const SOURCE_TOOLTIPS = {
@@ -172,7 +174,7 @@ const DESC_SOURCE_LABEL = {
 
 // ── Year-round display config ─────────────────────────────────────────────────
 // Not part of SEASONS (which drives the filter dropdown) — display-only.
-const YEAR_ROUND_DISPLAY = { label: 'Year Round', emoji: '🌀', color: '#6b7280' };
+const YEAR_ROUND_DISPLAY = { label: 'Year Round', emoji: '', color: '#6b7280' };
 
 // ── State name → postal code reverse lookup ───────────────────────────────────
 // The PublicaMundi GeoJSON uses full state names (e.g. "New Jersey") not codes.
@@ -449,8 +451,8 @@ const SEASONAL_EVENTS = {
 };
 
 const MONTH_LABELS = [
-  'January ❄️', 'February ❄️', 'March 🌸', 'April 🌸', 'May 🌸', 'June ☀️',
-  'July ☀️', 'August ☀️', 'September 🍂', 'October 🍂', 'November 🍂', 'December ❄️',
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
 ];
 
 function WhatActiveNow() {
@@ -474,12 +476,11 @@ function WhatActiveNow() {
   }, [msgs.length]);
 
   return (
-    <div className="active-now" aria-live="polite" aria-atomic="true">
-      <span className="active-now__season">{MONTH_LABELS[month]}</span>
-      <span className="active-now__sep">·</span>
-      <span className={`active-now__msg${faded ? ' active-now__msg--out' : ''}`}>
+    <div className="active-now-card" aria-live="polite" aria-atomic="true">
+      <div className="active-now-card__kicker">Happening in {MONTH_LABELS[month]}</div>
+      <div className={`active-now-card__msg${faded ? ' active-now-card__msg--out' : ''}`}>
         {msgs[idx]}
-      </span>
+      </div>
     </div>
   );
 }
@@ -658,12 +659,12 @@ function AboutModal({ onClose, scrollTo }) {
               <p>Our rarity ratings represent the <strong>estimated probability of seeing an animal on a single-day visit</strong> to the park.</p>
 
               <div className="about-rarity-grid">
-                <div className="about-rarity-item"><span className="about-badge" style={{color:'#1d4ed8',background:'#1d4ed818',borderColor:'#1d4ed844'}}>🔵 Guaranteed</span> <span className="about-rarity-pct">90%+</span> Almost certain to see</div>
-                <div className="about-rarity-item"><span className="about-badge" style={{color:'#15803d',background:'#15803d18',borderColor:'#15803d44'}}>🟢 Very Likely</span> <span className="about-rarity-pct">60-90%</span> Probably will see</div>
-                <div className="about-rarity-item"><span className="about-badge" style={{color:'#b45309',background:'#b4530918',borderColor:'#b4530944'}}>🟡 Likely</span> <span className="about-rarity-pct">30-60%</span> Good chance</div>
-                <div className="about-rarity-item"><span className="about-badge" style={{color:'#c2410c',background:'#c2410c18',borderColor:'#c2410c44'}}>🟠 Unlikely</span> <span className="about-rarity-pct">10-30%</span> Possible with luck</div>
-                <div className="about-rarity-item"><span className="about-badge" style={{color:'#b91c1c',background:'#b91c1c18',borderColor:'#b91c1c44'}}>🔴 Rare</span> <span className="about-rarity-pct">2-10%</span> Lucky sighting</div>
-                <div className="about-rarity-item"><span className="about-badge" style={{color:'#7c3aed',background:'#7c3aed18',borderColor:'#7c3aed44'}}>⭐ Exceptional</span> <span className="about-rarity-pct">&lt;2%</span> Once in a lifetime</div>
+                <div className="about-rarity-item"><span className="about-badge" style={{color:'#1a6640',background:'#1a664018',borderColor:'#1a664044'}}>Guaranteed</span> <span className="about-rarity-pct">90%+</span> Almost certain to see</div>
+                <div className="about-rarity-item"><span className="about-badge" style={{color:'#4a8557',background:'#4a855718',borderColor:'#4a855744'}}>Very Likely</span> <span className="about-rarity-pct">60-90%</span> Probably will see</div>
+                <div className="about-rarity-item"><span className="about-badge" style={{color:'#8a7a3e',background:'#8a7a3e18',borderColor:'#8a7a3e44'}}>Likely</span> <span className="about-rarity-pct">30-60%</span> Good chance</div>
+                <div className="about-rarity-item"><span className="about-badge" style={{color:'#a06a44',background:'#a06a4418',borderColor:'#a06a4444'}}>Unlikely</span> <span className="about-rarity-pct">10-30%</span> Possible with luck</div>
+                <div className="about-rarity-item"><span className="about-badge" style={{color:'#9a5248',background:'#9a524818',borderColor:'#9a524844'}}>Rare</span> <span className="about-rarity-pct">2-10%</span> Lucky sighting</div>
+                <div className="about-rarity-item"><span className="about-badge" style={{color:'#7a4e6e',background:'#7a4e6e18',borderColor:'#7a4e6e44'}}>Exceptional</span> <span className="about-rarity-pct">&lt;2%</span> Once in a lifetime</div>
               </div>
 
               <h4 className="about-subsection">Data by Category</h4>
@@ -869,25 +870,26 @@ function estimateSeasonalFreqFromField(frequency, seasons, rarity) {
 }
 
 // ── Migration status badge config ─────────────────────────────────────────────
+// Migration status demoted to grayscale — status folds into the season string.
 const MIGRATION_BADGES = {
   migratory: {
-    emoji: '🔀', label: 'Migratory',
-    color: '#0369a1',
+    emoji: '', label: 'Migratory',
+    color: '#6b7280',
     tooltip: 'Passes through during migration — timing your visit to peak migration windows increases your chances of seeing this species',
   },
   partial: {
-    emoji: '🌤️', label: 'Summer Resident',
-    color: '#b45309',
+    emoji: '', label: 'Summer Resident',
+    color: '#6b7280',
     tooltip: 'Breeds here in summer and migrates south for winter — best seen May through August',
   },
   winter_visitor: {
-    emoji: '❄️', label: 'Winter Visitor',
-    color: '#6366f1',
+    emoji: '', label: 'Winter Visitor',
+    color: '#6b7280',
     tooltip: 'Arrives from the north in fall and winters here — best seen November through March',
   },
   year_round: {
-    emoji: '🏠', label: 'Year Round',
-    color: '#15803d',
+    emoji: '', label: 'Year Round',
+    color: '#6b7280',
     tooltip: 'Lives here year round — can be seen on any visit',
   },
 };
@@ -1073,10 +1075,10 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, hig
         </div>
 
         <div className="animal-card__meta">
-          {/* Common name + type chip */}
+          {/* Common name + muted type label */}
           <div className="animal-card__name">
             {animal.name}
-            {t && <span className="type-chip" style={{ background: t.color + '20', color: t.color }}>{t.emoji}</span>}
+            {t && <span className="type-label">{t.label}</span>}
           </div>
           {/* Scientific name subtitle — shown when available */}
           {animal.scientificName && (
@@ -1085,9 +1087,9 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, hig
           <div className="animal-card__badges">
             <span
               className={`rarity-badge${r.star ? ' rarity-badge--exceptional' : ''}`}
-              style={{ color: r.color, background: r.color + '18', borderColor: r.color + '44' }}
+              style={{ color: r.color, background: r.color + '14', borderColor: r.color + '33' }}
             >
-              {r.emoji} {r.label}{r.probability ? ` · ${r.probability}` : ''}{r.star ? ' ✦' : ''}
+              {r.label}{r.probability ? ` · ${r.probability}` : ''}{r.star ? ' ✦' : ''}
               {/* Confidence dot — signals how much data backs this rating. */}
               {animal.confidence && CONFIDENCE_UI[animal.confidence] && (
                 <span
@@ -1095,7 +1097,7 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, hig
                   style={{ color: CONFIDENCE_UI[animal.confidence].color }}
                   title={CONFIDENCE_UI[animal.confidence].tooltip}
                   aria-label={`${animal.confidence} confidence`}
-                >{CONFIDENCE_UI[animal.confidence].emoji}</span>
+                />
               )}
             </span>
             {openAbout && (
@@ -1106,43 +1108,6 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, hig
                 aria-label="How is this calculated?"
               >?</button>
             )}
-            {/* Activity-period badge — hide for plain diurnal to cut noise. */}
-            {animal.activityPeriod && animal.activityPeriod !== 'diurnal' && ACTIVITY_PERIOD_UI[animal.activityPeriod] && (
-              <span
-                className={`activity-badge activity-badge--${animal.activityPeriod}`}
-                title={ACTIVITY_PERIOD_UI[animal.activityPeriod].tooltip}
-              >
-                {ACTIVITY_PERIOD_UI[animal.activityPeriod].emoji} {ACTIVITY_PERIOD_UI[animal.activityPeriod].label}
-              </span>
-            )}
-            {/* Multi-season badges: one per season, or single 🌀 Year Round */}
-            {(animal.displaySeasons ?? [animal.bestSeason ?? 'spring']).map(sk => {
-              const sd = (sk === 'year-round' || sk === 'year_round')
-                ? YEAR_ROUND_DISPLAY
-                : (SEASONS[sk] ?? SEASONS.spring);
-              return (
-                <span key={sk} className="season-badge" style={{ color: sd.color, background: sd.color + '18', borderColor: sd.color + '44' }}>
-                  {sd.emoji} {sd.label}
-                </span>
-              );
-            })}
-            {/* Migration status badge — birds only.
-                Uses explicit migrationStatus if set, otherwise derives from seasons. */}
-            {animal.animalType === 'bird' && (() => {
-              const ms = animal.migrationStatus ?? deriveMigrationStatus(animal.seasons);
-              if (!ms) return null;
-              const mb = MIGRATION_BADGES[ms];
-              if (!mb) return null;
-              return (
-                <span
-                  className="migration-badge"
-                  style={{ color: mb.color, background: mb.color + '18', borderColor: mb.color + '44' }}
-                  title={mb.tooltip}
-                >
-                  {mb.emoji} {mb.label}
-                </span>
-              );
-            })()}
             {/* Seasonal frequency percentages — all animal types.
                 Primary source: iNat monthly histogram (fetched lazily, 30-day cache).
                 Fallback: estimate from overall frequency field spread across active seasons. */}
@@ -1168,7 +1133,7 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, hig
                     className="exceptional-chance"
                     title="Exceptional sightings are documented but extremely rare — most visitors never see this animal"
                   >
-                    ⭐ ~{pct}% chance per visit
+                    ~{pct}% chance per visit
                     <span className="freq-est-flag" title="Estimated from rarity tier">~est</span>
                     {fetchInFlight && (
                       <span className="freq-loading" title="Loading accurate seasonal data from iNaturalist…">↻</span>
@@ -1178,7 +1143,7 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, hig
               }
               const isEstimated = freq._estimated === true;
               const SEASON_KEYS = ['spring', 'summer', 'fall', 'winter'];
-              const SEASON_EMOJI = { spring: '🌸', summer: '☀️', fall: '🍂', winter: '❄️' };
+              const SEASON_LABEL = { spring: 'Spring', summer: 'Summer', fall: 'Fall', winter: 'Winter' };
               const validSeasons = (animal.seasons?.includes('year_round') || animal.seasons?.includes('year-round'))
                 ? SEASON_KEYS
                 : SEASON_KEYS.filter(s => animal.seasons?.includes(s));
@@ -1200,7 +1165,7 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, hig
                           ? `~${pct}% estimated presence in ${s} (from overall encounter rate)`
                           : `${pct}% of iNaturalist observations were recorded in ${s}`}
                       >
-                        {SEASON_EMOJI[s]} {pct}%
+                        {SEASON_LABEL[s]} {pct}%
                       </span>
                     );
                   })}
@@ -1261,27 +1226,51 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, hig
         </div>
       )}
 
-      {/* Source tags — one badge per source; multiple when confirmed by >1 API */}
-      <div className="source-tags">
-        {sources.map(srcKey => {
-          const color = SOURCE_COLORS[srcKey] ?? '#6b7280';
-          return (
-            <span
-              key={srcKey}
-              className="source-tag"
-              style={{ background: color + '18', color, borderColor: color + '44' }}
-              title={SOURCE_TOOLTIPS[srcKey] ?? srcKey}
-            >
-              {SOURCE_ICONS[srcKey] ?? '🏛️'} {SOURCE_LABELS[srcKey] ?? srcKey}
+      {/* Muted footer: seasons · migration · activity · sources — consolidated from the legacy pill row */}
+      {(() => {
+        const segments = [];
+        const displaySeasons = animal.displaySeasons ?? [animal.bestSeason ?? 'spring'];
+        if (displaySeasons.length) {
+          const seasonText = (displaySeasons.includes('year-round') || displaySeasons.includes('year_round'))
+            ? 'Year-round'
+            : displaySeasons.map(sk => (SEASONS[sk]?.label ?? sk)).join(' · ');
+          segments.push(<span key="season">{seasonText}</span>);
+        }
+        if (animal.animalType === 'bird') {
+          const ms = animal.migrationStatus ?? deriveMigrationStatus(animal.seasons);
+          const mb = ms ? MIGRATION_BADGES[ms] : null;
+          if (mb) segments.push(<span key="mig" title={mb.tooltip}>{mb.label}</span>);
+        }
+        if (animal.activityPeriod && animal.activityPeriod !== 'diurnal' && ACTIVITY_PERIOD_UI[animal.activityPeriod]) {
+          segments.push(
+            <span key="act" title={ACTIVITY_PERIOD_UI[animal.activityPeriod].tooltip}>
+              {ACTIVITY_PERIOD_UI[animal.activityPeriod].label}
             </span>
           );
-        })}
-        {sources.length >= 2 && (
-          <span className="verified-badge" title="Presence confirmed by two or more independent databases">
-            ✓ Verified
-          </span>
-        )}
-      </div>
+        }
+        if (sources.length) {
+          const sourceText = 'via ' + sources.map(s => SOURCE_LABELS[s] ?? s).join(', ');
+          segments.push(
+            <span
+              key="src"
+              title={sources.length >= 2 ? 'Presence confirmed by two or more independent databases' : (SOURCE_TOOLTIPS[sources[0]] ?? '')}
+            >
+              {sourceText}{sources.length >= 2 ? ' · verified' : ''}
+            </span>
+          );
+        }
+        if (!segments.length) return null;
+        return (
+          <div className="animal-card__footer">
+            {segments.map((seg, i) => (
+              <span key={i} className="animal-card__footer-seg">
+                {seg}
+                {i < segments.length - 1 && <span className="animal-card__footer-sep"> · </span>}
+              </span>
+            ))}
+          </div>
+        );
+      })()}
 
       {/* Debug panel — only shown when debug mode is active (D key) */}
       {debugMode && (
@@ -1388,12 +1377,12 @@ function ExceptionalCard({ animal, seasonalFreqs, location }) {
         <div className="exceptional-card__info">
           <div className="exceptional-card__name">
             {animal.name}
-            {t && <span className="type-chip" style={{ background: t.color + '20', color: t.color }}>{t.emoji}</span>}
+            {t && <span className="type-label">{t.label}</span>}
           </div>
           {animal.scientificName && (
             <div className="animal-card__scientific">{animal.scientificName}</div>
           )}
-          <span className="rarity-badge rarity-badge--exceptional" style={{ color: '#7c3aed', background: '#7c3aed18', borderColor: '#7c3aed44' }}>
+          <span className="rarity-badge rarity-badge--exceptional" style={{ color: '#7a4e6e', background: '#7a4e6e14', borderColor: '#7a4e6e33' }}>
             ⭐ Exceptional
           </span>
           {/* Exceptional chance — single prominent line; always shown for exceptional tier */}
@@ -1489,29 +1478,19 @@ function ExceptionalCard({ animal, seasonalFreqs, location }) {
         </div>
       )}
 
-      {/* Source badges — same logic as AnimalCard */}
+      {/* Muted footer: sources only — exceptionals rarely have season data worth surfacing here */}
       {(() => {
         const excSources = resolveAnimalSources(animal);
+        if (!excSources.length) return null;
+        const sourceText = 'via ' + excSources.map(s => SOURCE_LABELS[s] ?? s).join(', ');
         return (
-          <div className="source-tags">
-            {excSources.map(srcKey => {
-              const color = SOURCE_COLORS[srcKey] ?? '#6b7280';
-              return (
-                <span
-                  key={srcKey}
-                  className="source-tag"
-                  style={{ background: color + '18', color, borderColor: color + '44' }}
-                  title={SOURCE_TOOLTIPS[srcKey] ?? srcKey}
-                >
-                  {SOURCE_ICONS[srcKey] ?? '🏛️'} {SOURCE_LABELS[srcKey] ?? srcKey}
-                </span>
-              );
-            })}
-            {excSources.length >= 2 && (
-              <span className="verified-badge" title="Presence confirmed by two or more independent databases">
-                ✓ Verified
-              </span>
-            )}
+          <div className="animal-card__footer">
+            <span
+              className="animal-card__footer-seg"
+              title={excSources.length >= 2 ? 'Presence confirmed by two or more independent databases' : (SOURCE_TOOLTIPS[excSources[0]] ?? '')}
+            >
+              {sourceText}{excSources.length >= 2 ? ' · verified' : ''}
+            </span>
           </div>
         );
       })()}
@@ -1537,13 +1516,15 @@ function formatCacheAge(ts) {
 // ── Rarity Spectrum Bar ────────────────────────────────────────────────────────
 // A proportional horizontal bar showing how many animals are in each rarity tier.
 // Clicking a segment filters to that rarity. Shows total count on hover.
+// Sequential ramp matches RARITY in wildlifeData.js. The spectrum serves double
+// duty: it filters on click AND shows the park's actual rarity composition.
 const SPECTRUM_CONFIG = [
-  { key: 'guaranteed',  color: '#1a7a3c', label: 'Guaranteed',  emoji: '🔵' },
-  { key: 'very_likely', color: '#2d9e56', label: 'Very Likely', emoji: '🟢' },
-  { key: 'likely',      color: '#5aab3f', label: 'Likely',      emoji: '🟡' },
-  { key: 'unlikely',    color: '#e0820a', label: 'Unlikely',    emoji: '🟠' },
-  { key: 'rare',        color: '#c0392b', label: 'Rare',        emoji: '🔴' },
-  { key: 'exceptional', color: '#7c3aed', label: 'Exceptional', emoji: '⭐' },
+  { key: 'guaranteed',  color: '#1a6640', label: 'Guaranteed',  emoji: '' },
+  { key: 'very_likely', color: '#4a8557', label: 'Very Likely', emoji: '' },
+  { key: 'likely',      color: '#8a7a3e', label: 'Likely',      emoji: '' },
+  { key: 'unlikely',    color: '#a06a44', label: 'Unlikely',    emoji: '' },
+  { key: 'rare',        color: '#9a5248', label: 'Rare',        emoji: '' },
+  { key: 'exceptional', color: '#7a4e6e', label: 'Exceptional', emoji: '' },
 ];
 
 function RaritySpectrumBar({ animals, activeRarity, onSelectRarity }) {
@@ -1558,8 +1539,12 @@ function RaritySpectrumBar({ animals, activeRarity, onSelectRarity }) {
 
   return (
     <div className="rarity-spectrum">
+      <div className="rarity-spectrum__axis">
+        <span className="rarity-spectrum__axis-left">← more likely</span>
+        <span className="rarity-spectrum__axis-right">less likely →</span>
+      </div>
       <div className="rarity-spectrum__bar">
-        {SPECTRUM_CONFIG.map(({ key, color, label, emoji }) => {
+        {SPECTRUM_CONFIG.map(({ key, color, label }) => {
           const count = counts[key] ?? 0;
           if (count === 0) return null;
           const pct = (count / total * 100).toFixed(1);
@@ -1569,7 +1554,7 @@ function RaritySpectrumBar({ animals, activeRarity, onSelectRarity }) {
               key={key}
               className={`rarity-spectrum__seg${isActive ? ' rarity-spectrum__seg--active' : ''}`}
               style={{ flex: count, background: color + (isActive ? '' : 'cc'), outline: isActive ? `2px solid ${color}` : 'none' }}
-              title={`${emoji} ${label}: ${count} species (${pct}%) — click to filter`}
+              title={`${label}: ${count} species (${pct}%) — click to filter`}
               onClick={() => onSelectRarity(isActive ? 'all' : key)}
               aria-pressed={isActive}
             />
@@ -1577,25 +1562,26 @@ function RaritySpectrumBar({ animals, activeRarity, onSelectRarity }) {
         })}
       </div>
       <div className="rarity-spectrum__legend">
-        {SPECTRUM_CONFIG.map(({ key, color, label, emoji }) => {
+        {SPECTRUM_CONFIG.map(({ key, color, label }) => {
           const count = counts[key] ?? 0;
           if (count === 0) return null;
+          const isActive = activeRarity === key;
           return (
             <button
               key={key}
-              className={`rarity-spectrum__pill${activeRarity === key ? ' rarity-spectrum__pill--active' : ''}`}
+              className={`rarity-spectrum__tier${isActive ? ' rarity-spectrum__tier--active' : ''}`}
               style={{ '--seg-color': color }}
-              onClick={() => onSelectRarity(activeRarity === key ? 'all' : key)}
+              onClick={() => onSelectRarity(isActive ? 'all' : key)}
               title={`Filter to ${label} only`}
             >
-              <span className="rarity-spectrum__dot" style={{ background: color }} />
-              {count}
+              <span className="rarity-spectrum__tier-label">{label}</span>
+              <span className="rarity-spectrum__tier-count">· {count}</span>
             </button>
           );
         })}
         {activeRarity !== 'all' && (
           <button className="rarity-spectrum__clear" onClick={() => onSelectRarity('all')}>
-            ✕ all
+            clear
           </button>
         )}
       </div>
@@ -2931,7 +2917,6 @@ export default function App() {
   }, [visibleLocations, visibleNpsParks, speciesFilteredParkIds, categoryFilteredParkIds]);
 
   const liveCount  = Object.keys(liveData).length;
-  const showPill   = season !== 'all' || rarity !== 'all' || animalType !== 'all' || selectedState !== 'all';
 
   // ── Cache warming progress bar ────────────────────────────────────────────
   // Tracks how many locations have data (cache hit or API response) vs total.
@@ -3107,7 +3092,7 @@ export default function App() {
               onChange={e => setSelectedState(e.target.value)}
               aria-label="Filter by state"
             >
-              <option value="all">🗺️ All States</option>
+              <option value="all">All States</option>
               {allStateCodes.map(code => (
                 <option key={code} value={code}>{STATE_NAMES[code] ?? code}</option>
               ))}
@@ -3167,7 +3152,7 @@ export default function App() {
               value={selectedState}
               onChange={e => setSelectedState(e.target.value)}
               aria-label="Filter by state">
-              <option value="all">🗺️ All States</option>
+              <option value="all">All States</option>
               {allStateCodes.map(code => (
                 <option key={code} value={code}>{STATE_NAMES[code] ?? code}</option>
               ))}
@@ -3176,11 +3161,10 @@ export default function App() {
         </div>
       </div>
 
-      {/* ── What's Active Now rotating banner ── */}
-      <WhatActiveNow />
-
       {/* ── Map ── */}
       <main className="map-wrap">
+        {/* What's Active Now — floating corner card (top-right) */}
+        <WhatActiveNow />
         {/* Zoom prompt — fades out after 3.5 s */}
         {showZoomHint && <div className="zoom-hint">Zoom in to explore parks</div>}
         <MapContainer center={[39.5, -98.35]} zoom={4} style={{ height: '100%', width: '100%' }}>
@@ -3291,7 +3275,7 @@ export default function App() {
           <div className="filter-pills-stack">
             {speciesFilter && (
               <div className="species-pill">
-                <span className="species-pill__label">🔍 {speciesFilter}</span>
+                <span className="species-pill__label">{speciesFilter}</span>
                 <span className="species-pill__count">{allVisibleLocations.length} park{allVisibleLocations.length !== 1 ? 's' : ''}</span>
                 <button className="species-pill__clear" onClick={handleSpeciesClear} aria-label="Clear species filter">✕</button>
               </div>
@@ -3299,7 +3283,6 @@ export default function App() {
             {categoryType !== 'all' && (
               <div className="species-pill species-pill--category">
                 <span className="species-pill__label">
-                  {ANIMAL_TYPES[categoryType].emoji}{' '}
                   {categorySubtype !== 'all'
                     ? (getSubtypeDefs(categoryType)?.find(s => s.key === categorySubtype)?.label ?? ANIMAL_TYPES[categoryType].label)
                     : ANIMAL_TYPES[categoryType].label}
@@ -3314,16 +3297,6 @@ export default function App() {
           <div className="species-no-results">No parks found with "{speciesFilter}"</div>
         )}
 
-        {/* Active-filter summary pill */}
-        {showPill && (
-          <div className="filter-pill" aria-live="polite">
-            {season !== 'all' && <span>{SEASONS[season].emoji} {SEASONS[season].label}</span>}
-            {rarity !== 'all' && <><span className="filter-pill__sep">·</span><span>{RARITY[rarity].emoji} {RARITY[rarity].label}</span></>}
-            {animalType !== 'all' && <><span className="filter-pill__sep">·</span><span>{ANIMAL_TYPES[animalType].emoji} {ANIMAL_TYPES[animalType].label}</span></>}
-            {selectedState !== 'all' && <><span className="filter-pill__sep">·</span><span>📍 {STATE_NAMES[selectedState]}</span></>}
-            <span className="filter-pill__count">{visibleLocations.length} spot{visibleLocations.length !== 1 ? 's' : ''}</span>
-          </div>
-        )}
       </main>
 
       {/* ── About modal ── */}
