@@ -960,6 +960,10 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, hig
     // Zone override (most specific)
     if (activeZone && animal.zones?.[activeZone]) {
       const z = animal.zones[activeZone];
+      // Zone × season: if both are active, prefer the zone's per-season freq.
+      if (activeSeason && z.seasonFrequencies?.[activeSeason] != null) {
+        return rescale(z.rarity, z.seasonFrequencies[activeSeason]);
+      }
       return rescale(z.rarity, z.frequency);
     }
 
@@ -970,6 +974,11 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, hig
                         seasons.includes('year_round') ||
                         seasons.includes('year-round');
       if (!hasSeason) return 'exceptional';
+      // Prefer built-in seasonFrequencies (eBird S&T, 4-season probabilities).
+      if (animal.seasonFrequencies?.[activeSeason] != null) {
+        return rescale(animal.rarity, animal.seasonFrequencies[activeSeason]);
+      }
+      // Fallback to runtime-fetched iNat monthly histogram.
       const sciKey = animal.scientificName?.toLowerCase();
       const seasonFreq = sciKey ? seasonalFreqs?.[sciKey]?.[activeSeason] : null;
       if (seasonFreq != null && seasonFreq > 0) {

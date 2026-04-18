@@ -27,6 +27,7 @@ import { fileURLToPath } from 'url';
 import { dirname, join }  from 'path';
 import { fromArrayBuffer } from 'geotiff';
 import proj4 from 'proj4';
+import { PARK_ZONES } from '../src/data/parkZones.js';
 
 // ── CLI flags ──────────────────────────────────────────────────────────────
 const ARGS            = process.argv.slice(2);
@@ -147,6 +148,7 @@ async function extractOccurrence(tiffPath, lat, lng) {
   const bbox = image.getBoundingBox();
   const w    = image.getWidth();
   const h    = image.getHeight();
+  const samples = image.getSamplesPerPixel();
 
   const [easting, northing] = proj4('EPSG:4326', EQUAL_EARTH, [lng, lat]);
   const px = Math.round((easting  - bbox[0]) / (bbox[2] - bbox[0]) * w);
@@ -160,13 +162,24 @@ async function extractOccurrence(tiffPath, lat, lng) {
   ];
   const data = await image.readRasters({ window: win });
 
-  const result = {};
-  for (let b = 0; b < 4; b++) {
-    const season = BAND_SEASON[b];
-    const vals   = Array.from(data[b]).filter(v => isFinite(v) && v > 0 && v <= 1);
-    result[season] = vals.length > 0 ? vals.reduce((a, x) => a + x, 0) / vals.length : 0;
+  // S&T seasonal TIFFs can be 4-band (per-season) or 1-band (annual mean for
+  // residents like Common Raven where S&T publishes only a single surface).
+  // Normalize both to a 4-season object.
+  if (samples >= 4 && Array.isArray(data) && data.length >= 4) {
+    const result = {};
+    for (let b = 0; b < 4; b++) {
+      const season = BAND_SEASON[b];
+      const vals   = Array.from(data[b]).filter(v => isFinite(v) && v > 0 && v <= 1);
+      result[season] = vals.length > 0 ? vals.reduce((a, x) => a + x, 0) / vals.length : 0;
+    }
+    return result;
   }
-  return result;   // { summer, winter, spring, fall }
+
+  // 1-band (resident) path — use the single surface as a year-round estimate.
+  const band0 = Array.isArray(data) ? data[0] : data;
+  const vals = Array.from(band0).filter(v => isFinite(v) && v > 0 && v <= 1);
+  const mean = vals.length > 0 ? vals.reduce((a, x) => a + x, 0) / vals.length : 0;
+  return { summer: mean, winter: mean, spring: mean, fall: mean };
 }
 
 // ── Park coordinates (lat/lng of geographic center) ───────────────────────
@@ -259,7 +272,11 @@ console.log(`\n   Downloads: ${downloadCount} new, ${cacheHit} cached, ${missing
 console.log('\nApplying S&T rarity updates to cache…');
 
 let totalUpgrades = 0, totalDowngrades = 0, totalSeasonUpdates = 0;
+let totalSeasonFreqs = 0, totalZoneFreqs = 0;
 const parkReports = [];
+
+// Round seasonal frequencies to 4 decimals to keep the bundled cache readable.
+const roundFreq = (v) => v == null ? null : Number(v.toFixed(4));
 
 for (const parkId of parks) {
   const coords = parkCoords[parkId];
@@ -268,7 +285,8 @@ for (const parkId of parks) {
     continue;
   }
 
-  let upgrades = 0, downgrades = 0, seasonChanges = 0;
+  let upgrades = 0, downgrades = 0, seasonChanges = 0, seasonFreqWrites = 0, zoneFreqWrites = 0;
+  const zoneList = PARK_ZONES[parkId] ?? null;
 
   cache[parkId].animals = await Promise.all(cache[parkId].animals.map(async (animal) => {
     if (animal.animalType !== 'bird' || !animal.scientificName) return animal;
@@ -328,24 +346,79 @@ for (const parkId of parks) {
       }
     }
 
+    // ── Per-season frequency (gap K) ──────────────────────────────────────
+    // S&T occurrence is a true encounter probability per checklist — store
+    // all 4 bands so the UI can render rarity per season without a runtime
+    // iNat fetch.
+    const seasonFrequencies = {
+      spring: roundFreq(occ.spring),
+      summer: roundFreq(occ.summer),
+      fall:   roundFreq(occ.fall),
+      winter: roundFreq(occ.winter),
+    };
+    updatedAnimal = {
+      ...updatedAnimal,
+      seasonFrequencies,
+      seasonFrequenciesSource: 'ebird_st',
+    };
+    seasonFreqWrites++;
+
+    // ── Per-zone frequency (gap A extension) ──────────────────────────────
+    // For zoned mega-parks, sample the raster at each zone centroid and
+    // store zone-specific bird rarity. This replaces the bbox-iNat zone
+    // path for birds, which is far less accurate at zone granularity.
+    if (zoneList) {
+      const zones = { ...(updatedAnimal.zones ?? {}) };
+      for (const zone of zoneList) {
+        try {
+          const zoneOcc = await extractOccurrence(tiffPath, zone.lat, zone.lng);
+          const zoneMax = Math.max(...SEASON_KEYS.map(s => zoneOcc[s]));
+          if (zoneMax >= 0.005) {
+            zones[zone.id] = {
+              rarity:    rarityFromProb(zoneMax),
+              frequency: roundFreq(zoneMax),
+              seasonFrequencies: {
+                spring: roundFreq(zoneOcc.spring),
+                summer: roundFreq(zoneOcc.summer),
+                fall:   roundFreq(zoneOcc.fall),
+                winter: roundFreq(zoneOcc.winter),
+              },
+              source: 'ebird_st',
+            };
+            zoneFreqWrites++;
+          }
+        } catch {
+          // skip this zone — coords may fall outside raster
+        }
+      }
+      if (Object.keys(zones).length > 0) {
+        updatedAnimal = { ...updatedAnimal, zones };
+      }
+    }
+
     return updatedAnimal;
   }));
 
   totalUpgrades   += upgrades;
   totalDowngrades += downgrades;
   totalSeasonUpdates += seasonChanges;
+  totalSeasonFreqs += seasonFreqWrites;
+  totalZoneFreqs   += zoneFreqWrites;
 
-  if (upgrades + downgrades + seasonChanges > 0) {
-    parkReports.push({ parkId, upgrades, downgrades, seasonChanges });
-    console.log(`  ${parkId}: ⬆${upgrades} upgraded, ⬇${downgrades} downgraded, 📅${seasonChanges} season updates`);
+  if (upgrades + downgrades + seasonChanges + seasonFreqWrites > 0) {
+    parkReports.push({ parkId, upgrades, downgrades, seasonChanges, seasonFreqWrites, zoneFreqWrites });
+    const zoneNote = zoneList ? `, 📍${zoneFreqWrites} zone freqs` : '';
+    console.log(`  ${parkId}: ⬆${upgrades} upgraded, ⬇${downgrades} downgraded, 📅${seasonChanges} season updates, 📊${seasonFreqWrites} season freqs${zoneNote}`);
   }
 }
 
 // ── Final stats ────────────────────────────────────────────────────────────
 console.log(`\n${'─'.repeat(60)}`);
-console.log(`Total upgrades:       ${totalUpgrades}`);
-console.log(`Total downgrades:     ${totalDowngrades} (${ALLOW_DOWNGRADES ? 'enabled' : 'suppressed — use --allow-downgrades'})`);
-console.log(`Total season updates: ${totalSeasonUpdates}`);
+console.log(`Total upgrades:        ${totalUpgrades}`);
+console.log(`Total downgrades:      ${totalDowngrades} (${ALLOW_DOWNGRADES ? 'enabled' : 'suppressed — use --allow-downgrades'})`);
+console.log(`Total season updates:  ${totalSeasonUpdates}`);
+console.log(`Seasonal freq writes:  ${totalSeasonFreqs}`);
+console.log(`Zone freq writes:      ${totalZoneFreqs}`);
 console.log(`${'─'.repeat(60)}`);
 
 const zeroGuar = allParkIds.filter(id => !cache[id].animals.some(a => a.rarity === 'guaranteed'));
