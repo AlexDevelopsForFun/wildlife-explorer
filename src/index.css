@@ -1797,6 +1797,54 @@ body, #root {
 }
 .migration-badge:hover { opacity: 1; }
 
+/* ── Confidence dot — inline inside rarity badge ──────────────────────────── */
+.confidence-dot {
+  display: inline-block;
+  margin-left: 5px;
+  font-size: 8px;
+  line-height: 1;
+  vertical-align: middle;
+  cursor: help;
+  opacity: 0.85;
+}
+.confidence-dot:hover { opacity: 1; }
+.confidence-dot--high   { font-weight: 900; }
+.confidence-dot--medium { font-weight: 700; }
+.confidence-dot--low    { font-weight: 400; }
+
+/* ── Activity-period badge ──────────────────────────────────────────────── */
+.activity-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  background: rgba(148, 163, 184, 0.1);
+  color: #64748b;
+  letter-spacing: 0.02em;
+  cursor: help;
+  opacity: 0.9;
+}
+.activity-badge:hover { opacity: 1; }
+.activity-badge--crepuscular {
+  color: #c2410c;
+  background: rgba(194, 65, 12, 0.08);
+  border-color: rgba(194, 65, 12, 0.35);
+}
+.activity-badge--nocturnal {
+  color: #4338ca;
+  background: rgba(67, 56, 202, 0.08);
+  border-color: rgba(67, 56, 202, 0.35);
+}
+.activity-badge--cathemeral {
+  color: #0891b2;
+  background: rgba(8, 145, 178, 0.08);
+  border-color: rgba(8, 145, 178, 0.35);
+}
+
 /* ── Seasonal frequency badges ───────────────────────────────────────────── */
 .seasonal-freq {
   display: flex;

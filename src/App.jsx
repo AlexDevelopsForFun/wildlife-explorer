@@ -23,6 +23,8 @@ import { useSecondaryCache } from './hooks/useSecondaryCache.js';
 import { fetchAnimalPhoto } from './services/photoService';
 import { BUNDLED_PHOTOS } from './data/photoCache.js';
 import { needsGeneratedDescription } from './services/descriptionService';
+import { ACTIVITY_PERIOD_UI, CONFIDENCE_UI, rarityFromFrequency } from './data/speciesMetadata.js';
+import { getParkZones } from './data/parkZones.js';
 
 // ── Park type colors & icons ──────────────────────────────────────────────────
 const PARK_COLORS = { nationalPark: '#7B5B2E' };
@@ -931,8 +933,27 @@ function resolveAnimalSources(animal) {
 }
 
 // ── Animal card ───────────────────────────────────────────────────────────────
-function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, highlightSpecies }) {
-  const r = RARITY[animal.rarity] ?? RARITY.rare;
+function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, highlightSpecies, activeSeason }) {
+  // Season-aware rarity — when a specific season is active, derive a tier from
+  // per-season iNat histogram (if we've fetched it) or from whether the species
+  // is even typically present in that season. Falls back to stored rarity.
+  const seasonAdjustedRarity = useMemo(() => {
+    if (!activeSeason) return animal.rarity;
+    const seasons = animal.displaySeasons ?? animal.seasons ?? [];
+    const hasSeason = seasons.includes(activeSeason) ||
+                      seasons.includes('year_round') ||
+                      seasons.includes('year-round');
+    if (!hasSeason) return 'exceptional';  // species not typically in this season
+    // If we have per-season frequency from iNat histogram, use it.
+    const sciKey = animal.scientificName?.toLowerCase();
+    const seasonFreq = sciKey ? seasonalFreqs?.[sciKey]?.[activeSeason] : null;
+    if (seasonFreq != null && seasonFreq > 0) {
+      return rarityFromFrequency(seasonFreq / 100);
+    }
+    return animal.rarity;
+  }, [animal, activeSeason, seasonalFreqs]);
+
+  const r = RARITY[seasonAdjustedRarity] ?? RARITY.rare;
   const t = ANIMAL_TYPES[animal.animalType];
 
   const sources     = resolveAnimalSources(animal);
@@ -1027,6 +1048,15 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, hig
               style={{ color: r.color, background: r.color + '18', borderColor: r.color + '44' }}
             >
               {r.emoji} {r.label}{r.probability ? ` · ${r.probability}` : ''}{r.star ? ' ✦' : ''}
+              {/* Confidence dot — signals how much data backs this rating. */}
+              {animal.confidence && CONFIDENCE_UI[animal.confidence] && (
+                <span
+                  className={`confidence-dot confidence-dot--${animal.confidence}`}
+                  style={{ color: CONFIDENCE_UI[animal.confidence].color }}
+                  title={CONFIDENCE_UI[animal.confidence].tooltip}
+                  aria-label={`${animal.confidence} confidence`}
+                >{CONFIDENCE_UI[animal.confidence].emoji}</span>
+              )}
             </span>
             {openAbout && (
               <button
@@ -1035,6 +1065,15 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, hig
                 title="Learn how we calculate encounter probability"
                 aria-label="How is this calculated?"
               >?</button>
+            )}
+            {/* Activity-period badge — hide for plain diurnal to cut noise. */}
+            {animal.activityPeriod && animal.activityPeriod !== 'diurnal' && ACTIVITY_PERIOD_UI[animal.activityPeriod] && (
+              <span
+                className={`activity-badge activity-badge--${animal.activityPeriod}`}
+                title={ACTIVITY_PERIOD_UI[animal.activityPeriod].tooltip}
+              >
+                {ACTIVITY_PERIOD_UI[animal.activityPeriod].emoji} {ACTIVITY_PERIOD_UI[animal.activityPeriod].label}
+              </span>
             )}
             {/* Multi-season badges: one per season, or single 🌀 Year Round */}
             {(animal.displaySeasons ?? [animal.bestSeason ?? 'spring']).map(sk => {
@@ -2228,7 +2267,7 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
                 <div className="lp__showing-count">
                   Showing {Math.min(displayLimit, filtered.length)} of {filtered.length} {typeLabel}
                 </div>
-                {visibleList.map((a, i) => <AnimalCard key={`${a.name}-${i}`} animal={a} debugMode={debugMode} seasonalFreqs={seasonalFreqs} location={location} openAbout={openAbout} highlightSpecies={highlightSpecies} />)}
+                {visibleList.map((a, i) => <AnimalCard key={`${a.name}-${i}`} animal={a} debugMode={debugMode} seasonalFreqs={seasonalFreqs} location={location} openAbout={openAbout} highlightSpecies={highlightSpecies} activeSeason={popupSeason !== 'all' ? popupSeason : null} />)}
                 {hasMore && (
                   <div className="lp__load-more-row">
                     <button className="lp__load-more-btn" onClick={() => setDisplayLimit(d => d + 50)}>
