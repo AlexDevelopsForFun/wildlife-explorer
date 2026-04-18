@@ -3117,13 +3117,15 @@ function AppInner() {
   // Shown when wildlifeCache.js still has the placeholder build date (script
   // has never been run) OR when fewer than 10 parks have > 5 bundled species.
   // The banner disappears automatically once background API fetches complete.
+  // Banner fires only for a truly unbuilt cache (placeholder date or missing
+  // bundled data) — not for a merely-old build. A bundled cache is always
+  // shipped with the app; "staleness" by age doesn't mean the UI is broken,
+  // it just means the numbers may be slightly out of date.
   const CACHE_PLACEHOLDER_DATE = '2026-03-14T00:00:00.000Z';
-  const cacheBuildAge  = Date.now() - new Date(WILDLIFE_CACHE_BUILT_AT).getTime();
-  const cacheIsStale   = WILDLIFE_CACHE_BUILT_AT === CACHE_PLACEHOLDER_DATE ||
-                         cacheBuildAge > 7 * 24 * 60 * 60 * 1000;
+  const cacheIsUnbuilt = WILDLIFE_CACHE_BUILT_AT === CACHE_PLACEHOLDER_DATE;
   const parksWithData  = Object.values(WILDLIFE_CACHE).filter(v => v.animals?.length > 5).length;
   const cacheIsSparse  = parksWithData < 10;
-  const showBuildBanner = (cacheIsStale || cacheIsSparse) && !warmDone;
+  const showBuildBanner = (cacheIsUnbuilt || cacheIsSparse) && !warmDone;
 
   const activeFilterCount = [season, rarity, animalType, selectedState].filter(v => v !== 'all').length
     + (categoryType !== 'all' ? 1 : 0);
@@ -3142,8 +3144,8 @@ function AppInner() {
       {showBuildBanner && (
         <div className="build-banner" role="status" aria-live="polite">
           <span className="build-banner__dot" aria-hidden="true" />
-          🌿 Building wildlife database for first-time use — fetching live species data for all parks…
-          <span className="build-banner__sub">This takes about 60 seconds once, then loads instantly forever.</span>
+          🌿 Loading wildlife data — fetching live species info for all parks…
+          <span className="build-banner__sub">This takes about 60 seconds. Future visits load much faster from your browser cache.</span>
         </div>
       )}
 
