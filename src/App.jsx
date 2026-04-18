@@ -933,27 +933,35 @@ function resolveAnimalSources(animal) {
 }
 
 // ── Animal card ───────────────────────────────────────────────────────────────
-function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, highlightSpecies, activeSeason }) {
-  // Season-aware rarity — when a specific season is active, derive a tier from
-  // per-season iNat histogram (if we've fetched it) or from whether the species
-  // is even typically present in that season. Falls back to stored rarity.
-  const seasonAdjustedRarity = useMemo(() => {
+function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, highlightSpecies, activeSeason, activeZone }) {
+  // Combined zone- + season-aware rarity.
+  //   1. If an activeZone is selected AND we have zone-specific data for this
+  //      species, the zone's tier wins (iNat bbox-queried data is more precise
+  //      than park-wide averaging).
+  //   2. Otherwise if an activeSeason is selected, derive tier from the per-
+  //      season iNat histogram, falling back to 'exceptional' when the species
+  //      is not typically in the season.
+  //   3. Otherwise use the stored park-level rarity.
+  const displayRarity = useMemo(() => {
+    // Zone override
+    if (activeZone && animal.zones?.[activeZone]?.rarity) {
+      return animal.zones[activeZone].rarity;
+    }
     if (!activeSeason) return animal.rarity;
     const seasons = animal.displaySeasons ?? animal.seasons ?? [];
     const hasSeason = seasons.includes(activeSeason) ||
                       seasons.includes('year_round') ||
                       seasons.includes('year-round');
-    if (!hasSeason) return 'exceptional';  // species not typically in this season
-    // If we have per-season frequency from iNat histogram, use it.
+    if (!hasSeason) return 'exceptional';
     const sciKey = animal.scientificName?.toLowerCase();
     const seasonFreq = sciKey ? seasonalFreqs?.[sciKey]?.[activeSeason] : null;
     if (seasonFreq != null && seasonFreq > 0) {
       return rarityFromFrequency(seasonFreq / 100);
     }
     return animal.rarity;
-  }, [animal, activeSeason, seasonalFreqs]);
+  }, [animal, activeSeason, activeZone, seasonalFreqs]);
 
-  const r = RARITY[seasonAdjustedRarity] ?? RARITY.rare;
+  const r = RARITY[displayRarity] ?? RARITY.rare;
   const t = ANIMAL_TYPES[animal.animalType];
 
   const sources     = resolveAnimalSources(animal);
@@ -1581,6 +1589,11 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
   useEffect(() => { setSearch(''); }, [location.id]);
   const searchTrackTimerRef = useRef(null);
 
+  // Zone filter (only used for mega-parks with zones defined in parkZones.js)
+  const availableZones = useMemo(() => getParkZones(location.id), [location.id]);
+  const [popupZone, setPopupZone] = useState('all');
+  useEffect(() => { setPopupZone('all'); }, [location.id]);
+
   // Mobile-only filter panel open/close state
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   useEffect(() => { setMobileFiltersOpen(false); }, [location.id]);
@@ -1801,7 +1814,7 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
 
   // Reset paging whenever the location or any filter changes
   useEffect(() => { setDisplayLimit(25); }, [location.id]);
-  useEffect(() => { setDisplayLimit(25); }, [activeTypes, popupSubtype, popupSeason, popupRarity, search, popupSort]);
+  useEffect(() => { setDisplayLimit(25); }, [activeTypes, popupSubtype, popupSeason, popupRarity, popupZone, search, popupSort]);
 
   // Popup-local filtering + sorting (independent of global header filters).
   // Returns the full sorted list — slicing is handled in render based on state.
@@ -1829,7 +1842,14 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
       });
     }
 
-    if (popupRarity !== 'all') result = result.filter(a => a.rarity === popupRarity);
+    if (popupRarity !== 'all') {
+      // When a zone is active, filter by the zone's effective rarity (if known),
+      // so the rarity filter matches the tier the card actually displays.
+      result = result.filter(a => {
+        const effective = (popupZone !== 'all' && a.zones?.[popupZone]?.rarity) || a.rarity;
+        return effective === popupRarity;
+      });
+    }
 
     if (search.trim()) {
       const q = search.toLowerCase();
@@ -1863,7 +1883,7 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
       || popupSeason !== 'all' || popupRarity !== 'all' || !!search.trim();
 
     return { display: result, isFiltered };
-  }, [enriched, activeTypes, popupSubtype, popupSeason, popupRarity, search, popupSort, focusedType]);
+  }, [enriched, activeTypes, popupSubtype, popupSeason, popupRarity, popupZone, search, popupSort, focusedType]);
 
   // Exceptional animals for the Rare Finds section — fully filter-aware.
   // Applies the same type / subtype / season / search filters as the main list
@@ -2192,6 +2212,20 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
             ))}
           </select>
         </div>
+        {availableZones && availableZones.length > 1 && (
+          <select
+            className="lp__select lp__select--full"
+            value={popupZone}
+            onChange={e => setPopupZone(e.target.value)}
+            aria-label="Zone filter"
+            title="Show rarity specific to this zone of the park"
+          >
+            <option value="all">🗺️ Whole park</option>
+            {availableZones.map(z => (
+              <option key={z.id} value={z.id}>📍 {z.label}</option>
+            ))}
+          </select>
+        )}
         {/* Rarity filter — full width row */}
         <select
           className="lp__select lp__select--full"
@@ -2267,7 +2301,7 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
                 <div className="lp__showing-count">
                   Showing {Math.min(displayLimit, filtered.length)} of {filtered.length} {typeLabel}
                 </div>
-                {visibleList.map((a, i) => <AnimalCard key={`${a.name}-${i}`} animal={a} debugMode={debugMode} seasonalFreqs={seasonalFreqs} location={location} openAbout={openAbout} highlightSpecies={highlightSpecies} activeSeason={popupSeason !== 'all' ? popupSeason : null} />)}
+                {visibleList.map((a, i) => <AnimalCard key={`${a.name}-${i}`} animal={a} debugMode={debugMode} seasonalFreqs={seasonalFreqs} location={location} openAbout={openAbout} highlightSpecies={highlightSpecies} activeSeason={popupSeason !== 'all' ? popupSeason : null} activeZone={popupZone !== 'all' ? popupZone : null} />)}
                 {hasMore && (
                   <div className="lp__load-more-row">
                     <button className="lp__load-more-btn" onClick={() => setDisplayLimit(d => d + 50)}>

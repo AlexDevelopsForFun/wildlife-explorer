@@ -1,0 +1,1367 @@
+{
+  "built": "2026-04-18T16:12:25.415Z",
+  "window_days": 90,
+  "parks": {
+    "yellowstone": {
+      "inat_species_observed": 49,
+      "tiers": {
+        "guaranteed": {
+          "total": 2,
+          "observed": 1,
+          "observed_rate": 0.5,
+          "expected_rate": 0.95,
+          "miscalibration": -0.45
+        },
+        "unlikely": {
+          "total": 494,
+          "observed": 14,
+          "observed_rate": 0.028,
+          "expected_rate": 0.2,
+          "miscalibration": -0.172
+        },
+        "likely": {
+          "total": 75,
+          "observed": 11,
+          "observed_rate": 0.147,
+          "expected_rate": 0.45,
+          "miscalibration": -0.303
+        },
+        "very_likely": {
+          "total": 18,
+          "observed": 7,
+          "observed_rate": 0.389,
+          "expected_rate": 0.75,
+          "miscalibration": -0.361
+        },
+        "rare": {
+          "total": 134,
+          "observed": 5,
+          "observed_rate": 0.037,
+          "expected_rate": 0.06,
+          "miscalibration": -0.023
+        },
+        "exceptional": {
+          "total": 14,
+          "observed": 1,
+          "observed_rate": 0.071,
+          "expected_rate": 0.01,
+          "miscalibration": 0.061
+        }
+      }
+    },
+    "everglades": {
+      "inat_species_observed": 272,
+      "tiers": {
+        "guaranteed": {
+          "total": 3,
+          "observed": 3,
+          "observed_rate": 1,
+          "expected_rate": 0.95,
+          "miscalibration": 0.05
+        },
+        "unlikely": {
+          "total": 339,
+          "observed": 81,
+          "observed_rate": 0.239,
+          "expected_rate": 0.2,
+          "miscalibration": 0.039
+        },
+        "likely": {
+          "total": 194,
+          "observed": 125,
+          "observed_rate": 0.644,
+          "expected_rate": 0.45,
+          "miscalibration": 0.194
+        },
+        "rare": {
+          "total": 83,
+          "observed": 13,
+          "observed_rate": 0.157,
+          "expected_rate": 0.06,
+          "miscalibration": 0.097
+        },
+        "very_likely": {
+          "total": 2,
+          "observed": 1,
+          "observed_rate": 0.5,
+          "expected_rate": 0.75,
+          "miscalibration": -0.25
+        },
+        "exceptional": {
+          "total": 66,
+          "observed": 2,
+          "observed_rate": 0.03,
+          "expected_rate": 0.01,
+          "miscalibration": 0.02
+        }
+      }
+    },
+    "acadia": {
+      "inat_species_observed": 50,
+      "tiers": {
+        "likely": {
+          "total": 38,
+          "observed": 4,
+          "observed_rate": 0.105,
+          "expected_rate": 0.45,
+          "miscalibration": -0.345
+        },
+        "unlikely": {
+          "total": 571,
+          "observed": 38,
+          "observed_rate": 0.067,
+          "expected_rate": 0.2,
+          "miscalibration": -0.133
+        },
+        "guaranteed": {
+          "total": 1,
+          "observed": 1,
+          "observed_rate": 1,
+          "expected_rate": 0.95,
+          "miscalibration": 0.05
+        },
+        "very_likely": {
+          "total": 1,
+          "observed": 1,
+          "observed_rate": 1,
+          "expected_rate": 0.75,
+          "miscalibration": 0.25
+        },
+        "rare": {
+          "total": 132,
+          "observed": 5,
+          "observed_rate": 0.038,
+          "expected_rate": 0.06,
+          "miscalibration": -0.022
+        },
+        "exceptional": {
+          "total": 15,
+          "observed": 0,
+          "observed_rate": 0,
+          "expected_rate": 0.01,
+          "miscalibration": -0.01
+        }
+      }
+    },
+    "shenandoah": {
+      "inat_species_observed": 115,
+      "tiers": {
+        "guaranteed": {
+          "total": 1,
+          "observed": 1,
+          "observed_rate": 1,
+          "expected_rate": 0.95,
+          "miscalibration": 0.05
+        },
+        "likely": {
+          "total": 62,
+          "observed": 20,
+          "observed_rate": 0.323,
+          "expected_rate": 0.45,
+          "miscalibration": -0.127
+        },
+        "unlikely": {
+          "total": 338,
+          "observed": 43,
+          "observed_rate": 0.127,
+          "expected_rate": 0.2,
+          "miscalibration": -0.073
+        },
+        "very_likely": {
+          "total": 1,
+          "observed": 1,
+          "observed_rate": 1,
+          "expected_rate": 0.75,
+          "miscalibration": 0.25
+        },
+        "rare": {
+          "total": 57,
+          "observed": 2,
+          "observed_rate": 0.035,
+          "expected_rate": 0.06,
+          "miscalibration": -0.025
+        },
+        "exceptional": {
+          "total": 18,
+          "observed": 0,
+          "observed_rate": 0,
+          "expected_rate": 0.01,
+          "miscalibration": -0.01
+        }
+      }
+    },
+    "newrivergorge": {
+      "inat_species_observed": 71,
+      "tiers": {
+        "likely": {
+          "total": 11,
+          "observed": 5,
+          "observed_rate": 0.455,
+          "expected_rate": 0.45,
+          "miscalibration": 0.005
+        },
+        "unlikely": {
+          "total": 542,
+          "observed": 44,
+          "observed_rate": 0.081,
+          "expected_rate": 0.2,
+          "miscalibration": -0.119
+        },
+        "guaranteed": {
+          "total": 1,
+          "observed": 1,
+          "observed_rate": 1,
+          "expected_rate": 0.95,
+          "miscalibration": 0.05
+        },
+        "rare": {
+          "total": 101,
+          "observed": 3,
+          "observed_rate": 0.03,
+          "expected_rate": 0.06,
+          "miscalibration": -0.03
+        },
+        "exceptional": {
+          "total": 25,
+          "observed": 2,
+          "observed_rate": 0.08,
+          "expected_rate": 0.01,
+          "miscalibration": 0.07
+        }
+      }
+    },
+    "greatsmokymountains": {
+      "inat_species_observed": 287,
+      "tiers": {
+        "guaranteed": {
+          "total": 1,
+          "observed": 1,
+          "observed_rate": 1,
+          "expected_rate": 0.95,
+          "miscalibration": 0.05
+        },
+        "very_likely": {
+          "total": 2,
+          "observed": 1,
+          "observed_rate": 0.5,
+          "expected_rate": 0.75,
+          "miscalibration": -0.25
+        },
+        "likely": {
+          "total": 95,
+          "observed": 58,
+          "observed_rate": 0.611,
+          "expected_rate": 0.45,
+          "miscalibration": 0.161
+        },
+        "unlikely": {
+          "total": 374,
+          "observed": 112,
+          "observed_rate": 0.299,
+          "expected_rate": 0.2,
+          "miscalibration": 0.099
+        },
+        "rare": {
+          "total": 72,
+          "observed": 17,
+          "observed_rate": 0.236,
+          "expected_rate": 0.06,
+          "miscalibration": 0.176
+        },
+        "exceptional": {
+          "total": 44,
+          "observed": 5,
+          "observed_rate": 0.114,
+          "expected_rate": 0.01,
+          "miscalibration": 0.104
+        }
+      }
+    },
+    "biscayne": {
+      "inat_species_observed": 68,
+      "tiers": {
+        "unlikely": {
+          "total": 320,
+          "observed": 53,
+          "observed_rate": 0.166,
+          "expected_rate": 0.2,
+          "miscalibration": -0.034
+        },
+        "likely": {
+          "total": 8,
+          "observed": 4,
+          "observed_rate": 0.5,
+          "expected_rate": 0.45,
+          "miscalibration": 0.05
+        },
+        "rare": {
+          "total": 171,
+          "observed": 4,
+          "observed_rate": 0.023,
+          "expected_rate": 0.06,
+          "miscalibration": -0.037
+        },
+        "very_likely": {
+          "total": 2,
+          "observed": 2,
+          "observed_rate": 1,
+          "expected_rate": 0.75,
+          "miscalibration": 0.25
+        },
+        "exceptional": {
+          "total": 131,
+          "observed": 0,
+          "observed_rate": 0,
+          "expected_rate": 0.01,
+          "miscalibration": -0.01
+        }
+      }
+    },
+    "drytortugas": {
+      "inat_species_observed": 63,
+      "tiers": {
+        "exceptional": {
+          "total": 50,
+          "observed": 0,
+          "observed_rate": 0,
+          "expected_rate": 0.01,
+          "miscalibration": -0.01
+        },
+        "unlikely": {
+          "total": 271,
+          "observed": 55,
+          "observed_rate": 0.203,
+          "expected_rate": 0.2,
+          "miscalibration": 0.003
+        },
+        "guaranteed": {
+          "total": 2,
+          "observed": 1,
+          "observed_rate": 0.5,
+          "expected_rate": 0.95,
+          "miscalibration": -0.45
+        },
+        "very_likely": {
+          "total": 1,
+          "observed": 1,
+          "observed_rate": 1,
+          "expected_rate": 0.75,
+          "miscalibration": 0.25
+        },
+        "likely": {
+          "total": 5,
+          "observed": 1,
+          "observed_rate": 0.2,
+          "expected_rate": 0.45,
+          "miscalibration": -0.25
+        },
+        "rare": {
+          "total": 107,
+          "observed": 2,
+          "observed_rate": 0.019,
+          "expected_rate": 0.06,
+          "miscalibration": -0.041
+        }
+      }
+    },
+    "congaree": {
+      "inat_species_observed": 185,
+      "tiers": {
+        "guaranteed": {
+          "total": 2,
+          "observed": 2,
+          "observed_rate": 1,
+          "expected_rate": 0.95,
+          "miscalibration": 0.05
+        },
+        "unlikely": {
+          "total": 327,
+          "observed": 111,
+          "observed_rate": 0.339,
+          "expected_rate": 0.2,
+          "miscalibration": 0.139
+        },
+        "likely": {
+          "total": 23,
+          "observed": 11,
+          "observed_rate": 0.478,
+          "expected_rate": 0.45,
+          "miscalibration": 0.028
+        },
+        "rare": {
+          "total": 97,
+          "observed": 12,
+          "observed_rate": 0.124,
+          "expected_rate": 0.06,
+          "miscalibration": 0.064
+        },
+        "exceptional": {
+          "total": 26,
+          "observed": 4,
+          "observed_rate": 0.154,
+          "expected_rate": 0.01,
+          "miscalibration": 0.144
+        }
+      }
+    },
+    "mammothcave": {
+      "inat_species_observed": 72,
+      "tiers": {
+        "guaranteed": {
+          "total": 1,
+          "observed": 1,
+          "observed_rate": 1,
+          "expected_rate": 0.95,
+          "miscalibration": 0.05
+        },
+        "likely": {
+          "total": 9,
+          "observed": 6,
+          "observed_rate": 0.667,
+          "expected_rate": 0.45,
+          "miscalibration": 0.217
+        },
+        "unlikely": {
+          "total": 316,
+          "observed": 39,
+          "observed_rate": 0.123,
+          "expected_rate": 0.2,
+          "miscalibration": -0.077
+        },
+        "rare": {
+          "total": 167,
+          "observed": 6,
+          "observed_rate": 0.036,
+          "expected_rate": 0.06,
+          "miscalibration": -0.024
+        },
+        "exceptional": {
+          "total": 23,
+          "observed": 1,
+          "observed_rate": 0.043,
+          "expected_rate": 0.01,
+          "miscalibration": 0.033
+        }
+      }
+    },
+    "indianadunes": {
+      "inat_species_observed": 82,
+      "tiers": {
+        "unlikely": {
+          "total": 400,
+          "observed": 69,
+          "observed_rate": 0.172,
+          "expected_rate": 0.2,
+          "miscalibration": -0.028
+        },
+        "very_likely": {
+          "total": 1,
+          "observed": 0,
+          "observed_rate": 0,
+          "expected_rate": 0.75,
+          "miscalibration": -0.75
+        },
+        "likely": {
+          "total": 23,
+          "observed": 7,
+          "observed_rate": 0.304,
+          "expected_rate": 0.45,
+          "miscalibration": -0.146
+        },
+        "rare": {
+          "total": 94,
+          "observed": 4,
+          "observed_rate": 0.043,
+          "expected_rate": 0.06,
+          "miscalibration": -0.017
+        },
+        "guaranteed": {
+          "total": 1,
+          "observed": 1,
+          "observed_rate": 1,
+          "expected_rate": 0.95,
+          "miscalibration": 0.05
+        },
+        "exceptional": {
+          "total": 22,
+          "observed": 0,
+          "observed_rate": 0,
+          "expected_rate": 0.01,
+          "miscalibration": -0.01
+        }
+      }
+    },
+    "grandcanyon": {
+      "inat_species_observed": 121,
+      "tiers": {
+        "exceptional": {
+          "total": 40,
+          "observed": 2,
+          "observed_rate": 0.05,
+          "expected_rate": 0.01,
+          "miscalibration": 0.04
+        },
+        "guaranteed": {
+          "total": 1,
+          "observed": 1,
+          "observed_rate": 1,
+          "expected_rate": 0.95,
+          "miscalibration": 0.05
+        },
+        "likely": {
+          "total": 72,
+          "observed": 30,
+          "observed_rate": 0.417,
+          "expected_rate": 0.45,
+          "miscalibration": -0.033
+        },
+        "unlikely": {
+          "total": 253,
+          "observed": 53,
+          "observed_rate": 0.209,
+          "expected_rate": 0.2,
+          "miscalibration": 0.009
+        },
+        "very_likely": {
+          "total": 2,
+          "observed": 2,
+          "observed_rate": 1,
+          "expected_rate": 0.75,
+          "miscalibration": 0.25
+        },
+        "rare": {
+          "total": 142,
+          "observed": 10,
+          "observed_rate": 0.07,
+          "expected_rate": 0.06,
+          "miscalibration": 0.01
+        }
+      }
+    },
+    "zion": {
+      "inat_species_observed": 131,
+      "tiers": {
+        "unlikely": {
+          "total": 265,
+          "observed": 75,
+          "observed_rate": 0.283,
+          "expected_rate": 0.2,
+          "miscalibration": 0.083
+        },
+        "likely": {
+          "total": 12,
+          "observed": 10,
+          "observed_rate": 0.833,
+          "expected_rate": 0.45,
+          "miscalibration": 0.383
+        },
+        "very_likely": {
+          "total": 1,
+          "observed": 1,
+          "observed_rate": 1,
+          "expected_rate": 0.75,
+          "miscalibration": 0.25
+        },
+        "guaranteed": {
+          "total": 1,
+          "observed": 1,
+          "observed_rate": 1,
+          "expected_rate": 0.95,
+          "miscalibration": 0.05
+        },
+        "rare": {
+          "total": 157,
+          "observed": 21,
+          "observed_rate": 0.134,
+          "expected_rate": 0.06,
+          "miscalibration": 0.074
+        },
+        "exceptional": {
+          "total": 53,
+          "observed": 3,
+          "observed_rate": 0.057,
+          "expected_rate": 0.01,
+          "miscalibration": 0.047
+        }
+      }
+    },
+    "arches": {
+      "inat_species_observed": 57,
+      "tiers": {
+        "unlikely": {
+          "total": 195,
+          "observed": 31,
+          "observed_rate": 0.159,
+          "expected_rate": 0.2,
+          "miscalibration": -0.041
+        },
+        "guaranteed": {
+          "total": 1,
+          "observed": 1,
+          "observed_rate": 1,
+          "expected_rate": 0.95,
+          "miscalibration": 0.05
+        },
+        "likely": {
+          "total": 12,
+          "observed": 7,
+          "observed_rate": 0.583,
+          "expected_rate": 0.45,
+          "miscalibration": 0.133
+        },
+        "rare": {
+          "total": 113,
+          "observed": 5,
+          "observed_rate": 0.044,
+          "expected_rate": 0.06,
+          "miscalibration": -0.016
+        },
+        "very_likely": {
+          "total": 1,
+          "observed": 0,
+          "observed_rate": 0,
+          "expected_rate": 0.75,
+          "miscalibration": -0.75
+        },
+        "exceptional": {
+          "total": 84,
+          "observed": 7,
+          "observed_rate": 0.083,
+          "expected_rate": 0.01,
+          "miscalibration": 0.073
+        }
+      }
+    },
+    "petrifiedforest": {
+      "inat_species_observed": 42,
+      "tiers": {
+        "likely": {
+          "total": 35,
+          "observed": 10,
+          "observed_rate": 0.286,
+          "expected_rate": 0.45,
+          "miscalibration": -0.164
+        },
+        "guaranteed": {
+          "total": 1,
+          "observed": 1,
+          "observed_rate": 1,
+          "expected_rate": 0.95,
+          "miscalibration": 0.05
+        },
+        "unlikely": {
+          "total": 265,
+          "observed": 16,
+          "observed_rate": 0.06,
+          "expected_rate": 0.2,
+          "miscalibration": -0.14
+        },
+        "very_likely": {
+          "total": 1,
+          "observed": 1,
+          "observed_rate": 1,
+          "expected_rate": 0.75,
+          "miscalibration": 0.25
+        },
+        "rare": {
+          "total": 137,
+          "observed": 9,
+          "observed_rate": 0.066,
+          "expected_rate": 0.06,
+          "miscalibration": 0.006
+        },
+        "exceptional": {
+          "total": 78,
+          "observed": 1,
+          "observed_rate": 0.013,
+          "expected_rate": 0.01,
+          "miscalibration": 0.003
+        }
+      }
+    },
+    "saguaro": {
+      "inat_species_observed": 225,
+      "tiers": {
+        "guaranteed": {
+          "total": 1,
+          "observed": 1,
+          "observed_rate": 1,
+          "expected_rate": 0.95,
+          "miscalibration": 0.05
+        },
+        "very_likely": {
+          "total": 2,
+          "observed": 2,
+          "observed_rate": 1,
+          "expected_rate": 0.75,
+          "miscalibration": 0.25
+        },
+        "likely": {
+          "total": 182,
+          "observed": 80,
+          "observed_rate": 0.44,
+          "expected_rate": 0.45,
+          "miscalibration": -0.01
+        },
+        "unlikely": {
+          "total": 355,
+          "observed": 86,
+          "observed_rate": 0.242,
+          "expected_rate": 0.2,
+          "miscalibration": 0.042
+        },
+        "rare": {
+          "total": 52,
+          "observed": 2,
+          "observed_rate": 0.038,
+          "expected_rate": 0.06,
+          "miscalibration": -0.022
+        },
+        "exceptional": {
+          "total": 8,
+          "observed": 0,
+          "observed_rate": 0,
+          "expected_rate": 0.01,
+          "miscalibration": -0.01
+        }
+      }
+    },
+    "guadalupemountains": {
+      "inat_species_observed": 70,
+      "tiers": {
+        "likely": {
+          "total": 10,
+          "observed": 7,
+          "observed_rate": 0.7,
+          "expected_rate": 0.45,
+          "miscalibration": 0.25
+        },
+        "unlikely": {
+          "total": 327,
+          "observed": 39,
+          "observed_rate": 0.119,
+          "expected_rate": 0.2,
+          "miscalibration": -0.081
+        },
+        "rare": {
+          "total": 149,
+          "observed": 9,
+          "observed_rate": 0.06,
+          "expected_rate": 0.06,
+          "miscalibration": 0
+        },
+        "very_likely": {
+          "total": 1,
+          "observed": 1,
+          "observed_rate": 1,
+          "expected_rate": 0.75,
+          "miscalibration": 0.25
+        },
+        "exceptional": {
+          "total": 23,
+          "observed": 1,
+          "observed_rate": 0.043,
+          "expected_rate": 0.01,
+          "miscalibration": 0.033
+        }
+      }
+    },
+    "bigbend": {
+      "inat_species_observed": 274,
+      "tiers": {
+        "guaranteed": {
+          "total": 1,
+          "observed": 1,
+          "observed_rate": 1,
+          "expected_rate": 0.95,
+          "miscalibration": 0.05
+        },
+        "likely": {
+          "total": 108,
+          "observed": 83,
+          "observed_rate": 0.769,
+          "expected_rate": 0.45,
+          "miscalibration": 0.319
+        },
+        "very_likely": {
+          "total": 2,
+          "observed": 2,
+          "observed_rate": 1,
+          "expected_rate": 0.75,
+          "miscalibration": 0.25
+        },
+        "unlikely": {
+          "total": 453,
+          "observed": 114,
+          "observed_rate": 0.252,
+          "expected_rate": 0.2,
+          "miscalibration": 0.052
+        },
+        "rare": {
+          "total": 74,
+          "observed": 12,
+          "observed_rate": 0.162,
+          "expected_rate": 0.06,
+          "miscalibration": 0.102
+        },
+        "exceptional": {
+          "total": 17,
+          "observed": 1,
+          "observed_rate": 0.059,
+          "expected_rate": 0.01,
+          "miscalibration": 0.049
+        }
+      }
+    },
+    "grandteton": {
+      "inat_species_observed": 50,
+      "tiers": {
+        "guaranteed": {
+          "total": 1,
+          "observed": 1,
+          "observed_rate": 1,
+          "expected_rate": 0.95,
+          "miscalibration": 0.05
+        },
+        "unlikely": {
+          "total": 252,
+          "observed": 18,
+          "observed_rate": 0.071,
+          "expected_rate": 0.2,
+          "miscalibration": -0.129
+        },
+        "likely": {
+          "total": 108,
+          "observed": 18,
+          "observed_rate": 0.167,
+          "expected_rate": 0.45,
+          "miscalibration": -0.283
+        },
+        "very_likely": {
+          "total": 1,
+          "observed": 0,
+          "observed_rate": 0,
+          "expected_rate": 0.75,
+          "miscalibration": -0.75
+        },
+        "rare": {
+          "total": 81,
+          "observed": 1,
+          "observed_rate": 0.012,
+          "expected_rate": 0.06,
+          "miscalibration": -0.048
+        },
+        "exceptional": {
+          "total": 30,
+          "observed": 0,
+          "observed_rate": 0,
+          "expected_rate": 0.01,
+          "miscalibration": -0.01
+        }
+      }
+    },
+    "rockymountain": {
+      "inat_species_observed": 42,
+      "tiers": {
+        "unlikely": {
+          "total": 329,
+          "observed": 31,
+          "observed_rate": 0.094,
+          "expected_rate": 0.2,
+          "miscalibration": -0.106
+        },
+        "likely": {
+          "total": 11,
+          "observed": 2,
+          "observed_rate": 0.182,
+          "expected_rate": 0.45,
+          "miscalibration": -0.268
+        },
+        "guaranteed": {
+          "total": 1,
+          "observed": 0,
+          "observed_rate": 0,
+          "expected_rate": 0.95,
+          "miscalibration": -0.95
+        },
+        "very_likely": {
+          "total": 1,
+          "observed": 1,
+          "observed_rate": 1,
+          "expected_rate": 0.75,
+          "miscalibration": 0.25
+        },
+        "rare": {
+          "total": 101,
+          "observed": 1,
+          "observed_rate": 0.01,
+          "expected_rate": 0.06,
+          "miscalibration": -0.05
+        },
+        "exceptional": {
+          "total": 22,
+          "observed": 0,
+          "observed_rate": 0,
+          "expected_rate": 0.01,
+          "miscalibration": -0.01
+        }
+      }
+    },
+    "olympic": {
+      "inat_species_observed": 63,
+      "tiers": {
+        "very_likely": {
+          "total": 2,
+          "observed": 1,
+          "observed_rate": 0.5,
+          "expected_rate": 0.75,
+          "miscalibration": -0.25
+        },
+        "likely": {
+          "total": 88,
+          "observed": 23,
+          "observed_rate": 0.261,
+          "expected_rate": 0.45,
+          "miscalibration": -0.189
+        },
+        "unlikely": {
+          "total": 293,
+          "observed": 24,
+          "observed_rate": 0.082,
+          "expected_rate": 0.2,
+          "miscalibration": -0.118
+        },
+        "guaranteed": {
+          "total": 1,
+          "observed": 0,
+          "observed_rate": 0,
+          "expected_rate": 0.95,
+          "miscalibration": -0.95
+        },
+        "rare": {
+          "total": 91,
+          "observed": 1,
+          "observed_rate": 0.011,
+          "expected_rate": 0.06,
+          "miscalibration": -0.049
+        },
+        "exceptional": {
+          "total": 55,
+          "observed": 2,
+          "observed_rate": 0.036,
+          "expected_rate": 0.01,
+          "miscalibration": 0.026
+        }
+      }
+    },
+    "redwood": {
+      "inat_species_observed": 139,
+      "tiers": {
+        "unlikely": {
+          "total": 334,
+          "observed": 81,
+          "observed_rate": 0.243,
+          "expected_rate": 0.2,
+          "miscalibration": 0.043
+        },
+        "likely": {
+          "total": 37,
+          "observed": 25,
+          "observed_rate": 0.676,
+          "expected_rate": 0.45,
+          "miscalibration": 0.226
+        },
+        "very_likely": {
+          "total": 1,
+          "observed": 1,
+          "observed_rate": 1,
+          "expected_rate": 0.75,
+          "miscalibration": 0.25
+        },
+        "rare": {
+          "total": 120,
+          "observed": 10,
+          "observed_rate": 0.083,
+          "expected_rate": 0.06,
+          "miscalibration": 0.023
+        },
+        "exceptional": {
+          "total": 51,
+          "observed": 3,
+          "observed_rate": 0.059,
+          "expected_rate": 0.01,
+          "miscalibration": 0.049
+        }
+      }
+    },
+    "yosemite": {
+      "inat_species_observed": 105,
+      "tiers": {
+        "guaranteed": {
+          "total": 1,
+          "observed": 1,
+          "observed_rate": 1,
+          "expected_rate": 0.95,
+          "miscalibration": 0.05
+        },
+        "very_likely": {
+          "total": 3,
+          "observed": 2,
+          "observed_rate": 0.667,
+          "expected_rate": 0.75,
+          "miscalibration": -0.083
+        },
+        "likely": {
+          "total": 61,
+          "observed": 27,
+          "observed_rate": 0.443,
+          "expected_rate": 0.45,
+          "miscalibration": -0.007
+        },
+        "unlikely": {
+          "total": 342,
+          "observed": 53,
+          "observed_rate": 0.155,
+          "expected_rate": 0.2,
+          "miscalibration": -0.045
+        },
+        "rare": {
+          "total": 48,
+          "observed": 3,
+          "observed_rate": 0.063,
+          "expected_rate": 0.06,
+          "miscalibration": 0.003
+        },
+        "exceptional": {
+          "total": 35,
+          "observed": 1,
+          "observed_rate": 0.029,
+          "expected_rate": 0.01,
+          "miscalibration": 0.019
+        }
+      }
+    },
+    "sequoia": {
+      "inat_species_observed": 90,
+      "tiers": {
+        "likely": {
+          "total": 28,
+          "observed": 12,
+          "observed_rate": 0.429,
+          "expected_rate": 0.45,
+          "miscalibration": -0.021
+        },
+        "unlikely": {
+          "total": 784,
+          "observed": 16,
+          "observed_rate": 0.02,
+          "expected_rate": 0.2,
+          "miscalibration": -0.18
+        },
+        "guaranteed": {
+          "total": 1,
+          "observed": 1,
+          "observed_rate": 1,
+          "expected_rate": 0.95,
+          "miscalibration": 0.05
+        },
+        "rare": {
+          "total": 77,
+          "observed": 0,
+          "observed_rate": 0,
+          "expected_rate": 0.06,
+          "miscalibration": -0.06
+        },
+        "exceptional": {
+          "total": 3,
+          "observed": 0,
+          "observed_rate": 0,
+          "expected_rate": 0.01,
+          "miscalibration": -0.01
+        }
+      }
+    },
+    "joshuatree": {
+      "inat_species_observed": 216,
+      "tiers": {
+        "likely": {
+          "total": 76,
+          "observed": 33,
+          "observed_rate": 0.434,
+          "expected_rate": 0.45,
+          "miscalibration": -0.016
+        },
+        "unlikely": {
+          "total": 109,
+          "observed": 11,
+          "observed_rate": 0.101,
+          "expected_rate": 0.2,
+          "miscalibration": -0.099
+        },
+        "rare": {
+          "total": 22,
+          "observed": 1,
+          "observed_rate": 0.045,
+          "expected_rate": 0.06,
+          "miscalibration": -0.015
+        }
+      }
+    },
+    "deathvalley": {
+      "inat_species_observed": 241,
+      "tiers": {
+        "likely": {
+          "total": 62,
+          "observed": 21,
+          "observed_rate": 0.339,
+          "expected_rate": 0.45,
+          "miscalibration": -0.111
+        },
+        "guaranteed": {
+          "total": 1,
+          "observed": 1,
+          "observed_rate": 1,
+          "expected_rate": 0.95,
+          "miscalibration": 0.05
+        },
+        "unlikely": {
+          "total": 144,
+          "observed": 18,
+          "observed_rate": 0.125,
+          "expected_rate": 0.2,
+          "miscalibration": -0.075
+        },
+        "rare": {
+          "total": 18,
+          "observed": 1,
+          "observed_rate": 0.056,
+          "expected_rate": 0.06,
+          "miscalibration": -0.004
+        }
+      }
+    },
+    "channelislands": {
+      "inat_species_observed": 187,
+      "tiers": {
+        "likely": {
+          "total": 96,
+          "observed": 35,
+          "observed_rate": 0.365,
+          "expected_rate": 0.45,
+          "miscalibration": -0.085
+        },
+        "unlikely": {
+          "total": 108,
+          "observed": 20,
+          "observed_rate": 0.185,
+          "expected_rate": 0.2,
+          "miscalibration": -0.015
+        },
+        "rare": {
+          "total": 33,
+          "observed": 1,
+          "observed_rate": 0.03,
+          "expected_rate": 0.06,
+          "miscalibration": -0.03
+        }
+      }
+    },
+    "pinnacles": {
+      "inat_species_observed": 172,
+      "tiers": {
+        "unlikely": {
+          "total": 135,
+          "observed": 39,
+          "observed_rate": 0.289,
+          "expected_rate": 0.2,
+          "miscalibration": 0.089
+        },
+        "very_likely": {
+          "total": 3,
+          "observed": 2,
+          "observed_rate": 0.667,
+          "expected_rate": 0.75,
+          "miscalibration": -0.083
+        },
+        "likely": {
+          "total": 4,
+          "observed": 3,
+          "observed_rate": 0.75,
+          "expected_rate": 0.45,
+          "miscalibration": 0.3
+        },
+        "rare": {
+          "total": 47,
+          "observed": 6,
+          "observed_rate": 0.128,
+          "expected_rate": 0.06,
+          "miscalibration": 0.068
+        },
+        "exceptional": {
+          "total": 1,
+          "observed": 0,
+          "observed_rate": 0,
+          "expected_rate": 0.01,
+          "miscalibration": -0.01
+        }
+      }
+    },
+    "hawaiivolcanoes": {
+      "inat_species_observed": 44,
+      "tiers": {
+        "guaranteed": {
+          "total": 1,
+          "observed": 1,
+          "observed_rate": 1,
+          "expected_rate": 0.95,
+          "miscalibration": 0.05
+        },
+        "likely": {
+          "total": 33,
+          "observed": 10,
+          "observed_rate": 0.303,
+          "expected_rate": 0.45,
+          "miscalibration": -0.147
+        },
+        "unlikely": {
+          "total": 273,
+          "observed": 4,
+          "observed_rate": 0.015,
+          "expected_rate": 0.2,
+          "miscalibration": -0.185
+        },
+        "rare": {
+          "total": 38,
+          "observed": 0,
+          "observed_rate": 0,
+          "expected_rate": 0.06,
+          "miscalibration": -0.06
+        }
+      }
+    },
+    "virginislands": {
+      "inat_species_observed": 116,
+      "tiers": {
+        "likely": {
+          "total": 4,
+          "observed": 4,
+          "observed_rate": 1,
+          "expected_rate": 0.45,
+          "miscalibration": 0.55
+        },
+        "unlikely": {
+          "total": 199,
+          "observed": 97,
+          "observed_rate": 0.487,
+          "expected_rate": 0.2,
+          "miscalibration": 0.287
+        },
+        "guaranteed": {
+          "total": 1,
+          "observed": 1,
+          "observed_rate": 1,
+          "expected_rate": 0.95,
+          "miscalibration": 0.05
+        },
+        "rare": {
+          "total": 92,
+          "observed": 8,
+          "observed_rate": 0.087,
+          "expected_rate": 0.06,
+          "miscalibration": 0.027
+        },
+        "exceptional": {
+          "total": 98,
+          "observed": 5,
+          "observed_rate": 0.051,
+          "expected_rate": 0.01,
+          "miscalibration": 0.041
+        }
+      }
+    },
+    "carlsbadcaverns": {
+      "inat_species_observed": 58,
+      "tiers": {
+        "unlikely": {
+          "total": 264,
+          "observed": 40,
+          "observed_rate": 0.152,
+          "expected_rate": 0.2,
+          "miscalibration": -0.048
+        },
+        "rare": {
+          "total": 235,
+          "observed": 9,
+          "observed_rate": 0.038,
+          "expected_rate": 0.06,
+          "miscalibration": -0.022
+        },
+        "likely": {
+          "total": 3,
+          "observed": 2,
+          "observed_rate": 0.667,
+          "expected_rate": 0.45,
+          "miscalibration": 0.217
+        },
+        "guaranteed": {
+          "total": 1,
+          "observed": 0,
+          "observed_rate": 0,
+          "expected_rate": 0.95,
+          "miscalibration": -0.95
+        },
+        "exceptional": {
+          "total": 43,
+          "observed": 1,
+          "observed_rate": 0.023,
+          "expected_rate": 0.01,
+          "miscalibration": 0.013
+        }
+      }
+    }
+  },
+  "global": {
+    "guaranteed": {
+      "total": 30,
+      "observed": 25,
+      "observed_rate": 0.833,
+      "expected_rate": 0.95,
+      "miscalibration": -0.117
+    },
+    "very_likely": {
+      "total": 49,
+      "observed": 30,
+      "observed_rate": 0.612,
+      "expected_rate": 0.75,
+      "miscalibration": -0.138
+    },
+    "likely": {
+      "total": 1585,
+      "observed": 694,
+      "observed_rate": 0.438,
+      "expected_rate": 0.45,
+      "miscalibration": -0.012
+    },
+    "unlikely": {
+      "total": 9971,
+      "observed": 1525,
+      "observed_rate": 0.153,
+      "expected_rate": 0.2,
+      "miscalibration": -0.047
+    },
+    "rare": {
+      "total": 3042,
+      "observed": 183,
+      "observed_rate": 0.06,
+      "expected_rate": 0.06,
+      "miscalibration": 0
+    },
+    "exceptional": {
+      "total": 1075,
+      "observed": 42,
+      "observed_rate": 0.039,
+      "expected_rate": 0.01,
+      "miscalibration": 0.029
+    }
+  }
+}

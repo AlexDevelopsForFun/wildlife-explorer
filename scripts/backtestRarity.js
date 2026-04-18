@@ -52,8 +52,9 @@ const TIER_MIDPOINT = {
 const INAT_PLACE_IDS_PATH = path.join(ROOT, 'scripts', 'buildWildlifeCache.js');
 
 async function loadInatPlaceIds() {
-  const src = await import(`file://${INAT_PLACE_IDS_PATH.replace(/\\/g, '/')}`).catch(() => null);
-  // Build script doesn't export INAT_PLACE_IDS — fall back to scraping with a regex.
+  // NOTE: we intentionally do NOT `import()` buildWildlifeCache.js — it has a
+  // top-level main() that would trigger the whole rebuild pipeline as a side
+  // effect. Scrape the INAT_PLACE_IDS table out of the source text directly.
   const fs = await import('fs');
   const text = fs.readFileSync(INAT_PLACE_IDS_PATH, 'utf8');
   const match = text.match(/const INAT_PLACE_IDS = (\{[\s\S]*?\n\});/);
