@@ -325,12 +325,19 @@ body, #root {
 .hdr__actions .hdr__about-btn { margin-left: 0; }
 
 /* ── Row 2: all filter controls (desktop only) ─────────────────────────── */
+/* Given its own darker "tray" so the controls read as a distinct
+   interactive zone against the brand header above. */
 .hdr__row2 {
   display:     flex;
   align-items: center;
   gap:         6px;
   flex-wrap:   wrap;
-  padding-bottom: 2px;
+  margin-top:     4px;
+  padding:        7px 10px;
+  background:     rgba(0, 0, 0, 0.22);
+  border-radius:  10px;
+  border-top:     1px solid rgba(255, 255, 255, 0.06);
+  box-shadow:     inset 0 1px 0 rgba(0, 0, 0, 0.25);
 }
 
 .hdr__logo {
