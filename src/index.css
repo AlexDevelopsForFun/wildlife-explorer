@@ -1779,11 +1779,10 @@ body, #root {
 /* Small emoji glyph sitting inside rarity badge */
 .rarity-badge__glyph {
   display: inline-block;
-  font-size: 9px;
+  font-size: 10px;
   margin-right: 4px;
   line-height: 1;
   vertical-align: middle;
-  filter: saturate(0.85);
 }
 
 /* ── "Best time to view" — per-animal prominent line ──────────────────── */
@@ -3423,7 +3422,17 @@ body, #root {
   margin:        0;
   padding:       4px 0;
   z-index:       2000;
-  overflow:      hidden;
+  max-height:    min(460px, 60vh);
+  overflow-y:    auto;
+  overscroll-behavior: contain;
+}
+.sp-search__dropdown::-webkit-scrollbar { width: 8px; }
+.sp-search__dropdown::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 4px;
+}
+.sp-search__dropdown::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.28);
 }
 
 .sp-search__kicker {

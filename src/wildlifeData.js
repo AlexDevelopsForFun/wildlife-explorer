@@ -11,12 +11,12 @@
 // signals. Rarity is the only attribute that gets saturated color in the UI.
 export const RARITY = {
   all:         { label: 'All',          emoji: '',    color: '#6b7280', subLabel: '',                     probability: '',       star: false },
-  guaranteed:  { label: 'Guaranteed',   emoji: '🟢', color: '#1a6640', subLabel: 'Almost certain to see', probability: '90%+',   star: false },
-  very_likely: { label: 'Very Likely',  emoji: '🟩', color: '#4a8557', subLabel: 'Probably will see',     probability: '60-90%', star: false },
-  likely:      { label: 'Likely',       emoji: '🟡', color: '#8a7a3e', subLabel: 'Good chance',           probability: '30-60%', star: false },
-  unlikely:    { label: 'Unlikely',     emoji: '🟠', color: '#a06a44', subLabel: 'Possible with luck',    probability: '10-30%', star: false },
-  rare:        { label: 'Rare',         emoji: '🔴', color: '#9a5248', subLabel: 'Lucky sighting',        probability: '2-10%',  star: false },
-  exceptional: { label: 'Exceptional',  emoji: '⭐', color: '#7a4e6e', subLabel: 'Once in a lifetime',    probability: '<2%',    star: true  },
+  guaranteed:  { label: 'Guaranteed',   emoji: '🟢', color: '#15833f', subLabel: 'Almost certain to see', probability: '90%+',   star: false },
+  very_likely: { label: 'Very Likely',  emoji: '🟩', color: '#3e9e52', subLabel: 'Probably will see',     probability: '60-90%', star: false },
+  likely:      { label: 'Likely',       emoji: '🟡', color: '#c49420', subLabel: 'Good chance',           probability: '30-60%', star: false },
+  unlikely:    { label: 'Unlikely',     emoji: '🟠', color: '#d27a2e', subLabel: 'Possible with luck',    probability: '10-30%', star: false },
+  rare:        { label: 'Rare',         emoji: '🔴', color: '#c24640', subLabel: 'Lucky sighting',        probability: '2-10%',  star: false },
+  exceptional: { label: 'Exceptional',  emoji: '⭐', color: '#9c4b8a', subLabel: 'Once in a lifetime',    probability: '<2%',    star: true  },
 };
 
 // ── Seasons ───────────────────────────────────────────────────────────────────

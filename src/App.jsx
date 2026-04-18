@@ -669,12 +669,12 @@ function AboutModal({ onClose, scrollTo }) {
               <p>Our rarity ratings represent the <strong>estimated probability of seeing an animal on a single-day visit</strong> to the park.</p>
 
               <div className="about-rarity-grid">
-                <div className="about-rarity-item"><span className="about-badge" style={{color:'#1a6640',background:'#1a664018',borderColor:'#1a664044'}}>Guaranteed</span> <span className="about-rarity-pct">90%+</span> Almost certain to see</div>
-                <div className="about-rarity-item"><span className="about-badge" style={{color:'#4a8557',background:'#4a855718',borderColor:'#4a855744'}}>Very Likely</span> <span className="about-rarity-pct">60-90%</span> Probably will see</div>
-                <div className="about-rarity-item"><span className="about-badge" style={{color:'#8a7a3e',background:'#8a7a3e18',borderColor:'#8a7a3e44'}}>Likely</span> <span className="about-rarity-pct">30-60%</span> Good chance</div>
-                <div className="about-rarity-item"><span className="about-badge" style={{color:'#a06a44',background:'#a06a4418',borderColor:'#a06a4444'}}>Unlikely</span> <span className="about-rarity-pct">10-30%</span> Possible with luck</div>
-                <div className="about-rarity-item"><span className="about-badge" style={{color:'#9a5248',background:'#9a524818',borderColor:'#9a524844'}}>Rare</span> <span className="about-rarity-pct">2-10%</span> Lucky sighting</div>
-                <div className="about-rarity-item"><span className="about-badge" style={{color:'#7a4e6e',background:'#7a4e6e18',borderColor:'#7a4e6e44'}}>Exceptional</span> <span className="about-rarity-pct">&lt;2%</span> Once in a lifetime</div>
+                <div className="about-rarity-item"><span className="about-badge" style={{color:'#15833f',background:'#15833f22',borderColor:'#15833f55'}}>Guaranteed</span> <span className="about-rarity-pct">90%+</span> Almost certain to see</div>
+                <div className="about-rarity-item"><span className="about-badge" style={{color:'#3e9e52',background:'#3e9e5222',borderColor:'#3e9e5255'}}>Very Likely</span> <span className="about-rarity-pct">60-90%</span> Probably will see</div>
+                <div className="about-rarity-item"><span className="about-badge" style={{color:'#c49420',background:'#c4942022',borderColor:'#c4942055'}}>Likely</span> <span className="about-rarity-pct">30-60%</span> Good chance</div>
+                <div className="about-rarity-item"><span className="about-badge" style={{color:'#d27a2e',background:'#d27a2e22',borderColor:'#d27a2e55'}}>Unlikely</span> <span className="about-rarity-pct">10-30%</span> Possible with luck</div>
+                <div className="about-rarity-item"><span className="about-badge" style={{color:'#c24640',background:'#c2464022',borderColor:'#c2464055'}}>Rare</span> <span className="about-rarity-pct">2-10%</span> Lucky sighting</div>
+                <div className="about-rarity-item"><span className="about-badge" style={{color:'#9c4b8a',background:'#9c4b8a22',borderColor:'#9c4b8a55'}}>Exceptional</span> <span className="about-rarity-pct">&lt;2%</span> Once in a lifetime</div>
               </div>
 
               <h4 className="about-subsection">Data by Category</h4>
@@ -884,6 +884,10 @@ function freqFromBuiltInSeasonFrequencies(sf) {
 }
 
 function estimateSeasonalFreqFromField(frequency, seasons, rarity) {
+  // Only flag as estimated when we had to use the rarity-tier fallback.
+  // A real numeric `frequency` from eBird/iNat is data-derived, so we treat
+  // that spread as calculated (the seasonal split comes from real checklist %).
+  const usedFallback = frequency == null;
   const f = frequency ?? RARITY_FREQ_FALLBACK[rarity] ?? null;
   if (!f || f <= 0 || !seasons?.length) return null;
   const pct = Math.min(99, Math.round(f * 100));
@@ -891,7 +895,7 @@ function estimateSeasonalFreqFromField(frequency, seasons, rarity) {
     ? ['spring', 'summer', 'fall', 'winter']
     : seasons;
   if (!active.length) return null;
-  const result = { _estimated: true };
+  const result = usedFallback ? { _estimated: true } : {};
   active.forEach(s => { result[s] = pct; });
   return result;
 }
@@ -1114,7 +1118,7 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, hig
           <div className="animal-card__badges">
             <span
               className={`rarity-badge${r.star ? ' rarity-badge--exceptional' : ''}`}
-              style={{ color: r.color, background: r.color + '14', borderColor: r.color + '33' }}
+              style={{ color: r.color, background: r.color + '22', borderColor: r.color + '55' }}
             >
               {r.emoji && <span className="rarity-badge__glyph" aria-hidden="true">{r.emoji}</span>}
               {r.label}{r.probability ? ` · ${r.probability}` : ''}{r.star ? ' ✦' : ''}
@@ -1423,7 +1427,7 @@ function ExceptionalCard({ animal, seasonalFreqs, location }) {
           {animal.scientificName && (
             <div className="animal-card__scientific">{animal.scientificName}</div>
           )}
-          <span className="rarity-badge rarity-badge--exceptional" style={{ color: '#7a4e6e', background: '#7a4e6e14', borderColor: '#7a4e6e33' }}>
+          <span className="rarity-badge rarity-badge--exceptional" style={{ color: '#9c4b8a', background: '#9c4b8a22', borderColor: '#9c4b8a55' }}>
             ⭐ Exceptional
           </span>
           {/* Exceptional chance — single prominent line; always shown for exceptional tier */}
@@ -1774,29 +1778,26 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
   useEffect(() => {
     if (!effectiveAnimals?.length) return;
     const withSciName = effectiveAnimals.filter(a => a.scientificName);
-    const top250 = withSciName
-      .sort((a, b) => {
-        // Use Math.max(numeric freq, rarity-derived freq) so:
-        // • Species with a good numeric frequency (e.g. Ruffed Grouse 0.046) are never
-        //   demoted by the rarity fallback injection.
-        // • Species with frequency: undefined but a known rarity (e.g. Common Loon
-        //   "likely" → 0.40) are promoted above low-frequency eBird-only species.
-        const fa = Math.max(a.frequency ?? 0, RARITY_FREQ_FALLBACK[a.rarity] ?? 0);
-        const fb = Math.max(b.frequency ?? 0, RARITY_FREQ_FALLBACK[b.rarity] ?? 0);
-        return fb - fa;
-      })
-      .slice(0, 250);
-    // Force-include exceptional mammals/reptiles/amphibians not in top250 —
-    // they appear in the Rare Sightings section and iNat has real seasonal data
-    // for many of them (e.g. Mountain Lion: 15 obs, spring:20% summer:33%).
-    // Excludes insects/marine to keep the queue bounded (hundreds of exc. insects).
-    const top250Keys = new Set(top250.map(a => a.scientificName));
-    const excExtras = withSciName.filter(a =>
-      a.rarity === 'exceptional' &&
-      !top250Keys.has(a.scientificName) &&
-      ['mammal', 'reptile', 'amphibian', 'bird'].includes(a.animalType)
+    const sorted = withSciName.sort((a, b) => {
+      // Use Math.max(numeric freq, rarity-derived freq) so:
+      // • Species with a good numeric frequency (e.g. Ruffed Grouse 0.046) are never
+      //   demoted by the rarity fallback injection.
+      // • Species with frequency: undefined but a known rarity (e.g. Common Loon
+      //   "likely" → 0.40) are promoted above low-frequency eBird-only species.
+      const fa = Math.max(a.frequency ?? 0, RARITY_FREQ_FALLBACK[a.rarity] ?? 0);
+      const fb = Math.max(b.frequency ?? 0, RARITY_FREQ_FALLBACK[b.rarity] ?? 0);
+      return fb - fa;
+    });
+    const top500 = sorted.slice(0, 500);
+    // Force-include ALL vertebrates regardless of rank so mammals / reptiles /
+    // amphibians don't sit on permanent ~est flags. Non-vertebrate tail (insects,
+    // plants, fungi) is capped by the top500 cut above to keep the queue bounded.
+    const top500Keys = new Set(top500.map(a => a.scientificName));
+    const vertExtras = sorted.filter(a =>
+      !top500Keys.has(a.scientificName) &&
+      ['mammal', 'reptile', 'amphibian', 'bird', 'fish'].includes(a.animalType)
     );
-    const birds = [...top250, ...excExtras]; // total: ~250 + handful of exc. vertebrates
+    const birds = [...top500, ...vertExtras];
     if (!birds.length) return;
     let alive = true;
     const CONCURRENCY = 6;
@@ -2848,8 +2849,8 @@ export default function App() {
       });
     }
 
-    // No query: browse mode — show top-20 species in the chosen category.
-    if (q.length < 2) return pool.slice(0, 20);
+    // No query: browse mode — show a generous slice so users can scroll.
+    if (q.length < 2) return pool.slice(0, 60);
 
     const exact = [], sw = [], contains = [];
     for (const s of pool) {
@@ -2858,9 +2859,9 @@ export default function App() {
       if (n === q)                             { exact.push(s);    continue; }
       if (n.startsWith(q) || sc.startsWith(q)){ sw.push(s);       continue; }
       if (n.includes(q)   || sc.includes(q))  { contains.push(s);           }
-      if (exact.length + sw.length + contains.length >= 60) break;
+      if (exact.length + sw.length + contains.length >= 120) break;
     }
-    return [...exact, ...sw, ...contains].slice(0, catActive ? 20 : 8);
+    return [...exact, ...sw, ...contains].slice(0, catActive ? 60 : 12);
   }, [speciesQuery, allSpeciesList, categoryType, categorySubtype]);
 
   const speciesFilteredParkIds = useMemo(() => {
@@ -3000,6 +3001,26 @@ export default function App() {
       mapRef.current.fitBounds(bounds, { padding: [80, 80], maxZoom: 10 });
     }
   }, [speciesFilter, speciesFilteredParkIds]);
+
+  // Auto-zoom to the selected state's parks (both curated + NPS).
+  useEffect(() => {
+    if (!mapRef.current) return;
+    if (selectedState === 'all') {
+      mapRef.current.setView([39.5, -98.35], 4);
+      return;
+    }
+    const locs = [
+      ...wildlifeLocations.filter(l => l.stateCodes?.includes(selectedState)),
+      ...npsParks.filter(l => l.stateCodes?.includes(selectedState)),
+    ];
+    if (locs.length === 0) return;
+    if (locs.length === 1) {
+      mapRef.current.setView([locs[0].lat, locs[0].lng], 8);
+    } else {
+      const bounds = L.latLngBounds(locs.map(l => [l.lat, l.lng]));
+      mapRef.current.fitBounds(bounds, { padding: [60, 60], maxZoom: 8 });
+    }
+  }, [selectedState, npsParks]);
 
   // ── First-time-use / stale-cache banner ───────────────────────────────────
   // Shown when wildlifeCache.js still has the placeholder build date (script
