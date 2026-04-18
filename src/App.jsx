@@ -867,20 +867,55 @@ const RARITY_FREQ_FALLBACK = {
 };
 
 // Convert per-season encounter probabilities (0–1, from eBird Status & Trends)
-// into a pseudo-histogram (percentages summing to 100) for the badge display.
-// Marked isBuiltIn so the UI doesn't append the "~est" flag — this is real data.
+// directly into percentages (0-99). These are ALREADY encounter probabilities
+// per season — no normalization needed. The badge displays "chance of seeing
+// this species on a visit during season X".
 function freqFromBuiltInSeasonFrequencies(sf) {
   if (!sf) return null;
   const keys = ['spring', 'summer', 'fall', 'winter'];
-  const total = keys.reduce((sum, k) => sum + (sf[k] ?? 0), 0);
-  if (total <= 0) return null;
   const out = { _source: 'ebird_st' };
+  let any = false;
   for (const k of keys) {
     const v = sf[k];
     if (v == null) continue;
-    out[k] = Math.round((v / total) * 100);
+    out[k] = Math.min(99, Math.max(1, Math.round(v * 100)));
+    any = true;
   }
-  return out;
+  return any ? out : null;
+}
+
+// Convert an iNat-histogram-style seasonal distribution (percentages of TOTAL
+// observations summing to ~100) into per-season encounter probabilities using
+// the species' baseline overall frequency.
+//
+// Why: an iNat histogram alone tells you "what fraction of sightings occur in
+// this season", not "what are my chances of seeing the animal in this season".
+// Grizzly Bear in Yellowstone with 58% of obs in summer is NOT 58% likely to
+// be seen on a summer visit — it's (baseline × concentration) likely, since
+// 58% concentration = 2.32× the even-distribution baseline of 25%.
+//
+//   seasonalProb = baselineProb × (distPct / 25)
+//
+// Averaging across the 4 seasons returns the baseline — so this is a
+// mathematically consistent transform, not a hack.
+function histogramToEncounterProb(hist, baseFrequency, rarity) {
+  if (!hist) return hist;
+  if (hist._converted) return hist; // already transformed
+  const base = baseFrequency ?? RARITY_FREQ_FALLBACK[rarity] ?? 0.15;
+  const baselinePct = base * 100;
+  const keys = ['spring', 'summer', 'fall', 'winter'];
+  const out = { _source: hist._source ?? 'inat_hist', _converted: true };
+  if (hist._estimated) out._estimated = true;
+  let any = false;
+  for (const k of keys) {
+    const dist = hist[k];
+    if (dist == null) continue;
+    // dist is % of obs in this season; 25 = even distribution baseline
+    const scaled = baselinePct * (dist / 25);
+    out[k] = Math.min(99, Math.max(1, Math.round(scaled)));
+    any = true;
+  }
+  return any ? out : null;
 }
 
 function estimateSeasonalFreqFromField(frequency, seasons, rarity) {
@@ -1052,10 +1087,16 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, hig
         return rescale(animal.rarity, animal.seasonFrequencies[activeSeason]);
       }
       // Fallback to runtime-fetched iNat monthly histogram.
+      // The histogram stores DISTRIBUTION of sightings (sums to ~100), not
+      // per-season encounter probability. Convert by scaling baseline freq
+      // against seasonal concentration: seasonalProb = base × (distPct / 25).
       const sciKey = animal.scientificName?.toLowerCase();
-      const seasonFreq = sciKey ? seasonalFreqs?.[sciKey]?.[activeSeason] : null;
-      if (seasonFreq != null && seasonFreq > 0) {
-        return rescale(animal.rarity, seasonFreq / 100);
+      const distPct = sciKey ? seasonalFreqs?.[sciKey]?.[activeSeason] : null;
+      if (distPct != null && distPct > 0) {
+        const base = animal.frequency ?? animal._debug?.frequency
+                  ?? RARITY_FREQ_FALLBACK[animal.rarity] ?? 0.15;
+        const seasonalProb = Math.min(0.99, base * (distPct / 25));
+        return rescale(animal.rarity, seasonalProb);
       }
     }
 
@@ -1186,7 +1227,17 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, hig
             {(() => {
               const sciKey = animal.scientificName?.toLowerCase();
               // histFreq: null = fetched but <5 obs; undefined = not yet fetched / no sciName
-              const histFreq = sciKey ? seasonalFreqs?.[sciKey] : undefined;
+              const rawHistFreq = sciKey ? seasonalFreqs?.[sciKey] : undefined;
+              // Convert iNat distribution histogram → seasonal encounter probability
+              // so "Summer 35%" means "35% chance per visit in summer", not
+              // "35% of observations were recorded in summer".
+              const histFreq = rawHistFreq
+                ? histogramToEncounterProb(
+                    rawHistFreq,
+                    animal.frequency ?? animal._debug?.frequency,
+                    animal.rarity,
+                  )
+                : rawHistFreq;
               // Priority: live iNat histogram > prebuilt eBird S&T > rarity-tier estimate.
               // Using the prebuilt S&T data avoids the ~est flag for ~19k birds where
               // seasonal probabilities were computed at build time.
@@ -1481,7 +1532,14 @@ function ExceptionalCard({ animal, seasonalFreqs, location }) {
           {/* Exceptional chance — single prominent line; always shown for exceptional tier */}
           {(() => {
             const sciKey = animal.scientificName?.toLowerCase();
-            const histFreq = sciKey ? seasonalFreqs?.[sciKey] : undefined;
+            const rawHistFreq = sciKey ? seasonalFreqs?.[sciKey] : undefined;
+            const histFreq = rawHistFreq
+              ? histogramToEncounterProb(
+                  rawHistFreq,
+                  animal.frequency ?? animal._debug?.frequency,
+                  animal.rarity,
+                )
+              : rawHistFreq;
             const isHistReal = histFreq && !histFreq._estimated;
             const SEASON_KEYS = ['spring', 'summer', 'fall', 'winter'];
             const SEASON_NAMES = { spring: 'spring', summer: 'summer', fall: 'fall', winter: 'winter' };
@@ -2646,21 +2704,13 @@ function AppInner() {
   // For subtype bar compatibility — only show subtypes when exactly 1 type is selected
   const focusedType = activeTypes.size === 1 ? [...activeTypes][0] : null;
   const setPopupType = (k) => {
-    // Clicking 'all' activates everything; clicking a specific type toggles it
+    // Clicking 'all' activates everything; clicking a specific type focuses just that type
+    // so the subtype bar can appear (Large Mammals, Rodents, etc.)
     if (k === 'all') {
       const allKeys = Object.keys(ANIMAL_TYPES).filter(t => t !== 'all');
       setActiveTypes(new Set(allKeys));
     } else {
-      setActiveTypes(prev => {
-        const next = new Set(prev);
-        if (next.has(k)) {
-          // Don't allow deselecting the last type
-          if (next.size > 1) next.delete(k);
-        } else {
-          next.add(k);
-        }
-        return next;
-      });
+      setActiveTypes(new Set([k]));
     }
   };
   const [popupSort,    setPopupSort]    = useState('iconic-first');

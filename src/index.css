@@ -3735,8 +3735,18 @@ body, #root {
   /* Reduce arrow button size on mobile */
   .lp__tabs-arrow { font-size: 16px; width: 20px; }
 
-  /* ── 4. Hide subtype bar on mobile ─────────────────────────────────────── */
-  .lp__subtypes-wrapper { display: none; }
+  /* ── 4. Subtype bar — keep visible on mobile so users can drill into
+     Large Mammals, Rodents, Songbirds, etc. after picking a type tab.   */
+  .lp__subtypes-wrapper { padding: 0 8px; }
+  .lp__subtypes { gap: 4px; padding: 6px 4px; }
+  .lp__subtype-btn {
+    font-size: 11px;
+    padding:   5px 9px;
+    flex-shrink: 0;
+  }
+  .lp__subtype-label { font-size: 11px; }
+  /* Hide the desktop hover arrows — mobile users swipe the scroller */
+  .lp__subtypes-arrow { display: none; }
 
   /* ── 5. Mobile species summary bar ─────────────────────────────────────── */
   .lp__mobile-summary {
