@@ -2699,9 +2699,11 @@ function AppInner() {
   // Map ref — populated by MapController; lets buttons outside MapContainer call map.setView()
   const mapRef = useRef(null);
 
-  // Current zoom level — drives icon tier selection (dot / medium / full).
-  // Initialised to 4 which matches the MapContainer's initial zoom prop.
-  const [zoom, setZoom] = useState(4);
+  // Initial zoom is responsive — mobile gets zoom 3 (whole US fits a narrow
+  // viewport), desktop keeps zoom 4. Computed once at mount so later resizes
+  // don't jump the user's view.
+  const initialZoom = typeof window !== 'undefined' && window.innerWidth < 768 ? 3 : 4;
+  const [zoom, setZoom] = useState(initialZoom);
   const handleZoomChange = useCallback(z => setZoom(z), []);
 
   // Zoom hint — visible on first load, auto-dismissed after 3.5 s.
@@ -3095,7 +3097,7 @@ function AppInner() {
   useEffect(() => {
     if (!mapRef.current) return;
     if (selectedState === 'all') {
-      mapRef.current.setView([39.5, -98.35], 4);
+      mapRef.current.setView([39.5, -98.35], initialZoom);
       return;
     }
     const locs = [
@@ -3341,7 +3343,7 @@ function AppInner() {
         <WhatActiveNow />
         {/* Zoom prompt — fades out after 3.5 s */}
         {showZoomHint && <div className="zoom-hint">Zoom in to explore parks</div>}
-        <MapContainer center={[39.5, -98.35]} zoom={4} style={{ height: '100%', width: '100%' }}>
+        <MapContainer center={[39.5, -98.35]} zoom={initialZoom} style={{ height: '100%', width: '100%' }}>
           <TileLayer
             key={darkMode ? 'dark' : 'light'}
             url={darkMode
