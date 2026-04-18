@@ -2815,36 +2815,65 @@ export default function App() {
       {/* ── Header ── */}
       <header className="hdr">
         <div className="hdr__inner">
-          {/* Brand */}
-          <div className="hdr__brand">
-            <span className="hdr__logo" aria-hidden="true">🌿</span>
-            <div>
-              <h1 className="hdr__title">US Wildlife Explorer</h1>
-              <p className="hdr__sub">
-                {liveCount > 0
-                  ? `● ${liveCount} live · ${allVisibleLocations.length} parks`
-                  : `${allVisibleLocations.length} park${allVisibleLocations.length !== 1 ? 's' : ''}`}
-                {debugMode && <span className="hdr__debug-pill">🐛 DEBUG</span>}
-              </p>
+
+          {/* ── Row 1: Brand + Species Search + Action buttons ── */}
+          <div className="hdr__row1">
+
+            {/* Brand: logo + title + live count */}
+            <div className="hdr__brand">
+              <span className="hdr__logo" aria-hidden="true">🌿</span>
+              <div>
+                <h1 className="hdr__title">US Wildlife Explorer</h1>
+                <p className="hdr__sub">
+                  {liveCount > 0
+                    ? `● ${liveCount} live · ${allVisibleLocations.length} parks`
+                    : `${allVisibleLocations.length} park${allVisibleLocations.length !== 1 ? 's' : ''}`}
+                  {debugMode && <span className="hdr__debug-pill">🐛 DEBUG</span>}
+                </p>
+              </div>
             </div>
-            <button className="hdr__about-btn" onClick={() => openAbout()} title="About this project" aria-label="About">
-              <span className="hdr__about-icon">i</span> About
-            </button>
-            <button className="hdr__theme-btn" onClick={() => { track('theme_toggle', { theme: darkMode ? 'light' : 'dark' }); setDarkMode(d => !d); }} title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'} aria-label="Toggle theme">
-              {darkMode ? '☀️' : '🌙'}
-            </button>
-            <button
-              className="hdr__filter-toggle"
-              onClick={() => setMobileFiltersOpen(v => !v)}
-              aria-expanded={mobileFiltersOpen}
-              aria-label="Toggle filters"
-            >
-              {mobileFiltersOpen ? '✕ Close' : `⚙︎ Filters${activeFilterCount > 0 ? ` (${activeFilterCount})` : ''}`}
-            </button>
+
+            {/* Species search bar — dedicated horizontal slot */}
+            <div className="hdr__search-slot">
+              <SpeciesSearch
+                suggestions={speciesSuggestions}
+                query={speciesQuery}
+                onChange={setSpeciesQuery}
+                onSelect={handleSpeciesSelect}
+                onClear={handleSpeciesClear}
+                hasFilter={!!speciesFilter}
+              />
+            </div>
+
+            {/* Right actions: About + theme toggle + mobile filter toggle */}
+            <div className="hdr__actions">
+              <button className="hdr__about-btn" onClick={() => openAbout()} title="About this project" aria-label="About">
+                <span className="hdr__about-icon">i</span> About
+              </button>
+              <button
+                className="hdr__theme-btn"
+                onClick={() => { track('theme_toggle', { theme: darkMode ? 'light' : 'dark' }); setDarkMode(d => !d); }}
+                title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+                aria-label="Toggle theme"
+              >
+                {darkMode ? '☀️' : '🌙'}
+              </button>
+              {/* Mobile-only: opens the filter drawer */}
+              <button
+                className="hdr__filter-toggle"
+                onClick={() => setMobileFiltersOpen(v => !v)}
+                aria-expanded={mobileFiltersOpen}
+                aria-label="Toggle filters"
+              >
+                {mobileFiltersOpen ? '✕ Close' : `⚙︎ Filters${activeFilterCount > 0 ? ` (${activeFilterCount})` : ''}`}
+              </button>
+            </div>
           </div>
 
-          {/* Category dropdowns + species search — desktop: inline in header row */}
-          <div className="hdr__species">
+          {/* ── Row 2: All filter controls (desktop only — hidden on mobile) ── */}
+          <div className="hdr__row2">
+
+            {/* Category type + subtype dropdowns */}
             <CategoryDropdowns
               categoryType={categoryType}
               setCategoryType={setCategoryType}
@@ -2852,68 +2881,45 @@ export default function App() {
               setCategorySubtype={setCategorySubtype}
               onTrack={(type, subtype) => track('category_filter', { type, subtype })}
             />
-            <SpeciesSearch
-              suggestions={speciesSuggestions}
-              query={speciesQuery}
-              onChange={setSpeciesQuery}
-              onSelect={handleSpeciesSelect}
-              onClear={handleSpeciesClear}
-              hasFilter={!!speciesFilter}
-            />
-          </div>
 
-          {/* All filters */}
-          <div className="hdr__filters">
+            <div className="filter-sep" />
 
-            {/* Row 1: Season + Rarity */}
-            <div className="filter-row">
-              <div className="filter-group">
-                <span className="filter-group__label">Season</span>
-                <div className="filter-group__btns">
-                  {Object.entries(SEASONS).map(([k, { label, emoji, color }]) => (
-                    <FilterBtn key={k} active={season === k} onClick={() => { setSeason(k); track('season_filter', { season: k }); }} emoji={emoji} label={label} activeColor={color} />
-                  ))}
-                </div>
-              </div>
-              <div className="filter-sep" />
-              <div className="filter-group">
-                <span className="filter-group__label">Rarity</span>
-                <div className="filter-group__btns">
-                  {Object.entries(RARITY).map(([k, { label, emoji, color }]) => (
-                    <FilterBtn key={k} active={rarity === k} onClick={() => { setRarity(k); track('rarity_filter', { rarity: k }); }} emoji={emoji} label={label} activeColor={color} />
-                  ))}
-                </div>
+            {/* Season pills */}
+            <div className="filter-group">
+              <span className="filter-group__label">Season</span>
+              <div className="filter-group__btns">
+                {Object.entries(SEASONS).map(([k, { label, emoji, color }]) => (
+                  <FilterBtn key={k} active={season === k} onClick={() => { setSeason(k); track('season_filter', { season: k }); }} emoji={emoji} label={label} activeColor={color} />
+                ))}
               </div>
             </div>
 
-            {/* Row 2: Animal Type + Park Type + State */}
-            <div className="filter-row">
-              <div className="filter-group">
-                <span className="filter-group__label">Animal Type</span>
-                <div className="filter-group__btns">
-                  {Object.entries(ANIMAL_TYPES).map(([k, { label, emoji, color }]) => (
-                    <FilterBtn key={k} active={animalType === k} onClick={() => { setAnimalType(k); track('type_filter', { type: k }); }} emoji={emoji} label={label} activeColor={color} title={label} />
-                  ))}
-                </div>
-              </div>
-              <div className="filter-sep" />
-              <div className="filter-group filter-group--selects">
-                <div className="select-wrap">
-                  <span className="filter-group__label">State</span>
-                  <select
-                    className="filter-select"
-                    value={selectedState}
-                    onChange={e => setSelectedState(e.target.value)}
-                    aria-label="Filter by state"
-                  >
-                    <option value="all">🗺️ All States</option>
-                    {allStateCodes.map(code => (
-                      <option key={code} value={code}>{STATE_NAMES[code] ?? code}</option>
-                    ))}
-                  </select>
-                </div>
+            <div className="filter-sep" />
+
+            {/* Rarity pills */}
+            <div className="filter-group">
+              <span className="filter-group__label">Rarity</span>
+              <div className="filter-group__btns">
+                {Object.entries(RARITY).map(([k, { label, emoji, color }]) => (
+                  <FilterBtn key={k} active={rarity === k} onClick={() => { setRarity(k); track('rarity_filter', { rarity: k }); }} emoji={emoji} label={label} activeColor={color} />
+                ))}
               </div>
             </div>
+
+            <div className="filter-sep" />
+
+            {/* State dropdown */}
+            <select
+              className="filter-select"
+              value={selectedState}
+              onChange={e => setSelectedState(e.target.value)}
+              aria-label="Filter by state"
+            >
+              <option value="all">🗺️ All States</option>
+              {allStateCodes.map(code => (
+                <option key={code} value={code}>{STATE_NAMES[code] ?? code}</option>
+              ))}
+            </select>
 
           </div>
         </div>

@@ -269,15 +269,49 @@ body, #root {
   max-width: 1700px;
   margin: 0 auto;
   display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* ── Row 1: brand + search bar + action buttons ────────────────────────── */
+.hdr__row1 {
+  display:     flex;
   align-items: center;
-  gap: 18px;
+  gap:         14px;
 }
 
 .hdr__brand {
-  display: flex;
+  display:     flex;
   align-items: center;
-  gap: 11px;
+  gap:         11px;
   flex-shrink: 0;
+}
+
+/* Dedicated slot for the species search bar (center of row 1) */
+.hdr__search-slot {
+  flex:      1;
+  min-width: 280px;
+  max-width: 500px;
+}
+
+/* About + theme toggle + mobile filter button */
+.hdr__actions {
+  display:     flex;
+  align-items: center;
+  gap:         6px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+/* Remove extra left-margin that was used when About lived inside hdr__brand */
+.hdr__actions .hdr__about-btn { margin-left: 0; }
+
+/* ── Row 2: all filter controls (desktop only) ─────────────────────────── */
+.hdr__row2 {
+  display:     flex;
+  align-items: center;
+  gap:         6px;
+  flex-wrap:   wrap;
+  padding-bottom: 2px;
 }
 
 .hdr__logo {
@@ -2141,25 +2175,22 @@ body, #root {
   padding: 2px 6px !important;
 }
 
-/* ── Responsive ───────────────────────────────────────────────────────────── */
-@media (max-width: 900px) {
-  .hdr { padding: 8px 14px; }
-  .hdr__inner { gap: 12px; }
-  .hdr__title { font-size: 15px; }
-  .hdr__sub { display: none; }
-  .filter-btn { padding: 4px 9px; font-size: 11px; }
-  .filter-btn .filter-btn__label { display: none; }
+/* ── Responsive — 1024px: hide filter labels to save space ────────────────── */
+@media (max-width: 1024px) {
   .filter-group__label { display: none; }
-  .filter-sep { display: none; }
-  .hdr__filters { gap: 5px; }
-  .filter-row { gap: 5px; }
-  .filter-select { font-size: 11px; padding: 4px 24px 4px 9px; }
+  .filter-sep          { display: none; }
+  .hdr__row2           { gap: 4px; }
 }
 
-@media (max-width: 600px) {
-  .hdr__inner { flex-wrap: wrap; }
-  .hdr__filters { margin-left: 0; width: 100%; }
-  .filter-row { flex-wrap: wrap; }
+/* ── Responsive — 900px: compact everything further ───────────────────────── */
+@media (max-width: 900px) {
+  .hdr         { padding: 8px 14px; }
+  .hdr__title  { font-size: 15px; }
+  .hdr__sub    { display: none; }
+  .filter-btn  { padding: 4px 9px; font-size: 11px; }
+  .filter-btn .filter-btn__label { display: none; }
+  .filter-select { font-size: 11px; padding: 4px 24px 4px 9px; }
+  .hdr__search-slot { min-width: 200px; }
 }
 
 
@@ -3151,17 +3182,28 @@ body, #root {
 
   /* Compact header */
   .hdr { padding: 7px 12px; }
-  .hdr__inner { gap: 8px; flex-wrap: wrap; align-items: center; }
-  .hdr__brand { gap: 8px; width: 100%; justify-content: flex-start; }
+  .hdr__inner { gap: 4px; }
+
+  /* Row 1 wraps on mobile: brand fills left, actions on right, search drops below */
+  .hdr__row1 { flex-wrap: wrap; gap: 6px; }
+  .hdr__brand { gap: 8px; }
   .hdr__logo  { font-size: 24px; }
   .hdr__title { font-size: 14px; letter-spacing: -0.3px; }
   .hdr__sub   { display: none; }
+  .hdr__actions { margin-left: auto; gap: 4px; }
 
-  /* Hide desktop filter pills — replaced by drawer */
-  .hdr__filters { display: none !important; }
+  /* Search slot wraps to own line, full width */
+  .hdr__search-slot {
+    order:     10;
+    width:     100%;
+    flex:      none;
+    min-width: 0;
+    max-width: none;
+    margin-top: 2px;
+  }
 
-  /* Species search: full-width below brand row */
-  .hdr__species { order: 10; width: 100%; margin-top: 2px; max-width: none; }
+  /* Hide desktop filter row 2 — replaced by drawer */
+  .hdr__row2 { display: none !important; }
 
   /* Build banner: single thin line */
   .build-banner { padding: 4px 12px; flex-wrap: nowrap; }
