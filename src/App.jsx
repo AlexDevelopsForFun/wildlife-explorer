@@ -1081,14 +1081,15 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, hig
       return rarityFromFrequency(rescaled);
     };
 
-    // Zone override (most specific)
+    // Zone override (most specific). Honor the zone's curated tier floor so
+    // a "very_likely" override doesn't get dragged down to "unlikely" by an
+    // undercounted raw frequency (iNat is sparse for large mammals).
     if (activeZone && animal.zones?.[activeZone]) {
       const z = animal.zones[activeZone];
-      // Zone × season: if both are active, prefer the zone's per-season freq.
       if (activeSeason && z.seasonFrequencies?.[activeSeason] != null) {
         return rescale(z.rarity, z.seasonFrequencies[activeSeason]);
       }
-      return rescale(z.rarity, z.frequency);
+      return rescale(z.rarity, resolveBaselineFrequency(z.frequency, z.rarity));
     }
 
     // Season override
@@ -1099,6 +1100,9 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, hig
                         seasons.includes('year-round');
       if (!hasSeason) return 'exceptional';
       // Prefer built-in seasonFrequencies (eBird S&T, 4-season probabilities).
+      // These are real per-season encounter probs — do NOT apply the tier
+      // floor here, since a bird with seasonal 0.02 in winter really is rare
+      // in winter even if its overall rarity is "likely".
       if (animal.seasonFrequencies?.[activeSeason] != null) {
         return rescale(animal.rarity, animal.seasonFrequencies[activeSeason]);
       }
@@ -1116,11 +1120,21 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, hig
         const seasonalProb = Math.min(0.99, base * (distPct / 25));
         return rescale(animal.rarity, seasonalProb);
       }
+      // No season-specific data — fall back to park-level with the tier floor.
+      return rescale(
+        animal.rarity,
+        resolveBaselineFrequency(animal.frequency, animal.rarity),
+      );
     }
 
-    // Park-level with effort rescaling
-    if (animal.frequency != null) {
-      return rescale(animal.rarity, animal.frequency);
+    // Park-level with effort rescaling. Use resolveBaselineFrequency so
+    // curated rarity overrides (Pronghorn "very_likely" with raw iNat
+    // freq 0.13) drive the pill, not the undercounted raw frequency.
+    if (animal.frequency != null || animal.rarity) {
+      return rescale(
+        animal.rarity,
+        resolveBaselineFrequency(animal.frequency, animal.rarity),
+      );
     }
     return animal.rarity;
   }, [animal, activeSeason, activeZone, seasonalFreqs, effortRescaler, todMultiplier]);
