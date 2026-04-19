@@ -1310,8 +1310,8 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, hig
                         key={s}
                         className={`freq-badge ${colorClass}`}
                         title={isEstimated
-                          ? `~${pct}% estimated presence in ${s} (from overall encounter rate)`
-                          : `${pct}% of iNaturalist observations were recorded in ${s}`}
+                          ? `~${pct}% estimated chance of seeing this animal per visit in ${s} (from overall encounter rate)`
+                          : `~${pct}% estimated chance of seeing this animal per visit in ${s} (from iNaturalist seasonal observations)`}
                       >
                         {SEASON_LABEL[s]} {pct}%
                       </span>
