@@ -61,9 +61,13 @@ jobs:
 
       - name: Rebuild wildlife cache
         env:
-          EBIRD_KEY: ${{ secrets.EBIRD_KEY }}
-          NPS_KEY:   ${{ secrets.NPS_KEY }}
-          PARKS:     ${{ github.event.inputs.parks }}
+          # buildWildlifeCache.js reads VITE_* prefixed names (matching .env);
+          # provide both naming conventions so either secret name works.
+          VITE_EBIRD_API_KEY: ${{ secrets.EBIRD_KEY }}
+          VITE_NPS_API_KEY:   ${{ secrets.NPS_KEY }}
+          EBIRD_KEY:          ${{ secrets.EBIRD_KEY }}
+          NPS_KEY:            ${{ secrets.NPS_KEY }}
+          PARKS:              ${{ github.event.inputs.parks }}
         run: node scripts/buildWildlifeCache.js
 
       - name: Split primary / secondary caches
@@ -81,9 +85,12 @@ jobs:
       - name: Verify production build
         run: npm run build
 
-      # Sanity check: refuse to ship a rebuild that drops more than 10% of
-      # species. Catches partial API failures, rate limit lockouts, and
-      # mid-rebuild crashes that produce a smaller but technically valid cache.
+      # Sanity check with graceful degradation:
+      #   drop ≤10%      → ship (auto-merge to main)
+      #   drop 10-25%    → soft-fail (open PR for human review instead)
+      #   drop >25%      → hard-fail (likely API outage — abandon run)
+      # Catches partial API failures, rate limit lockouts, and mid-rebuild
+      # crashes that produce a smaller but technically valid cache.
       - name: Validate species count
         id: validate
         run: |
@@ -91,16 +98,22 @@ jobs:
           PRE=${{ steps.pre_count.outputs.pre }}
           echo "Post-rebuild species entries: $POST"
           echo "post=$POST" >> "$GITHUB_OUTPUT"
+          NEEDS_REVIEW=false
+          DROP_PCT=0
           if [ "$PRE" -gt 0 ]; then
             DROP_PCT=$(awk -v p="$PRE" -v q="$POST" 'BEGIN{printf "%.1f", (p-q)*100/p}')
             echo "Drop: ${DROP_PCT}%"
-            echo "drop_pct=$DROP_PCT" >> "$GITHUB_OUTPUT"
-            # Reject if drop exceeds 10%
-            if awk -v d="$DROP_PCT" 'BEGIN{exit !(d > 10)}'; then
-              echo "::error::Rebuild dropped ${DROP_PCT}% of species (was $PRE, now $POST). Refusing to ship — investigate API health."
+            if awk -v d="$DROP_PCT" 'BEGIN{exit !(d > 25)}'; then
+              echo "::error::Rebuild dropped ${DROP_PCT}% of species (was $PRE, now $POST). Hard-fail — likely API outage."
               exit 1
             fi
+            if awk -v d="$DROP_PCT" 'BEGIN{exit !(d > 10)}'; then
+              echo "::warning::Rebuild dropped ${DROP_PCT}% of species (was $PRE, now $POST). Soft-fail — opening PR for human review instead of auto-merging."
+              NEEDS_REVIEW=true
+            fi
           fi
+          echo "drop_pct=$DROP_PCT" >> "$GITHUB_OUTPUT"
+          echo "needs_review=$NEEDS_REVIEW" >> "$GITHUB_OUTPUT"
 
       - name: Detect changes
         id: diff
@@ -113,9 +126,11 @@ jobs:
 
       # Auto-push to main when running on schedule, or when manually
       # triggered without pr_mode. Vercel picks up the push and redeploys.
+      # Skipped when validate flagged the rebuild for human review.
       - name: Auto-merge to main
         if: |
           steps.diff.outputs.changed == 'true' &&
+          steps.validate.outputs.needs_review != 'true' &&
           github.event.inputs.pr_mode != 'true'
         env:
           PRE:  ${{ steps.pre_count.outputs.pre }}
@@ -133,24 +148,30 @@ jobs:
           Net drop: ${DROP}% (sanity-check threshold 10%)"
           git push origin main
 
-      # Fallback: open a PR when explicitly requested via workflow_dispatch.
-      - name: Open pull request (manual override)
+      # Open a PR when (a) explicitly requested via workflow_dispatch, or
+      # (b) the species drop is in the soft-fail review band (10–25%).
+      - name: Open pull request
         if: |
           steps.diff.outputs.changed == 'true' &&
-          github.event.inputs.pr_mode == 'true'
+          (github.event.inputs.pr_mode == 'true' ||
+           steps.validate.outputs.needs_review == 'true')
         uses: peter-evans/create-pull-request@v6
         with:
           branch: automated/weekly-rebuild
-          title: "chore(data): weekly wildlife cache rebuild"
+          title: "chore(data): weekly wildlife cache rebuild (review needed)"
           commit-message: "chore(data): weekly wildlife cache rebuild"
           body: |
-            Manual rebuild requested with pr_mode=true.
+            Automated weekly rebuild — opened as PR instead of auto-merged.
+
+            **Reason:** ${{ steps.validate.outputs.needs_review == 'true' && format('species count dropped {0}% (auto-merge threshold is 10%)', steps.validate.outputs.drop_pct) || 'pr_mode=true requested manually' }}
 
             - Rebuilt species lists from eBird + iNaturalist + NPS.
             - Enriched placeholder descriptions.
             - Expanded bundled photo coverage.
             - Verified production build passes.
-            - Species count: ${{ steps.pre_count.outputs.pre }} → ${{ steps.validate.outputs.post }}
+            - Species count: ${{ steps.pre_count.outputs.pre }} → ${{ steps.validate.outputs.post }} (drop ${{ steps.validate.outputs.drop_pct }}%)
+
+            Inspect the diff. If the drop reflects a legitimate cleanup or a recoverable API hiccup, merge. Otherwise close and let next Sunday's run try again.
           labels: |
             automated
             data-refresh

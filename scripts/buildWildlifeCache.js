@@ -62,14 +62,15 @@ const { wildlifeLocations } = await import('../src/wildlifeData.js');
 // ── Helpers ──────────────────────────────────────────────────────────────────
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-async function safeFetch(url, opts = {}, retries = 3) {
+async function safeFetch(url, opts = {}, retries = 6) {
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
       const res = await fetch(url, { ...opts, signal: AbortSignal.timeout(30000) });
       if (res.ok) return await res.json();
-      // Rate-limited or server error — back off and retry
+      // Rate-limited or server error — back off and retry. iNat sometimes
+      // throttles for 30+ s under load, so be patient: exponential up to 60 s.
       if ((res.status === 429 || res.status >= 500) && attempt < retries) {
-        const delay = 2000 * (attempt + 1); // 2 s, 4 s, 6 s
+        const delay = Math.min(2000 * Math.pow(2, attempt), 60000); // 2,4,8,16,32,60,60s
         console.warn(`    ⚠  HTTP ${res.status} — retrying in ${delay / 1000}s (${url.slice(0, 80)}…)`);
         await sleep(delay);
         continue;
