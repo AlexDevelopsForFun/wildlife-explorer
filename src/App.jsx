@@ -3168,14 +3168,20 @@ function AppInner() {
   }, [selectedState, npsParks]);
 
   // ── First-time-use / stale-cache banner ───────────────────────────────────
-  // Shown when wildlifeCache.js still has the placeholder build date (script
-  // has never been run) OR when fewer than 10 parks have > 5 bundled species.
-  // The banner disappears automatically once background API fetches complete.
-  // Banner shows while live fetches are still in progress so the user has
-  // a visible signal that data is loading. On repeat visits localStorage
-  // serves most of this instantly and the banner disappears almost right
-  // away; on first visit it lingers for the ~60s warm-up.
-  const showBuildBanner = !warmDone && warmPct < 100;
+  // The static bundle is rebuilt weekly via .github/workflows/weekly-rebuild.yml.
+  // When the bundle is fresh (<7 days old), the cache-warming bar at the top
+  // gives enough signal — we suppress the prominent loading banner so visitors
+  // see data immediately. Background live-fetch still runs to layer in any
+  // new sightings since the bundle was built.
+  //
+  // Banner appears only when:
+  //   • bundle build date is missing/placeholder (initial setup), OR
+  //   • bundle is older than 7 days (weekly cron failed → stale)
+  // AND warm-up is still in progress.
+  const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+  const bundleAgeMs = Date.now() - new Date(WILDLIFE_CACHE_BUILT_AT).getTime();
+  const bundleIsStale = isNaN(bundleAgeMs) || bundleAgeMs > SEVEN_DAYS_MS;
+  const showBuildBanner = bundleIsStale && !warmDone && warmPct < 100;
 
   const activeFilterCount = [season, rarity, animalType, selectedState].filter(v => v !== 'all').length
     + (categoryType !== 'all' ? 1 : 0);

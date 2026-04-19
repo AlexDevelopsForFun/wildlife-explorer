@@ -1,11 +1,11 @@
 name: Weekly Wildlife Cache Rebuild
 
 # Refreshes the static wildlife cache every Sunday at 06:00 UTC.
-# The job rebuilds the full dataset from eBird + iNaturalist + NPS,
-# expands the photo bundle, and opens a PR against main so changes
-# are reviewed before they ship.
+# The job rebuilds from eBird + iNaturalist + NPS, expands photos,
+# runs a sanity check on species counts, and pushes directly to main
+# if the bundle is healthy. Vercel auto-deploys on push.
 #
-# Can also be triggered manually via the Actions tab → "Run workflow".
+# Manual trigger: Actions tab → "Run workflow" (option to force PR mode).
 
 on:
   schedule:
@@ -18,6 +18,11 @@ on:
         default: ""
       skip_enrich:
         description: "Skip slow description enrichment step"
+        required: false
+        type: boolean
+        default: false
+      pr_mode:
+        description: "Open a PR instead of pushing to main (override auto-merge)"
         required: false
         type: boolean
         default: false
@@ -44,6 +49,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Snapshot the current species count so we can verify the rebuild
+      # didn't accidentally wipe out a chunk of data (e.g. eBird API outage).
+      - name: Snapshot pre-rebuild species count
+        id: pre_count
+        run: |
+          # Sum animal entries across all wildlifeCache* data files.
+          PRE=$(grep -h '"scientificName"' src/data/wildlifeCache*.js 2>/dev/null | wc -l)
+          echo "pre=$PRE" >> "$GITHUB_OUTPUT"
+          echo "Pre-rebuild species entries: $PRE"
+
       - name: Rebuild wildlife cache
         env:
           EBIRD_KEY: ${{ secrets.EBIRD_KEY }}
@@ -66,6 +81,27 @@ jobs:
       - name: Verify production build
         run: npm run build
 
+      # Sanity check: refuse to ship a rebuild that drops more than 10% of
+      # species. Catches partial API failures, rate limit lockouts, and
+      # mid-rebuild crashes that produce a smaller but technically valid cache.
+      - name: Validate species count
+        id: validate
+        run: |
+          POST=$(grep -h '"scientificName"' src/data/wildlifeCache*.js 2>/dev/null | wc -l)
+          PRE=${{ steps.pre_count.outputs.pre }}
+          echo "Post-rebuild species entries: $POST"
+          echo "post=$POST" >> "$GITHUB_OUTPUT"
+          if [ "$PRE" -gt 0 ]; then
+            DROP_PCT=$(awk -v p="$PRE" -v q="$POST" 'BEGIN{printf "%.1f", (p-q)*100/p}')
+            echo "Drop: ${DROP_PCT}%"
+            echo "drop_pct=$DROP_PCT" >> "$GITHUB_OUTPUT"
+            # Reject if drop exceeds 10%
+            if awk -v d="$DROP_PCT" 'BEGIN{exit !(d > 10)}'; then
+              echo "::error::Rebuild dropped ${DROP_PCT}% of species (was $PRE, now $POST). Refusing to ship — investigate API health."
+              exit 1
+            fi
+          fi
+
       - name: Detect changes
         id: diff
         run: |
@@ -75,22 +111,46 @@ jobs:
             echo "changed=true"  >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Open pull request
-        if: steps.diff.outputs.changed == 'true'
+      # Auto-push to main when running on schedule, or when manually
+      # triggered without pr_mode. Vercel picks up the push and redeploys.
+      - name: Auto-merge to main
+        if: |
+          steps.diff.outputs.changed == 'true' &&
+          github.event.inputs.pr_mode != 'true'
+        env:
+          PRE:  ${{ steps.pre_count.outputs.pre }}
+          POST: ${{ steps.validate.outputs.post }}
+          DROP: ${{ steps.validate.outputs.drop_pct }}
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/data
+          git commit -m "chore(data): weekly wildlife cache rebuild
+
+          Automated weekly rebuild from eBird + iNaturalist + NPS.
+          Pre-rebuild species: $PRE
+          Post-rebuild species: $POST
+          Net drop: ${DROP}% (sanity-check threshold 10%)"
+          git push origin main
+
+      # Fallback: open a PR when explicitly requested via workflow_dispatch.
+      - name: Open pull request (manual override)
+        if: |
+          steps.diff.outputs.changed == 'true' &&
+          github.event.inputs.pr_mode == 'true'
         uses: peter-evans/create-pull-request@v6
         with:
           branch: automated/weekly-rebuild
           title: "chore(data): weekly wildlife cache rebuild"
           commit-message: "chore(data): weekly wildlife cache rebuild"
           body: |
-            Automated weekly rebuild of the wildlife cache.
+            Manual rebuild requested with pr_mode=true.
 
             - Rebuilt species lists from eBird + iNaturalist + NPS.
-            - Enriched placeholder descriptions (Wikipedia + iNat fallback).
+            - Enriched placeholder descriptions.
             - Expanded bundled photo coverage.
             - Verified production build passes.
-
-            Review the diff under `src/data/` before merging.
+            - Species count: ${{ steps.pre_count.outputs.pre }} → ${{ steps.validate.outputs.post }}
           labels: |
             automated
             data-refresh
