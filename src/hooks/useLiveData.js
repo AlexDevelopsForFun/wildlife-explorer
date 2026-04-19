@@ -18,6 +18,9 @@ import { WILDLIFE_CACHE, WILDLIFE_CACHE_BUILT_AT } from '../data/wildlifeCacheLo
 const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
 const _bundleAge = Date.now() - new Date(WILDLIFE_CACHE_BUILT_AT).getTime();
 const _bundleBuiltAtMs = new Date(WILDLIFE_CACHE_BUILT_AT).getTime();
+// Bundle is "stale" if its build date is the placeholder value or > 7 days old.
+// When fresh, we skip the bulk live-fetch warm-up entirely (see staggered dispatch below).
+const _bundleIsStale = isNaN(_bundleAge) || _bundleAge > SEVEN_DAYS;
 
 // 1. If the bundle itself is >7 days old, evict all per-location localStorage entries.
 if (_bundleAge > SEVEN_DAYS) {
@@ -395,8 +398,26 @@ export function useLiveData(locations) {
     fetchFnRef.current = fetchLocation;
 
     // ── Staggered dispatch ────────────────────────────────────────────────
-    // Priority parks: 400 ms apart. Non-priority: 2 000 ms apart after the
-    // priority group. fetchLocation's fetchedRef guard skips cached locations.
+    // SHORT-CIRCUIT: when the static bundle is fresh (rebuilt within the last
+    // 7 days by the weekly GitHub Actions cron), the bundled species list IS
+    // the authoritative dataset. Skip live API fetches entirely — visitors
+    // see all parks instantly with no progress bar / banner.
+    //
+    // Live fetches still run for individual parks the user actually opens
+    // (refreshLocation / popup-time fetch) so iNat seasonal histograms and
+    // sub-day-fresh sightings can layer in on demand. The bulk warm-up is
+    // skipped because the weekly bundle already contains the same data.
+    if (!_bundleIsStale) {
+      // Mark every park as "already fetched" so the cache-warming bar shows
+      // 100 % immediately and no APIs are hit for the bulk warm-up.
+      locations.forEach(l => fetchedRef.current.add(l.id));
+      DEV_LOG(`[useLiveData] Bundle fresh (${Math.round(_bundleAge / 86400000)}d) — skipping bulk live-fetch warm-up.`);
+      return;
+    }
+
+    // Bundle is stale or missing — fall back to the original priority-staggered
+    // dispatch so at least the top parks get refreshed.
+    // Priority parks: 3 s apart. Non-priority: 1 s apart after the priority group.
     const prioritySet     = new Set(PRIORITY_PARK_IDS);
     const priorityLocs    = locations.filter(l => PRIORITY_PARK_IDS.includes(l.id));
     const nonPriorityLocs = locations.filter(l => !prioritySet.has(l.id));

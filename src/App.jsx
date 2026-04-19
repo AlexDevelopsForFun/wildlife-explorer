@@ -3188,8 +3188,10 @@ function AppInner() {
 
   return (
     <div className="app">
-      {/* ── Cache warming bar — fills as parks load from cache/API, then fades ── */}
-      {warmVisible && (
+      {/* ── Cache warming bar — only shown when bundle is stale (>7d old).
+          When the weekly rebuild is healthy, the static bundle is the source
+          of truth and there is no live warm-up to display progress for. ── */}
+      {warmVisible && bundleIsStale && (
         <div className={`cache-warming-bar${warmDone ? ' cache-warming-bar--done' : ''}`}
           aria-hidden="true">
           <div className="cache-warming-bar__fill" style={{ width: `${warmPct}%` }} />
