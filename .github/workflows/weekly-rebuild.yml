@@ -34,7 +34,7 @@ permissions:
 jobs:
   rebuild:
     runs-on: ubuntu-latest
-    timeout-minutes: 360      # hard cap 6 h — enrichment can run ~4 h
+    timeout-minutes: 420      # hard cap 7 h — rebuild can run ~4 h, enrichment ~1 h
 
     steps:
       - name: Checkout
