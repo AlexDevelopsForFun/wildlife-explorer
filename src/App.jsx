@@ -861,6 +861,15 @@ function iconicSortFn(a, b) {
 // Approximate encounter-rate by rarity tier — used as last-resort when no
 // frequency field exists (e.g. NPS-only records). Keeps estimated badges
 // honest: exceptional animals show ~1%, rare ~4%, etc.
+// Default popup type filter — surfaces all wildlife visitors typically come
+// for: birds, mammals, reptiles (alligators, rattlesnakes), amphibians
+// (salamanders), and marine life (manatees, whales, sea turtles). Insects
+// stay opt-in — most visitors aren't there for the bug list, and showing
+// 60+ insect cards by default buries the iconic species. Insects tab is
+// one click away. Hoisted to module scope so it's a stable reference for
+// useState init and useCallback closures.
+const DEFAULT_ACTIVE_TYPES = ['bird', 'mammal', 'reptile', 'amphibian', 'marine'];
+
 const RARITY_FREQ_FALLBACK = {
   guaranteed: 0.92, very_likely: 0.70, likely: 0.40,
   unlikely: 0.15, rare: 0.04, exceptional: 0.01,
@@ -2746,13 +2755,7 @@ function AppInner() {
 
   // Popup-local filter preferences (persist across popup open/close)
   // Multi-select type filter: Set of active animal types (persists across popups within session)
-  // Default surfaces all wildlife visitors typically come for: birds, mammals,
-  // reptiles (alligators, rattlesnakes), amphibians (salamanders), and marine
-  // life (manatees, whales, sea turtles). Insects stay opt-in — most visitors
-  // aren't there for the bug list, and showing 60+ insect cards by default
-  // buries the iconic species. The Insects tab is one click away.
-  const DEFAULT_ACTIVE_TYPES = new Set(['bird', 'mammal', 'reptile', 'amphibian', 'marine']);
-  const [activeTypes, setActiveTypes] = useState(DEFAULT_ACTIVE_TYPES);
+  const [activeTypes, setActiveTypes] = useState(() => new Set(DEFAULT_ACTIVE_TYPES));
   // popupType is derived: 'all' when all types active, single type when exactly 1, otherwise 'multi'
   const popupType = activeTypes.size === Object.keys(ANIMAL_TYPES).length - 1 ? 'all'  // minus 'all' key
     : activeTypes.size === 1 ? [...activeTypes][0]
@@ -2938,7 +2941,10 @@ function AppInner() {
     if (animalTypeRef.current !== 'all') {
       setActiveTypes(new Set([animalTypeRef.current]));
     } else {
-      setActiveTypes(new Set(['bird', 'mammal']));
+      // Match DEFAULT_ACTIVE_TYPES: include reptiles, amphibians, marine life
+      // by default so iconic non-bird/mammal species (alligators, manatees,
+      // sea turtles) aren't hidden when a park is first opened.
+      setActiveTypes(new Set(DEFAULT_ACTIVE_TYPES));
     }
 
     // Bypass the stagger queue if this location has no data yet
