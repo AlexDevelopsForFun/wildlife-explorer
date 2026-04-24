@@ -3134,19 +3134,9 @@ function AppInner() {
 
   const liveCount  = Object.keys(liveData).length;
 
-  // ── Cache warming progress bar ────────────────────────────────────────────
-  // Tracks how many locations have data (cache hit or API response) vs total.
-  // Once all are loaded and no fetches are in flight, fades out after 600 ms.
-  const totalLocs   = wildlifeLocations.length;
-  const loadedCount = liveCount;  // liveCount = Object.keys(liveData).length
-  const warmPct     = totalLocs > 0 ? Math.min(100, Math.round((loadedCount / totalLocs) * 100)) : 0;
-  const warmDone    = loadedCount >= totalLocs && loading.size === 0;
-  const [warmVisible, setWarmVisible] = useState(true);
-  useEffect(() => {
-    if (!warmDone) return;
-    const t = setTimeout(() => setWarmVisible(false), 600);
-    return () => clearTimeout(t);
-  }, [warmDone]);
+  // Cache warming progress tracking removed — the static bundle provides full
+  // content immediately, and the background live-fetch enrichment runs silently
+  // without surfacing progress UI.
 
   // Auto-zoom to fit filtered parks when species filter is applied
   useEffect(() => {
@@ -3182,44 +3172,22 @@ function AppInner() {
   }, [selectedState, npsParks]);
 
   // ── First-time-use / stale-cache banner ───────────────────────────────────
-  // The static bundle is rebuilt weekly via .github/workflows/weekly-rebuild.yml.
-  // When the bundle is fresh (<7 days old), the cache-warming bar at the top
-  // gives enough signal — we suppress the prominent loading banner so visitors
-  // see data immediately. Background live-fetch still runs to layer in any
-  // new sightings since the bundle was built.
-  //
-  // Banner appears only when:
-  //   • bundle build date is missing/placeholder (initial setup), OR
-  //   • bundle is older than 7 days (weekly cron failed → stale)
-  // AND warm-up is still in progress.
-  const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
-  const bundleAgeMs = Date.now() - new Date(WILDLIFE_CACHE_BUILT_AT).getTime();
-  const bundleIsStale = isNaN(bundleAgeMs) || bundleAgeMs > SEVEN_DAYS_MS;
-  const showBuildBanner = bundleIsStale && !warmDone && warmPct < 100;
+  // The static bundle is rebuilt weekly via .github/workflows/weekly-rebuild.yml
+  // and contains the full species set for every park — the page is fully usable
+  // the moment React mounts. The live warm-up that runs in useLiveData is pure
+  // enrichment (newer sightings since the bundle was built) and runs silently
+  // in the background regardless of bundle age. We deliberately do NOT surface
+  // a loading bar or banner to visitors: the static cache is always the source
+  // of truth from their perspective, and showing "loading…" UI for a background
+  // refresh just confuses people into thinking the page isn't ready.
 
   const activeFilterCount = [season, rarity, animalType, selectedState].filter(v => v !== 'all').length
     + (categoryType !== 'all' ? 1 : 0);
 
   return (
     <div className="app">
-      {/* ── Cache warming bar — only shown when bundle is stale (>7d old).
-          When the weekly rebuild is healthy, the static bundle is the source
-          of truth and there is no live warm-up to display progress for. ── */}
-      {warmVisible && bundleIsStale && (
-        <div className={`cache-warming-bar${warmDone ? ' cache-warming-bar--done' : ''}`}
-          aria-hidden="true">
-          <div className="cache-warming-bar__fill" style={{ width: `${warmPct}%` }} />
-        </div>
-      )}
-
-      {/* ── First-time / stale cache banner ── */}
-      {showBuildBanner && (
-        <div className="build-banner" role="status" aria-live="polite">
-          <span className="build-banner__dot" aria-hidden="true" />
-          🌿 Loading wildlife data — fetching live species info for all parks…
-          <span className="build-banner__sub">This takes about 60 seconds. Future visits load much faster from your browser cache.</span>
-        </div>
-      )}
+      {/* Cache-warming bar and build banner intentionally removed — the static
+          bundle provides instant content; live enrichment runs silently. */}
 
       {/* ── Welcome splash (first visit only) ── */}
       {showSplash && <SplashScreen onDismiss={dismissSplash} onAbout={() => openAbout()} />}
