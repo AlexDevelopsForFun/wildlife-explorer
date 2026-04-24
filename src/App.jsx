@@ -897,6 +897,70 @@ function resolveBaselineFrequency(rawFrequency, rarity) {
   return Math.max(raw, tierFallback);
 }
 
+// Compute the same "displayed" rarity tier that AnimalCard renders on its
+// pill — mirrors the displayRarity useMemo in AnimalCard. Pulled out so the
+// "Most Common" / "Rarest First" sort comparators agree with the visible
+// pills (otherwise the sort uses raw `animal.rarity` and silently disagrees
+// with the rescaled card pill, which looks broken to users).
+//
+// Inputs intentionally mirror AnimalCard's props so the two stay in lock-step.
+function computeEffectiveRarity(animal, {
+  activeSeason = null,
+  activeZone = null,
+  seasonalFreqs = null,
+  effortRescaler = 1,
+  visitTime = 'any',
+} = {}) {
+  const period = animal.activityPeriod ?? 'diurnal';
+  const todMultiplier = visitTime === 'any'
+    ? 1
+    : (TIME_OF_DAY_MULTIPLIER[period]?.[visitTime] ?? 1);
+
+  const rescale = (tier, freq) => {
+    if (freq == null) return tier;
+    const rescaled = Math.min(Math.max(freq * effortRescaler * todMultiplier, 0), 1);
+    return rarityFromFrequency(rescaled);
+  };
+
+  // Zone override (most specific)
+  if (activeZone && animal.zones?.[activeZone]) {
+    const z = animal.zones[activeZone];
+    if (activeSeason && z.seasonFrequencies?.[activeSeason] != null) {
+      return rescale(z.rarity, z.seasonFrequencies[activeSeason]);
+    }
+    return rescale(z.rarity, resolveBaselineFrequency(z.frequency, z.rarity));
+  }
+
+  // Season override
+  if (activeSeason) {
+    const seasons = animal.displaySeasons ?? animal.seasons ?? [];
+    const hasSeason = seasons.includes(activeSeason) ||
+                      seasons.includes('year_round') ||
+                      seasons.includes('year-round');
+    if (!hasSeason) return 'exceptional';
+    if (animal.seasonFrequencies?.[activeSeason] != null) {
+      return rescale(animal.rarity, animal.seasonFrequencies[activeSeason]);
+    }
+    const sciKey = animal.scientificName?.toLowerCase();
+    const distPct = sciKey ? seasonalFreqs?.[sciKey]?.[activeSeason] : null;
+    if (distPct != null && distPct > 0) {
+      const base = resolveBaselineFrequency(
+        animal.frequency ?? animal._debug?.frequency,
+        animal.rarity,
+      );
+      const seasonalProb = Math.min(0.99, base * (distPct / 25));
+      return rescale(animal.rarity, seasonalProb);
+    }
+    return rescale(animal.rarity, resolveBaselineFrequency(animal.frequency, animal.rarity));
+  }
+
+  // Park-level
+  if (animal.frequency != null || animal.rarity) {
+    return rescale(animal.rarity, resolveBaselineFrequency(animal.frequency, animal.rarity));
+  }
+  return animal.rarity;
+}
+
 // Convert an iNat-histogram-style seasonal distribution (percentages of TOTAL
 // observations summing to ~100) into per-season encounter probabilities using
 // the species' baseline overall frequency.
@@ -1068,76 +1132,12 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, hig
   //      relative to the casual baseline baked into the stored frequency).
   //   3. Rescale by activity-period × time-of-day multiplier.
   //   4. Re-map to tier.
-  const todMultiplier = useMemo(() => {
-    if (visitTime === 'any') return 1;
-    const period = animal.activityPeriod ?? 'diurnal';
-    return TIME_OF_DAY_MULTIPLIER[period]?.[visitTime] ?? 1;
-  }, [animal.activityPeriod, visitTime]);
-
-  const displayRarity = useMemo(() => {
-    const rescale = (tier, freq) => {
-      if (freq == null) return tier;                         // no freq to rescale
-      const rescaled = Math.min(Math.max(freq * effortRescaler * todMultiplier, 0), 1);
-      return rarityFromFrequency(rescaled);
-    };
-
-    // Zone override (most specific). Honor the zone's curated tier floor so
-    // a "very_likely" override doesn't get dragged down to "unlikely" by an
-    // undercounted raw frequency (iNat is sparse for large mammals).
-    if (activeZone && animal.zones?.[activeZone]) {
-      const z = animal.zones[activeZone];
-      if (activeSeason && z.seasonFrequencies?.[activeSeason] != null) {
-        return rescale(z.rarity, z.seasonFrequencies[activeSeason]);
-      }
-      return rescale(z.rarity, resolveBaselineFrequency(z.frequency, z.rarity));
-    }
-
-    // Season override
-    if (activeSeason) {
-      const seasons = animal.displaySeasons ?? animal.seasons ?? [];
-      const hasSeason = seasons.includes(activeSeason) ||
-                        seasons.includes('year_round') ||
-                        seasons.includes('year-round');
-      if (!hasSeason) return 'exceptional';
-      // Prefer built-in seasonFrequencies (eBird S&T, 4-season probabilities).
-      // These are real per-season encounter probs — do NOT apply the tier
-      // floor here, since a bird with seasonal 0.02 in winter really is rare
-      // in winter even if its overall rarity is "likely".
-      if (animal.seasonFrequencies?.[activeSeason] != null) {
-        return rescale(animal.rarity, animal.seasonFrequencies[activeSeason]);
-      }
-      // Fallback to runtime-fetched iNat monthly histogram.
-      // The histogram stores DISTRIBUTION of sightings (sums to ~100), not
-      // per-season encounter probability. Convert by scaling baseline freq
-      // against seasonal concentration: seasonalProb = base × (distPct / 25).
-      const sciKey = animal.scientificName?.toLowerCase();
-      const distPct = sciKey ? seasonalFreqs?.[sciKey]?.[activeSeason] : null;
-      if (distPct != null && distPct > 0) {
-        const base = resolveBaselineFrequency(
-          animal.frequency ?? animal._debug?.frequency,
-          animal.rarity,
-        );
-        const seasonalProb = Math.min(0.99, base * (distPct / 25));
-        return rescale(animal.rarity, seasonalProb);
-      }
-      // No season-specific data — fall back to park-level with the tier floor.
-      return rescale(
-        animal.rarity,
-        resolveBaselineFrequency(animal.frequency, animal.rarity),
-      );
-    }
-
-    // Park-level with effort rescaling. Use resolveBaselineFrequency so
-    // curated rarity overrides (Pronghorn "very_likely" with raw iNat
-    // freq 0.13) drive the pill, not the undercounted raw frequency.
-    if (animal.frequency != null || animal.rarity) {
-      return rescale(
-        animal.rarity,
-        resolveBaselineFrequency(animal.frequency, animal.rarity),
-      );
-    }
-    return animal.rarity;
-  }, [animal, activeSeason, activeZone, seasonalFreqs, effortRescaler, todMultiplier]);
+  const displayRarity = useMemo(
+    () => computeEffectiveRarity(animal, {
+      activeSeason, activeZone, seasonalFreqs, effortRescaler, visitTime,
+    }),
+    [animal, activeSeason, activeZone, seasonalFreqs, effortRescaler, visitTime],
+  );
 
   const r = RARITY[displayRarity] ?? RARITY.rare;
   const t = ANIMAL_TYPES[animal.animalType];
@@ -2106,10 +2106,29 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
 
     if (popupSort === 'iconic-first') {
       result = [...result].sort(iconicSortFn);
-    } else if (popupSort === 'common-first') {
-      result = [...result].sort((a, b) => (_RARITY_ORDER[a.rarity] ?? 5) - (_RARITY_ORDER[b.rarity] ?? 5));
-    } else if (popupSort === 'rarest-first') {
-      result = [...result].sort((a, b) => (_RARITY_ORDER[b.rarity] ?? 5) - (_RARITY_ORDER[a.rarity] ?? 5));
+    } else if (popupSort === 'common-first' || popupSort === 'rarest-first') {
+      // Sort by the SAME effective rarity tier the card pill displays —
+      // not the raw stored `animal.rarity` field. Otherwise an animal with
+      // stored "unlikely" but a curated tier-floor override that bumps the
+      // pill to "very_likely" would sort as if it were unlikely, making the
+      // sort visibly disagree with the card it's reordering.
+      const effRarityCache = new Map();
+      const eff = (a) => {
+        if (effRarityCache.has(a)) return effRarityCache.get(a);
+        const r = computeEffectiveRarity(a, {
+          activeSeason: popupSeason !== 'all' ? popupSeason : null,
+          activeZone:   popupZone   !== 'all' ? popupZone   : null,
+          seasonalFreqs, effortRescaler, visitTime,
+        });
+        effRarityCache.set(a, r);
+        return r;
+      };
+      // Tie-break alphabetically so equal tiers have a stable, intuitive order.
+      const dir = popupSort === 'common-first' ? 1 : -1;
+      result = [...result].sort((a, b) => {
+        const d = ((_RARITY_ORDER[eff(a)] ?? 5) - (_RARITY_ORDER[eff(b)] ?? 5)) * dir;
+        return d !== 0 ? d : a.name.localeCompare(b.name);
+      });
     } else {
       result = [...result].sort((a, b) => a.name.localeCompare(b.name));
     }
@@ -2128,7 +2147,7 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
       || popupSeason !== 'all' || popupRarity !== 'all' || !!search.trim();
 
     return { display: result, isFiltered };
-  }, [enriched, activeTypes, popupSubtype, popupSeason, popupRarity, popupZone, search, popupSort, focusedType]);
+  }, [enriched, activeTypes, popupSubtype, popupSeason, popupRarity, popupZone, search, popupSort, focusedType, seasonalFreqs, effortRescaler, visitTime, highlightSpecies]);
 
   // Exceptional animals for the Rare Finds section — fully filter-aware.
   // Applies the same type / subtype / season / search filters as the main list
