@@ -817,23 +817,29 @@ function getCharismaScore(name, animalType) {
 
   // ── Reptiles / Amphibians ─────────────────────────────────────────────
   if (animalType === 'reptile' || animalType === 'amphibian') {
-    // Tier 10: big iconic reptiles (alligators, crocs, large monitors)
-    if (/\b(alligator|crocodile|gila monster|komodo|iguana|monitor)\b/.test(n)) return 10;
-    // Tier 9: sea turtles + venomous snakes (recognisable danger animals)
-    if (/\b(sea turtle|leatherback|loggerhead|green turtle|hawksbill|kemp|olive ridley)\b/.test(n)) return 9;
-    if (/\b(rattlesnake|cottonmouth|copperhead|coral snake|cobra|mamba)\b/.test(n)) return 8;
-    // Tier 7: big snakes + tortoises
-    if (/\b(boa|python|king snake|milk snake|gopher snake|tortoise|gopher tortoise|desert tortoise)\b/.test(n)) return 7;
+    // Tier 10: big iconic reptiles (alligators, crocs only — these are the
+    // marquee "I came to see one" species at parks like the Everglades)
+    if (/\b(alligator|crocodile)\b/.test(n)) return 10;
+    // Tier 8: sea turtles (charismatic, slow, photogenic) + gila monster
+    if (/\b(sea turtle|leatherback|loggerhead|green turtle|hawksbill|kemp|olive ridley|gila monster)\b/.test(n)) return 8;
+    // Tier 6: venomous snakes (recognisable danger animals, but not what
+    // most visitors come to see — and many actively avoid them)
+    if (/\b(rattlesnake|cottonmouth|copperhead|coral snake|cobra|mamba)\b/.test(n)) return 6;
+    // Tier 5: large monitors / iguanas / big snakes / tortoises — niche
+    // interest, not headline draws
+    if (/\b(komodo|iguana|monitor|boa|python|king snake|milk snake|gopher snake|tortoise|gopher tortoise|desert tortoise)\b/.test(n)) return 5;
     // Generic reptile/amphibian floor (lizards, frogs, salamanders)
-    return 5;
+    return 4;
   }
 
   // ── Birds ─────────────────────────────────────────────────────────────
   if (animalType === 'bird') {
-    // Tier 10: condors (iconic recovery story)
-    if (/\b(california condor|condor)\b/.test(n)) return 10;
-    // Tier 9: birds of prey + big iconic birds
-    if (/\b(bald eagle|golden eagle|eagle|peregrine|falcon|osprey|hawk|owl|vulture|kite|harrier|merlin|kestrel|caracara|goshawk)\b/.test(n)) return 9;
+    // Tier 11: condors (iconic recovery story, see-one-in-a-lifetime)
+    if (/\b(california condor|condor)\b/.test(n)) return 11;
+    // Tier 10: birds of prey — eagles, falcons, hawks, owls, ospreys,
+    // vultures. Visitors specifically look for these and stop in their
+    // tracks when they see one.
+    if (/\b(bald eagle|golden eagle|eagle|peregrine|falcon|osprey|hawk|owl|vulture|kite|harrier|merlin|kestrel|caracara|goshawk)\b/.test(n)) return 10;
     // Tier 8: showpiece large birds
     if (/\b(puffin|flamingo|spoonbill|whooping crane|sandhill crane|roseate|pelican|frigate|booby|albatross|trumpeter swan|tundra swan)\b/.test(n)) return 8;
     // Tier 7: large wading + waterbirds visitors notice
