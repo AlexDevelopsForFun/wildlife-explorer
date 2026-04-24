@@ -789,25 +789,84 @@ const PHOTO_PLACEHOLDER = {
 };
 
 // ── Iconic sort helpers ───────────────────────────────────────────────────────
-// Returns a charisma score (1–10) used to rank within iconic sort tiers.
+// Returns a charisma score (1–11) used to rank within iconic sort tiers.
 // Higher = more exciting / visitor-recognisable.
+//
+// IMPORTANT: name patterns are gated by animalType so a fish named "Jaguar
+// Guapote" doesn't inherit the big-cat's score, and a "Mountain Bluebird"
+// doesn't get a mammal score from the word "mountain". Fish (animalType
+// 'marine' or 'fish' that aren't whales/seals/sea turtles/etc.) are demoted
+// — visitors care about big iconic sea life (whales, manatees, seals,
+// orcas, sea turtles, sharks), not minnows.
 function getCharismaScore(name, animalType) {
   const n = (name ?? '').toLowerCase();
-  if (/\b(california condor|florida panther|gray wolf|grizzly bear|brown bear|wolverine)\b/.test(n)) return 11;
-  if (/\b(bison|buffalo|grizzly|bear|wolf|wolves|alligator|crocodile|moose|elk|wapiti|mountain lion|puma|cougar|jaguar|panther|wolverine|manatee|california condor|javelina|peccary)\b/.test(n)) return 10;
-  if (/\b(manatee|whale|dolphin|orca|shark|sea lion|walrus|sea otter|steller)\b/.test(n)) return 9;
-  if (/\b(bald eagle|golden eagle|eagle|condor|peregrine|falcon|osprey|roadrunner)\b/.test(n)) return 9;
-  if (/\b(hawk|owl|vulture|kite|harrier|merlin|kestrel|quail|gambel|gila woodpecker|cactus wren)\b/.test(n)) return 8;
-  if (/\b(puffin|flamingo|spoonbill|whooping crane|sandhill crane|roseate|pelican|frigate|booby)\b/.test(n)) return 8;
-  if (/\b(seal|harbor seal|grey seal|fur seal|sea turtle|leatherback|loggerhead)\b/.test(n)) return 8;
-  if (/\b(fox|coyote|bobcat|lynx|otter|beaver|pronghorn|bighorn|mountain goat|caribou|muskox|bison|deer|elk|moose)\b/.test(n)) return 7;
-  if (/\b(rattlesnake|boa|python|king snake|milk snake|gopher snake|coral snake)\b/.test(n)) return 7;
-  if (/\b(heron|egret|ibis|stork|loon|puffin|cormorant|gannet|anhinga)\b/.test(n)) return 7;
-  if (animalType === 'marine') return 7;
-  if (animalType === 'mammal') return 6;
-  if (animalType === 'reptile' || animalType === 'amphibian') return 6;
-  if (animalType === 'bird') return 5;
-  if (animalType === 'insect') return 3;
+
+  // ── Mammals ───────────────────────────────────────────────────────────
+  if (animalType === 'mammal') {
+    // Tier 11: critically endangered icons people travel specifically to see
+    if (/\b(california condor|florida panther|gray wolf|grizzly bear|brown bear|wolverine|polar bear)\b/.test(n)) return 11;
+    // Tier 10: marquee large mammals
+    if (/\b(bison|buffalo|grizzly|bear|wolf|wolves|moose|elk|wapiti|mountain lion|puma|cougar|jaguar|panther|wolverine|caribou|muskox|bighorn|mountain goat|pronghorn)\b/.test(n)) return 10;
+    // Tier 9: marine mammals
+    if (/\b(whale|dolphin|orca|sea lion|walrus|sea otter|steller|manatee|seal)\b/.test(n)) return 9;
+    // Tier 7: charismatic medium mammals
+    if (/\b(fox|coyote|bobcat|lynx|otter|beaver|deer|javelina|peccary|porcupine|badger|marmot|prairie dog)\b/.test(n)) return 7;
+    // Generic mammal floor
+    return 6;
+  }
+
+  // ── Reptiles / Amphibians ─────────────────────────────────────────────
+  if (animalType === 'reptile' || animalType === 'amphibian') {
+    // Tier 10: big iconic reptiles (alligators, crocs, large monitors)
+    if (/\b(alligator|crocodile|gila monster|komodo|iguana|monitor)\b/.test(n)) return 10;
+    // Tier 9: sea turtles + venomous snakes (recognisable danger animals)
+    if (/\b(sea turtle|leatherback|loggerhead|green turtle|hawksbill|kemp|olive ridley)\b/.test(n)) return 9;
+    if (/\b(rattlesnake|cottonmouth|copperhead|coral snake|cobra|mamba)\b/.test(n)) return 8;
+    // Tier 7: big snakes + tortoises
+    if (/\b(boa|python|king snake|milk snake|gopher snake|tortoise|gopher tortoise|desert tortoise)\b/.test(n)) return 7;
+    // Generic reptile/amphibian floor (lizards, frogs, salamanders)
+    return 5;
+  }
+
+  // ── Birds ─────────────────────────────────────────────────────────────
+  if (animalType === 'bird') {
+    // Tier 10: condors (iconic recovery story)
+    if (/\b(california condor|condor)\b/.test(n)) return 10;
+    // Tier 9: birds of prey + big iconic birds
+    if (/\b(bald eagle|golden eagle|eagle|peregrine|falcon|osprey|hawk|owl|vulture|kite|harrier|merlin|kestrel|caracara|goshawk)\b/.test(n)) return 9;
+    // Tier 8: showpiece large birds
+    if (/\b(puffin|flamingo|spoonbill|whooping crane|sandhill crane|roseate|pelican|frigate|booby|albatross|trumpeter swan|tundra swan)\b/.test(n)) return 8;
+    // Tier 7: large wading + waterbirds visitors notice
+    if (/\b(heron|egret|ibis|stork|loon|cormorant|gannet|anhinga|kingfisher|wood duck|harlequin|hooded merganser)\b/.test(n)) return 7;
+    // Tier 6: woodpeckers, charismatic small birds
+    if (/\b(woodpecker|jay|magpie|raven|roadrunner|grouse|ptarmigan|wild turkey|turkey|quail)\b/.test(n)) return 6;
+    // Generic small bird floor (sparrows, warblers, finches)
+    return 4;
+  }
+
+  // ── Marine life (non-mammal: sea turtles, sharks, rays, fish) ─────────
+  if (animalType === 'marine' || animalType === 'fish') {
+    // Tier 10: marine megafauna (whales sometimes get tagged 'marine' instead of 'mammal')
+    if (/\b(whale|orca|dolphin|manatee|walrus)\b/.test(n)) return 10;
+    // Tier 9: sharks, rays, sea turtles — apex / iconic
+    if (/\b(shark|manta|stingray|ray|sea turtle|leatherback|loggerhead|green turtle|hawksbill|kemp|olive ridley)\b/.test(n)) return 9;
+    // Tier 8: seals, sea lions, sea otters
+    if (/\b(seal|sea lion|sea otter|steller)\b/.test(n)) return 8;
+    // Tier 7: showpiece reef fish + iconic sportfish
+    if (/\b(marlin|sailfish|swordfish|tarpon|tuna|barracuda|grouper|moray|octopus|squid|cuttlefish|seahorse)\b/.test(n)) return 7;
+    // Tier 5: salmon (iconic spawning runs), trout (fly-fishing recognition)
+    if (/\b(salmon|steelhead|cutthroat|rainbow trout)\b/.test(n)) return 5;
+    // Generic fish floor — minnows, guppies, cichlids like Jaguar Guapote.
+    // Visitors generally don't pick a park to see a freshwater fish.
+    return 2;
+  }
+
+  // ── Insects ───────────────────────────────────────────────────────────
+  if (animalType === 'insect') {
+    if (/\b(monarch|swallowtail|morpho)\b/.test(n)) return 5;
+    return 2;
+  }
+
   return 4;
 }
 
@@ -834,14 +893,22 @@ function iconicSortFn(a, b) {
     return getCharismaScore(b.name, b.animalType) - getCharismaScore(a.name, a.animalType);
   }
 
-  // Tier 3: guaranteed/very_likely mammals
-  const aTopMammal = a.animalType === 'mammal' && (a.rarity === 'guaranteed' || a.rarity === 'very_likely');
-  const bTopMammal = b.animalType === 'mammal' && (b.rarity === 'guaranteed' || b.rarity === 'very_likely');
-  if (aTopMammal !== bTopMammal) return aTopMammal ? -1 : 1;
-  if (aTopMammal) {
-    const rd = (_RARITY_ORDER[a.rarity] ?? 5) - (_RARITY_ORDER[b.rarity] ?? 5);
-    if (rd !== 0) return rd;
-    return getCharismaScore(b.name, b.animalType) - getCharismaScore(a.name, a.animalType);
+  // Tier 3: high-charisma species (mammals, big reptiles, big sea life,
+  // birds of prey) that you can actually expect to see. Anything scoring 8+
+  // on charisma at likely-or-better rarity gets bubbled — so a guaranteed
+  // alligator sits beside a guaranteed bison, not buried under generic
+  // mammals.
+  const aTopIconic = getCharismaScore(a.name, a.animalType) >= 8 &&
+                     (a.rarity === 'guaranteed' || a.rarity === 'very_likely' || a.rarity === 'likely');
+  const bTopIconic = getCharismaScore(b.name, b.animalType) >= 8 &&
+                     (b.rarity === 'guaranteed' || b.rarity === 'very_likely' || b.rarity === 'likely');
+  if (aTopIconic !== bTopIconic) return aTopIconic ? -1 : 1;
+  if (aTopIconic) {
+    // Within the tier: charisma first (Bison/Bear/Croc beat Heron),
+    // then rarity (Guaranteed before Likely within same charisma band)
+    const cd = getCharismaScore(b.name, b.animalType) - getCharismaScore(a.name, a.animalType);
+    if (cd !== 0) return cd;
+    return (_RARITY_ORDER[a.rarity] ?? 5) - (_RARITY_ORDER[b.rarity] ?? 5);
   }
 
   // Tier 4: rare animals — exciting even if hard to see
