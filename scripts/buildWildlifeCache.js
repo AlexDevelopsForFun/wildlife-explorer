@@ -1407,12 +1407,46 @@ function normSci(name) {
   return parts.length >= 2 ? `${parts[0]} ${parts[1]}` : parts[0];
 }
 
+// Curated common-name → scientific-name aliases. Bridges naming conflicts
+// between sources so dedup() can collapse them: NPS uses generic "Mountain
+// Lion" with no sci-name, iNat uses subspecies "Florida Panther" with sci
+// "Puma concolor coryi" — both should be a single entry. Mirrored in
+// src/data/wildlifeCacheLoader.js → SPECIES_NAME_ALIASES (runtime safety
+// net for already-built caches). Keep both lists in sync.
+const SPECIES_NAME_ALIASES = {
+  'mountain lion':         'Puma concolor',
+  'cougar':                'Puma concolor',
+  'puma':                  'Puma concolor',
+  'panther':               'Puma concolor',
+  'buffalo':               'Bison bison',
+  'american buffalo':      'Bison bison',
+  'american alligator':    'Alligator mississippiensis',
+  'american crocodile':    'Crocodylus acutus',
+  'manatee':               'Trichechus manatus',
+  'west indian manatee':   'Trichechus manatus',
+  'florida manatee':       'Trichechus manatus',
+  'sea otter':             'Enhydra lutris',
+  'killer whale':          'Orcinus orca',
+  'orca':                  'Orcinus orca',
+  'green sea turtle':      'Chelonia mydas',
+  'loggerhead sea turtle': 'Caretta caretta',
+  'leatherback sea turtle':'Dermochelys coriacea',
+  'caribou':               'Rangifer tarandus',
+  'reindeer':              'Rangifer tarandus',
+  'wapiti':                'Cervus canadensis',
+  'american elk':          'Cervus canadensis',
+  'roosevelt elk':         'Cervus canadensis',
+};
+
 function dedup(animals) {
   const groups = new Map();
   const sciToKey = new Map();
   animals.forEach(a => {
     const nameKey = a.name.toLowerCase().trim();
-    const sciKey  = normSci(a.scientificName);
+    // Apply alias map: backfill missing sci-names from curated common-name
+    // mappings so cross-source duplicates collapse during grouping.
+    const aliasSci = !a.scientificName ? SPECIES_NAME_ALIASES[nameKey] : null;
+    const sciKey   = normSci(a.scientificName ?? aliasSci);
     let gk = (sciKey && sciToKey.has(sciKey)) ? sciToKey.get(sciKey) : null;
     if (!gk && groups.has(nameKey)) gk = nameKey;
     if (!gk) gk = nameKey;

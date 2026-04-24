@@ -2727,7 +2727,12 @@ function AppInner() {
 
   // Popup-local filter preferences (persist across popup open/close)
   // Multi-select type filter: Set of active animal types (persists across popups within session)
-  const DEFAULT_ACTIVE_TYPES = new Set(['bird', 'mammal']);
+  // Default surfaces all wildlife visitors typically come for: birds, mammals,
+  // reptiles (alligators, rattlesnakes), amphibians (salamanders), and marine
+  // life (manatees, whales, sea turtles). Insects stay opt-in — most visitors
+  // aren't there for the bug list, and showing 60+ insect cards by default
+  // buries the iconic species. The Insects tab is one click away.
+  const DEFAULT_ACTIVE_TYPES = new Set(['bird', 'mammal', 'reptile', 'amphibian', 'marine']);
   const [activeTypes, setActiveTypes] = useState(DEFAULT_ACTIVE_TYPES);
   // popupType is derived: 'all' when all types active, single type when exactly 1, otherwise 'multi'
   const popupType = activeTypes.size === Object.keys(ANIMAL_TYPES).length - 1 ? 'all'  // minus 'all' key

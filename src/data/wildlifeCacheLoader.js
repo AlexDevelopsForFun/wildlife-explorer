@@ -33,18 +33,112 @@ function _indexSciNames(parks) {
     }
   }
 }
+
+// Curated common-name → scientific-name aliases. Used to bridge naming
+// conflicts between sources (NPS uses generic "Mountain Lion"; iNat uses
+// the subspecies "Florida Panther" with sci "Puma concolor coryi"). Without
+// this, the same animal appears twice in the panel for parks where multiple
+// sources contributed it. Names compared case-insensitively.
+const SPECIES_NAME_ALIASES = {
+  // Big cats — Puma concolor and its subspecies all collapse to one entry
+  'mountain lion':        'Puma concolor',
+  'cougar':               'Puma concolor',
+  'puma':                 'Puma concolor',
+  'panther':              'Puma concolor',
+  // Bison
+  'buffalo':              'Bison bison',
+  'american buffalo':     'Bison bison',
+  // Alligators / crocodiles
+  'american alligator':   'Alligator mississippiensis',
+  'american crocodile':   'Crocodylus acutus',
+  // Manatee
+  'manatee':              'Trichechus manatus',
+  'west indian manatee':  'Trichechus manatus',
+  'florida manatee':      'Trichechus manatus',
+  // Marine mammals — common naming variants
+  'sea otter':            'Enhydra lutris',
+  'killer whale':         'Orcinus orca',
+  'orca':                 'Orcinus orca',
+  // Sea turtles
+  'green sea turtle':     'Chelonia mydas',
+  'loggerhead sea turtle':'Caretta caretta',
+  'leatherback sea turtle':'Dermochelys coriacea',
+  // Other commonly cross-named
+  'caribou':              'Rangifer tarandus',
+  'reindeer':             'Rangifer tarandus',
+  'wapiti':               'Cervus canadensis',
+  'american elk':         'Cervus canadensis',
+  'roosevelt elk':        'Cervus canadensis',
+};
+
 function _backfillSciNames(parks) {
   for (const val of Object.values(parks)) {
     for (const a of val?.animals ?? []) {
       if (a && a.name && !a.scientificName) {
-        const sci = _sciNameByName.get(a.name);
+        const lower = a.name.toLowerCase().trim();
+        const sci = _sciNameByName.get(a.name) ?? SPECIES_NAME_ALIASES[lower];
         if (sci) a.scientificName = sci;
       }
     }
   }
 }
+
+// Normalize a scientific name to genus + species (drops subspecies). Mirrors
+// scripts/buildWildlifeCache.js → normSci so runtime dedupe agrees with the
+// build-time grouping.
+function _normSci(name) {
+  if (!name?.trim()) return null;
+  const parts = name.toLowerCase().trim().split(/\s+/);
+  return parts.length >= 2 ? `${parts[0]} ${parts[1]}` : parts[0];
+}
+
+// Score an entry's "richness" so dedupe keeps the better of two duplicates.
+// Curated overrides + iconic subspecies + photo data win.
+function _entryScore(a) {
+  let s = 0;
+  if (a.raritySource === 'override') s += 100;
+  if (a.raritySource === 'override_curated') s += 100;
+  if (a.funFact && !/documented in this park through|species documented in this park/i.test(a.funFact)) s += 30;
+  if (a.parkTip) s += 10;
+  if (a.photoUrl) s += 5;
+  if (a.scientificName?.split(/\s+/).length >= 3) s += 8; // subspecies-level wins over genus+species
+  return s;
+}
+
+// Collapse animals within a single park that share a normalized scientific
+// name. Keeps the higher-scored entry but unions its `sources` array so we
+// don't lose provenance. Runs after sci-name backfill so alias-derived sci
+// names participate in grouping.
+function _dedupeWithinPark(parks) {
+  for (const val of Object.values(parks)) {
+    if (!Array.isArray(val?.animals)) continue;
+    const groups = new Map(); // sciKey → entries[]
+    const ungrouped = [];
+    for (const a of val.animals) {
+      const key = _normSci(a.scientificName);
+      if (!key) { ungrouped.push(a); continue; }
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(a);
+    }
+    const merged = [];
+    for (const group of groups.values()) {
+      if (group.length === 1) { merged.push(group[0]); continue; }
+      // Pick winner; union sources arrays
+      const winner = group.reduce((best, cur) =>
+        _entryScore(cur) > _entryScore(best) ? cur : best
+      );
+      const allSources = [...new Set(
+        group.flatMap(a => a.sources ?? (a.source ? [a.source] : [])).filter(Boolean)
+      )];
+      merged.push({ ...winner, sources: allSources.length ? allSources : winner.sources });
+    }
+    val.animals = [...merged, ...ungrouped];
+  }
+}
+
 _indexSciNames(WILDLIFE_CACHE);
 _backfillSciNames(WILDLIFE_CACHE);
+_dedupeWithinPark(WILDLIFE_CACHE);
 
 // Tracks tier load state
 let _tier2Loaded = false;
@@ -83,6 +177,7 @@ export function loadTier2() {
     }
     _indexSciNames(data);
     _backfillSciNames(WILDLIFE_CACHE);
+    _dedupeWithinPark(WILDLIFE_CACHE);
     _tier2Loaded = true;
     _notify();
     return data;
@@ -100,6 +195,7 @@ export function loadTier3() {
     }
     _indexSciNames(data);
     _backfillSciNames(WILDLIFE_CACHE);
+    _dedupeWithinPark(WILDLIFE_CACHE);
     _tier3Loaded = true;
     _notify();
     if (isSecondaryLoaded()) _listeners.clear();
