@@ -1,9 +1,13 @@
 name: Weekly Wildlife Cache Rebuild
 
 # Refreshes the static wildlife cache every Sunday at 06:00 UTC.
-# The job rebuilds from eBird + iNaturalist + NPS, expands photos,
-# runs a sanity check on species counts, and pushes directly to main
-# if the bundle is healthy. Vercel auto-deploys on push.
+#
+# Architecture: GitHub Actions caps standard runners at 6h per job, but a full
+# rebuild from eBird + iNaturalist + NPS takes longer than that. So the work
+# is fanned out across N parallel "rebuild" shards (each gets its own 6h
+# budget), then a single "merge" job stitches the partial caches together,
+# enriches descriptions, expands photos, validates, and pushes to main.
+# Vercel auto-deploys on push.
 #
 # Manual trigger: Actions tab → "Run workflow" (option to force PR mode).
 
@@ -31,10 +35,62 @@ permissions:
   contents: write
   pull-requests: write
 
+env:
+  # Number of parallel rebuild shards. Each shard gets ~1/N of parks (stride
+  # interleaved) and its own 6h GH Actions budget. With ~63 parks total, 4
+  # shards = ~16 parks each, which fits comfortably under the cap.
+  SHARD_COUNT: "4"
+
 jobs:
+  # ── Stage 1: parallel rebuild shards ────────────────────────────────────
   rebuild:
     runs-on: ubuntu-latest
-    timeout-minutes: 420      # hard cap 7 h — rebuild can run ~4 h, enrichment ~1 h
+    timeout-minutes: 350     # leave headroom under GH's 360min hard cap
+    strategy:
+      fail-fast: false       # one shard failing shouldn't kill the others
+      matrix:
+        shard: [0, 1, 2, 3]  # MUST match SHARD_COUNT above
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Rebuild wildlife cache (shard ${{ matrix.shard }}/${{ env.SHARD_COUNT }})
+        env:
+          # buildWildlifeCache.js reads VITE_* prefixed names (matching .env);
+          # provide both naming conventions so either secret name works.
+          VITE_EBIRD_API_KEY: ${{ secrets.EBIRD_KEY }}
+          VITE_NPS_API_KEY:   ${{ secrets.NPS_KEY }}
+          EBIRD_KEY:          ${{ secrets.EBIRD_KEY }}
+          NPS_KEY:            ${{ secrets.NPS_KEY }}
+          PARKS:              ${{ github.event.inputs.parks }}
+          SHARD_INDEX:        ${{ matrix.shard }}
+          SHARD_COUNT:        ${{ env.SHARD_COUNT }}
+          PARTIAL_OUT:        shard-${{ matrix.shard }}.json
+        run: node scripts/buildWildlifeCache.js
+
+      - name: Upload shard cache
+        uses: actions/upload-artifact@v4
+        with:
+          name: cache-shard-${{ matrix.shard }}
+          path: shard-${{ matrix.shard }}.json
+          retention-days: 7
+          if-no-files-found: error
+
+  # ── Stage 2: merge shards, enrich, validate, deploy ─────────────────────
+  merge:
+    needs: rebuild
+    runs-on: ubuntu-latest
+    timeout-minutes: 120     # merge + enrich + photo expand + build
 
     steps:
       - name: Checkout
@@ -54,21 +110,22 @@ jobs:
       - name: Snapshot pre-rebuild species count
         id: pre_count
         run: |
-          # Sum animal entries across all wildlifeCache* data files.
           PRE=$(grep -h '"scientificName"' src/data/wildlifeCache*.js 2>/dev/null | wc -l)
           echo "pre=$PRE" >> "$GITHUB_OUTPUT"
           echo "Pre-rebuild species entries: $PRE"
 
-      - name: Rebuild wildlife cache
-        env:
-          # buildWildlifeCache.js reads VITE_* prefixed names (matching .env);
-          # provide both naming conventions so either secret name works.
-          VITE_EBIRD_API_KEY: ${{ secrets.EBIRD_KEY }}
-          VITE_NPS_API_KEY:   ${{ secrets.NPS_KEY }}
-          EBIRD_KEY:          ${{ secrets.EBIRD_KEY }}
-          NPS_KEY:            ${{ secrets.NPS_KEY }}
-          PARKS:              ${{ github.event.inputs.parks }}
-        run: node scripts/buildWildlifeCache.js
+      - name: Download all shard caches
+        uses: actions/download-artifact@v4
+        with:
+          path: shards/
+          pattern: cache-shard-*
+          merge-multiple: true
+
+      - name: List downloaded shards
+        run: ls -la shards/
+
+      - name: Merge shard caches
+        run: node scripts/mergeShards.js shards/
 
       - name: Split primary / secondary caches
         run: node scripts/splitCache.js
@@ -89,8 +146,6 @@ jobs:
       #   drop ≤10%      → ship (auto-merge to main)
       #   drop 10-25%    → soft-fail (open PR for human review instead)
       #   drop >25%      → hard-fail (likely API outage — abandon run)
-      # Catches partial API failures, rate limit lockouts, and mid-rebuild
-      # crashes that produce a smaller but technically valid cache.
       - name: Validate species count
         id: validate
         run: |
@@ -165,7 +220,7 @@ jobs:
 
             **Reason:** ${{ steps.validate.outputs.needs_review == 'true' && format('species count dropped {0}% (auto-merge threshold is 10%)', steps.validate.outputs.drop_pct) || 'pr_mode=true requested manually' }}
 
-            - Rebuilt species lists from eBird + iNaturalist + NPS.
+            - Rebuilt species lists from eBird + iNaturalist + NPS (sharded across ${{ env.SHARD_COUNT }} runners).
             - Enriched placeholder descriptions.
             - Expanded bundled photo coverage.
             - Verified production build passes.
