@@ -24,6 +24,16 @@ const ROOT  = join(__dir, '..');
 const OUT   = join(ROOT, 'src', 'data', 'photoCache.js');
 const RESUME_CACHE = join(__dir, 'expandPhotos-resume.json');
 
+// Time-budget mode (CI-friendly): when MAX_MINUTES env is set, the script
+// breaks out of the main loop when exceeded, then writes both the resume
+// cache and photoCache.js so this run's progress survives. Subsequent runs
+// pick up where this one left off via the resume cache.
+const MAX_MINUTES = process.env.MAX_MINUTES ? Number(process.env.MAX_MINUTES) : null;
+const STARTED_AT = Date.now();
+function timeUp() {
+  return MAX_MINUTES != null && (Date.now() - STARTED_AT) > MAX_MINUTES * 60 * 1000;
+}
+
 // ── Animal-only iconic taxa ──────────────────────────────────────────────────
 const ANIMAL_ICONIC = new Set([
   'Mammalia','Aves','Reptilia','Amphibia','Actinopterygii',
@@ -163,8 +173,19 @@ const newPhotos  = {};   // name → photo object (verified only)
 let fetched = 0, verified = 0, skipped = 0, failed = 0;
 
 console.log(`\n${'─'.repeat(60)}`);
+if (MAX_MINUTES != null) {
+  console.log(`Budget: ${MAX_MINUTES} minutes (will save resume + exit gracefully when exceeded)`);
+}
 
+let budgetHit = false;
 for (let i = 0; i < todo.length; i++) {
+  if (timeUp()) {
+    console.log(`\n⏱  Time budget hit (${MAX_MINUTES} min) at ${i}/${todo.length} — saving and exiting gracefully`);
+    saveResume();
+    budgetHit = true;
+    break;
+  }
+
   const { name, type, sci, parkCount } = todo[i];
 
   // Already resolved in a prior run?
@@ -237,11 +258,14 @@ for (let i = 0; i < todo.length; i++) {
 }
 
 console.log(`\n${'─'.repeat(60)}`);
-console.log(`Fetch complete.`);
+console.log(budgetHit ? `Fetch stopped early (time budget).` : `Fetch complete.`);
 console.log(`  API calls made:  ${fetched}`);
 console.log(`  Verified good:   ${verified}`);
 console.log(`  Failed/no photo: ${failed}`);
 console.log(`  From resume:     ${skipped}`);
+if (budgetHit) {
+  console.log(`  Re-run will resume from expandPhotos-resume.json.`);
+}
 
 // ── Merge and write photoCache.js ─────────────────────────────────────────────
 const merged = { ...existingPhotos, ...newPhotos };

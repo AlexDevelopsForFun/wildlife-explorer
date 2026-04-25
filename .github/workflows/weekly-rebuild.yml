@@ -159,13 +159,24 @@ jobs:
       - name: Split primary / secondary caches
         run: node scripts/splitCache.js
 
+      # Both enrichment + photo expansion are time-budget-aware: when the
+      # MAX_MINUTES budget is exceeded they save progress (description cache,
+      # photo cache, partial wildlifeCache.js) and exit gracefully. Subsequent
+      # weekly runs pick up where this run stopped — descriptions are
+      # species-shared, photos are species-shared, so cumulative progress
+      # across runs converges quickly. Budgets sized to leave ~30min headroom
+      # under the 350min job cap for build + validate + commit.
       - name: Enrich placeholder descriptions
         if: ${{ github.event.inputs.skip_enrich != 'true' }}
         continue-on-error: true
+        env:
+          MAX_MINUTES: "150"
         run: node scripts/enrichDescriptions.js
 
       - name: Expand bundled photos
         continue-on-error: true
+        env:
+          MAX_MINUTES: "150"
         run: node scripts/expandPhotos.mjs
 
       - name: Verify production build

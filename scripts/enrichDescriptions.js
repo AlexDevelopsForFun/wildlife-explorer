@@ -19,9 +19,16 @@
  *   PARKS=acadia node scripts/enrichDescriptions.js    # one park
  *   PARKS=acadia,yellowstone node scripts/enrichDescriptions.js
  *   DRY_RUN=1 node scripts/enrichDescriptions.js       # preview only
+ *   MAX_MINUTES=180 node scripts/enrichDescriptions.js # stop after N min (graceful)
  *
  * Estimated time: ~4 hours for all 63 parks (~21,000 placeholder animals).
  * Run with PARKS= to do one park at a time.
+ *
+ * Time-budget mode (MAX_MINUTES): when set, the loop checks elapsed time
+ * between every animal and bails gracefully when exceeded — saving the
+ * description cache AND writing the partial wildlifeCache.js so all work
+ * done so far is preserved. Prevents the "killed at the timeout limit and
+ * lost everything" failure mode in CI.
  */
 
 import { readFileSync, writeFileSync, existsSync } from 'fs';
@@ -34,6 +41,11 @@ const CACHE_PATH   = path.join(ROOT, 'src', 'data', 'wildlifeCache.js');
 const DESC_CACHE_PATH = path.join(__dirname, 'description-cache.json');
 
 const DRY_RUN = process.env.DRY_RUN === '1';
+const MAX_MINUTES = process.env.MAX_MINUTES ? Number(process.env.MAX_MINUTES) : null;
+const STARTED_AT = Date.now();
+function timeUp() {
+  return MAX_MINUTES != null && (Date.now() - STARTED_AT) > MAX_MINUTES * 60 * 1000;
+}
 
 // ── Placeholder detection ────────────────────────────────────────────────────
 const PLACEHOLDER_PATTERNS = [
@@ -175,7 +187,11 @@ async function main() {
   console.log(`\n📚  Description Enrichment Script`);
   if (PARK_FILTER) console.log(`   Parks:   ${[...PARK_FILTER].join(', ')}`);
   else             console.log(`   Parks:   ALL (this will take several hours)`);
-  console.log(`   Dry run: ${DRY_RUN ? 'YES — no files will be written' : 'no'}\n`);
+  console.log(`   Dry run: ${DRY_RUN ? 'YES — no files will be written' : 'no'}`);
+  if (MAX_MINUTES != null) {
+    console.log(`   Budget:  ${MAX_MINUTES} minutes (will save progress + exit gracefully when exceeded)`);
+  }
+  console.log('');
 
   // Load existing cache, description store, and park names
   const { WILDLIFE_CACHE, WILDLIFE_CACHE_BUILT_AT } = await import('../src/data/wildlifeCache.js');
@@ -188,8 +204,12 @@ async function main() {
 
   let totalFetched = 0, totalSkipped = 0, totalFailed = 0;
   const sourceStats = { iNaturalist: 0, Wikipedia: 0, 'Park Records': 0 };
+  let budgetHit = false;
 
+  parkLoop:
   for (const parkId of parksToProcess) {
+    if (timeUp()) { budgetHit = true; break; }
+
     const entry = WILDLIFE_CACHE[parkId];
     const animals = entry?.animals ?? [];
     const toEnrich = animals.filter(a => needsDescription(a));
@@ -205,6 +225,12 @@ async function main() {
     let parkFetched = 0;
 
     for (const animal of toEnrich) {
+      if (timeUp()) {
+        console.log(`\n  ⏱  Time budget hit (${MAX_MINUTES} min) — saving progress and exiting gracefully`);
+        budgetHit = true;
+        break parkLoop;
+      }
+
       const cacheKey = animal.scientificName || animal.name;
 
       // Species-level cache hit (same species across different parks)
@@ -244,6 +270,10 @@ async function main() {
     }
 
     console.log(`  [${parkId}] ✓ ${parkFetched} fetched, ${toEnrich.length - parkFetched} from cache`);
+  }
+
+  if (budgetHit) {
+    console.log(`  ⏱  Stopped early after ${Math.round((Date.now() - STARTED_AT) / 60000)} minutes — re-run will resume from cache`);
   }
 
   // ── Write updated cache ───────────────────────────────────────────────────
