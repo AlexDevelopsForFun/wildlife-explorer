@@ -1235,6 +1235,83 @@ function resolveAnimalSources(animal) {
   return hasReal ? inferred.filter(s => _REAL_SRCS.has(s)) : inferred;
 }
 
+// ── Pill semantics — honest about what the percentage actually measures ─────
+// The rarity pill on every card displays a tier ("Likely · 30-60%") that means
+// different things depending on the underlying data source. Both deep-research
+// reviews flagged this as a trust issue: a bird backed by eBird Status & Trends
+// is genuinely modeled per-visit encounter probability, but a non-bird backed
+// by iNaturalist observation counts is closer to "habitat suitability" or
+// "relative observability" — confounded by visitor effort and species
+// detectability. Showing identical "X% chance per visit" copy for both is
+// implicitly overclaiming for the iNat path.
+//
+// This helper returns a richer tooltip that names the semantic:
+//   - 'encounter'     — eBird Status & Trends: real per-visit encounter prob
+//   - 'observability' — iNat density-derived: relative observability index
+//   - 'curated'       — hand-curated override: ecologist judgment
+//   - 'inventory'     — NPS list only, no observation density: presence-only
+//
+// The visible pill ("Likely · 30-60%") is unchanged so the UI stays compact;
+// the honest qualifier lives in the tooltip and a tiny inline indicator on
+// the pill (a faint `~` prefix for observability/inventory tiers).
+function resolvePillSemantics(animal, displayRarity, sources) {
+  const tier = RARITY[displayRarity] ?? RARITY.rare;
+  const range = tier.probability;
+  const label = tier.label;
+  const isBird = animal.animalType === 'bird';
+  const hasEbirdST = animal.seasonFrequencies != null
+                  && animal.seasonFrequenciesSource === 'ebird_st';
+  const rs = animal.raritySource ?? '';
+  const isCurated = rs === 'override' || rs === 'override_curated' || rs === 'curated';
+  const npsOnly = sources?.length === 1 && sources[0] === 'nps';
+
+  // Encounter probability — eBird Status & Trends models the literal per-
+  // checklist probability, which is the cleanest answer to "will I see this
+  // on a visit?". Birds with S&T data get this even when other sources are
+  // also present.
+  if (isBird && hasEbirdST) {
+    return {
+      kind: 'encounter',
+      title: `${label} (${range}) — modeled chance of encountering this species on a typical visit, from eBird Status & Trends weekly occurrence rasters.`,
+      indicator: null,
+    };
+  }
+  // Hand-curated override — a known reality the ecologist asserted, often
+  // because automated sources were obviously wrong (iNat undercounts bison,
+  // etc.). Treat as authoritative.
+  if (isCurated) {
+    return {
+      kind: 'curated',
+      title: `${label} (${range}) — hand-curated by a park ecologist. Reflects known visitor encounter rates that automated data sources don't capture well.`,
+      indicator: null,
+    };
+  }
+  // NPS-list-only species — we know it's in the park but have no observation
+  // density data. Tier comes from the NPS Abundance field (Abundant/Common/
+  // Rare/etc.) which is about population density, not detectability.
+  if (npsOnly) {
+    return {
+      kind: 'inventory',
+      title: `${label} (${range}) — based on NPS species inventory abundance class (population density, not per-visit probability). No observation-density data for this species at this park.`,
+      indicator: '~',
+    };
+  }
+  // Bird with checklist-frequency / county-frequency fallback (no S&T)
+  if (isBird) {
+    return {
+      kind: 'encounter',
+      title: `${label} (${range}) — chance of encountering this species on a typical visit, derived from eBird checklist-reporting frequency. Less precise than eBird Status & Trends but still real per-visit data.`,
+      indicator: null,
+    };
+  }
+  // Non-bird: iNaturalist observation density
+  return {
+    kind: 'observability',
+    title: `${label} (${range}) — relative observability estimate based on iNaturalist observation density at this park. This is closer to "how often this species turns up in field reports" than a strict per-visit probability — visitor effort and species detectability are baked in. Treat as a guide rather than a precise number.`,
+    indicator: '~',
+  };
+}
+
 // ── Fallback activity period + visitor tip (always renderable) ──────────────
 // Returns one of 'diurnal' | 'crepuscular' | 'nocturnal' | 'cathemeral' for
 // every animal by classifying via name > keyword > animalType default.
@@ -1380,22 +1457,34 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, parkEffort = null, locat
             <div className="animal-card__scientific">{animal.scientificName}</div>
           )}
           <div className="animal-card__badges">
-            <span
-              className={`rarity-badge${r.star ? ' rarity-badge--exceptional' : ''}`}
-              style={{ color: r.color, background: r.color + '22', borderColor: r.color + '55' }}
-            >
-              {r.emoji && <span className="rarity-badge__glyph" aria-hidden="true">{r.emoji}</span>}
-              {r.label}{r.probability ? ` · ${r.probability}` : ''}{r.star ? ' ✦' : ''}
-              {/* Confidence dot — signals how much data backs this rating. */}
-              {animal.confidence && CONFIDENCE_UI[animal.confidence] && (
+            {(() => {
+              // Honest pill semantics: bird-with-S&T is real per-visit
+              // encounter probability; non-bird is observability index.
+              // Tooltip names the difference; `~` indicator on observability
+              // pills signals "approximate / different unit" without breaking
+              // the visual rhythm of the existing badge row.
+              const pill = resolvePillSemantics(animal, displayRarity, sources);
+              return (
                 <span
-                  className={`confidence-dot confidence-dot--${animal.confidence}`}
-                  style={{ color: CONFIDENCE_UI[animal.confidence].color }}
-                  title={CONFIDENCE_UI[animal.confidence].tooltip}
-                  aria-label={`${animal.confidence} confidence`}
-                />
-              )}
-            </span>
+                  className={`rarity-badge${r.star ? ' rarity-badge--exceptional' : ''}`}
+                  style={{ color: r.color, background: r.color + '22', borderColor: r.color + '55' }}
+                  title={pill.title}
+                >
+                  {r.emoji && <span className="rarity-badge__glyph" aria-hidden="true">{r.emoji}</span>}
+                  {pill.indicator ? <span className="rarity-badge__indicator" aria-hidden="true">{pill.indicator}</span> : null}
+                  {r.label}{r.probability ? ` · ${r.probability}` : ''}{r.star ? ' ✦' : ''}
+                  {/* Confidence dot — signals how much data backs this rating. */}
+                  {animal.confidence && CONFIDENCE_UI[animal.confidence] && (
+                    <span
+                      className={`confidence-dot confidence-dot--${animal.confidence}`}
+                      style={{ color: CONFIDENCE_UI[animal.confidence].color }}
+                      title={CONFIDENCE_UI[animal.confidence].tooltip}
+                      aria-label={`${animal.confidence} confidence`}
+                    />
+                  )}
+                </span>
+              );
+            })()}
             {openAbout && (
               <button
                 className="rarity-help-btn"
