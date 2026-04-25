@@ -182,6 +182,17 @@ jobs:
       - name: Verify production build
         run: npm run build
 
+      # Anchor-based calibration check — non-blocking. Compares the rebuilt
+      # cache against scripts/rarityAnchors.json (hand-curated ground-truth
+      # encounter probabilities from NPS bus tours, peer-reviewed studies,
+      # operational sighting logs). Logs RPS + reliability diagram so we can
+      # spot calibration drift across rebuilds without gating deployments.
+      # Threshold (mean tier distance > 1.5) is generous; tighten later once
+      # baseline metrics stabilize across a few rebuilds.
+      - name: Anchor-based calibration report
+        continue-on-error: true
+        run: node scripts/calibrateAgainstAnchors.js
+
       # Sanity check with graceful degradation:
       #   drop ≤10%      → ship (auto-merge to main)
       #   drop 10-25%    → soft-fail (open PR for human review instead)
