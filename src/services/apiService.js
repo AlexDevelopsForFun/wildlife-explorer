@@ -896,6 +896,100 @@ export async function fetchInatMonthlyHist(lat, lng, locId, scientificName) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// iNat — park-wide observer-effort baseline.
+//
+// Returns { spring, summer, fall, winter } as integers summing to ~100, where
+// each value is the % of *all* iNat observations at this park that landed in
+// that season — no taxon filter. Used to deconfound species seasonal
+// histograms from observer-effort seasonality.
+//
+// Why: the seasonal pill formula `seasonalProb = baselineProb × (distPct/25)`
+// treats `distPct` as "fraction of observations of THIS species in this
+// season," which conflates species presence with observer presence. NPS
+// visitation is violently summer-skewed (Yellowstone ~25-30% of annual
+// visits in July vs ~1% in January). A resident species seen evenly all
+// year still gets distPct ≈ 50% in summer purely because there are 5-20×
+// more visitors. The pipeline systematically overstates summer encounter
+// probability and understates winter.
+//
+// Fix: normalize species counts by park-wide effort. If a species' obs
+// distribution exactly matches the park-wide visitor distribution, its
+// effort-corrected seasonality is flat (25% per season), as expected for
+// a true year-round resident. If the species peaks beyond what visitor
+// effort alone predicts (e.g. salmon spawning runs, bear hyperphagia),
+// the corrected distribution preserves that real signal.
+//
+// Cached 90 days — visitor patterns change very slowly.
+// ─────────────────────────────────────────────────────────────────────────────
+const PARK_EFFORT_CACHE_TTL = 90 * 24 * 60 * 60 * 1000; // 90 days
+const PARK_EFFORT_FAIL_TTL  =      60 * 60 * 1000;      // 1 hour backoff
+
+export async function fetchInatParkMonthlyEffort(lat, lng, locId) {
+  if (!lat || !lng) return null;
+  const cacheKey     = `inat_effort_v1_${locId}`;
+  const failCacheKey = `inat_effort_fail_v1_${locId}`;
+
+  // Success cache (90 days)
+  try {
+    const raw = localStorage.getItem(`wm_${cacheKey}`);
+    if (raw) {
+      const { data, ts } = JSON.parse(raw);
+      if (Date.now() - ts < PARK_EFFORT_CACHE_TTL) return data;
+      localStorage.removeItem(`wm_${cacheKey}`);
+    }
+  } catch { /* ignore */ }
+
+  // Failure backoff (1 hour)
+  try {
+    const raw = localStorage.getItem(`wm_${failCacheKey}`);
+    if (raw) {
+      const { ts } = JSON.parse(raw);
+      if (Date.now() - ts < PARK_EFFORT_FAIL_TTL) return null;
+      localStorage.removeItem(`wm_${failCacheKey}`);
+    }
+  } catch { /* ignore */ }
+
+  try {
+    // No taxon_name filter — counts ALL research-grade observations at this park.
+    // 50km radius matches our species histogram radius for consistency.
+    const url = `https://api.inaturalist.org/v1/observations/histogram` +
+      `?lat=${lat}&lng=${lng}&radius=50` +
+      `&date_field=observed&interval=month_of_year&quality_grade=research`;
+    const res = await fetch(url);
+    if (!res.ok) {
+      try { localStorage.setItem(`wm_${failCacheKey}`, JSON.stringify({ ts: Date.now() })); } catch { /* ignore */ }
+      return null;
+    }
+    const json = await res.json();
+    const monthly = json.results?.month_of_year ?? {};
+    const counts = Array.from({ length: 12 }, (_, i) => (monthly[String(i + 1)] ?? 0));
+    const total = counts.reduce((a, b) => a + b, 0);
+
+    // Need a meaningful baseline — small parks with <100 total obs are too
+    // noisy to deconfound. Fall back to no correction in that case.
+    if (total < 100) {
+      try { localStorage.setItem(`wm_${cacheKey}`, JSON.stringify({ data: null, ts: Date.now() })); } catch { /* ignore */ }
+      return null;
+    }
+
+    const pct = (idxs) => Math.round(idxs.reduce((s, i) => s + counts[i], 0) / total * 100);
+    const result = {
+      spring: pct([2, 3, 4]),    // Mar, Apr, May
+      summer: pct([5, 6, 7]),    // Jun, Jul, Aug
+      fall:   pct([8, 9, 10]),   // Sep, Oct, Nov
+      winter: pct([11, 0, 1]),   // Dec, Jan, Feb
+      total,
+    };
+
+    try { localStorage.setItem(`wm_${cacheKey}`, JSON.stringify({ data: result, ts: Date.now() })); } catch { /* quota */ }
+    return result;
+  } catch {
+    try { localStorage.setItem(`wm_${failCacheKey}`, JSON.stringify({ ts: Date.now() })); } catch { /* ignore */ }
+    return null;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // NPS — wildlife data from the NPS Data API.
 //
 // The /v1/species endpoint returns 404 (no longer available). The only working

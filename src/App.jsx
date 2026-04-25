@@ -14,7 +14,7 @@ import {
   mergeAnimals, balanceAnimals, filterGeographicOutliers, NEVER_EXCEPTIONAL_BIRDS,
   getCorrectionFactor, getMonthlyFrequency,
   rarityFromChecklist, applyRarityOverride,
-  fetchInatMonthlyHist,
+  fetchInatMonthlyHist, fetchInatParkMonthlyEffort,
 } from './services/apiService';
 import { useLiveData } from './hooks/useLiveData';
 import { useNpsParks } from './hooks/useNpsParks';
@@ -990,6 +990,7 @@ function computeEffectiveRarity(animal, {
   activeSeason = null,
   activeZone = null,
   seasonalFreqs = null,
+  parkEffort = null,
   effortRescaler = 1,
   visitTime = 'any',
 } = {}) {
@@ -1024,7 +1025,16 @@ function computeEffectiveRarity(animal, {
       return rescale(animal.rarity, animal.seasonFrequencies[activeSeason]);
     }
     const sciKey = animal.scientificName?.toLowerCase();
-    const distPct = sciKey ? seasonalFreqs?.[sciKey]?.[activeSeason] : null;
+    const rawHist = sciKey ? seasonalFreqs?.[sciKey] : null;
+    // Effort-correct the iNat seasonal histogram before computing encounter
+    // probability — strips visitor-seasonality confounding so a year-round
+    // resident doesn't read as a "summer-only" species. parkEffort may be null
+    // (still loading or fetch failed at small parks), in which case we fall
+    // back to the raw histogram (legacy behaviour).
+    const correctedHist = rawHist && parkEffort
+      ? effortCorrectHistogram(rawHist, parkEffort)
+      : rawHist;
+    const distPct = correctedHist?.[activeSeason];
     if (distPct != null && distPct > 0) {
       const base = resolveBaselineFrequency(
         animal.frequency ?? animal._debug?.frequency,
@@ -1043,6 +1053,58 @@ function computeEffectiveRarity(animal, {
   return animal.rarity;
 }
 
+// Effort-correct a species' seasonal distribution using the park's
+// observer-effort baseline. Both inputs are season percentages summing to ~100.
+//
+// Why: a raw iNat histogram for a year-round resident shows ~50% of sightings
+// in summer at most parks — but that's because there are 5-20× more visitors
+// in summer, not because the animal is more present. Without correction, the
+// pipeline systematically overstates summer encounter probability and
+// understates winter for almost every resident species (Claude's deep-research
+// review identified this as the highest-impact accuracy bug in the pipeline).
+//
+// Math:
+//   corrected_raw[s] = speciesPct[s] / max(parkEffortPct[s], floor)
+//   corrected[s]     = corrected_raw[s] / sum(corrected_raw) × 100
+//
+// Properties:
+//   - Species with the same seasonal distribution as park-wide effort
+//     (i.e. true year-round resident) → flat 25% per season ✓
+//   - Species peaking beyond what visitor effort alone explains
+//     (salmon spawn, bear hyperphagia) keeps that signal ✓
+//   - parkEffort[s] = 0 (truly no visitors) → division by floor avoids NaN
+//
+// Returns the corrected histogram in the same shape as input (with `total`
+// preserved if present), or the input unchanged if parkEffort is null/missing.
+function effortCorrectHistogram(hist, parkEffort) {
+  if (!hist || !parkEffort) return hist;
+  const keys = ['spring', 'summer', 'fall', 'winter'];
+  // Floor effort at 1% per season — prevents extreme amplification when a
+  // park genuinely has near-zero off-season visitors. Real effect: a species
+  // with 1 winter sighting at a park with 1% winter effort gets a corrected
+  // distribution that respects the rare-visitor signal but doesn't spike to
+  // implausible heights from a single record.
+  const corrected = {};
+  let total = 0;
+  for (const k of keys) {
+    const sp = hist[k] ?? 0;
+    const eff = Math.max(parkEffort[k] ?? 0, 1);
+    const v = sp / eff;
+    corrected[k] = v;
+    total += v;
+  }
+  if (total <= 0) return hist;       // species had no obs in any season — bail
+  const out = { _effortCorrected: true };
+  for (const k of keys) {
+    out[k] = Math.round((corrected[k] / total) * 100);
+  }
+  // Preserve any non-season metadata so downstream consumers don't lose info
+  for (const meta of ['total', '_source', '_estimated']) {
+    if (hist[meta] != null) out[meta] = hist[meta];
+  }
+  return out;
+}
+
 // Convert an iNat-histogram-style seasonal distribution (percentages of TOTAL
 // observations summing to ~100) into per-season encounter probabilities using
 // the species' baseline overall frequency.
@@ -1057,17 +1119,24 @@ function computeEffectiveRarity(animal, {
 //
 // Averaging across the 4 seasons returns the baseline — so this is a
 // mathematically consistent transform, not a hack.
-function histogramToEncounterProb(hist, baseFrequency, rarity) {
+//
+// Pass `parkEffort` to first deconfound visitor seasonality from the histogram
+// before applying this transform. Without that step, summer probabilities are
+// systematically too high and winter too low for resident species.
+function histogramToEncounterProb(hist, baseFrequency, rarity, parkEffort = null) {
   if (!hist) return hist;
   if (hist._converted) return hist; // already transformed
+  // Strip visitor-effort confounding before computing encounter prob.
+  const corrected = parkEffort ? effortCorrectHistogram(hist, parkEffort) : hist;
   const base = resolveBaselineFrequency(baseFrequency, rarity);
   const baselinePct = base * 100;
   const keys = ['spring', 'summer', 'fall', 'winter'];
-  const out = { _source: hist._source ?? 'inat_hist', _converted: true };
-  if (hist._estimated) out._estimated = true;
+  const out = { _source: corrected._source ?? 'inat_hist', _converted: true };
+  if (corrected._estimated) out._estimated = true;
+  if (corrected._effortCorrected) out._effortCorrected = true;
   let any = false;
   for (const k of keys) {
-    const dist = hist[k];
+    const dist = corrected[k];
     if (dist == null) continue;
     // dist is % of obs in this season; 25 = even distribution baseline
     const scaled = baselinePct * (dist / 25);
@@ -1207,7 +1276,7 @@ function composeFallbackTip(animal, period) {
 }
 
 // ── Animal card ───────────────────────────────────────────────────────────────
-function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, highlightSpecies, activeSeason, activeZone, effortRescaler = 1, visitTime = 'any' }) {
+function AnimalCard({ animal, debugMode, seasonalFreqs, parkEffort = null, location, openAbout, highlightSpecies, activeSeason, activeZone, effortRescaler = 1, visitTime = 'any' }) {
   // Combined zone- + season- + effort- + time-of-day-aware rarity.
   //   1. Pick base frequency: zone freq > season freq > park freq.
   //   2. Rescale by effort multiplier (expert=1.54, casual=1.0, drive=0.54 —
@@ -1216,9 +1285,9 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, hig
   //   4. Re-map to tier.
   const displayRarity = useMemo(
     () => computeEffectiveRarity(animal, {
-      activeSeason, activeZone, seasonalFreqs, effortRescaler, visitTime,
+      activeSeason, activeZone, seasonalFreqs, parkEffort, effortRescaler, visitTime,
     }),
-    [animal, activeSeason, activeZone, seasonalFreqs, effortRescaler, visitTime],
+    [animal, activeSeason, activeZone, seasonalFreqs, parkEffort, effortRescaler, visitTime],
   );
 
   const r = RARITY[displayRarity] ?? RARITY.rare;
@@ -1350,6 +1419,7 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, hig
                     rawHistFreq,
                     animal.frequency ?? animal._debug?.frequency,
                     animal.rarity,
+                    parkEffort,
                   )
                 : rawHistFreq;
               // Priority: live iNat histogram > prebuilt eBird S&T > rarity-tier estimate.
@@ -1582,7 +1652,7 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, location, openAbout, hig
 // Same photo logic as AnimalCard. fetchAnimalPhoto uses a shared in-memory +
 // localStorage cache, so if the animal was already shown in the main list above
 // the photo resolves instantly without a second network call.
-function ExceptionalCard({ animal, seasonalFreqs, location }) {
+function ExceptionalCard({ animal, seasonalFreqs, parkEffort = null, location }) {
   const t = ANIMAL_TYPES[animal.animalType];
   const placeholderEmoji = PHOTO_PLACEHOLDER[animal.animalType] ?? '🐾';
 
@@ -1652,6 +1722,7 @@ function ExceptionalCard({ animal, seasonalFreqs, location }) {
                   rawHistFreq,
                   animal.frequency ?? animal._debug?.frequency,
                   animal.rarity,
+                  parkEffort,
                 )
               : rawHistFreq;
             const isHistReal = histFreq && !histFreq._estimated;
@@ -1998,11 +2069,30 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
   const [seasonalFreqs, setSeasonalFreqs] = useState({});
   const freqFetchedRef = useRef(new Set());
 
+  // Park-wide observer-effort baseline — used to deconfound species seasonal
+  // histograms from visitor seasonality (more visitors in summer ≠ animal more
+  // present in summer). Fetched once per park, 90-day localStorage cache.
+  // null = still loading or park has too few total obs to compute a baseline,
+  // in which case all downstream consumers gracefully fall back to the raw
+  // (uncorrected) histogram so the pipeline never breaks.
+  const [parkEffort, setParkEffort] = useState(null);
+
   // Reset when the popup switches to a different location
   useEffect(() => {
     freqFetchedRef.current = new Set();
     setSeasonalFreqs({});
+    setParkEffort(null);
   }, [location.id]);
+
+  // Fire-and-forget fetch for the park-wide effort baseline. One call per park
+  // for the lifetime of this popup; cached cross-session for 90 days.
+  useEffect(() => {
+    let alive = true;
+    fetchInatParkMonthlyEffort(location.lat, location.lng, location.id).then(eff => {
+      if (alive) setParkEffort(eff);
+    });
+    return () => { alive = false; };
+  }, [location.id, location.lat, location.lng]);
 
   // Lazy-fetch iNat histograms for every bird in the visible list.
   // • Sorted by frequency desc so the most-likely-seen birds load first.
@@ -2200,7 +2290,7 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
         const r = computeEffectiveRarity(a, {
           activeSeason: popupSeason !== 'all' ? popupSeason : null,
           activeZone:   popupZone   !== 'all' ? popupZone   : null,
-          seasonalFreqs, effortRescaler, visitTime,
+          seasonalFreqs, parkEffort, effortRescaler, visitTime,
         });
         effRarityCache.set(a, r);
         return r;
@@ -2229,7 +2319,7 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
       || popupSeason !== 'all' || popupRarity !== 'all' || !!search.trim();
 
     return { display: result, isFiltered };
-  }, [enriched, activeTypes, popupSubtype, popupSeason, popupRarity, popupZone, search, popupSort, focusedType, seasonalFreqs, effortRescaler, visitTime, highlightSpecies]);
+  }, [enriched, activeTypes, popupSubtype, popupSeason, popupRarity, popupZone, search, popupSort, focusedType, seasonalFreqs, parkEffort, effortRescaler, visitTime, highlightSpecies]);
 
   // Exceptional animals for the Rare Finds section — fully filter-aware.
   // Applies the same type / subtype / season / search filters as the main list
@@ -2633,7 +2723,7 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
                 <div className="lp__showing-count">
                   Showing {Math.min(displayLimit, filtered.length)} of {filtered.length} {typeLabel}
                 </div>
-                {visibleList.map((a, i) => <AnimalCard key={`${a.name}-${i}`} animal={a} debugMode={debugMode} seasonalFreqs={seasonalFreqs} location={location} openAbout={openAbout} highlightSpecies={highlightSpecies} activeSeason={popupSeason !== 'all' ? popupSeason : null} activeZone={popupZone !== 'all' ? popupZone : null} effortRescaler={effortRescaler} visitTime={visitTime} />)}
+                {visibleList.map((a, i) => <AnimalCard key={`${a.name}-${i}`} animal={a} debugMode={debugMode} seasonalFreqs={seasonalFreqs} parkEffort={parkEffort} location={location} openAbout={openAbout} highlightSpecies={highlightSpecies} activeSeason={popupSeason !== 'all' ? popupSeason : null} activeZone={popupZone !== 'all' ? popupZone : null} effortRescaler={effortRescaler} visitTime={visitTime} />)}
                 {hasMore && (
                   <div className="lp__load-more-row">
                     <button className="lp__load-more-btn" onClick={() => setDisplayLimit(d => d + 50)}>
