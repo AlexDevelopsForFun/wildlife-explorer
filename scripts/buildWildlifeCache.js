@@ -1539,6 +1539,169 @@ function applyMammalRarityFloor(deduped) {
   }
 }
 
+// ── NPSpecies (IRMA) — categorical Abundance constraint ────────────────────
+// Fetches the authoritative NPS-internal species list from
+// https://irmaservices.nps.gov/NPSpecies/v3/rest/fulllist/{UNITCODE}/{CATEGORY}
+// for use as soft floors and ceilings on rarity tiers.
+//
+// Why: deep research surfaced that NPSpecies returns a categorical Abundance
+// field (Abundant / Common / Uncommon / Rare / Occasional / Unknown) populated
+// by park ecologists. We were already fetching NPS topic tags via the
+// developer.nps.gov endpoint but throwing away this richer per-species signal.
+// Using NPS Abundance as a guardrail catches two failure modes:
+//   1. iNat surfaces something the park ecologist says is "Not in Park" or
+//      "Unconfirmed" — we should not show it as guaranteed/very_likely.
+//   2. iNat undercounts a population NPS labels "Abundant" — the rarity pill
+//      should not say "exceptional" for an Abundant species.
+//
+// IMPORTANT: NPS Abundance is about population density / presence, NOT
+// encounter probability per visit. An Abundant deer mouse is everywhere but
+// you'll never see one. So we apply NPS as floor/ceiling guardrails, not as
+// the primary rarity signal — the iNat/eBird-derived tier still drives the
+// final pill in the middle range.
+//
+// Mapping below intentionally has wide bounds; tighten only if false positives
+// surface in the rebuild diff.
+const NPS_ABUNDANCE_TIERS = {
+  // Abundance label → { floor: tier id, ceiling: tier id }
+  // floor = lowest tier the pill is allowed to drop to
+  // ceiling = highest tier the pill is allowed to climb to
+  abundant:   { floor: 'likely',     ceiling: 'guaranteed' },
+  common:     { floor: 'unlikely',   ceiling: 'very_likely' },
+  uncommon:   { floor: 'rare',       ceiling: 'likely' },
+  rare:       { floor: 'exceptional', ceiling: 'unlikely' },
+  occasional: { floor: 'exceptional', ceiling: 'rare' },
+  // 'unknown' and missing values impose no constraint
+};
+
+// NPSpecies categories we care about. Skipping plants/fungi/algae since this
+// project surfaces wildlife only.
+const NPS_SPECIES_CATEGORIES = [
+  'Mammal', 'Bird', 'Reptile', 'Amphibian', 'Fish', 'Insect',
+];
+
+// In-memory cache so we don't re-fetch NPSpecies during a single rebuild run.
+const _npsAbundanceCache = new Map();
+
+async function fetchNpsSpeciesAbundance(parkCode) {
+  if (!parkCode) return null;
+  const unit = parkCode.toUpperCase();   // wildlifeData uses lowercase, IRMA wants upper
+  if (_npsAbundanceCache.has(unit)) return _npsAbundanceCache.get(unit);
+
+  // sciName → { abundance, occurrence, nativeness, commonName }
+  const map = new Map();
+  // commonName.toLowerCase() → sciName (for fallback lookups when scientific name doesn't match)
+  const byCommon = new Map();
+
+  for (const category of NPS_SPECIES_CATEGORIES) {
+    const url = `https://irmaservices.nps.gov/NPSpecies/v3/rest/fulllist/${unit}/${category}`;
+    try {
+      const data = await safeFetch(url, { headers: { Accept: 'application/json' } });
+      if (!Array.isArray(data)) continue;
+      for (const entry of data) {
+        const sci = entry?.ScientificName?.toLowerCase().trim();
+        const abundance = entry?.Abundance?.toLowerCase().trim() || null;
+        const occurrence = entry?.Occurrence?.toLowerCase().trim() || null;
+        const nativeness = entry?.Nativeness?.toLowerCase().trim() || null;
+        if (!sci) continue;
+        const record = { abundance, occurrence, nativeness, commonName: entry.CommonNames || null };
+        map.set(sci, record);
+        // CommonNames is a comma-separated string ("antelope, pronghorn") — index each
+        if (entry.CommonNames) {
+          for (const cn of entry.CommonNames.split(',')) {
+            const norm = cn.trim().toLowerCase();
+            if (norm && !byCommon.has(norm)) byCommon.set(norm, sci);
+          }
+        }
+      }
+      await sleep(150);
+    } catch {
+      // IRMA can be flaky; missing one category shouldn't kill the whole pass
+    }
+  }
+
+  const result = { map, byCommon, fetchedAt: new Date().toISOString() };
+  _npsAbundanceCache.set(unit, result);
+  return result;
+}
+
+// Apply NPS Abundance as floor/ceiling on each animal's rarity tier.
+// Also drops species explicitly marked "Not in Park" — eligibility gate.
+// Curated overrides (_priority === 0) are exempt; their rarity is hand-set.
+function applyNpsAbundanceConstraints(animals, npsData, parkId) {
+  if (!npsData?.map?.size) return animals;
+  const { map, byCommon } = npsData;
+
+  // Lookup by sciName first, common name fallback. Returns the NPS record or null.
+  function lookup(animal) {
+    const sci = animal.scientificName?.toLowerCase().trim();
+    if (sci && map.has(sci)) return map.get(sci);
+    // Try genus + species (drop subspecies)
+    if (sci) {
+      const parts = sci.split(/\s+/);
+      if (parts.length >= 3) {
+        const gs = `${parts[0]} ${parts[1]}`;
+        if (map.has(gs)) return map.get(gs);
+      }
+    }
+    const cn = animal.name?.toLowerCase().trim();
+    if (cn && byCommon.has(cn)) return map.get(byCommon.get(cn));
+    return null;
+  }
+
+  let dropped = 0, floored = 0, ceiled = 0;
+  const kept = [];
+  for (const a of animals) {
+    const nps = lookup(a);
+
+    // ── Eligibility gate ────────────────────────────────────────────────
+    // Drop only when NPS *explicitly* says species isn't in the park.
+    // "Probably Present" and "Unconfirmed" are kept (they hedge, not refute).
+    if (nps?.occurrence === 'not in park' || nps?.occurrence === 'false report') {
+      // Curated entries still kept — sometimes wildlifeData has good reason
+      // to surface a species the NPS list lags on (recent reintroductions).
+      if (a._priority === 0) {
+        kept.push(a);
+        continue;
+      }
+      dropped++;
+      continue;
+    }
+
+    // Curated overrides bypass abundance floor/ceiling
+    if (a._priority === 0) {
+      kept.push(a);
+      continue;
+    }
+
+    const tiers = nps?.abundance ? NPS_ABUNDANCE_TIERS[nps.abundance] : null;
+    if (!tiers) { kept.push(a); continue; }
+
+    const currentRank = RARITY_RANK[a.rarity] ?? 5;
+    const floorRank   = RARITY_RANK[tiers.floor]   ?? 5;
+    const ceilingRank = RARITY_RANK[tiers.ceiling] ?? 0;
+
+    // Floor: animal is rarer than NPS Abundance suggests → bump up
+    if (currentRank > floorRank) {
+      a.rarity = tiers.floor;
+      a.raritySource = `nps_floor:${nps.abundance}`;
+      floored++;
+    }
+    // Ceiling: animal is more common than NPS Abundance allows → cap
+    else if (currentRank < ceilingRank) {
+      a.rarity = tiers.ceiling;
+      a.raritySource = `nps_ceiling:${nps.abundance}`;
+      ceiled++;
+    }
+    kept.push(a);
+  }
+
+  if (dropped || floored || ceiled) {
+    console.log(`  [${parkId}] NPS abundance: dropped ${dropped} not-in-park, floored ${floored}, ceiled ${ceiled}`);
+  }
+  return kept;
+}
+
 // ── Per-park fetch ────────────────────────────────────────────────────────────
 async function fetchPark(loc, { noQualityFilter = false, countyFreqMap = null } = {}) {
   console.log(`  [${loc.id}] fetching…${noQualityFilter ? ' [no quality filter]' : ''}${countyFreqMap ? ` [county freq: ${Object.keys(countyFreqMap).length} spp]` : ''}`);
@@ -1688,6 +1851,20 @@ async function fetchPark(loc, { noQualityFilter = false, countyFreqMap = null } 
   // Deduplicate and sort by rarity + source priority — no species cap
   const deduped = dedup(pool);
   applyMammalRarityFloor(deduped);              // fix iNat under-reporting for mammals
+
+  // NPSpecies abundance gate + floor/ceiling. Authoritative per-park signal
+  // from park ecologists; lazy-fetched once per park, in-memory cached.
+  if (loc.npsCode) {
+    try {
+      const npsData = await fetchNpsSpeciesAbundance(loc.npsCode);
+      const constrained = applyNpsAbundanceConstraints(deduped, npsData, loc.id);
+      deduped.length = 0;
+      deduped.push(...constrained);
+    } catch (err) {
+      console.warn(`  [${loc.id}] NPSpecies abundance fetch failed:`, err.message);
+    }
+  }
+
   deduped.sort((a, b) => {
     const rDiff = (RARITY_RANK[a.rarity] ?? 2) - (RARITY_RANK[b.rarity] ?? 2);
     if (rDiff !== 0) return rDiff;
