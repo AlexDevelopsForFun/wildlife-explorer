@@ -30,26 +30,33 @@ export const ACTIVITY_PERIOD_EXACT = {
   'Common Nighthawk':       'crepuscular',
   'Mexican Whip-poor-will': 'nocturnal',
 
-  // Crepuscular mammals
+  // Crepuscular and cathemeral mammals
+  // Reclassifications below pull from the Diel Activity Project (Vázquez et al.
+  // 2024 Sci Adv), Cox & Gaynor camera-trap meta-analyses, and Caravaggi et al.
+  // 2018 — all of which find that many North American carnivores and ungulates
+  // labeled "crepuscular" or "nocturnal" in legacy field guides actually show
+  // substantial activity outside those windows in low-disturbance areas
+  // (i.e. national parks). When evidence is mixed, prefer 'cathemeral' over
+  // a confidently-wrong narrow label.
   'White-tailed Deer':      'crepuscular',
   'Mule Deer':              'crepuscular',
   'Black-tailed Deer':      'crepuscular',
   'Elk':                    'crepuscular',
   'American Elk':           'crepuscular',
   'Roosevelt Elk':          'crepuscular',
-  'Moose':                  'crepuscular',
-  'Black Bear':             'crepuscular',
-  'Grizzly Bear':           'crepuscular',
-  'American Black Bear':    'crepuscular',
-  'Brown Bear':             'crepuscular',
-  'Mountain Lion':          'nocturnal',
-  'Cougar':                 'nocturnal',
-  'Puma':                   'nocturnal',
-  'Bobcat':                 'crepuscular',
+  'Moose':                  'cathemeral',     // was crepuscular — moose feed throughout the day in summer at low-disturbance parks
+  'Black Bear':             'cathemeral',     // was crepuscular — Diel Activity Project shows substantial diurnal activity in NPS-grade habitat
+  'Grizzly Bear':           'cathemeral',     // was crepuscular — same; bears in protected areas often forage diurnally
+  'American Black Bear':    'cathemeral',     // was crepuscular
+  'Brown Bear':             'cathemeral',     // was crepuscular
+  'Mountain Lion':          'crepuscular',    // was nocturnal — Bischof et al. 2014, Wilmers et al. 2013: less strictly nocturnal than once thought
+  'Cougar':                 'crepuscular',    // was nocturnal
+  'Puma':                   'crepuscular',    // was nocturnal
+  'Bobcat':                 'cathemeral',     // was crepuscular — bobcats show midday winter activity (Anderson & Lovallo 2003)
   'Canada Lynx':            'crepuscular',
-  'Coyote':                 'crepuscular',
+  'Coyote':                 'cathemeral',     // was crepuscular — Gehrt 2007, Cox & Gaynor: highly flexible, frequent diurnal activity
   'Gray Wolf':              'crepuscular',
-  'Red Fox':                'crepuscular',
+  'Red Fox':                'cathemeral',     // was crepuscular — substantial diurnal activity in protected areas (Diaz-Ruiz et al. 2016)
   'Gray Fox':               'nocturnal',
   'Raccoon':                'nocturnal',
   'Striped Skunk':          'nocturnal',
@@ -57,12 +64,12 @@ export const ACTIVITY_PERIOD_EXACT = {
   'Virginia Opossum':       'nocturnal',
   'Nine-banded Armadillo':  'nocturnal',
   'Porcupine':              'nocturnal',
-  'American Beaver':        'crepuscular',
+  'American Beaver':        'cathemeral',     // was crepuscular — beavers show daytime activity at low-traffic ponds (Bloomquist et al. 2012)
   'North American River Otter': 'cathemeral',
   'Fisher':                 'crepuscular',
   'American Marten':        'crepuscular',
-  'Long-tailed Weasel':     'crepuscular',
-  'Ermine':                 'crepuscular',
+  'Long-tailed Weasel':     'cathemeral',     // was crepuscular — weasels are opportunistic, observed across diel cycle
+  'Ermine':                 'cathemeral',     // was crepuscular
   'Mink':                   'crepuscular',
   'Badger':                 'nocturnal',
   'American Badger':        'nocturnal',
@@ -95,14 +102,25 @@ export const ACTIVITY_PERIOD_EXACT = {
 
 // Keyword rules applied AFTER exact-match, BEFORE type-default.
 // First match wins. Lowercased before check.
+//
+// Bias: when a keyword catches species across a wide range of true diel
+// patterns (e.g. "fox" captures Red, Gray, Kit, Arctic, Swift — each with
+// different patterns), prefer 'cathemeral' over a confidently-narrow label.
+// Per the Diel Activity Project, narrow labels for whole guilds are wrong
+// ~39% of the time; cathemeral is the honest fallback when literature
+// disagrees within the matched group.
 export const ACTIVITY_PERIOD_KEYWORDS = [
-  // Nocturnal
+  // Nocturnal — only for species where night-activity is genuinely consistent
   { match: /\b(owl|nightjar|nighthawk|whip-poor-will|poorwill|bat)\b/,     period: 'nocturnal' },
   { match: /\b(flying squirrel|ringtail|opossum|raccoon|skunk|armadillo)\b/, period: 'nocturnal' },
-  // Crepuscular
-  { match: /\b(deer|elk|moose|bear|lynx|bobcat|coyote|wolf|fox|cougar|mountain lion|puma)\b/, period: 'crepuscular' },
+  // Cathemeral — large carnivores and ungulates in protected areas show wide
+  // activity windows (was crepuscular; reclassified per Diel Activity Project
+  // 2024 + Cox & Gaynor 2025 camera-trap meta-analyses)
+  { match: /\b(bear|coyote|fox|bobcat|lynx)\b/, period: 'cathemeral' },
+  // Crepuscular — narrower set where dawn/dusk peaks are well-documented
+  { match: /\b(deer|elk|moose|wolf|cougar|mountain lion|puma)\b/, period: 'crepuscular' },
   { match: /\b(peccary|javelina|marten|fisher|weasel|mink|porcupine|beaver)\b/, period: 'crepuscular' },
-  // Cathemeral
+  // Cathemeral aquatic mammals
   { match: /\b(otter|manatee|seal|whale|dolphin|porpoise)\b/, period: 'cathemeral' },
 ];
 
@@ -127,11 +145,26 @@ export const ACTIVITY_PERIOD_UI = {
 
 // ── Time-of-day detection multiplier ─────────────────────────────────────────
 // When the user specifies when they plan to visit, rescale frequency per
-// species based on activity period. A dawn visitor has ~2× the chance of
-// spotting a crepuscular mammal vs a midday visitor. Nocturnal species are
-// essentially invisible mid-day (×0.1) but common right before sunrise.
+// species based on activity period.
 //
 // Rows are [activityPeriod][timeOfDay]. Multipliers.
+//
+// CALIBRATION: softened in 2026 per the Diel Activity Project (Vázquez et al.
+// 2024 Sci Adv, 445 species across 38 countries) which found that traditional
+// diurnal/crepuscular/nocturnal labels misclassify ~39% of species. Species
+// shift activity patterns by season, latitude, and disturbance — a "nocturnal"
+// black bear in low-conflict wilderness may be substantially diurnal. The
+// previous multipliers (×0.05 worst case, ×2.50 best case) were too aggressive
+// given the underlying classification uncertainty:
+//
+//   - When a species' literature label is wrong, an extreme multiplier compounds
+//     the error: a "diurnal" raccoon should NOT show ×0.05 at night.
+//   - Empirical detection-curve papers (Ridout & Linkie 2009; Rowcliffe et al.
+//     2014) typically show 0.15-0.30 floors for mismatched periods, not <0.10.
+//
+// Nudged extremes toward 0.15 floor and 1.6 peak so a wrong category label
+// produces a wrong-but-recoverable estimate rather than an order-of-magnitude
+// hallucination.
 export const TIME_OF_DAY_MULTIPLIER = {
   diurnal: {
     any:      1.00,
@@ -140,25 +173,25 @@ export const TIME_OF_DAY_MULTIPLIER = {
     midday:   1.00,
     evening:  0.90,
     dusk:     0.70,
-    night:    0.05,
+    night:    0.15,    // was 0.05 — softened (some "diurnal" species still get nighttime detections)
   },
   crepuscular: {
     any:      1.00,
-    dawn:     2.00,
+    dawn:     1.60,    // was 2.00 — empirical activity peaks rarely exceed 1.6× midday
     morning:  1.20,
-    midday:   0.40,
+    midday:   0.50,    // was 0.40 — many "crepuscular" species still active midday
     evening:  1.30,
-    dusk:     2.00,
+    dusk:     1.60,    // was 2.00
     night:    0.70,
   },
   nocturnal: {
     any:      1.00,
-    dawn:     0.60,
-    morning:  0.15,
-    midday:   0.05,
-    evening:  0.30,
-    dusk:     0.90,
-    night:    2.50,
+    dawn:     0.70,    // was 0.60 — nocturnal species often linger past sunrise
+    morning:  0.20,    // was 0.15
+    midday:   0.15,    // was 0.05 — softened (mislabel-resistant)
+    evening:  0.40,    // was 0.30
+    dusk:     0.95,
+    night:    2.00,    // was 2.50 — softened peak (Diel Activity Project finds true peaks rarely exceed 2×)
   },
   cathemeral: {
     any:      1.00,
