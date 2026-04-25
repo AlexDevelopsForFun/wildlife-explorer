@@ -42,8 +42,33 @@ env:
   SHARD_COUNT: "4"
 
 jobs:
+  # ── Stage 0: pre-flight curation gate ──────────────────────────────────
+  # Fails fast if hand-curated rarity overrides have gone stale. Cheap to run
+  # and prevents wasting 4×350 minutes of shard time on a build that would
+  # ship known-stale overrides.
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check rarity-override curation freshness
+        run: node scripts/checkOverrideExpiry.js
+
   # ── Stage 1: parallel rebuild shards ────────────────────────────────────
   rebuild:
+    needs: preflight
     runs-on: ubuntu-latest
     timeout-minutes: 350     # leave headroom under GH's 360min hard cap
     strategy:

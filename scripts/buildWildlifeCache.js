@@ -610,6 +610,17 @@ function slim(a, source = 'static') {
 // These park-specific overrides correct species whose iNat observation counts
 // are low due to remoteness or low visitor numbers, not actual rarity.
 // KEEP IN SYNC with both apiService.js and scripts/patchRarity.mjs.
+//
+// ── Override curation discipline ────────────────────────────────────────────
+// Hard overrides freeze the rarity tier — they bypass any data-driven update.
+// That's a feature when the data is wrong (iNat undersamples bison) but a bug
+// when reality changes (1994 wolf reintroduction at Yellowstone, 2010s python
+// invasion at Everglades, white-nose-syndrome bat collapse at Shenandoah).
+//
+// The metadata in src/services/rarityOverrideMeta.js encodes when this table
+// was last reviewed. scripts/checkOverrideExpiry.js fails CI if review is
+// stale — the weekly rebuild workflow runs that check before fetching, so
+// stale overrides surface as a build failure rather than rotting silently.
 const RARITY_OVERRIDES = {
   // ── Yellowstone / Tetons ─────────────────────────────────────────────────
   yellowstone:           { 'American Bison': 'guaranteed', 'American Elk': 'guaranteed', 'Elk': 'very_likely', 'Grizzly Bear': 'unlikely', 'Gray Wolf': 'rare', 'Moose': 'unlikely' },

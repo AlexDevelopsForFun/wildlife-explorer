@@ -233,6 +233,15 @@ export function getCorrectionFactor(name) {
 // ── Park-specific rarity overrides for iconic species ────────────────────────
 // These encode known visitor-encounter probabilities that APIs can't calculate.
 // Applied during deduplication — override wins if the species name matches.
+//
+// ── Curation discipline ─────────────────────────────────────────────────────
+// Hard overrides freeze the rarity tier — they bypass any data-driven update.
+// Keep this table fresh: bump OVERRIDES_REVIEWED_AT in
+// src/services/rarityOverrideMeta.js whenever you do a curation pass. The
+// weekly-rebuild workflow runs scripts/checkOverrideExpiry.js before each
+// rebuild, so stale overrides surface as a build failure rather than rotting
+// silently. (Without this, a 1994 "0% wolves at Yellowstone" override would
+// still be live in 2026, masking a real ecological change.)
 const RARITY_OVERRIDES = {
   // ── Yellowstone / Tetons ─────────────────────────────────────────────────
   yellowstone:           { 'American Bison': 'guaranteed', 'American Elk': 'very_likely', 'Elk': 'very_likely', 'Grizzly Bear': 'unlikely', 'Gray Wolf': 'unlikely', 'Moose': 'unlikely' },
