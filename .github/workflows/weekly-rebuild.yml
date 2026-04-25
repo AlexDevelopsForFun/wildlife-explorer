@@ -90,7 +90,11 @@ jobs:
   merge:
     needs: rebuild
     runs-on: ubuntu-latest
-    timeout-minutes: 120     # merge + enrich + photo expand + build
+    # Photo expansion processes ~600 species and is the slow step (rate-limited
+    # third-party photo APIs). Combined with description enrichment + build,
+    # this can run 2-3h. Use the same 350min cap as shards (just under GH's
+    # 360min hard limit per job).
+    timeout-minutes: 350
 
     steps:
       - name: Checkout
