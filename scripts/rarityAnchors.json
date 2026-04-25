@@ -14,7 +14,8 @@
       "rationale": "1-2 sentence note on why this anchor is trustworthy and any caveats"
     },
     "lastReviewed": "2026-04-25",
-    "anchorCount": 38
+    "anchorCount": 50,
+    "zoneSchemaNote": "When `zone` is set, the calibration script uses the species' zone-specific rarity (animal.zones[zone]) instead of the park-level rarity. Zone IDs match src/data/parkZones.js."
   },
   "anchors": [
     {
@@ -445,6 +446,138 @@
       "confidence": "high",
       "source": "Roberts Prairie Dog Town signage and visitor sightings.",
       "rationale": "Roberts Prairie Dog Town is a designated stop with thousands of animals visible — essentially every visitor sees them."
+    },
+    {
+      "parkId": "greatsmokymountains",
+      "zone": "cataloochee",
+      "species": "Elk",
+      "season": "fall",
+      "visitorEffort": "casual",
+      "probability": 0.95,
+      "tierExpected": "guaranteed",
+      "confidence": "high",
+      "source": "NPS Cataloochee Elk Viewing operational logs (re-introduced 2001, ~200 animals).",
+      "rationale": "Cataloochee Valley fall rut at dawn/dusk has near-100% sighting rate. Park-level anchor missed the zone effect — this anchor verifies the zone override."
+    },
+    {
+      "parkId": "yellowstone",
+      "zone": "lamar-valley",
+      "species": "Gray Wolf",
+      "season": "summer",
+      "visitorEffort": "expert",
+      "probability": 0.32,
+      "tierExpected": "likely",
+      "confidence": "high",
+      "source": "Yellowstone Wolf Project annual reports; Lamar Valley dawn-watching success rates.",
+      "rationale": "Lamar Valley with optics at dawn — only place in lower 48 with predictable wolf viewing."
+    },
+    {
+      "parkId": "yellowstone",
+      "zone": "hayden-valley",
+      "species": "Grizzly Bear",
+      "season": "summer",
+      "visitorEffort": "casual",
+      "probability": 0.40,
+      "tierExpected": "likely",
+      "confidence": "medium",
+      "source": "NPS Yellowstone Bear Management Office Hayden Valley sighting reports.",
+      "rationale": "Hayden Valley spring/summer carcass season — bears actively visible from road."
+    },
+    {
+      "parkId": "yellowstone",
+      "zone": "mammoth",
+      "species": "American Elk",
+      "season": "year-round",
+      "visitorEffort": "casual",
+      "probability": 0.95,
+      "tierExpected": "guaranteed",
+      "confidence": "high",
+      "source": "NPS Mammoth Hot Springs operational sightings.",
+      "rationale": "Mammoth elk herd grazes the lawns and terraces year-round — essentially every visitor sees them."
+    },
+    {
+      "parkId": "glacier",
+      "zone": "going-to-sun",
+      "species": "Mountain Goat",
+      "season": "summer",
+      "visitorEffort": "casual",
+      "probability": 0.65,
+      "tierExpected": "very_likely",
+      "confidence": "high",
+      "source": "Logan Pass / Hidden Lake Trail visitor sightings.",
+      "rationale": "Goats visible on cliffs above Going-to-the-Sun Road and at Hidden Lake Trail in summer."
+    },
+    {
+      "parkId": "olympic",
+      "zone": "hurricane-ridge",
+      "species": "Olympic Marmot",
+      "season": "summer",
+      "visitorEffort": "casual",
+      "probability": 0.90,
+      "tierExpected": "guaranteed",
+      "confidence": "high",
+      "source": "Hurricane Ridge marmot-monitoring program (NPS).",
+      "rationale": "Marmots sun themselves on rocks at Hurricane Ridge meadows in July-August, visible from the visitor center."
+    },
+    {
+      "parkId": "olympic",
+      "zone": "hoh-rainforest",
+      "species": "Roosevelt Elk",
+      "season": "year-round",
+      "visitorEffort": "casual",
+      "probability": 0.70,
+      "tierExpected": "very_likely",
+      "confidence": "high",
+      "source": "Hoh Rainforest visitor sightings; Olympic NPS wildlife reports.",
+      "rationale": "Hoh herd visible along trails and river corridor year-round."
+    },
+    {
+      "parkId": "rockymountain",
+      "zone": "kawuneeche",
+      "species": "Moose",
+      "season": "summer",
+      "visitorEffort": "casual",
+      "probability": 0.75,
+      "tierExpected": "very_likely",
+      "confidence": "high",
+      "source": "RMNP Kawuneeche Valley moose hotspot data.",
+      "rationale": "West-side moose herd along the Colorado River source — most reliable moose viewing in the park."
+    },
+    {
+      "parkId": "rockymountain",
+      "zone": "trail-ridge",
+      "species": "American Pika",
+      "season": "summer",
+      "visitorEffort": "casual",
+      "probability": 0.78,
+      "tierExpected": "very_likely",
+      "confidence": "high",
+      "source": "RMNP Trail Ridge Road alpine survey reports.",
+      "rationale": "Pikas reliably calling from talus within meters of pullouts on Trail Ridge Road in summer."
+    },
+    {
+      "parkId": "rockymountain",
+      "zone": "bear-lake",
+      "species": "American Elk",
+      "season": "fall",
+      "visitorEffort": "casual",
+      "probability": 0.97,
+      "tierExpected": "guaranteed",
+      "confidence": "high",
+      "source": "RMNP elk-rut visitor management documentation; Estes Park / Moraine Park.",
+      "rationale": "Fall rut concentrates elk in open meadows visible from any pullout."
+    },
+    {
+      "parkId": "yosemite",
+      "zone": "valley",
+      "species": "Mule Deer",
+      "season": "summer",
+      "visitorEffort": "casual",
+      "probability": 0.95,
+      "tierExpected": "guaranteed",
+      "confidence": "high",
+      "source": "Yosemite Valley wildlife sightings; Cook's Meadow / Stoneman Meadow.",
+      "rationale": "Habituated deer in Yosemite Valley meadows — essentially every Valley visitor sees them."
     }
   ]
 }

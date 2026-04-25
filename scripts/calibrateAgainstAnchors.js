@@ -126,11 +126,36 @@ function findAnimal(animals, anchorSpecies) {
 
 // ── Compute the model's predicted probability for an anchor's context ─────
 // Mirrors the runtime computeEffectiveRarity logic enough to give a fair
-// season + effort prediction. NOT a full mirror — does not apply parkEffort
-// correction (that's a runtime fetch) or activity-period multipliers (those
-// don't apply when anchor doesn't specify visit-time).
+// (zone, season, effort) prediction. NOT a full mirror — does not apply
+// parkEffort correction (runtime fetch) or activity-period multipliers
+// (those don't apply when anchor doesn't specify visit-time).
+//
+// Resolution order matches App.jsx::computeEffectiveRarity:
+//   1. Zone override (most specific)
+//      a. Zone seasonal frequency
+//      b. Zone baseline frequency
+//   2. Park-level seasonal frequency (eBird S&T weekly)
+//   3. Park-level baseline (rarity tier floor)
 function predict(animal, anchor) {
   if (!animal) return null;
+
+  // Zone override (most specific) — applied via wildlifeCacheLoader from
+  // src/data/zoneOverrides.js. Anchors that specify `zone` are testing the
+  // zone path directly.
+  if (anchor.zone && animal.zones?.[anchor.zone]) {
+    const z = animal.zones[anchor.zone];
+    let freq;
+    if (anchor.season && anchor.season !== 'year-round' && z.seasonFrequencies?.[anchor.season] != null) {
+      freq = z.seasonFrequencies[anchor.season] / 100;
+    } else {
+      freq = resolveBaselineFrequency(z.frequency, z.rarity);
+    }
+    const effort = anchor.visitorEffort ?? 'casual';
+    const effortMul = (VISITOR_EFFORT[effort] ?? VISITOR_EFFORT.casual) / VISITOR_EFFORT.casual;
+    freq = Math.min(0.99, Math.max(0, freq * effortMul));
+    return { probability: freq, tier: rarityFromFrequency(freq), source: 'zone' };
+  }
+
   const baseline = resolveBaselineFrequency(animal.frequency, animal.rarity);
   let freq = baseline;
 
@@ -147,10 +172,7 @@ function predict(animal, anchor) {
   const effortMul = (VISITOR_EFFORT[effort] ?? VISITOR_EFFORT.casual) / VISITOR_EFFORT.casual;
   freq = Math.min(0.99, Math.max(0, freq * effortMul));
 
-  return {
-    probability: freq,
-    tier: rarityFromFrequency(freq),
-  };
+  return { probability: freq, tier: rarityFromFrequency(freq), source: 'park' };
 }
 
 // ── Scoring ──────────────────────────────────────────────────────────────
@@ -179,6 +201,20 @@ async function main() {
   const anchorsPath = path.join(__dirname, 'rarityAnchors.json');
   const { _meta, anchors } = JSON.parse(readFileSync(anchorsPath, 'utf8'));
   const { WILDLIFE_CACHE } = await import('../src/data/wildlifeCache.js');
+  // The runtime loader (src/data/wildlifeCacheLoader.js) merges zone overrides
+  // from src/data/zoneOverrides.js into animal.zones at load time. The Node
+  // calibration script imports the raw static cache, so we apply the same
+  // merge here to mirror runtime behaviour.
+  const { ZONE_OVERRIDES } = await import('../src/data/zoneOverrides.js');
+  for (const [parkId, parkData] of Object.entries(WILDLIFE_CACHE)) {
+    const overrides = ZONE_OVERRIDES[parkId];
+    if (!overrides || !Array.isArray(parkData?.animals)) continue;
+    for (const animal of parkData.animals) {
+      const zonesForSpecies = overrides[animal.name];
+      if (!zonesForSpecies) continue;
+      animal.zones = { ...(animal.zones ?? {}), ...zonesForSpecies };
+    }
+  }
 
   console.log(`\n🎯 Anchor-based rarity calibration`);
   console.log(`   Anchors:              ${anchors.length}`);

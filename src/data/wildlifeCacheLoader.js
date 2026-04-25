@@ -12,6 +12,7 @@
  */
 
 import { WILDLIFE_CACHE_PRIMARY } from './wildlifeCachePrimary.js';
+import { ZONE_OVERRIDES } from './zoneOverrides.js';
 
 // The merged cache starts with primary parks only and grows as tiers arrive.
 export const WILDLIFE_CACHE = { ...WILDLIFE_CACHE_PRIMARY };
@@ -109,6 +110,24 @@ function _entryScore(a) {
 // name. Keeps the higher-scored entry but unions its `sources` array so we
 // don't lose provenance. Runs after sci-name backfill so alias-derived sci
 // names participate in grouping.
+// Merge zone-specific rarity into animal entries from src/data/zoneOverrides.js.
+// Zones are runtime-applied (not baked into the static cache) so curators can
+// add/edit hotspot data without re-running the 3-hour rebuild. AnimalCard
+// already consumes animal.zones[zoneId] when the popup zone selector is set.
+function _applyZoneOverrides(parks) {
+  for (const [parkId, parkData] of Object.entries(parks)) {
+    const overrides = ZONE_OVERRIDES[parkId];
+    if (!overrides || !Array.isArray(parkData?.animals)) continue;
+    for (const animal of parkData.animals) {
+      const zonesForSpecies = overrides[animal.name];
+      if (!zonesForSpecies) continue;
+      // Merge into existing zones rather than replace — defensive in case the
+      // build script ever populates zones directly from API data.
+      animal.zones = { ...(animal.zones ?? {}), ...zonesForSpecies };
+    }
+  }
+}
+
 function _dedupeWithinPark(parks) {
   for (const val of Object.values(parks)) {
     if (!Array.isArray(val?.animals)) continue;
@@ -139,6 +158,7 @@ function _dedupeWithinPark(parks) {
 _indexSciNames(WILDLIFE_CACHE);
 _backfillSciNames(WILDLIFE_CACHE);
 _dedupeWithinPark(WILDLIFE_CACHE);
+_applyZoneOverrides(WILDLIFE_CACHE);
 
 // Tracks tier load state
 let _tier2Loaded = false;
@@ -178,6 +198,7 @@ export function loadTier2() {
     _indexSciNames(data);
     _backfillSciNames(WILDLIFE_CACHE);
     _dedupeWithinPark(WILDLIFE_CACHE);
+    _applyZoneOverrides(WILDLIFE_CACHE);
     _tier2Loaded = true;
     _notify();
     return data;
@@ -196,6 +217,7 @@ export function loadTier3() {
     _indexSciNames(data);
     _backfillSciNames(WILDLIFE_CACHE);
     _dedupeWithinPark(WILDLIFE_CACHE);
+    _applyZoneOverrides(WILDLIFE_CACHE);
     _tier3Loaded = true;
     _notify();
     if (isSecondaryLoaded()) _listeners.clear();
