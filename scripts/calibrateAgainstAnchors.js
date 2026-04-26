@@ -131,12 +131,15 @@ function findAnimal(animals, anchorSpecies) {
 // (those don't apply when anchor doesn't specify visit-time).
 //
 // Resolution order matches App.jsx::computeEffectiveRarity:
-//   1. Zone override (most specific)
+//   1. Zone override (most specific) — detectability ceiling NOT applied
+//      because zones already encode visible-context behavior.
 //      a. Zone seasonal frequency
 //      b. Zone baseline frequency
 //   2. Park-level seasonal frequency (eBird S&T weekly)
 //   3. Park-level baseline (rarity tier floor)
-function predict(animal, anchor) {
+//   4. Detectability ceiling — capped at the species detectability cap
+//      (no zone path; zones override the cap by design).
+function predict(animal, anchor, speciesDetectability) {
   if (!animal) return null;
 
   // Zone override (most specific) — applied via wildlifeCacheLoader from
@@ -153,6 +156,7 @@ function predict(animal, anchor) {
     const effort = anchor.visitorEffort ?? 'casual';
     const effortMul = (VISITOR_EFFORT[effort] ?? VISITOR_EFFORT.casual) / VISITOR_EFFORT.casual;
     freq = Math.min(0.99, Math.max(0, freq * effortMul));
+    // No detectability cap inside zones — zones already encode visible context.
     return { probability: freq, tier: rarityFromFrequency(freq), source: 'zone' };
   }
 
@@ -171,6 +175,13 @@ function predict(animal, anchor) {
   const effort = anchor.visitorEffort ?? 'casual';
   const effortMul = (VISITOR_EFFORT[effort] ?? VISITOR_EFFORT.casual) / VISITOR_EFFORT.casual;
   freq = Math.min(0.99, Math.max(0, freq * effortMul));
+
+  // Detectability ceiling — caps casual visitor sighting probability at the
+  // species' empirically-justified maximum. Skipped for zone path above.
+  const ceiling = speciesDetectability?.[animal.name];
+  if (ceiling != null) {
+    freq = Math.min(freq, ceiling);
+  }
 
   return { probability: freq, tier: rarityFromFrequency(freq), source: 'park' };
 }
@@ -216,6 +227,15 @@ async function main() {
     }
   }
 
+  // Build a name→ceiling map from src/data/detectability.js so the calibration
+  // applies the same hard/cryptic caps as the runtime.
+  const { SPECIES_DETECTABILITY, DETECTABILITY_LEVELS } = await import('../src/data/detectability.js');
+  const speciesDetectability = {};
+  for (const [name, level] of Object.entries(SPECIES_DETECTABILITY)) {
+    const ceiling = DETECTABILITY_LEVELS[level]?.ceiling;
+    if (ceiling != null) speciesDetectability[name] = ceiling;
+  }
+
   console.log(`\n🎯 Anchor-based rarity calibration`);
   console.log(`   Anchors:              ${anchors.length}`);
   console.log(`   Parks in cache:       ${Object.keys(WILDLIFE_CACHE).length}`);
@@ -226,7 +246,7 @@ async function main() {
   const results = anchors.map(anchor => {
     const parkData = WILDLIFE_CACHE[anchor.parkId];
     const animal = findAnimal(parkData?.animals, anchor.species);
-    const prediction = predict(animal, anchor);
+    const prediction = predict(animal, anchor, speciesDetectability);
     const sc = score(prediction, anchor);
     return { anchor, animal, prediction, ...sc };
   });

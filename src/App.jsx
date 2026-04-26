@@ -29,6 +29,7 @@ import {
   TIME_OF_DAY_MULTIPLIER, TIME_OF_DAY_UI, classifyActivityPeriod,
 } from './data/speciesMetadata.js';
 import { getParkZones } from './data/parkZones.js';
+import { detectabilityCeiling, classifyDetectability, DETECTABILITY_LEVELS } from './data/detectability.js';
 
 // ── Park type colors & icons ──────────────────────────────────────────────────
 const PARK_COLORS = { nationalPark: '#7B5B2E' };
@@ -999,9 +1000,19 @@ function computeEffectiveRarity(animal, {
     ? 1
     : (TIME_OF_DAY_MULTIPLIER[period]?.[visitTime] ?? 1);
 
+  // Detectability ceiling — caps the displayed pill for genuinely cryptic
+  // species (mountain lion, wolverine, secretive owls). Skipped when a zone
+  // is active because zones already encode the visible-context behavior
+  // (Lamar wolves, Brooks Falls bears) and a generic detectability cap
+  // would unfairly suppress them.
+  const detectCeiling = activeZone ? null : detectabilityCeiling(animal);
+
   const rescale = (tier, freq) => {
     if (freq == null) return tier;
-    const rescaled = Math.min(Math.max(freq * effortRescaler * todMultiplier, 0), 1);
+    let rescaled = Math.min(Math.max(freq * effortRescaler * todMultiplier, 0), 1);
+    if (detectCeiling != null) {
+      rescaled = Math.min(rescaled, detectCeiling);
+    }
     return rarityFromFrequency(rescaled);
   };
 
@@ -1304,10 +1315,16 @@ function resolvePillSemantics(animal, displayRarity, sources) {
       indicator: null,
     };
   }
-  // Non-bird: iNaturalist observation density
+  // Non-bird: iNaturalist observation density.
+  // Append a detectability caveat when the species is hard/cryptic — the
+  // pill is then a ceiling, not a population estimate.
+  const detLevel = classifyDetectability(animal);
+  const detSuffix = (detLevel === 'hard' || detLevel === 'cryptic')
+    ? ` Detectability: ${DETECTABILITY_LEVELS[detLevel].label.toLowerCase()} — ${DETECTABILITY_LEVELS[detLevel].tooltip}`
+    : '';
   return {
     kind: 'observability',
-    title: `${label} (${range}) — relative observability estimate based on iNaturalist observation density at this park. This is closer to "how often this species turns up in field reports" than a strict per-visit probability — visitor effort and species detectability are baked in. Treat as a guide rather than a precise number.`,
+    title: `${label} (${range}) — relative observability estimate based on iNaturalist observation density at this park. This is closer to "how often this species turns up in field reports" than a strict per-visit probability — visitor effort and species detectability are baked in. Treat as a guide rather than a precise number.${detSuffix}`,
     indicator: '~',
   };
 }

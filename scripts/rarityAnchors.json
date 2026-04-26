@@ -578,6 +578,114 @@
       "confidence": "high",
       "source": "Yosemite Valley wildlife sightings; Cook's Meadow / Stoneman Meadow.",
       "rationale": "Habituated deer in Yosemite Valley meadows — essentially every Valley visitor sees them."
+    },
+    {
+      "parkId": "kenaifjords",
+      "zone": "boat-tour",
+      "species": "Humpback Whale",
+      "season": "summer",
+      "visitorEffort": "casual",
+      "probability": 0.85,
+      "tierExpected": "very_likely",
+      "confidence": "high",
+      "source": "Kenai Fjords boat-tour operator sighting logs.",
+      "rationale": "Summer humpback sightings on full-day Kenai Fjords boat tours run ~80-90%."
+    },
+    {
+      "parkId": "kenaifjords",
+      "zone": "boat-tour",
+      "species": "Sea Otter",
+      "season": "summer",
+      "visitorEffort": "casual",
+      "probability": 0.97,
+      "tierExpected": "guaranteed",
+      "confidence": "high",
+      "source": "Kenai Fjords boat-tour operator sighting logs.",
+      "rationale": "Sea otters reliably observed on every boat tour from Seward."
+    },
+    {
+      "parkId": "katmai",
+      "zone": "brooks-falls",
+      "species": "Brown Bear",
+      "season": "summer",
+      "visitorEffort": "casual",
+      "probability": 0.99,
+      "tierExpected": "guaranteed",
+      "confidence": "high",
+      "source": "Brooks Falls bear-viewing platform operational data; webcam-confirmed daily.",
+      "rationale": "Bears at Brooks Falls in July are effectively guaranteed — many tens visible from the platform on any given day."
+    },
+    {
+      "parkId": "denali",
+      "zone": "park-road",
+      "species": "Caribou",
+      "season": "summer",
+      "visitorEffort": "casual",
+      "probability": 0.75,
+      "tierExpected": "very_likely",
+      "confidence": "high",
+      "source": "NPS Denali Wildlife Sightings on Park Road program; published bus-tour summary stats.",
+      "rationale": "Park-road bus surveys publish per-tour caribou sighting % around 70-80% June-Aug."
+    },
+    {
+      "parkId": "denali",
+      "zone": "park-road",
+      "species": "Brown Bear",
+      "season": "summer",
+      "visitorEffort": "casual",
+      "probability": 0.80,
+      "tierExpected": "very_likely",
+      "confidence": "high",
+      "source": "Denali Park Road bus tour reports.",
+      "rationale": "Grizzlies sighted on ~75-85% of full Park Road bus tours during summer."
+    },
+    {
+      "parkId": "everglades",
+      "zone": "anhinga-trail",
+      "species": "American Alligator",
+      "season": "year-round",
+      "visitorEffort": "casual",
+      "probability": 0.99,
+      "tierExpected": "guaranteed",
+      "confidence": "high",
+      "source": "Anhinga Trail boardwalk operational sightings.",
+      "rationale": "Alligators visible from Anhinga Trail on essentially every visit, all seasons."
+    },
+    {
+      "parkId": "everglades",
+      "zone": "flamingo",
+      "species": "West Indian Manatee",
+      "season": "winter",
+      "visitorEffort": "casual",
+      "probability": 0.55,
+      "tierExpected": "likely",
+      "confidence": "medium",
+      "source": "FWC manatee aerial survey data; NPS visitor sightings at Flamingo / Florida Bay.",
+      "rationale": "Winter aggregations at Flamingo warm-water refugia push manatee sighting rate to ~55-60% on cold-weather days."
+    },
+    {
+      "parkId": "zion",
+      "zone": "east-zion",
+      "species": "Desert Bighorn Sheep",
+      "season": "year-round",
+      "visitorEffort": "casual",
+      "probability": 0.50,
+      "tierExpected": "likely",
+      "confidence": "medium",
+      "source": "Zion Bighorn Sheep Monitoring Program; Mt Carmel Highway sighting frequency.",
+      "rationale": "Desert bighorn reliably visible on cliffs along East Zion / Mt Carmel Highway."
+    },
+    {
+      "parkId": "glacierbay",
+      "zone": "boat-tour",
+      "species": "Humpback Whale",
+      "season": "summer",
+      "visitorEffort": "casual",
+      "probability": 0.80,
+      "tierExpected": "very_likely",
+      "confidence": "high",
+      "source": "Glacier Bay NPS day-cruise sighting logs.",
+      "rationale": "Humpbacks reliably feed in Glacier Bay summer waters — sightings on ~80% of cruises."
     }
   ]
 }

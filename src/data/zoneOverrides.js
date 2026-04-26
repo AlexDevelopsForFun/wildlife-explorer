@@ -193,10 +193,167 @@ export const ZONE_OVERRIDES = {
   // ── Katmai ──────────────────────────────────────────────────────────
   katmai: {
     'Brown Bear': {
-      // No zones defined in PARK_ZONES yet — but Brooks Falls is THE flagship.
-      // Keeping this entry as documentation; will activate when zone metadata
-      // for Katmai is added to parkZones.js.
-      // 'brooks-falls': { rarity: 'guaranteed', frequency: 0.99, rationale: 'Bear viewing platform in July = effectively guaranteed.' },
+      'brooks-falls': {
+        rarity: 'guaranteed',
+        frequency: 0.99,
+        seasonFrequencies: { spring: 30, summer: 99, fall: 75, winter: 5 },
+        rationale: 'Brooks Falls bear-viewing platform in July = effectively guaranteed (multiple bears visible at once during salmon run).',
+      },
+      'brooks-camp': {
+        rarity: 'guaranteed',
+        frequency: 0.95,
+        rationale: 'Bears commonly visible from beach / lake shore around Brooks Camp during salmon season.',
+      },
+    },
+  },
+
+  // ── Kenai Fjords ────────────────────────────────────────────────────
+  kenaifjords: {
+    'Sea Otter': {
+      'boat-tour': { rarity: 'guaranteed', frequency: 0.97, rationale: 'Sea otters reliably observed on every boat tour from Seward.' },
+    },
+    'Humpback Whale': {
+      'boat-tour': {
+        rarity: 'very_likely',
+        frequency: 0.85,
+        seasonFrequencies: { spring: 60, summer: 90, fall: 70, winter: 10 },
+        rationale: 'Full-day Kenai Fjords boat tours report humpback sightings on ~80-90% of summer trips.',
+      },
+    },
+    'Orca': {
+      'boat-tour': { rarity: 'unlikely', frequency: 0.25, rationale: 'Orca pods seen on ~25% of summer boat tours.' },
+    },
+    'Steller Sea Lion': {
+      'boat-tour': { rarity: 'guaranteed', frequency: 0.95, rationale: 'Steller sea lions reliably visible at Chiswell Islands rookery.' },
+    },
+    'Tufted Puffin': {
+      'boat-tour': { rarity: 'very_likely', frequency: 0.80, rationale: 'Puffins at Chiswell Islands rookery — visible from boats summer.' },
+    },
+    'Horned Puffin': {
+      'boat-tour': { rarity: 'very_likely', frequency: 0.75, rationale: 'Horned puffins at Chiswell Islands rookery alongside tufted.' },
+    },
+  },
+
+  // ── Glacier Bay ─────────────────────────────────────────────────────
+  glacierbay: {
+    'Humpback Whale': {
+      'boat-tour': {
+        rarity: 'very_likely',
+        frequency: 0.80,
+        seasonFrequencies: { spring: 50, summer: 85, fall: 60, winter: 10 },
+        rationale: 'Glacier Bay NPS day-cruise reports humpback sightings on ~80% of summer trips (feeding aggregations).',
+      },
+    },
+    'Harbor Seal': {
+      'boat-tour':     { rarity: 'guaranteed', frequency: 0.95, rationale: 'Harbor seals on icebergs at Margerie / Johns Hopkins glaciers — reliable boat sightings.' },
+      'bartlett-cove': { rarity: 'very_likely', frequency: 0.70, rationale: 'Frequent in Bartlett Cove waters near visitor center.' },
+    },
+    'Sea Otter': {
+      'boat-tour': { rarity: 'very_likely', frequency: 0.85, rationale: 'Sea otters in lower bay observed on most cruises.' },
+    },
+    'Orca': {
+      'boat-tour': { rarity: 'unlikely', frequency: 0.20, rationale: 'Orcas occasionally encountered on Glacier Bay cruises.' },
+    },
+  },
+
+  // ── Denali ──────────────────────────────────────────────────────────
+  denali: {
+    'Caribou': {
+      'park-road': {
+        rarity: 'very_likely',
+        frequency: 0.75,
+        seasonFrequencies: { spring: 60, summer: 80, fall: 70, winter: 30 },
+        rationale: 'Denali Park Road bus-tour caribou sighting rate is ~70-80% June-Aug (NPS published stats).',
+      },
+    },
+    'Dall Sheep': {
+      'park-road': {
+        rarity: 'very_likely',
+        frequency: 0.85,
+        rationale: 'Dall sheep on Polychrome Pass cliffs visible from park-road bus tours on ~85% of summer trips.',
+      },
+    },
+    'Brown Bear': {
+      'park-road': {
+        rarity: 'very_likely',
+        frequency: 0.80,
+        seasonFrequencies: { spring: 60, summer: 85, fall: 70, winter: 5 },
+        rationale: 'Grizzlies sighted on ~75-85% of full Park Road bus tours during summer.',
+      },
+    },
+    'Moose': {
+      'entrance':  { rarity: 'likely',   frequency: 0.50, rationale: 'Savage River + entrance area moose more reliable than park-road interior.' },
+      'park-road': { rarity: 'likely',   frequency: 0.40, rationale: 'Bus-tour moose sightings on ~30-40% of summer trips.' },
+    },
+    'Gray Wolf': {
+      'park-road': { rarity: 'unlikely', frequency: 0.20, rationale: 'Wolf-harvest impact reduced bus-tour sightings; still ~15-25% on full Park Road tours.' },
+    },
+  },
+
+  // ── Everglades ──────────────────────────────────────────────────────
+  everglades: {
+    'American Alligator': {
+      'anhinga-trail': {
+        rarity: 'guaranteed',
+        frequency: 0.99,
+        rationale: 'Alligators visible from the Anhinga Trail boardwalk on essentially every visit, all seasons.',
+      },
+      'shark-valley': {
+        rarity: 'guaranteed',
+        frequency: 0.95,
+        rationale: 'Shark Valley loop puts visitors face-to-face with alligators along the entire trail.',
+      },
+    },
+    'Anhinga': {
+      'anhinga-trail': {
+        rarity: 'guaranteed',
+        frequency: 0.98,
+        rationale: 'Trail is named for them — reliably perched in the open along the boardwalk.',
+      },
+    },
+    'West Indian Manatee': {
+      'flamingo': {
+        rarity: 'likely',
+        frequency: 0.40,
+        seasonFrequencies: { spring: 25, summer: 15, fall: 25, winter: 60 },
+        rationale: 'Winter manatee aggregations at Flamingo / Florida Bay warm-water refugia — sighting rate jumps to ~60% in winter.',
+      },
+    },
+    'Roseate Spoonbill': {
+      'flamingo':    { rarity: 'very_likely', frequency: 0.65, rationale: 'Spoonbills feed in Florida Bay shallows; reliably visible from Flamingo area boats.' },
+    },
+    'American Crocodile': {
+      'flamingo':    { rarity: 'likely', frequency: 0.45, rationale: 'American crocodiles at the Flamingo marina — the most reliable place to see them.' },
+    },
+  },
+
+  // ── Zion ────────────────────────────────────────────────────────────
+  zion: {
+    'Desert Bighorn Sheep': {
+      'east-zion': {
+        rarity: 'likely',
+        frequency: 0.50,
+        rationale: 'Desert bighorn reliably visible on cliffs along the Mt Carmel Highway / East Zion area.',
+      },
+      'main-canyon': {
+        rarity: 'unlikely',
+        frequency: 0.20,
+        rationale: 'Bighorn occasionally visible from canyon trails but less concentrated than East Zion.',
+      },
+    },
+    'Mule Deer': {
+      'main-canyon': {
+        rarity: 'guaranteed',
+        frequency: 0.92,
+        rationale: 'Mule deer browse the canyon meadows along Riverside Walk and visitor center on essentially every visit.',
+      },
+    },
+    'Rock Squirrel': {
+      'main-canyon': {
+        rarity: 'guaranteed',
+        frequency: 0.95,
+        rationale: 'Habituated rock squirrels at every canyon overlook and trail.',
+      },
     },
   },
 

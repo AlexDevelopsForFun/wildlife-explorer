@@ -90,6 +90,42 @@ export const PARK_ZONES = {
     { id: 'mauna-loa',      label: 'Mauna Loa high-elevation',               access: 2, lat: 19.4750, lng: -155.5950, radiusKm: 12 },
     { id: 'kahuku',         label: 'Kahuku Unit (pasture / forest)',         access: 3, lat: 19.1880, lng: -155.6900, radiusKm: 8 },
   ],
+
+  // Zones added 2026-04-25 to support sub-park hotspot rarity (boat tours,
+  // bus tours, warm-water refugia, etc.) — drove a measurable improvement
+  // in calibration accuracy. See scripts/rarityAnchors.json for verification.
+  everglades: [
+    { id: 'anhinga-trail',  label: 'Anhinga Trail (visitor center area)',    access: 5, lat: 25.3835, lng: -80.6111, radiusKm: 2 },
+    { id: 'shark-valley',   label: 'Shark Valley loop',                       access: 5, lat: 25.7589, lng: -80.7656, radiusKm: 4 },
+    { id: 'flamingo',       label: 'Flamingo / Florida Bay',                  access: 4, lat: 25.1411, lng: -80.9216, radiusKm: 6 },
+    { id: 'gulf-coast',     label: 'Gulf Coast / Ten Thousand Islands',       access: 3, lat: 25.8480, lng: -81.3870, radiusKm: 10 },
+  ],
+
+  kenaifjords: [
+    { id: 'boat-tour',      label: 'Day-cruise boat tour (Aialik / Holgate)', access: 5, lat: 59.9000, lng: -149.6500, radiusKm: 30 },
+    { id: 'exit-glacier',   label: 'Exit Glacier road / trails',              access: 5, lat: 60.1888, lng: -149.6320, radiusKm: 4 },
+  ],
+
+  glacierbay: [
+    { id: 'boat-tour',      label: 'Day-cruise / NPS tour boat',              access: 5, lat: 58.8000, lng: -136.6000, radiusKm: 40 },
+    { id: 'bartlett-cove',  label: 'Bartlett Cove (visitor center area)',     access: 5, lat: 58.4554, lng: -135.8861, radiusKm: 2 },
+  ],
+
+  denali: [
+    { id: 'park-road',      label: 'Park Road bus tour (Toklat / Eielson)',   access: 5, lat: 63.5470, lng: -150.2960, radiusKm: 50 },
+    { id: 'entrance',       label: 'Entrance area / Savage River',            access: 5, lat: 63.7170, lng: -148.9320, radiusKm: 8 },
+  ],
+
+  katmai: [
+    { id: 'brooks-falls',   label: 'Brooks Falls bear-viewing platform',      access: 5, lat: 58.5564, lng: -155.7849, radiusKm: 1 },
+    { id: 'brooks-camp',    label: 'Brooks Camp (lake & beach)',              access: 4, lat: 58.5570, lng: -155.7799, radiusKm: 2 },
+  ],
+
+  zion: [
+    { id: 'main-canyon',    label: 'Main Zion Canyon (shuttle corridor)',     access: 5, lat: 37.2982, lng: -113.0263, radiusKm: 6 },
+    { id: 'east-zion',      label: 'East Zion / Mt Carmel Highway',           access: 4, lat: 37.2410, lng: -112.9100, radiusKm: 8 },
+    { id: 'kolob-canyons',  label: 'Kolob Canyons',                           access: 3, lat: 37.4530, lng: -113.2330, radiusKm: 6 },
+  ],
 };
 
 // Returns zones for a park, or null if park isn't zoned.
