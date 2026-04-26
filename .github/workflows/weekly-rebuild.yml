@@ -193,6 +193,15 @@ jobs:
         continue-on-error: true
         run: node scripts/calibrateAgainstAnchors.js
 
+      # Data-quality audit — non-blocking. Catches silent override failures
+      # (overrides that target species missing from the cache), zone-override
+      # mismatches, anchor coverage gaps, and species-count anomalies that
+      # would otherwise go unnoticed across rebuilds. Surfaces in the workflow
+      # log so a curator can investigate. Set STRICT=1 to gate deploys on it.
+      - name: Data-quality audit
+        continue-on-error: true
+        run: node scripts/auditDataQuality.js
+
       # Sanity check with graceful degradation:
       #   drop ≤10%      → ship (auto-merge to main)
       #   drop 10-25%    → soft-fail (open PR for human review instead)
