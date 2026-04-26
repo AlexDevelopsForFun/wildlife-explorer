@@ -76,8 +76,33 @@ export const ZONE_OVERRIDES = {
     },
   },
 
-  // ── Yellowstone ─────────────────────────────────────────────────────
+  // ── Yellowstone (expanded coverage 2026-04-25) ──────────────────────
   yellowstone: {
+    'Pronghorn': {
+      'lamar-valley': { rarity: 'very_likely', frequency: 0.75, rationale: 'Pronghorn herds visible across Lamar Valley grasslands.' },
+      'mammoth':      { rarity: 'likely',      frequency: 0.50, rationale: 'Pronghorn in the Gardiner / Mammoth corridor.' },
+    },
+    'Bighorn Sheep': {
+      'lamar-valley':  { rarity: 'likely',     frequency: 0.40, rationale: 'Bighorn rams visible on Specimen Ridge near Lamar Valley.' },
+      'mammoth':       { rarity: 'unlikely',   frequency: 0.25, rationale: 'Bighorn occasionally on cliffs north of Mammoth.' },
+    },
+    'Trumpeter Swan': {
+      'hayden-valley': { rarity: 'very_likely', frequency: 0.70, rationale: 'Trumpeter Swans on Yellowstone River through Hayden Valley year-round.' },
+    },
+    'Sandhill Crane': {
+      'hayden-valley': { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 75, summer: 85, fall: 60, winter: 5 }, rationale: 'Sandhill Cranes nest in Hayden Valley meadows summer.' },
+    },
+    'American Black Bear': {
+      'mammoth':       { rarity: 'unlikely',   frequency: 0.25, rationale: 'Black bears in Mammoth area; lower density than grizzlies.' },
+    },
+    'Moose': {
+      'lamar-valley':  { rarity: 'unlikely',   frequency: 0.15, rationale: 'Moose occasional in willow thickets along Lamar River.' },
+      'yellowstone-lake': { rarity: 'unlikely', frequency: 0.20, rationale: 'Moose at south arm of Yellowstone Lake riparian areas.' },
+    },
+    'Red Fox': {
+      'mammoth':       { rarity: 'unlikely',   frequency: 0.20, rationale: 'Foxes around Mammoth Hot Springs and Lamar Valley pull-offs.' },
+    },
+    // ── Existing Yellowstone overrides (preserved from earlier rounds) ────
     'Gray Wolf': {
       'lamar-valley': {
         rarity: 'likely',
@@ -119,8 +144,19 @@ export const ZONE_OVERRIDES = {
     },
   },
 
-  // ── Glacier ─────────────────────────────────────────────────────────
+  // ── Glacier (expanded) ──────────────────────────────────────────────
   glacier: {
+    'Hoary Marmot': {
+      'going-to-sun':   { rarity: 'very_likely', frequency: 0.75, rationale: 'Hoary marmots at Logan Pass and Hidden Lake area, summer.' },
+      'many-glacier':   { rarity: 'likely',      frequency: 0.45, rationale: 'Marmots in talus around Many Glacier valley.' },
+    },
+    'American Pika': {
+      'going-to-sun':   { rarity: 'likely',      frequency: 0.50, seasonFrequencies: { spring: 25, summer: 65, fall: 55, winter: 5 }, rationale: 'Pikas calling from talus along Logan Pass area trails in summer.' },
+    },
+    'Moose': {
+      'many-glacier':   { rarity: 'likely',      frequency: 0.45, seasonFrequencies: { spring: 50, summer: 55, fall: 45, winter: 30 }, rationale: 'Moose at Fishercap Lake / Swiftcurrent willow thickets.' },
+      'two-medicine':   { rarity: 'likely',      frequency: 0.40, rationale: 'Moose along the lake shore willows.' },
+    },
     'Mountain Goat': {
       'going-to-sun': {
         rarity: 'very_likely',
@@ -143,8 +179,21 @@ export const ZONE_OVERRIDES = {
     },
   },
 
-  // ── Olympic ─────────────────────────────────────────────────────────
+  // ── Olympic (expanded) ──────────────────────────────────────────────
   olympic: {
+    'American Crow': {
+      'kalaloch':        { rarity: 'guaranteed', frequency: 0.95, rationale: 'Crows at every coastal beach (cache uses American Crow; the Northwestern Crow population was lumped into American Crow taxonomically in 2020).' },
+    },
+    'Bald Eagle': {
+      'kalaloch':        { rarity: 'very_likely', frequency: 0.75, rationale: 'Bald eagles fishing the surf zone year-round.' },
+      'lake-crescent':   { rarity: 'likely',      frequency: 0.55, rationale: 'Bald eagles fishing Lake Crescent and Sol Duc.' },
+    },
+    'River Otter': {
+      'lake-crescent':   { rarity: 'unlikely',    frequency: 0.20, rationale: 'River otters in Lake Crescent and Sol Duc River.' },
+    },
+    'Black Bear': {
+      'hoh-rainforest':  { rarity: 'unlikely',    frequency: 0.15, rationale: 'Black bears occasionally on Hoh trails — most active at dawn/dusk.' },
+    },
     'Olympic Marmot': {
       'hurricane-ridge': {
         rarity: 'guaranteed',
@@ -493,18 +542,30 @@ export const ZONE_OVERRIDES = {
     },
   },
 
-  // ── Yosemite ────────────────────────────────────────────────────────
+  // ── Yosemite (expanded) ─────────────────────────────────────────────
   yosemite: {
     'Mule Deer': {
       'valley': { rarity: 'guaranteed', frequency: 0.95, rationale: 'Habituated deer in Cook\'s Meadow and Stoneman Meadow — essentially every Valley visitor sees them.' },
+      'tuolumne': { rarity: 'very_likely', frequency: 0.80, rationale: 'Deer in Tuolumne Meadows visible from any pullout.' },
     },
-    'Black Bear': {
-      'valley':       { rarity: 'unlikely', frequency: 0.15, rationale: 'Despite bear-aware messaging, casual Valley visitors see bears on ~15% of summer trips. Higher in backcountry.' },
+    'American Black Bear': {
+      'valley':       { rarity: 'unlikely', frequency: 0.15, rationale: 'Despite bear-aware messaging, casual Valley visitors see bears on ~15% of summer trips.' },
       'tuolumne':     { rarity: 'unlikely', frequency: 0.20, rationale: 'Tuolumne Meadows campers report regular bear activity at dusk.' },
+      'high-country': { rarity: 'unlikely', frequency: 0.20, rationale: 'Backcountry bear sightings are common but not guaranteed.' },
+    },
+    "Steller's Jay": {
+      'valley':       { rarity: 'guaranteed', frequency: 0.95, rationale: 'Steller\'s Jays at every Valley campground and picnic area.' },
+      'tuolumne':     { rarity: 'guaranteed', frequency: 0.92, rationale: 'Steller\'s Jays at Tuolumne Meadows campground.' },
+    },
+    'California Ground Squirrel': {
+      'valley':       { rarity: 'guaranteed', frequency: 0.95, rationale: 'Habituated ground squirrels at every Valley overlook.' },
+    },
+    'Coyote': {
+      'valley':       { rarity: 'unlikely', frequency: 0.25, rationale: 'Coyotes in Valley meadows at dawn/dusk.' },
     },
   },
 
-  // ── Grand Canyon ────────────────────────────────────────────────────
+  // ── Grand Canyon (expanded) ─────────────────────────────────────────
   grandcanyon: {
     'California Condor': {
       'south-rim':  { rarity: 'unlikely', frequency: 0.15, rationale: 'Condor releases at Vermilion Cliffs put them visible from South Rim more often than other locations.' },
@@ -512,6 +573,18 @@ export const ZONE_OVERRIDES = {
     },
     'Common Raven': {
       'south-rim': { rarity: 'guaranteed', frequency: 0.99, rationale: 'Ravens at every overlook — South Rim visitors see them on essentially every visit.' },
+      'desert-view': { rarity: 'guaranteed', frequency: 0.97, rationale: 'Ravens at Desert View Watchtower constantly.' },
+      'north-rim': { rarity: 'guaranteed', frequency: 0.95, rationale: 'Ravens common at all North Rim overlooks.' },
+    },
+    'Rock Squirrel': {
+      'south-rim': { rarity: 'guaranteed', frequency: 0.95, rationale: 'Habituated rock squirrels begging at every South Rim overlook.' },
+    },
+    'Mule Deer': {
+      'south-rim': { rarity: 'very_likely', frequency: 0.75, rationale: 'Habituated deer in Grand Canyon Village and along South Rim corridor.' },
+      'north-rim': { rarity: 'likely',      frequency: 0.55, rationale: 'Deer in meadow areas of North Rim.' },
+    },
+    'Elk': {
+      'south-rim': { rarity: 'likely',      frequency: 0.40, rationale: 'Elk regularly visible in South Rim Village area at dawn/dusk.' },
     },
   },
 };
