@@ -327,6 +327,142 @@ export const ZONE_OVERRIDES = {
     },
   },
 
+  // ── Acadia ──────────────────────────────────────────────────────────
+  acadia: {
+    'Harbor Seal': {
+      'park-loop':   { rarity: 'likely',     frequency: 0.40, rationale: 'Sand Beach / Schoodic shorelines — seals haul out on rocks visible from Park Loop pull-offs.' },
+      'schoodic':    { rarity: 'very_likely', frequency: 0.65, rationale: 'Schoodic Peninsula has the most reliable seal-watching at Acadia.' },
+    },
+    'White-tailed Deer': {
+      'jordan-pond': { rarity: 'guaranteed', frequency: 0.92, rationale: 'Jordan Pond / Bubble Pond meadows have the highest-visibility deer at Acadia.' },
+    },
+    'American Herring Gull': {
+      'park-loop':   { rarity: 'guaranteed', frequency: 0.99, rationale: 'Gulls at every coastal overlook — Sand Beach, Thunder Hole, Otter Cliffs.' },
+    },
+    'Common Loon': {
+      'jordan-pond': { rarity: 'very_likely', frequency: 0.70, rationale: 'Loons reliably calling from Jordan Pond and Eagle Lake in summer.' },
+    },
+    'Bald Eagle': {
+      'schoodic':    { rarity: 'likely',     frequency: 0.40, rationale: 'Schoodic Peninsula is the most reliable eagle-watching at Acadia.' },
+    },
+  },
+
+  // ── Saguaro ─────────────────────────────────────────────────────────
+  saguaro: {
+    "Gambel's Quail": {
+      'west-tucson': { rarity: 'guaranteed', frequency: 0.95, rationale: 'Tucson Mountain District wash trails — quail coveys at every visit.' },
+    },
+    'Cactus Wren': {
+      'west-tucson': { rarity: 'very_likely', frequency: 0.85, rationale: 'Cactus wrens nesting in cholla and saguaro along West District trails.' },
+    },
+    'Javelina': {
+      'east-rincon': { rarity: 'likely',     frequency: 0.45, rationale: 'Rincon Mountain District foothills + Cactus Forest Loop — javelina herds visible at dawn/dusk.' },
+      'west-tucson': { rarity: 'likely',     frequency: 0.40, rationale: 'West District wash trails see regular javelina activity.' },
+    },
+    'Desert Spiny Lizard': {
+      'east-rincon': { rarity: 'very_likely', frequency: 0.70, rationale: 'Rincon foothills — lizards basking on exposed rocks throughout the day.' },
+    },
+  },
+
+  // ── Channel Islands ─────────────────────────────────────────────────
+  channelislands: {
+    'Common Dolphin': {
+      'boat-tour':   { rarity: 'very_likely', frequency: 0.85, rationale: 'Channel crossing puts dolphin pods alongside the boat on most trips.' },
+    },
+    'Blue Whale': {
+      'boat-tour':   { rarity: 'unlikely',    frequency: 0.20, seasonFrequencies: { spring: 10, summer: 35, fall: 25, winter: 5 }, rationale: 'Summer-only — feeding aggregations off Santa Cruz Island.' },
+    },
+    'Humpback Whale': {
+      'boat-tour':   { rarity: 'likely',      frequency: 0.40, seasonFrequencies: { spring: 30, summer: 50, fall: 45, winter: 10 }, rationale: 'Summer feeding migration — sightings on ~40% of crossings.' },
+    },
+    'California Sea Lion': {
+      'boat-tour':   { rarity: 'guaranteed',  frequency: 0.97, rationale: 'Sea lion rookeries at Anacapa and Santa Barbara — visible from every boat trip.' },
+      'anacapa':     { rarity: 'guaranteed',  frequency: 0.99, rationale: 'Anacapa rookery — hundreds visible from the cliffs.' },
+    },
+    'Brown Pelican': {
+      'anacapa':     { rarity: 'guaranteed',  frequency: 0.98, rationale: 'Anacapa is the only major Brown Pelican breeding colony in the western US — guaranteed nesting season.' },
+    },
+    'Island Fox': {
+      'santa-cruz':  { rarity: 'very_likely', frequency: 0.70, rationale: 'Endemic Santa Cruz Island fox — habituated, often seen at Scorpion campground.' },
+    },
+  },
+
+  // ── Voyageurs ───────────────────────────────────────────────────────
+  voyageurs: {
+    'Common Loon': {
+      'lake':        { rarity: 'guaranteed',  frequency: 0.98, rationale: 'Loons on every visit — Voyageurs has one of the densest loon populations in the lower 48.' },
+    },
+    'Bald Eagle': {
+      'lake':        { rarity: 'very_likely', frequency: 0.85, rationale: 'Eagles regularly visible from boat trips and visitor center waterfront.' },
+    },
+    'Moose': {
+      'kabetogama-pen': { rarity: 'likely',   frequency: 0.35, seasonFrequencies: { spring: 35, summer: 30, fall: 40, winter: 25 }, rationale: 'Kabetogama Peninsula trails are the most reliable moose habitat.' },
+    },
+    'River Otter': {
+      'lake':        { rarity: 'unlikely',    frequency: 0.20, rationale: 'Otters along rocky shorelines — reliable for boaters who scan ledges.' },
+    },
+  },
+
+  // ── Bryce Canyon ────────────────────────────────────────────────────
+  brycecanyon: {
+    'Utah Prairie Dog': {
+      'fairyland':   { rarity: 'guaranteed',  frequency: 0.95, rationale: 'Fairyland / Sunrise Point meadows host the largest Utah Prairie Dog colony in the park.' },
+    },
+    "Common Golden-mantled Ground Squirrel": {
+      'rim-trail':   { rarity: 'guaranteed',  frequency: 0.98, rationale: 'Beg at every overlook along the Rim Trail.' },
+    },
+    'Mule Deer': {
+      'rim-trail':   { rarity: 'very_likely', frequency: 0.75, rationale: 'Browse meadows along the Rim Trail at dawn/dusk.' },
+    },
+  },
+
+  // ── Arches ──────────────────────────────────────────────────────────
+  arches: {
+    'Common Raven': {
+      'devils-garden': { rarity: 'guaranteed', frequency: 0.99, rationale: 'Ravens at every arch overlook — guaranteed at Devils Garden trailhead.' },
+      'windows':       { rarity: 'guaranteed', frequency: 0.99, rationale: 'Constant raven activity around Windows / Balanced Rock.' },
+    },
+    'Desert Cottontail': {
+      'devils-garden': { rarity: 'likely',    frequency: 0.45, rationale: 'Cottontails at trailheads at dawn/dusk.' },
+    },
+  },
+
+  // ── Great Basin ─────────────────────────────────────────────────────
+  greatbasin: {
+    "Steller's Jay": {
+      'lehman-caves':  { rarity: 'guaranteed', frequency: 0.95, rationale: "Steller's Jays at every campsite and picnic table around Lehman Caves." },
+    },
+    'Mule Deer': {
+      'wheeler-peak':  { rarity: 'very_likely', frequency: 0.75, rationale: 'Sub-alpine deer at Wheeler Peak campground and Bristlecone Pine trail.' },
+    },
+  },
+
+  // ── Big Bend (additional zones) ─────────────────────────────────────
+  bigbend: {
+    'Greater Roadrunner': {
+      'rio-grande':   { rarity: 'guaranteed', frequency: 0.92, rationale: 'Roadrunners reliably along Rio Grande Village trails and roads.' },
+    },
+    'Mexican Jay': {
+      'chisos':       { rarity: 'guaranteed', frequency: 0.95, rationale: 'Mexican Jay flocks at every Chisos Basin trailhead and campsite.' },
+    },
+    'Western Diamond-backed Rattlesnake': {
+      'desert':       { rarity: 'unlikely',   frequency: 0.20, seasonFrequencies: { spring: 25, summer: 30, fall: 20, winter: 5 }, rationale: 'Desert flats — snakes most active spring/summer at dawn/dusk.' },
+    },
+  },
+
+  // ── Dry Tortugas ────────────────────────────────────────────────────
+  drytortugas: {
+    'Sooty Tern': {
+      'fort-jefferson': { rarity: 'guaranteed', frequency: 0.99, seasonFrequencies: { spring: 99, summer: 99, fall: 30, winter: 5 }, rationale: 'Bush Key colony — hundreds of thousands of nesting Sooty Terns visible from Fort Jefferson April-Aug.' },
+    },
+    'Brown Noddy': {
+      'fort-jefferson': { rarity: 'guaranteed', frequency: 0.97, seasonFrequencies: { spring: 99, summer: 99, fall: 25, winter: 5 }, rationale: 'Brown Noddy nesting alongside Sooty Terns on Bush Key.' },
+    },
+    'Magnificent Frigatebird': {
+      'fort-jefferson': { rarity: 'very_likely', frequency: 0.85, rationale: 'Frigatebirds soaring over the fort year-round.' },
+    },
+  },
+
   // ── Zion ────────────────────────────────────────────────────────────
   zion: {
     'Desert Bighorn Sheep': {

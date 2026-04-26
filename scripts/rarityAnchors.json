@@ -686,6 +686,78 @@
       "confidence": "high",
       "source": "Glacier Bay NPS day-cruise sighting logs.",
       "rationale": "Humpbacks reliably feed in Glacier Bay summer waters — sightings on ~80% of cruises."
+    },
+    {
+      "parkId": "voyageurs",
+      "zone": "lake",
+      "species": "Common Loon",
+      "season": "summer",
+      "visitorEffort": "casual",
+      "probability": 0.98,
+      "tierExpected": "guaranteed",
+      "confidence": "high",
+      "source": "Voyageurs NPS waterfowl monitoring; Common Loon density.",
+      "rationale": "Loons on every visit — Voyageurs is in the densest loon territory in the lower 48."
+    },
+    {
+      "parkId": "channelislands",
+      "zone": "boat-tour",
+      "species": "Common Dolphin",
+      "season": "year-round",
+      "visitorEffort": "casual",
+      "probability": 0.85,
+      "tierExpected": "very_likely",
+      "confidence": "high",
+      "source": "Island Packers / NPS concession boat-tour sighting logs.",
+      "rationale": "Dolphin pods visible alongside the boat on most channel crossings."
+    },
+    {
+      "parkId": "channelislands",
+      "zone": "anacapa",
+      "species": "Brown Pelican",
+      "season": "spring",
+      "visitorEffort": "casual",
+      "probability": 0.98,
+      "tierExpected": "guaranteed",
+      "confidence": "high",
+      "source": "USFWS Brown Pelican Monitoring; Anacapa breeding colony.",
+      "rationale": "Anacapa is the only major Brown Pelican breeding colony in the western US — guaranteed nesting season."
+    },
+    {
+      "parkId": "saguaro",
+      "zone": "west-tucson",
+      "species": "Gambel's Quail",
+      "season": "year-round",
+      "visitorEffort": "casual",
+      "probability": 0.92,
+      "tierExpected": "guaranteed",
+      "confidence": "medium",
+      "source": "Saguaro NPS West District trail sightings.",
+      "rationale": "Quail coveys at every visit on Tucson Mountain District wash trails."
+    },
+    {
+      "parkId": "drytortugas",
+      "zone": "fort-jefferson",
+      "species": "Sooty Tern",
+      "season": "spring",
+      "visitorEffort": "casual",
+      "probability": 0.99,
+      "tierExpected": "guaranteed",
+      "confidence": "high",
+      "source": "USGS / NPS Bush Key Sooty Tern colony surveys.",
+      "rationale": "Hundreds of thousands of nesting Sooty Terns visible from Fort Jefferson April-Aug."
+    },
+    {
+      "parkId": "acadia",
+      "zone": "schoodic",
+      "species": "Harbor Seal",
+      "season": "summer",
+      "visitorEffort": "casual",
+      "probability": 0.65,
+      "tierExpected": "very_likely",
+      "confidence": "medium",
+      "source": "Schoodic Peninsula coastal seal-watching reports.",
+      "rationale": "Schoodic has the most reliable seal-watching at Acadia — rocks visible from the loop road."
     }
   ]
 }

@@ -126,6 +126,52 @@ export const PARK_ZONES = {
     { id: 'east-zion',      label: 'East Zion / Mt Carmel Highway',           access: 4, lat: 37.2410, lng: -112.9100, radiusKm: 8 },
     { id: 'kolob-canyons',  label: 'Kolob Canyons',                           access: 3, lat: 37.4530, lng: -113.2330, radiusKm: 6 },
   ],
+
+  // ── Round 3 zone additions (2026-04-25) ──────────────────────────
+  acadia: [
+    { id: 'park-loop',      label: 'Park Loop Road / Cadillac',              access: 5, lat: 44.3386, lng: -68.2733, radiusKm: 5 },
+    { id: 'jordan-pond',    label: 'Jordan Pond / Bubble Pond',              access: 5, lat: 44.3221, lng: -68.2526, radiusKm: 3 },
+    { id: 'schoodic',       label: 'Schoodic Peninsula',                     access: 3, lat: 44.3370, lng: -68.0515, radiusKm: 5 },
+    { id: 'isle-au-haut',   label: 'Isle au Haut (boat-only)',               access: 2, lat: 44.0500, lng: -68.6300, radiusKm: 4 },
+  ],
+
+  saguaro: [
+    { id: 'east-rincon',    label: 'East / Rincon Mountain District',         access: 5, lat: 32.1827, lng: -110.7376, radiusKm: 8 },
+    { id: 'west-tucson',    label: 'West / Tucson Mountain District',         access: 5, lat: 32.2490, lng: -111.1643, radiusKm: 8 },
+  ],
+
+  channelislands: [
+    { id: 'boat-tour',      label: 'Boat tour / channel crossing',            access: 5, lat: 34.0000, lng: -119.7500, radiusKm: 30 },
+    { id: 'santa-cruz',     label: 'Santa Cruz Island (Scorpion / Prisoners)', access: 4, lat: 34.0306, lng: -119.6361, radiusKm: 8 },
+    { id: 'anacapa',        label: 'Anacapa Island',                          access: 4, lat: 34.0150, lng: -119.4300, radiusKm: 4 },
+  ],
+
+  voyageurs: [
+    { id: 'lake',           label: 'Rainy / Kabetogama / Namakan lakes',      access: 5, lat: 48.5000, lng: -92.8800, radiusKm: 25 },
+    { id: 'kabetogama-pen', label: 'Kabetogama Peninsula trails',             access: 3, lat: 48.4533, lng: -92.8400, radiusKm: 12 },
+  ],
+
+  brycecanyon: [
+    { id: 'rim-trail',      label: 'Rim Trail / Bryce Amphitheater',          access: 5, lat: 37.6238, lng: -112.1660, radiusKm: 4 },
+    { id: 'fairyland',      label: 'Fairyland / Sunrise Point',               access: 4, lat: 37.6404, lng: -112.1659, radiusKm: 3 },
+  ],
+
+  arches: [
+    { id: 'devils-garden',  label: 'Devils Garden / Landscape Arch',          access: 5, lat: 38.7836, lng: -109.5949, radiusKm: 4 },
+    { id: 'windows',        label: 'Windows / Balanced Rock area',            access: 5, lat: 38.6920, lng: -109.5390, radiusKm: 3 },
+  ],
+
+  greatbasin: [
+    { id: 'lehman-caves',   label: 'Lehman Caves / visitor center',           access: 5, lat: 38.9836, lng: -114.2200, radiusKm: 3 },
+    { id: 'wheeler-peak',   label: 'Wheeler Peak / sub-alpine',               access: 4, lat: 38.9858, lng: -114.3133, radiusKm: 6 },
+  ],
+
+  // (bigbend zones already defined above — chisos / rio-grande / desert / santa-elena)
+
+  drytortugas: [
+    { id: 'fort-jefferson', label: 'Fort Jefferson / Garden Key',             access: 5, lat: 24.6286, lng: -82.8732, radiusKm: 1 },
+    { id: 'open-water',     label: 'Boat / open water (snorkel)',             access: 4, lat: 24.6300, lng: -82.8800, radiusKm: 5 },
+  ],
 };
 
 // Returns zones for a park, or null if park isn't zoned.
