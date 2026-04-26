@@ -992,6 +992,7 @@ function computeEffectiveRarity(animal, {
   activeZone = null,
   seasonalFreqs = null,
   parkEffort = null,
+  parkZones = null,
   effortRescaler = 1,
   visitTime = 'any',
 } = {}) {
@@ -1059,6 +1060,13 @@ function computeEffectiveRarity(animal, {
 
   // Park-level
   if (animal.frequency != null || animal.rarity) {
+    // Apply destination boost when the park has a high-frequency front-country
+    // zone for this species. Only fires when no zone is selected — selecting
+    // a zone uses that zone's data directly.
+    const boost = parkZones ? applyDestinationBoost(animal, parkZones) : null;
+    if (boost) {
+      return rescale(boost.rarity, resolveBaselineFrequency(boost.frequency, boost.rarity));
+    }
     return rescale(animal.rarity, resolveBaselineFrequency(animal.frequency, animal.rarity));
   }
   return animal.rarity;
@@ -1114,6 +1122,65 @@ function getBestZoneHint(animal, parkZones, displayRarity) {
     zoneTierLabel: tier?.label ?? best.rarity,
     zoneRange: tier?.probability ?? '',
     rationale: best.rationale ?? null,
+  };
+}
+
+// ── Destination boost ─────────────────────────────────────────────────────
+// When a species has a high-frequency front-country zone, the park-level
+// pill shown to a casual visitor is honest about "random click" probability
+// but understates the trip-planning question — most people opening the
+// Yellowstone popup are deciding whether to visit, not estimating their
+// chances during a midday gas-station stop.
+//
+// The fix: when (a) the species has a zone with rarity ≥ 2 tiers above the
+// park-level pill AND (b) that zone is front-country (access ≥ 4 in
+// parkZones metadata) AND (c) no zone is currently selected, elevate the
+// park-level pill by AT MOST 1 tier toward the best zone. Capped at 1 tier
+// so we never overpromise — a "rare" species at a park with a "guaranteed"
+// zone moves to "unlikely," not "guaranteed."
+//
+// Effect on calibration: pulls park-level predictions for iconic species
+// at zone-rich parks (Yellowstone wolves, Smokies elk, Everglades manatee)
+// upward into the band that matches anchors derived from "wildlife-
+// interested visitor" expectations.
+//
+// Returns { rarity, frequency, boosted: true } when boosted, or null when
+// no boost applies (caller should keep the original park-level rarity).
+function applyDestinationBoost(animal, parkZones) {
+  if (!animal?.zones) return null;
+  const zoneEntries = Object.entries(animal.zones);
+  if (!zoneEntries.length) return null;
+  const animalRank = _RARITY_ORDER[animal.rarity] ?? 5;
+
+  // Find the best zone among those that are front-country accessible.
+  // Wilderness / boat-only / expedition zones don't count for destination
+  // boost — most casual planners aren't reaching them.
+  const FRONT_COUNTRY_ACCESS_MIN = 4;
+  let bestRank = Infinity;
+  let bestRarity = null;
+  for (const [zoneId, z] of zoneEntries) {
+    const meta = parkZones?.find?.(pz => pz.id === zoneId);
+    const access = meta?.access ?? 5;       // default to front-country if no metadata
+    if (access < FRONT_COUNTRY_ACCESS_MIN) continue;
+    const rank = _RARITY_ORDER[z.rarity] ?? 5;
+    if (rank < bestRank) {
+      bestRank = rank;
+      bestRarity = z.rarity;
+    }
+  }
+  if (bestRarity == null) return null;
+
+  // Only boost when the gap is meaningful (≥2 tiers).
+  if (animalRank - bestRank < 2) return null;
+
+  // Cap the boost at 1 tier — never lie that a "rare" species is "guaranteed."
+  const boostedRank = animalRank - 1;
+  const tierKeys = ['guaranteed', 'very_likely', 'likely', 'unlikely', 'rare', 'exceptional'];
+  const boostedRarity = tierKeys[boostedRank] ?? animal.rarity;
+  return {
+    rarity: boostedRarity,
+    frequency: RARITY_FREQ_FALLBACK[boostedRarity] ?? animal.frequency,
+    boosted: true,
   };
 }
 
@@ -1432,9 +1499,9 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, parkEffort = null, locat
   //   4. Re-map to tier.
   const displayRarity = useMemo(
     () => computeEffectiveRarity(animal, {
-      activeSeason, activeZone, seasonalFreqs, parkEffort, effortRescaler, visitTime,
+      activeSeason, activeZone, seasonalFreqs, parkEffort, parkZones, effortRescaler, visitTime,
     }),
-    [animal, activeSeason, activeZone, seasonalFreqs, parkEffort, effortRescaler, visitTime],
+    [animal, activeSeason, activeZone, seasonalFreqs, parkEffort, parkZones, effortRescaler, visitTime],
   );
 
   const r = RARITY[displayRarity] ?? RARITY.rare;
@@ -2474,7 +2541,7 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
         const r = computeEffectiveRarity(a, {
           activeSeason: popupSeason !== 'all' ? popupSeason : null,
           activeZone:   popupZone   !== 'all' ? popupZone   : null,
-          seasonalFreqs, parkEffort, effortRescaler, visitTime,
+          seasonalFreqs, parkEffort, parkZones: availableZones, effortRescaler, visitTime,
         });
         effRarityCache.set(a, r);
         return r;

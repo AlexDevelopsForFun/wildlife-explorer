@@ -139,7 +139,35 @@ function findAnimal(animals, anchorSpecies) {
 //   3. Park-level baseline (rarity tier floor)
 //   4. Detectability ceiling — capped at the species detectability cap
 //      (no zone path; zones override the cap by design).
-function predict(animal, anchor, speciesDetectability) {
+// Tier-rank constants used by destination boost.
+const TIER_KEYS = ['guaranteed', 'very_likely', 'likely', 'unlikely', 'rare', 'exceptional'];
+
+// Mirror of App.jsx::applyDestinationBoost — when an animal has a high-frequency
+// front-country zone (access >= 4 in parkZones.js) AND no zone is currently
+// being scored AND the gap is >= 2 tiers, elevate the park-level rarity by
+// AT MOST 1 tier toward the best zone. See App.jsx for full rationale.
+function applyDestinationBoostNode(animal, parkZones) {
+  if (!animal?.zones) return null;
+  const zoneEntries = Object.entries(animal.zones);
+  if (!zoneEntries.length) return null;
+  const animalRank = _RARITY_ORDER[animal.rarity] ?? 5;
+  const FRONT_COUNTRY_ACCESS_MIN = 4;
+  let bestRank = Infinity;
+  let bestRarity = null;
+  for (const [zoneId, z] of zoneEntries) {
+    const meta = parkZones?.find?.(pz => pz.id === zoneId);
+    const access = meta?.access ?? 5;
+    if (access < FRONT_COUNTRY_ACCESS_MIN) continue;
+    const rank = _RARITY_ORDER[z.rarity] ?? 5;
+    if (rank < bestRank) { bestRank = rank; bestRarity = z.rarity; }
+  }
+  if (bestRarity == null) return null;
+  if (animalRank - bestRank < 2) return null;
+  const boostedRank = animalRank - 1;
+  return TIER_KEYS[boostedRank] ?? animal.rarity;
+}
+
+function predict(animal, anchor, speciesDetectability, parkZones) {
   if (!animal) return null;
 
   // Zone override (most specific) — applied via wildlifeCacheLoader from
@@ -160,7 +188,23 @@ function predict(animal, anchor, speciesDetectability) {
     return { probability: freq, tier: rarityFromFrequency(freq), source: 'zone' };
   }
 
-  const baseline = resolveBaselineFrequency(animal.frequency, animal.rarity);
+  // Park-level prediction. Apply destination boost first if the animal has
+  // a high-frequency front-country zone (mirrors runtime behavior).
+  let effectiveRarity = animal.rarity;
+  let effectiveFrequency = animal.frequency;
+  let predictionSource = 'park';
+  if (parkZones) {
+    const boostedTier = applyDestinationBoostNode(animal, parkZones);
+    if (boostedTier && boostedTier !== animal.rarity) {
+      effectiveRarity = boostedTier;
+      // Park-level frequency takes the tier floor — no specific data point
+      // for the boosted tier, but the floor reflects the visit-planning truth.
+      effectiveFrequency = null;
+      predictionSource = 'park_boosted';
+    }
+  }
+
+  const baseline = resolveBaselineFrequency(effectiveFrequency, effectiveRarity);
   let freq = baseline;
 
   // Season-specific eBird Status & Trends data is the gold standard when
@@ -183,7 +227,7 @@ function predict(animal, anchor, speciesDetectability) {
     freq = Math.min(freq, ceiling);
   }
 
-  return { probability: freq, tier: rarityFromFrequency(freq), source: 'park' };
+  return { probability: freq, tier: rarityFromFrequency(freq), source: predictionSource };
 }
 
 // ── Scoring ──────────────────────────────────────────────────────────────
@@ -236,6 +280,9 @@ async function main() {
     if (ceiling != null) speciesDetectability[name] = ceiling;
   }
 
+  // Park-zones metadata for destination boost — mirrors runtime parkZones import.
+  const { PARK_ZONES } = await import('../src/data/parkZones.js');
+
   console.log(`\n🎯 Anchor-based rarity calibration`);
   console.log(`   Anchors:              ${anchors.length}`);
   console.log(`   Parks in cache:       ${Object.keys(WILDLIFE_CACHE).length}`);
@@ -246,7 +293,7 @@ async function main() {
   const results = anchors.map(anchor => {
     const parkData = WILDLIFE_CACHE[anchor.parkId];
     const animal = findAnimal(parkData?.animals, anchor.species);
-    const prediction = predict(animal, anchor, speciesDetectability);
+    const prediction = predict(animal, anchor, speciesDetectability, PARK_ZONES[anchor.parkId]);
     const sc = score(prediction, anchor);
     return { anchor, animal, prediction, ...sc };
   });
