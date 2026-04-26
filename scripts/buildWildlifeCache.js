@@ -58,6 +58,7 @@ if (!NPS_KEY)   console.warn('⚠  VITE_NPS_API_KEY not set — NPS results will
 
 // ── Import park list ─────────────────────────────────────────────────────────
 const { wildlifeLocations } = await import('../src/wildlifeData.js');
+const { mergeSourcesWeighted } = await import('../src/data/sourceWeighting.js');
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -1504,8 +1505,24 @@ function dedup(animals) {
       ? g.find(a => a.source === 'inaturalist' && a.rarity && !BINARY_RARITIES.has(a.rarity))
       : null;
     const useInat = BINARY_RARITIES.has(primary.rarity) && inatMember;
-    const mergedRarity       = useInat ? inatMember.rarity       : primary.rarity;
-    const mergedRaritySource = useInat ? inatMember.raritySource  : primary.raritySource;
+    let mergedRarity       = useInat ? inatMember.rarity       : primary.rarity;
+    let mergedRaritySource = useInat ? inatMember.raritySource  : primary.raritySource;
+
+    // ── Source-weighted merge (escape hatch) ────────────────────────────
+    // Engages only when the existing primary-wins logic would produce a
+    // tier that strongly disagrees with another source — bounded blast
+    // radius. Treats each source as (probability, precision) and computes
+    // logit-space inverse-variance weighted average. See
+    // src/data/sourceWeighting.js for the math + precision priors.
+    //
+    // For birds: skip (eBird checklist data is treated as authoritative).
+    if (primary.animalType !== 'bird') {
+      const merged = mergeSourcesWeighted(g, { disagreementThreshold: 2 });
+      if (merged && merged.tier !== mergedRarity) {
+        mergedRarity = merged.tier;
+        mergedRaritySource = `weighted:${merged.contributingSources.join('+')}`;
+      }
+    }
 
     return { ...primary, seasons: mergedSeasons, rarity: mergedRarity, raritySource: mergedRaritySource, sources: allSources.length ? allSources : undefined, ...(mergedMigration ? { migrationStatus: mergedMigration } : {}) };
   });
