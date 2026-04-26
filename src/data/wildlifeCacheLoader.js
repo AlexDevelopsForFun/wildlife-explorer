@@ -13,6 +13,7 @@
 
 import { WILDLIFE_CACHE_PRIMARY } from './wildlifeCachePrimary.js';
 import { ZONE_OVERRIDES } from './zoneOverrides.js';
+import { MISSING_SPECIES_PATCHES } from './missingSpeciesPatches.js';
 
 // The merged cache starts with primary parks only and grows as tiers arrive.
 export const WILDLIFE_CACHE = { ...WILDLIFE_CACHE_PRIMARY };
@@ -110,6 +111,37 @@ function _entryScore(a) {
 // name. Keeps the higher-scored entry but unions its `sources` array so we
 // don't lose provenance. Runs after sci-name backfill so alias-derived sci
 // names participate in grouping.
+// Inject flagship species the build pipeline keeps dropping. See
+// src/data/missingSpeciesPatches.js for full rationale + curated list.
+// Idempotent: only adds an entry when no existing animal at that park
+// shares the same name OR scientific name.
+function _patchMissingFlagshipSpecies(parks) {
+  for (const patch of MISSING_SPECIES_PATCHES) {
+    const parkData = parks[patch.parkId];
+    if (!parkData?.animals) continue;
+    const nameLower = patch.name.toLowerCase().trim();
+    const sciLower = patch.scientificName?.toLowerCase().trim();
+    const exists = parkData.animals.some(a => {
+      const an = a.name?.toLowerCase().trim();
+      const asci = a.scientificName?.toLowerCase().trim();
+      return an === nameLower || (sciLower && asci === sciLower);
+    });
+    if (exists) continue;
+    parkData.animals.push({
+      name:           patch.name,
+      scientificName: patch.scientificName,
+      animalType:     patch.animalType,
+      rarity:         patch.rarity,
+      frequency:      patch.frequency,
+      funFact:        patch.funFact,
+      seasons:        patch.seasons,
+      activityPeriod: patch.activityPeriod,
+      raritySource:   'curated_patch',
+      source:         'curated',
+    });
+  }
+}
+
 // Merge zone-specific rarity into animal entries from src/data/zoneOverrides.js.
 // Zones are runtime-applied (not baked into the static cache) so curators can
 // add/edit hotspot data without re-running the 3-hour rebuild. AnimalCard
@@ -194,6 +226,7 @@ function _dedupeWithinPark(parks) {
 _indexSciNames(WILDLIFE_CACHE);
 _backfillSciNames(WILDLIFE_CACHE);
 _dedupeWithinPark(WILDLIFE_CACHE);
+_patchMissingFlagshipSpecies(WILDLIFE_CACHE);
 _applyZoneOverrides(WILDLIFE_CACHE);
 _applyRuntimeRarityPatches(WILDLIFE_CACHE);
 
@@ -235,6 +268,7 @@ export function loadTier2() {
     _indexSciNames(data);
     _backfillSciNames(WILDLIFE_CACHE);
     _dedupeWithinPark(WILDLIFE_CACHE);
+    _patchMissingFlagshipSpecies(WILDLIFE_CACHE);
     _applyZoneOverrides(WILDLIFE_CACHE);
     _applyRuntimeRarityPatches(WILDLIFE_CACHE);
     _tier2Loaded = true;
@@ -255,6 +289,7 @@ export function loadTier3() {
     _indexSciNames(data);
     _backfillSciNames(WILDLIFE_CACHE);
     _dedupeWithinPark(WILDLIFE_CACHE);
+    _patchMissingFlagshipSpecies(WILDLIFE_CACHE);
     _applyZoneOverrides(WILDLIFE_CACHE);
     _applyRuntimeRarityPatches(WILDLIFE_CACHE);
     _tier3Loaded = true;

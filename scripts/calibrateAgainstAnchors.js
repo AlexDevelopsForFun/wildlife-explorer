@@ -261,6 +261,31 @@ async function main() {
   // calibration script imports the raw static cache, so we apply the same
   // merge here to mirror runtime behaviour.
   const { ZONE_OVERRIDES } = await import('../src/data/zoneOverrides.js');
+
+  // Mirror the runtime cache loader's flagship-species patches so the
+  // calibration scores against the actual runtime state, not the static cache.
+  const { MISSING_SPECIES_PATCHES } = await import('../src/data/missingSpeciesPatches.js');
+  for (const patch of MISSING_SPECIES_PATCHES) {
+    const parkData = WILDLIFE_CACHE[patch.parkId];
+    if (!parkData?.animals) continue;
+    const nameLower = patch.name.toLowerCase().trim();
+    const sciLower = patch.scientificName?.toLowerCase().trim();
+    const exists = parkData.animals.some(a => {
+      const an = a.name?.toLowerCase().trim();
+      const asci = a.scientificName?.toLowerCase().trim();
+      return an === nameLower || (sciLower && asci === sciLower);
+    });
+    if (exists) continue;
+    parkData.animals.push({
+      name: patch.name,
+      scientificName: patch.scientificName,
+      animalType: patch.animalType,
+      rarity: patch.rarity,
+      frequency: patch.frequency,
+      raritySource: 'curated_patch',
+    });
+  }
+
   for (const [parkId, parkData] of Object.entries(WILDLIFE_CACHE)) {
     const overrides = ZONE_OVERRIDES[parkId];
     if (!overrides || !Array.isArray(parkData?.animals)) continue;
