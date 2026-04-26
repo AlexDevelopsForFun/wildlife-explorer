@@ -128,6 +128,42 @@ function _applyZoneOverrides(parks) {
   }
 }
 
+// Runtime rarity patches — same shape as RARITY_OVERRIDES (parkId →
+// speciesName → tier). Applied at cache-load so a tier correction takes
+// effect immediately without waiting for the weekly rebuild. Use sparingly:
+// the canonical override tables live in scripts/buildWildlifeCache.js and
+// src/services/apiService.js. This is for cases where:
+//   1. A calibration miss has been root-caused to a stale or wrong override
+//   2. The build/runtime tables have already been corrected
+//   3. We don't want to wait until next Sunday's rebuild for the fix to ship
+//
+// Each entry should be removed once the next rebuild has propagated the
+// canonical correction. Bump the date when modifying.
+const RUNTIME_RARITY_PATCHES_REVIEWED_AT = '2026-04-25';
+const RUNTIME_RARITY_PATCHES = {
+  shenandoah: {
+    'Black Bear':          'unlikely',  // anchor calibration: park-level rate ~25%, was incorrectly cached as 'likely'
+    'American Black Bear': 'unlikely',
+  },
+  yosemite: {
+    'American Black Bear': 'unlikely',  // override targeted 'Black Bear' but iNat stores under sub-species name
+  },
+};
+
+function _applyRuntimeRarityPatches(parks) {
+  for (const [parkId, patches] of Object.entries(RUNTIME_RARITY_PATCHES)) {
+    const parkData = parks[parkId];
+    if (!parkData?.animals) continue;
+    for (const animal of parkData.animals) {
+      const newTier = patches[animal.name];
+      if (newTier && animal.rarity !== newTier) {
+        animal.rarity = newTier;
+        animal.raritySource = 'runtime_patch';
+      }
+    }
+  }
+}
+
 function _dedupeWithinPark(parks) {
   for (const val of Object.values(parks)) {
     if (!Array.isArray(val?.animals)) continue;
@@ -159,6 +195,7 @@ _indexSciNames(WILDLIFE_CACHE);
 _backfillSciNames(WILDLIFE_CACHE);
 _dedupeWithinPark(WILDLIFE_CACHE);
 _applyZoneOverrides(WILDLIFE_CACHE);
+_applyRuntimeRarityPatches(WILDLIFE_CACHE);
 
 // Tracks tier load state
 let _tier2Loaded = false;
@@ -199,6 +236,7 @@ export function loadTier2() {
     _backfillSciNames(WILDLIFE_CACHE);
     _dedupeWithinPark(WILDLIFE_CACHE);
     _applyZoneOverrides(WILDLIFE_CACHE);
+    _applyRuntimeRarityPatches(WILDLIFE_CACHE);
     _tier2Loaded = true;
     _notify();
     return data;
@@ -218,6 +256,7 @@ export function loadTier3() {
     _backfillSciNames(WILDLIFE_CACHE);
     _dedupeWithinPark(WILDLIFE_CACHE);
     _applyZoneOverrides(WILDLIFE_CACHE);
+    _applyRuntimeRarityPatches(WILDLIFE_CACHE);
     _tier3Loaded = true;
     _notify();
     if (isSecondaryLoaded()) _listeners.clear();

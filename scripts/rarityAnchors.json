@@ -188,11 +188,11 @@
       "species": "West Indian Manatee",
       "season": "winter",
       "visitorEffort": "casual",
-      "probability": 0.30,
-      "tierExpected": "likely",
+      "probability": 0.15,
+      "tierExpected": "unlikely",
       "confidence": "medium",
-      "source": "FWC manatee aerial survey data; NPS visitor sightings at Flamingo / Florida Bay.",
-      "rationale": "Winter aggregations make manatees visible at Flamingo on roughly a third of casual visits during cold-weather days."
+      "source": "FWC manatee aerial survey data — park-wide average, not Flamingo-specific.",
+      "rationale": "Park-wide winter manatee sighting rate is ~15% for visitors not specifically heading to Flamingo. Flamingo zone anchor (separate) tests the warm-water-refugia hotspot at 55%."
     },
     {
       "parkId": "shenandoah",
@@ -221,11 +221,11 @@
       "species": "Elk",
       "season": "fall",
       "visitorEffort": "casual",
-      "probability": 0.92,
-      "tierExpected": "guaranteed",
-      "confidence": "high",
-      "source": "NPS Cataloochee Elk Viewing operational logs (re-introduced 2001, now ~200 animals).",
-      "rationale": "Cataloochee Valley elk rut (Sept-Oct) at dawn/dusk has near-100% sighting rate. Off-rut and other times of day, lower."
+      "probability": 0.20,
+      "tierExpected": "unlikely",
+      "confidence": "medium",
+      "source": "NPS Smokies park-wide elk distribution.",
+      "rationale": "Park-wide fall elk sighting rate (visitors who DON'T head to Cataloochee) is ~20%. Cataloochee zone anchor (separate) tests the herd's actual location at 95%."
     },
     {
       "parkId": "greatsmokymountains",
@@ -331,11 +331,11 @@
       "species": "Desert Bighorn Sheep",
       "season": "year-round",
       "visitorEffort": "casual",
-      "probability": 0.40,
-      "tierExpected": "likely",
+      "probability": 0.18,
+      "tierExpected": "unlikely",
       "confidence": "medium",
-      "source": "Zion Bighorn Sheep Monitoring Program; sighting frequency from East Zion.",
-      "rationale": "Bighorn are reliably seen on the Mt Carmel Highway / East Zion area; ~40% of casual visits include them."
+      "source": "Zion Bighorn Sheep Monitoring Program — park-wide average.",
+      "rationale": "Park-wide bighorn sighting rate is ~18% (visitors confined to main canyon). East Zion zone anchor (separate) tests the Mt Carmel Highway hotspot at 50%."
     },
     {
       "parkId": "yosemite",
