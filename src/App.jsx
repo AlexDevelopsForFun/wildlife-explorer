@@ -1064,6 +1064,59 @@ function computeEffectiveRarity(animal, {
   return animal.rarity;
 }
 
+// ── Best-zone hint ─────────────────────────────────────────────────────────
+// Surface the highest-rarity zone for a species when the park-level pill
+// understates the visitor-encounter potential. Most users won't discover
+// the zone selector — but a casual visitor at Yellowstone seeing "Gray Wolf
+// · Rare · 2-10%" is missing the truth that Lamar Valley puts that at
+// "Likely · 30-60%" with a spotting scope at dawn.
+//
+// Returns null when:
+//   - the species has no zones
+//   - a zone is already selected (no need for a hint)
+//   - the best zone tier isn't meaningfully better than the park-level tier
+//     (don't pollute the UI with hints that don't matter)
+//
+// Returns { zoneId, zoneLabel, zoneTier, zoneRange } when:
+//   - best zone is at least 1 tier better than current displayed pill
+function getBestZoneHint(animal, parkZones, displayRarity) {
+  if (!animal?.zones) return null;
+  const zoneEntries = Object.entries(animal.zones);
+  if (!zoneEntries.length) return null;
+
+  // Find the zone with the highest rarity tier (lowest rank index)
+  let best = null;
+  let bestRank = Infinity;
+  for (const [zoneId, z] of zoneEntries) {
+    const rank = _RARITY_ORDER[z.rarity] ?? 5;
+    if (rank < bestRank) {
+      bestRank = rank;
+      best = { zoneId, ...z };
+    }
+  }
+  if (!best) return null;
+
+  // Only surface when the best zone is at least 1 tier better than the
+  // currently displayed park-level pill. A "Likely" species whose best
+  // zone is also "Likely" doesn't need a hint.
+  const displayRank = _RARITY_ORDER[displayRarity] ?? 5;
+  if (bestRank >= displayRank) return null;
+
+  // Map zoneId → human label from parkZones metadata
+  const zoneMeta = parkZones?.find?.(z => z.id === best.zoneId);
+  const zoneLabel = zoneMeta?.label ?? best.zoneId;
+  const tier = RARITY[best.rarity];
+
+  return {
+    zoneId: best.zoneId,
+    zoneLabel,
+    zoneTier: best.rarity,
+    zoneTierLabel: tier?.label ?? best.rarity,
+    zoneRange: tier?.probability ?? '',
+    rationale: best.rationale ?? null,
+  };
+}
+
 // Effort-correct a species' seasonal distribution using the park's
 // observer-effort baseline. Both inputs are season percentages summing to ~100.
 //
@@ -1370,7 +1423,7 @@ function composeFallbackTip(animal, period) {
 }
 
 // ── Animal card ───────────────────────────────────────────────────────────────
-function AnimalCard({ animal, debugMode, seasonalFreqs, parkEffort = null, location, openAbout, highlightSpecies, activeSeason, activeZone, effortRescaler = 1, visitTime = 'any' }) {
+function AnimalCard({ animal, debugMode, seasonalFreqs, parkEffort = null, location, openAbout, highlightSpecies, activeSeason, activeZone, parkZones = null, onSelectZone = null, effortRescaler = 1, visitTime = 'any' }) {
   // Combined zone- + season- + effort- + time-of-day-aware rarity.
   //   1. Pick base frequency: zone freq > season freq > park freq.
   //   2. Rescale by effort multiplier (expert=1.54, casual=1.0, drive=0.54 —
@@ -1500,6 +1553,31 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, parkEffort = null, locat
                     />
                   )}
                 </span>
+              );
+            })()}
+            {/* Best-zone hint — only when no zone is selected and a zone
+                with materially higher rarity exists. Casual visitors won't
+                discover the zone selector on their own; the hint surfaces
+                the species' real reliable-viewing site. Click to switch. */}
+            {!activeZone && (() => {
+              const hint = getBestZoneHint(animal, parkZones, displayRarity);
+              if (!hint) return null;
+              const zoneTierUI = RARITY[hint.zoneTier] ?? RARITY.likely;
+              const tooltip = `Best chance: ${hint.zoneLabel} — ${hint.zoneTierLabel} (${hint.zoneRange})${hint.rationale ? '. ' + hint.rationale : ''}. Tap to switch the zone filter.`;
+              const handler = onSelectZone
+                ? () => onSelectZone(hint.zoneId)
+                : undefined;
+              return (
+                <button
+                  type="button"
+                  className="best-zone-hint"
+                  style={{ color: zoneTierUI.color, borderColor: zoneTierUI.color + '55', background: zoneTierUI.color + '12' }}
+                  title={tooltip}
+                  onClick={handler}
+                  disabled={!handler}
+                >
+                  💡 Best at {hint.zoneLabel.replace(/\s*\([^)]*\)\s*$/, '')}: {hint.zoneTierLabel.toLowerCase()}
+                </button>
               );
             })()}
             {openAbout && (
@@ -2829,7 +2907,7 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
                 <div className="lp__showing-count">
                   Showing {Math.min(displayLimit, filtered.length)} of {filtered.length} {typeLabel}
                 </div>
-                {visibleList.map((a, i) => <AnimalCard key={`${a.name}-${i}`} animal={a} debugMode={debugMode} seasonalFreqs={seasonalFreqs} parkEffort={parkEffort} location={location} openAbout={openAbout} highlightSpecies={highlightSpecies} activeSeason={popupSeason !== 'all' ? popupSeason : null} activeZone={popupZone !== 'all' ? popupZone : null} effortRescaler={effortRescaler} visitTime={visitTime} />)}
+                {visibleList.map((a, i) => <AnimalCard key={`${a.name}-${i}`} animal={a} debugMode={debugMode} seasonalFreqs={seasonalFreqs} parkEffort={parkEffort} location={location} openAbout={openAbout} highlightSpecies={highlightSpecies} activeSeason={popupSeason !== 'all' ? popupSeason : null} activeZone={popupZone !== 'all' ? popupZone : null} parkZones={availableZones} onSelectZone={setPopupZone} effortRescaler={effortRescaler} visitTime={visitTime} />)}
                 {hasMore && (
                   <div className="lp__load-more-row">
                     <button className="lp__load-more-btn" onClick={() => setDisplayLimit(d => d + 50)}>

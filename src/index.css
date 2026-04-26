@@ -1824,6 +1824,36 @@ body, #root {
   letter-spacing: -0.5px;
 }
 
+/* Best-zone hint — clickable pill that surfaces the species' best sub-park
+   viewing zone when the park-level rarity understates the local hotspot.
+   Same visual rhythm as the rarity badge but lower-key (lighter background,
+   thinner border) so it reads as supplementary context. */
+.best-zone-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border: 1px solid;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: filter 0.12s ease, transform 0.12s ease;
+  white-space: nowrap;
+  line-height: 1.5;
+}
+.best-zone-hint:hover {
+  filter: brightness(1.15);
+  transform: translateY(-1px);
+}
+.best-zone-hint:active {
+  transform: translateY(0);
+}
+.best-zone-hint:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+
 /* ── "Best time to view" — per-animal prominent line ──────────────────── */
 .best-time {
   margin-top: 8px;
