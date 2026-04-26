@@ -63,8 +63,8 @@ export const ZONE_OVERRIDES = {
       'cades-cove': {
         rarity: 'likely',
         frequency: 0.45,
-        seasonFrequencies: { spring: 40, summer: 50, fall: 55, winter: 15 },
-        rationale: 'Cades Cove Loop drive has the highest concentration of habituated bears in the park. ~40-55% sighting in active season.',
+        seasonFrequencies: { spring: 40, summer: 50, fall: 55, winter: 5 },
+        rationale: 'Cades Cove Loop drive has the highest concentration of habituated bears; deep winter sightings rare (denning).',
       },
     },
     'White-tailed Deer': {
@@ -87,16 +87,31 @@ export const ZONE_OVERRIDES = {
       'mammoth':       { rarity: 'unlikely',   frequency: 0.25, rationale: 'Bighorn occasionally on cliffs north of Mammoth.' },
     },
     'Trumpeter Swan': {
-      'hayden-valley': { rarity: 'very_likely', frequency: 0.70, rationale: 'Trumpeter Swans on Yellowstone River through Hayden Valley year-round.' },
+      'hayden-valley': {
+        rarity: 'very_likely',
+        frequency: 0.70,
+        seasonFrequencies: { spring: 75, summer: 70, fall: 65, winter: 40 },
+        rationale: 'Trumpeter Swans on Yellowstone River through Hayden Valley year-round; winter sightings drop as river ices over.',
+      },
     },
     'Sandhill Crane': {
       'hayden-valley': { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 75, summer: 85, fall: 60, winter: 5 }, rationale: 'Sandhill Cranes nest in Hayden Valley meadows summer.' },
     },
     'American Black Bear': {
-      'mammoth':       { rarity: 'unlikely',   frequency: 0.25, rationale: 'Black bears in Mammoth area; lower density than grizzlies.' },
+      'mammoth':       {
+        rarity: 'unlikely',
+        frequency: 0.25,
+        seasonFrequencies: { spring: 30, summer: 30, fall: 25, winter: 2 },
+        rationale: 'Black bears in Mammoth area; near-zero in winter (denning).',
+      },
     },
     'Moose': {
-      'lamar-valley':  { rarity: 'unlikely',   frequency: 0.15, rationale: 'Moose occasional in willow thickets along Lamar River.' },
+      'lamar-valley':  {
+        rarity: 'unlikely',
+        frequency: 0.15,
+        seasonFrequencies: { spring: 18, summer: 18, fall: 15, winter: 8 },
+        rationale: 'Moose occasional in willow thickets along Lamar River; less visible in deep winter snow.',
+      },
       'yellowstone-lake': { rarity: 'unlikely', frequency: 0.20, rationale: 'Moose at south arm of Yellowstone Lake riparian areas.' },
     },
     'Red Fox': {
@@ -126,7 +141,8 @@ export const ZONE_OVERRIDES = {
       'lamar-valley': {
         rarity: 'likely',
         frequency: 0.35,
-        rationale: 'Lamar Valley grizzlies visible from road at wider scope-watching distances.',
+        seasonFrequencies: { spring: 45, summer: 40, fall: 30, winter: 3 },
+        rationale: 'Lamar Valley grizzlies visible from road; near-zero in deep winter (denning).',
       },
     },
     'American Bison': {
@@ -147,8 +163,18 @@ export const ZONE_OVERRIDES = {
   // ── Glacier (expanded) ──────────────────────────────────────────────
   glacier: {
     'Hoary Marmot': {
-      'going-to-sun':   { rarity: 'very_likely', frequency: 0.75, rationale: 'Hoary marmots at Logan Pass and Hidden Lake area, summer.' },
-      'many-glacier':   { rarity: 'likely',      frequency: 0.45, rationale: 'Marmots in talus around Many Glacier valley.' },
+      'going-to-sun':   {
+        rarity: 'very_likely',
+        frequency: 0.75,
+        seasonFrequencies: { spring: 30, summer: 90, fall: 65, winter: 2 },
+        rationale: 'Hoary marmots at Logan Pass and Hidden Lake area, peak July-August; hibernate Sept-May.',
+      },
+      'many-glacier':   {
+        rarity: 'likely',
+        frequency: 0.45,
+        seasonFrequencies: { spring: 15, summer: 60, fall: 40, winter: 2 },
+        rationale: 'Marmots in talus around Many Glacier valley; hibernate winter.',
+      },
     },
     'American Pika': {
       'going-to-sun':   { rarity: 'likely',      frequency: 0.50, seasonFrequencies: { spring: 25, summer: 65, fall: 55, winter: 5 }, rationale: 'Pikas calling from talus along Logan Pass area trails in summer.' },
@@ -175,7 +201,12 @@ export const ZONE_OVERRIDES = {
       'going-to-sun':   { rarity: 'likely', frequency: 0.35, rationale: 'Logan Pass area sightings common in summer.' },
     },
     'Grizzly Bear': {
-      'many-glacier':   { rarity: 'unlikely', frequency: 0.25, rationale: 'Many Glacier valley grizzly density is the highest in the park.' },
+      'many-glacier':   {
+        rarity: 'unlikely',
+        frequency: 0.25,
+        seasonFrequencies: { spring: 30, summer: 30, fall: 25, winter: 1 },
+        rationale: 'Many Glacier valley grizzly density is the highest in the park; near-zero in winter (denning).',
+      },
     },
   },
 
@@ -192,7 +223,12 @@ export const ZONE_OVERRIDES = {
       'lake-crescent':   { rarity: 'unlikely',    frequency: 0.20, rationale: 'River otters in Lake Crescent and Sol Duc River.' },
     },
     'Black Bear': {
-      'hoh-rainforest':  { rarity: 'unlikely',    frequency: 0.15, rationale: 'Black bears occasionally on Hoh trails — most active at dawn/dusk.' },
+      'hoh-rainforest':  {
+        rarity: 'unlikely',
+        frequency: 0.15,
+        seasonFrequencies: { spring: 18, summer: 22, fall: 18, winter: 3 },
+        rationale: 'Black bears occasionally on Hoh trails — most active at dawn/dusk; lower in winter (mild Pacific Northwest hibernation).',
+      },
     },
     'Olympic Marmot': {
       'hurricane-ridge': {
@@ -251,7 +287,8 @@ export const ZONE_OVERRIDES = {
       'brooks-camp': {
         rarity: 'guaranteed',
         frequency: 0.95,
-        rationale: 'Bears commonly visible from beach / lake shore around Brooks Camp during salmon season.',
+        seasonFrequencies: { spring: 30, summer: 95, fall: 70, winter: 1 },
+        rationale: 'Bears commonly visible from beach / lake shore around Brooks Camp during salmon season; closed/dormant winter.',
       },
     },
   },
@@ -259,27 +296,47 @@ export const ZONE_OVERRIDES = {
   // ── Kenai Fjords ────────────────────────────────────────────────────
   kenaifjords: {
     'Sea Otter': {
-      'boat-tour': { rarity: 'guaranteed', frequency: 0.97, rationale: 'Sea otters reliably observed on every boat tour from Seward.' },
+      'boat-tour': {
+        rarity: 'guaranteed',
+        frequency: 0.97,
+        seasonFrequencies: { spring: 92, summer: 97, fall: 92, winter: 60 },
+        rationale: 'Sea otters reliably observed on every boat tour from Seward; winter trips less frequent (weather).',
+      },
     },
     'Humpback Whale': {
       'boat-tour': {
         rarity: 'very_likely',
         frequency: 0.85,
-        seasonFrequencies: { spring: 60, summer: 90, fall: 70, winter: 10 },
-        rationale: 'Full-day Kenai Fjords boat tours report humpback sightings on ~80-90% of summer trips.',
+        seasonFrequencies: { spring: 60, summer: 90, fall: 70, winter: 5 },
+        rationale: 'Full-day Kenai Fjords boat tours report humpback sightings on ~80-90% of summer trips; humpbacks migrate to Hawaii in winter.',
       },
     },
     'Orca': {
-      'boat-tour': { rarity: 'unlikely', frequency: 0.25, rationale: 'Orca pods seen on ~25% of summer boat tours.' },
+      'boat-tour': {
+        rarity: 'unlikely',
+        frequency: 0.25,
+        seasonFrequencies: { spring: 25, summer: 30, fall: 20, winter: 10 },
+        rationale: 'Orca pods seen on ~25-30% of summer boat tours.',
+      },
     },
     'Steller Sea Lion': {
       'boat-tour': { rarity: 'guaranteed', frequency: 0.95, rationale: 'Steller sea lions reliably visible at Chiswell Islands rookery.' },
     },
     'Tufted Puffin': {
-      'boat-tour': { rarity: 'very_likely', frequency: 0.80, rationale: 'Puffins at Chiswell Islands rookery — visible from boats summer.' },
+      'boat-tour': {
+        rarity: 'very_likely',
+        frequency: 0.80,
+        seasonFrequencies: { spring: 50, summer: 90, fall: 60, winter: 5 },
+        rationale: 'Puffins at Chiswell Islands rookery — peak breeding May-Aug; depart for open ocean in winter.',
+      },
     },
     'Horned Puffin': {
-      'boat-tour': { rarity: 'very_likely', frequency: 0.75, rationale: 'Horned puffins at Chiswell Islands rookery alongside tufted.' },
+      'boat-tour': {
+        rarity: 'very_likely',
+        frequency: 0.75,
+        seasonFrequencies: { spring: 45, summer: 85, fall: 55, winter: 5 },
+        rationale: 'Horned puffins at Chiswell Islands rookery alongside tufted; same seasonal pattern.',
+      },
     },
   },
 
@@ -294,14 +351,24 @@ export const ZONE_OVERRIDES = {
       },
     },
     'Harbor Seal': {
-      'boat-tour':     { rarity: 'guaranteed', frequency: 0.95, rationale: 'Harbor seals on icebergs at Margerie / Johns Hopkins glaciers — reliable boat sightings.' },
+      'boat-tour': {
+        rarity: 'guaranteed',
+        frequency: 0.95,
+        seasonFrequencies: { spring: 80, summer: 97, fall: 90, winter: 50 },
+        rationale: 'Harbor seals on icebergs at Margerie / Johns Hopkins glaciers — peak summer pupping season; some access closed in winter.',
+      },
       'bartlett-cove': { rarity: 'very_likely', frequency: 0.70, rationale: 'Frequent in Bartlett Cove waters near visitor center.' },
     },
     'Sea Otter': {
-      'boat-tour': { rarity: 'very_likely', frequency: 0.85, rationale: 'Sea otters in lower bay observed on most cruises.' },
+      'boat-tour': { rarity: 'very_likely', frequency: 0.85, rationale: 'Sea otters in lower bay observed on most cruises year-round.' },
     },
     'Orca': {
-      'boat-tour': { rarity: 'unlikely', frequency: 0.20, rationale: 'Orcas occasionally encountered on Glacier Bay cruises.' },
+      'boat-tour': {
+        rarity: 'unlikely',
+        frequency: 0.20,
+        seasonFrequencies: { spring: 18, summer: 25, fall: 22, winter: 8 },
+        rationale: 'Orcas occasionally encountered on Glacier Bay cruises; better summer odds.',
+      },
     },
   },
 
@@ -311,31 +378,47 @@ export const ZONE_OVERRIDES = {
       'park-road': {
         rarity: 'very_likely',
         frequency: 0.75,
-        seasonFrequencies: { spring: 60, summer: 80, fall: 70, winter: 30 },
-        rationale: 'Denali Park Road bus-tour caribou sighting rate is ~70-80% June-Aug (NPS published stats).',
+        seasonFrequencies: { spring: 60, summer: 80, fall: 70, winter: 5 },
+        rationale: 'Denali Park Road bus-tour caribou sighting rate is ~70-80% June-Aug (NPS published stats); park road closed Sept-May.',
       },
     },
     'Dall Sheep': {
       'park-road': {
         rarity: 'very_likely',
         frequency: 0.85,
-        rationale: 'Dall sheep on Polychrome Pass cliffs visible from park-road bus tours on ~85% of summer trips.',
+        seasonFrequencies: { spring: 70, summer: 90, fall: 75, winter: 5 },
+        rationale: 'Dall sheep on Polychrome Pass cliffs visible from park-road bus tours on ~85% of summer trips; park road closed in winter.',
       },
     },
     'Brown Bear': {
       'park-road': {
         rarity: 'very_likely',
         frequency: 0.80,
-        seasonFrequencies: { spring: 60, summer: 85, fall: 70, winter: 5 },
-        rationale: 'Grizzlies sighted on ~75-85% of full Park Road bus tours during summer.',
+        seasonFrequencies: { spring: 60, summer: 85, fall: 70, winter: 1 },
+        rationale: 'Grizzlies sighted on ~75-85% of full Park Road bus tours during summer; near-zero winter (denning + road closed).',
       },
     },
     'Moose': {
-      'entrance':  { rarity: 'likely',   frequency: 0.50, rationale: 'Savage River + entrance area moose more reliable than park-road interior.' },
-      'park-road': { rarity: 'likely',   frequency: 0.40, rationale: 'Bus-tour moose sightings on ~30-40% of summer trips.' },
+      'entrance':  {
+        rarity: 'likely',
+        frequency: 0.50,
+        seasonFrequencies: { spring: 50, summer: 55, fall: 50, winter: 35 },
+        rationale: 'Savage River + entrance area moose more reliable than park-road interior; year-round access at entrance.',
+      },
+      'park-road': {
+        rarity: 'likely',
+        frequency: 0.40,
+        seasonFrequencies: { spring: 35, summer: 50, fall: 40, winter: 5 },
+        rationale: 'Bus-tour moose sightings on ~30-50% of summer trips; road closed in winter.',
+      },
     },
     'Gray Wolf': {
-      'park-road': { rarity: 'unlikely', frequency: 0.20, rationale: 'Wolf-harvest impact reduced bus-tour sightings; still ~15-25% on full Park Road tours.' },
+      'park-road': {
+        rarity: 'unlikely',
+        frequency: 0.20,
+        seasonFrequencies: { spring: 18, summer: 22, fall: 18, winter: 1 },
+        rationale: 'Wolf-harvest impact reduced bus-tour sightings; still ~15-25% on full Park Road tours; road closed in winter.',
+      },
     },
   },
 
@@ -389,7 +472,12 @@ export const ZONE_OVERRIDES = {
       'park-loop':   { rarity: 'guaranteed', frequency: 0.99, rationale: 'Gulls at every coastal overlook — Sand Beach, Thunder Hole, Otter Cliffs.' },
     },
     'Common Loon': {
-      'jordan-pond': { rarity: 'very_likely', frequency: 0.70, rationale: 'Loons reliably calling from Jordan Pond and Eagle Lake in summer.' },
+      'jordan-pond': {
+        rarity: 'very_likely',
+        frequency: 0.70,
+        seasonFrequencies: { spring: 65, summer: 85, fall: 50, winter: 5 },
+        rationale: 'Loons reliably calling from Jordan Pond and Eagle Lake in summer; migrate to coastal waters fall-winter.',
+      },
     },
     'Bald Eagle': {
       'schoodic':    { rarity: 'likely',     frequency: 0.40, rationale: 'Schoodic Peninsula is the most reliable eagle-watching at Acadia.' },

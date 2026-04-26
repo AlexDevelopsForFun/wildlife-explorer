@@ -180,6 +180,23 @@ const RUNTIME_RARITY_PATCHES = {
   yosemite: {
     'American Black Bear': 'unlikely',  // override targeted 'Black Bear' but iNat stores under sub-species name
   },
+  americansamoa: {
+    // Pacific Flying-fox is the cache name for what overrides target as 'Samoan Flying Fox'.
+    // The override should set this to very_likely (visible at dawn/dusk on Tutuila and Ofu).
+    'Pacific Flying-fox': 'very_likely',
+  },
+  biscayne: {
+    // Cache stores Bottlenose Dolphin under both Common and Tamanend's variants
+    // (2024 taxonomic split). Override targets 'Bottlenose Dolphin' which doesn't
+    // exist; patch both child species.
+    'Common Bottlenose Dolphin':    'unlikely',
+    "Tamanend's Bottlenose Dolphin": 'unlikely',
+  },
+  newrivergorge: {
+    // Override said 'likely' but anchor (NPS bear sighting reports) shows ~20%
+    // — typical visit rate is unlikely, not likely. Anchor confirms.
+    'American Black Bear': 'unlikely',
+  },
 };
 
 function _applyRuntimeRarityPatches(parks) {

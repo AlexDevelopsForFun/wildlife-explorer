@@ -286,6 +286,32 @@ async function main() {
     });
   }
 
+  // Mirror the runtime _applyRuntimeRarityPatches in wildlifeCacheLoader.js.
+  // Hand-curated tier corrections for species whose build-time override
+  // silently failed due to naming mismatches (e.g. 'Black Bear' override
+  // doesn't match 'American Black Bear' cache name).
+  const RUNTIME_RARITY_PATCHES = {
+    shenandoah: { 'Black Bear': 'unlikely', 'American Black Bear': 'unlikely' },
+    yosemite:   { 'American Black Bear': 'unlikely' },
+    americansamoa: { 'Pacific Flying-fox': 'very_likely' },
+    biscayne:   {
+      'Common Bottlenose Dolphin': 'unlikely',
+      "Tamanend's Bottlenose Dolphin": 'unlikely',
+    },
+    newrivergorge: { 'American Black Bear': 'unlikely' },
+  };
+  for (const [parkId, patches] of Object.entries(RUNTIME_RARITY_PATCHES)) {
+    const parkData = WILDLIFE_CACHE[parkId];
+    if (!parkData?.animals) continue;
+    for (const animal of parkData.animals) {
+      const newTier = patches[animal.name];
+      if (newTier && animal.rarity !== newTier) {
+        animal.rarity = newTier;
+        animal.raritySource = 'runtime_patch';
+      }
+    }
+  }
+
   for (const [parkId, parkData] of Object.entries(WILDLIFE_CACHE)) {
     const overrides = ZONE_OVERRIDES[parkId];
     if (!overrides || !Array.isArray(parkData?.animals)) continue;

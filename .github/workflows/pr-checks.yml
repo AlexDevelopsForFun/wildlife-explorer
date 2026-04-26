@@ -1,0 +1,62 @@
+name: PR checks
+
+# Runs on every push to main and on every pull request. Catches accuracy
+# regressions before merge so the calibration metrics + data-quality audit
+# stay green across iterations.
+#
+# All checks are non-blocking initially (continue-on-error for the
+# accuracy gates) so the surface gradually tightens as the codebase
+# stabilizes. Bumps to `gate-on-failure` planned once metrics hold for
+# 4+ weeks of weekly rebuilds.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Production build
+        run: npm run build
+
+      # Override-curation freshness — fails fast if the curated rarity
+      # overrides haven't been reviewed within the expiry window. Currently
+      # 24 months (see src/services/rarityOverrideMeta.js).
+      - name: Override curation gate
+        run: node scripts/checkOverrideExpiry.js
+
+      # Data-quality audit — verifies that every overridden / patched /
+      # zoned species actually exists in the cache (catches silent override
+      # failures from naming mismatches or build-pipeline drops).
+      # Currently informational; STRICT=1 turns warnings into failures.
+      - name: Data-quality audit
+        continue-on-error: true
+        run: node scripts/auditDataQuality.js
+
+      # Anchor-based calibration — measures the rarity model against
+      # hand-curated ground-truth probabilities (NPS bus tours, peer-
+      # reviewed studies, operational sighting logs). Threshold currently
+      # generous (mean tier distance > 1.5); tighten once baseline holds.
+      - name: Calibration check
+        continue-on-error: true
+        run: node scripts/calibrateAgainstAnchors.js
