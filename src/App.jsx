@@ -949,6 +949,20 @@ const RARITY_FREQ_FALLBACK = {
   unlikely: 0.15, rare: 0.04, exceptional: 0.01,
 };
 
+// Tier upper bounds — used to clamp live iNat freq proxies that would
+// otherwise exceed the curated rarity tier's range. Mirrors the upper edge
+// of each tier's probability band per RARITY config in wildlifeData.js.
+// Slight headroom (0.99 / 0.62 / 0.30 / etc) so a freq just touching the
+// tier's defined max stays in-band rather than tipping into the next.
+const TIER_CEILING = {
+  guaranteed: 0.99,
+  very_likely: 0.92,
+  likely: 0.62,
+  unlikely: 0.30,
+  rare: 0.10,
+  exceptional: 0.03,
+};
+
 // Convert per-season encounter probabilities (0–1, from eBird Status & Trends)
 // directly into percentages (0-99). These are ALREADY encounter probabilities
 // per season — no normalization needed. The badge displays "chance of seeing
@@ -2423,6 +2437,21 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
       return (s.includes('year-round') || s.includes('year_round')) ? ['year-round'] : s;
     })();
 
+    // When a curated rarity override applies, also clamp frequency to that
+    // tier's ceiling. Otherwise the live iNat fetch's frequency proxy
+    // (obsCount/500 — line 791 of apiService.js) can leak a high baseline
+    // into seasonal computations even though the override correctly tiers
+    // the species lower. Concrete bug it fixes: Grizzly Bear at Yellowstone
+    // has 213 iNat obs → freq 0.426. Override says "unlikely" (≤30%
+    // ceiling). Without clamping, histogramToEncounterProb uses 42.6% as
+    // baseline → multiplies seasonal distPct by ~1.7× → summer pill jumps
+    // to "very_likely 99%" despite the override saying unlikely 15-30%.
+    function clampFrequencyToTier(freq, rarity) {
+      if (freq == null || rarity == null) return freq;
+      const ceiling = TIER_CEILING[rarity];
+      return ceiling != null ? Math.min(freq, ceiling) : freq;
+    }
+
     if (a.frequency != null && factor !== 1) {
       // Fallback path: apply correction to the existing raw frequency
       const correctedFreq = Math.min(1, a.frequency * factor);
@@ -2430,14 +2459,21 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
       // Live-only animals cannot be Exceptional — only hand-curated entries can
       if (!a._curated && ebirdRarity === 'exceptional') ebirdRarity = 'rare';
       const computedRarity = applyRarityOverride(location.id, a.name, ebirdRarity);
-      return { ...a, displaySeasons, rarity: computedRarity };
+      const clampedFreq = clampFrequencyToTier(correctedFreq, computedRarity);
+      return { ...a, displaySeasons, rarity: computedRarity, frequency: clampedFreq };
     }
 
     // Apply park-specific override (e.g. Bison at Yellowstone = guaranteed)
     // Live-only animals: cap exceptional at rare — only curated entries can be exceptional
     const baseRarity = (!a._curated && a.rarity === 'exceptional') ? 'rare' : a.rarity;
     const overriddenRarity = applyRarityOverride(location.id, a.name, baseRarity);
-    return { ...a, displaySeasons, rarity: overriddenRarity };
+    const clampedFreq = clampFrequencyToTier(a.frequency, overriddenRarity);
+    return {
+      ...a,
+      displaySeasons,
+      rarity: overriddenRarity,
+      ...(clampedFreq !== a.frequency ? { frequency: clampedFreq } : {}),
+    };
   }), [effectiveAnimals, season, currentMonth, monthName, location.id]);
 
   // Total counts across the full enriched list — used as denominators in tab badges
