@@ -247,10 +247,14 @@ function score(prediction, anchor) {
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────
+// Default threshold tightened 1.5 → 0.5 (2026-04-25) after the model
+// stabilized at mean tier distance 0.27 across 117 anchors. Setting it at
+// 0.5 leaves ~85% headroom over current accuracy while still catching any
+// material regression. Override via MAX_TIER_DISTANCE env if needed.
 async function main() {
   const MAX_TIER_DISTANCE = process.env.MAX_TIER_DISTANCE
     ? Number(process.env.MAX_TIER_DISTANCE)
-    : 1.5;
+    : 0.5;
   const VERBOSE = process.env.VERBOSE === '1';
 
   const anchorsPath = path.join(__dirname, 'rarityAnchors.json');

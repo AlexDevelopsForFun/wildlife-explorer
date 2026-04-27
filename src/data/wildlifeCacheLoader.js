@@ -111,6 +111,69 @@ function _entryScore(a) {
 // name. Keeps the higher-scored entry but unions its `sources` array so we
 // don't lose provenance. Runs after sci-name backfill so alias-derived sci
 // names participate in grouping.
+// Auto-derive seasonFrequencies for zone overrides that don't have explicit
+// values, using the species' overall seasons[] + a hibernation/migration
+// heuristic. Curated explicit seasonFrequencies always win — this only fills
+// the gap for residents and migrants where flat-fallback is wasteful.
+//
+// Rules:
+//   • Year-round species default to a flat 4-season distribution that mirrors
+//     the zone's frequency. Mostly a no-op vs the existing flat fallback.
+//   • Species with seasons = ['summer'] (or partial breeding-season set) get
+//     a peaked distribution centered on the listed seasons.
+//   • Hibernating mammals (bears, marmots, ground squirrels) get winter ≤ 5%.
+//   • Migratory birds (loons, puffins, certain cranes) get arrival/departure
+//     curves derived from their seasons[] field.
+//
+// Tagged with `_autoSeasonal: true` so the curator can see which entries are
+// derived vs explicit.
+const _HIBERNATING_KEYWORDS = /\b(bear|marmot|ground squirrel|chipmunk|prairie dog|gopher|hedgehog)\b/i;
+const _ARTIC_MIGRANT_KEYWORDS = /\b(humpback|gray whale|blue whale|fin whale|orca|tufted puffin|horned puffin|kittiwake)\b/i;
+
+function _autoDeriveZoneSeasonal(parks) {
+  for (const parkData of Object.values(parks)) {
+    if (!Array.isArray(parkData?.animals)) continue;
+    for (const animal of parkData.animals) {
+      if (!animal.zones) continue;
+      const speciesSeasons = new Set(animal.seasons ?? ['spring', 'summer', 'fall', 'winter']);
+      const isYearRound = speciesSeasons.has('year-round') || speciesSeasons.has('year_round')
+                      || speciesSeasons.size === 4;
+      const isHibernator = _HIBERNATING_KEYWORDS.test(animal.name || '');
+      const isArcticMigrant = _ARTIC_MIGRANT_KEYWORDS.test(animal.name || '');
+
+      for (const zone of Object.values(animal.zones)) {
+        if (!zone || zone.seasonFrequencies) continue;       // explicit data wins
+        if (zone.frequency == null) continue;
+        const baseFreq = Math.min(0.99, zone.frequency);
+        const basePct = Math.round(baseFreq * 100);
+        // Distribution multipliers by category — applied to the base frequency.
+        let mult;
+        if (isHibernator) {
+          mult = { spring: 0.85, summer: 1.00, fall: 0.85, winter: 0.05 };
+        } else if (isArcticMigrant) {
+          mult = { spring: 0.65, summer: 1.00, fall: 0.75, winter: 0.05 };
+        } else if (!isYearRound) {
+          // Use the species' seasons[] field literally
+          mult = { spring: 0.05, summer: 0.05, fall: 0.05, winter: 0.05 };
+          for (const s of speciesSeasons) {
+            if (mult[s] != null) mult[s] = 1.00;
+          }
+        } else {
+          // Year-round resident — flat with very small dip in winter
+          mult = { spring: 0.95, summer: 1.00, fall: 0.95, winter: 0.85 };
+        }
+        zone.seasonFrequencies = {
+          spring: Math.max(1, Math.min(99, Math.round(basePct * mult.spring))),
+          summer: Math.max(1, Math.min(99, Math.round(basePct * mult.summer))),
+          fall:   Math.max(1, Math.min(99, Math.round(basePct * mult.fall))),
+          winter: Math.max(1, Math.min(99, Math.round(basePct * mult.winter))),
+        };
+        zone._autoSeasonal = true;
+      }
+    }
+  }
+}
+
 // Inject flagship species the build pipeline keeps dropping. See
 // src/data/missingSpeciesPatches.js for full rationale + curated list.
 // Idempotent: only adds an entry when no existing animal at that park
@@ -138,6 +201,7 @@ function _patchMissingFlagshipSpecies(parks) {
       activityPeriod: patch.activityPeriod,
       raritySource:   'curated_patch',
       source:         'curated',
+      ...(patch.seasonFrequencies ? { seasonFrequencies: patch.seasonFrequencies } : {}),
     });
   }
 }
@@ -245,6 +309,7 @@ _backfillSciNames(WILDLIFE_CACHE);
 _dedupeWithinPark(WILDLIFE_CACHE);
 _patchMissingFlagshipSpecies(WILDLIFE_CACHE);
 _applyZoneOverrides(WILDLIFE_CACHE);
+_autoDeriveZoneSeasonal(WILDLIFE_CACHE);
 _applyRuntimeRarityPatches(WILDLIFE_CACHE);
 
 // Tracks tier load state
@@ -287,6 +352,7 @@ export function loadTier2() {
     _dedupeWithinPark(WILDLIFE_CACHE);
     _patchMissingFlagshipSpecies(WILDLIFE_CACHE);
     _applyZoneOverrides(WILDLIFE_CACHE);
+    _autoDeriveZoneSeasonal(WILDLIFE_CACHE);
     _applyRuntimeRarityPatches(WILDLIFE_CACHE);
     _tier2Loaded = true;
     _notify();
@@ -308,6 +374,7 @@ export function loadTier3() {
     _dedupeWithinPark(WILDLIFE_CACHE);
     _patchMissingFlagshipSpecies(WILDLIFE_CACHE);
     _applyZoneOverrides(WILDLIFE_CACHE);
+    _autoDeriveZoneSeasonal(WILDLIFE_CACHE);
     _applyRuntimeRarityPatches(WILDLIFE_CACHE);
     _tier3Loaded = true;
     _notify();

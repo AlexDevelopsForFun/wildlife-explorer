@@ -67,6 +67,7 @@ export const MISSING_SPECIES_PATCHES = [
     frequency: 0.70,
     funFact: 'Endangered Utah Prairie Dogs reintroduced to Bryce in 1974. The Fairyland / Sunrise Point area hosts one of the largest colonies in their range.',
     seasons: ['spring', 'summer', 'fall'],
+    seasonFrequencies: { spring: 70, summer: 80, fall: 60, winter: 1 },
     activityPeriod: 'diurnal',
   },
 
@@ -80,6 +81,7 @@ export const MISSING_SPECIES_PATCHES = [
     frequency: 0.97,
     funFact: 'Hundreds of thousands of Mexican Free-tailed Bats emerge from the natural entrance nightly May-October. The evening Bat Flight Program is the headline visitor experience.',
     seasons: ['spring', 'summer', 'fall'],
+    seasonFrequencies: { spring: 60, summer: 99, fall: 75, winter: 1 },
     activityPeriod: 'nocturnal',
   },
 
