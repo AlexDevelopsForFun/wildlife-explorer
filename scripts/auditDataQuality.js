@@ -285,6 +285,76 @@ async function main() {
   if (zeroFreqMismatchCount > 0) warn(`${zeroFreqMismatchCount} animals have frequency=0 but non-exceptional rarity.`);
   else pass(`No frequency=0 / rarity tier mismatches.`);
 
+  // ── Audit 6: frequency-vs-tier mismatches ──────────────────────────
+  // Catches the bug class fixed by commit 197d446 (TIER_CEILING clamp):
+  // when an iNat live-fetch sets frequency = obsCount/500 (a dedup
+  // priority proxy, NOT a true encounter rate), and a curated rarity
+  // override sets a lower tier, the frequency value can leak into
+  // seasonal computations (histogramToEncounterProb baseline) and
+  // produce pills 2-3 tiers above the override's intended rarity.
+  //
+  // The runtime clamp fixed Grizzly Bear at Yellowstone — but it
+  // applied only at runtime via the enriched useMemo. Any species at
+  // any park with the same pattern (override tier ceiling < frequency)
+  // had identical silent bugs. Surface them here.
+  console.log(`\n📋 Audit 6: frequency-vs-rarity-tier consistency`);
+  const TIER_CEILING_AUDIT = {
+    guaranteed:  0.99,
+    very_likely: 0.92,
+    likely:      0.62,
+    unlikely:    0.30,
+    rare:        0.10,
+    exceptional: 0.03,
+  };
+  const _RARITY_RANK = {
+    guaranteed: 0, very_likely: 1, likely: 2, unlikely: 3, rare: 4, exceptional: 5,
+  };
+  function _tierFromFreq(f) {
+    if (f >= 0.92) return 'guaranteed';
+    if (f >= 0.62) return 'very_likely';
+    if (f >= 0.30) return 'likely';
+    if (f >= 0.10) return 'unlikely';
+    if (f >= 0.03) return 'rare';
+    return 'exceptional';
+  }
+  let freqElevationVictims = [];
+  for (const [parkId, val] of Object.entries(WILDLIFE_CACHE)) {
+    for (const a of (val.animals ?? [])) {
+      if (a.frequency == null || a.rarity == null) continue;
+      const ceiling = TIER_CEILING_AUDIT[a.rarity];
+      if (ceiling == null) continue;
+      if (a.frequency <= ceiling) continue;          // in band
+      const impliedTier = _tierFromFreq(a.frequency);
+      const ranks = (_RARITY_RANK[a.rarity] ?? 5) - (_RARITY_RANK[impliedTier] ?? 5);
+      if (ranks < 1) continue;                       // tolerance
+      freqElevationVictims.push({
+        parkId,
+        species: a.name,
+        rarity: a.rarity,
+        frequency: a.frequency,
+        impliedTier,
+        deltaTiers: ranks,
+        raritySource: a.raritySource,
+      });
+    }
+  }
+  if (freqElevationVictims.length === 0) {
+    pass(`All frequencies are within their declared rarity tier's ceiling.`);
+  } else {
+    // Sort worst-first (largest tier delta)
+    freqElevationVictims.sort((a, b) => b.deltaTiers - a.deltaTiers);
+    const top = freqElevationVictims.slice(0, 12);
+    warn(`${freqElevationVictims.length} animals have frequency exceeding their declared rarity tier's ceiling`);
+    warn(`  → silent victims of the live-iNat-freq elevation bug (runtime clamp now fixes pills, but cache state is still misleading).`);
+    console.log(`     ${'Park'.padEnd(20)} ${'Species'.padEnd(28)} ${'Tier'.padEnd(12)} ${'Freq'.padStart(6)} ${'→ Implied'.padEnd(15)} ${'Δ'.padStart(3)}`);
+    for (const v of top) {
+      console.log(`     ${v.parkId.padEnd(20)} ${(v.species ?? '').slice(0, 26).padEnd(28)} ${v.rarity.padEnd(12)} ${(v.frequency * 100).toFixed(0).padStart(4)}%  → ${v.impliedTier.padEnd(13)} ${v.deltaTiers}`);
+    }
+    if (freqElevationVictims.length > 12) {
+      console.log(`     … and ${freqElevationVictims.length - 12} more.`);
+    }
+  }
+
   // ── Summary ────────────────────────────────────────────────────────
   console.log(`\n📊 Summary`);
   console.log(`   Critical issues:  ${criticalCount}`);

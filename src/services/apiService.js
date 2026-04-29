@@ -788,7 +788,15 @@ export async function fetchINat(lat, lng, locId, taxonKey = null, { radius = 20,
         const iconic  = r.taxon.iconic_taxon_name ?? '';
         // Absolute obs-count thresholds — avoids relative scarcity distortion where
         // even common species appear exceptional at under-surveyed locations.
-        const freq = Math.min(r.count / 500, 1);   // proxy for dedup priority only
+        //
+        // dedupSortKey: proxy for dedup priority ONLY (used by mergeAnimals to
+        // pick "primary" entry between the live + static cache copies). Keep
+        // it OUT of the `frequency` field — that's read by histogramToEncounterProb
+        // and computeEffectiveRarity as a true encounter-rate baseline. Setting
+        // frequency = obsCount/500 leaked the dedup proxy into seasonal pills,
+        // producing the Grizzly-Bear-at-Yellowstone "Very Likely 99% summer"
+        // bug fixed by commit 197d446. Stash it under _dedupSortKey instead.
+        const dedupSortKey = Math.min(r.count / 500, 1);
         return {
           name: name.charAt(0).toUpperCase() + name.slice(1),
           scientificName: sciName,
@@ -799,8 +807,10 @@ export async function fetchINat(lat, lng, locId, taxonKey = null, { radius = 20,
           rarity: rarityFromObsCount(r.count, r.preferred_common_name ?? r.name ?? ''),
           funFact: `Verified in ${r.count} iNaturalist research-grade observations near this location.`,
           source: 'inaturalist',
-          frequency: freq,
-          _debug: { endpoint: url, obsCount: r.count, frequency: freq, fetchedAt },
+          // frequency intentionally null — see comment above. Tier already
+          // captured by `rarity`; mergeAnimals uses _dedupSortKey for ordering.
+          _dedupSortKey: dedupSortKey,
+          _debug: { endpoint: url, obsCount: r.count, fetchedAt },
         };
       });
 
