@@ -66,6 +66,27 @@ export const ZONE_OVERRIDES = {
         seasonFrequencies: { spring: 40, summer: 50, fall: 55, winter: 5 },
         rationale: 'Cades Cove Loop drive has the highest concentration of habituated bears; deep winter sightings rare (denning).',
       },
+      'newfound-gap': {
+        rarity: 'unlikely',
+        frequency: 0.20,
+        seasonFrequencies: { spring: 22, summer: 28, fall: 30, winter: 3 },
+        rationale: 'Black bears regularly cross the road at higher elevations along Newfound Gap Road in summer/fall.',
+      },
+    },
+    'Wild Turkey': {
+      'cades-cove': {
+        rarity: 'guaranteed',
+        frequency: 0.92,
+        rationale: 'Wild Turkey flocks visible in Cades Cove fields year-round.',
+      },
+    },
+    'Synchronous Firefly': {
+      'cataloochee': {
+        rarity: 'likely',
+        frequency: 0.50,
+        seasonFrequencies: { spring: 1, summer: 90, fall: 1, winter: 1 },
+        rationale: 'Synchronous fireflies (Photinus carolinus) display in late May-early June around Elkmont and Cataloochee — lottery permits required during peak.',
+      },
     },
     'White-tailed Deer': {
       'cades-cove': {
@@ -267,11 +288,37 @@ export const ZONE_OVERRIDES = {
       },
     },
     'American Elk': {
-      'bear-lake':  { rarity: 'guaranteed', frequency: 0.95, rationale: 'Estes Park / Moraine Park / Horseshoe Park elk herds are the iconic RMNP wildlife experience, especially in fall rut.' },
-      'trail-ridge':{ rarity: 'very_likely', frequency: 0.70, rationale: 'Tundra elk visible from pullouts along Trail Ridge Road in summer.' },
+      'bear-lake':  {
+        rarity: 'guaranteed',
+        frequency: 0.95,
+        seasonFrequencies: { spring: 80, summer: 80, fall: 99, winter: 90 },
+        rationale: 'Estes Park / Moraine Park / Horseshoe Park elk herds are the iconic RMNP wildlife experience, especially in fall rut.',
+      },
+      'trail-ridge':{
+        rarity: 'very_likely',
+        frequency: 0.70,
+        seasonFrequencies: { spring: 30, summer: 80, fall: 60, winter: 5 },
+        rationale: 'Tundra elk visible from pullouts along Trail Ridge Road in summer; road closed Oct-May.',
+      },
     },
     'Bighorn Sheep': {
-      'bear-lake':  { rarity: 'likely', frequency: 0.40, rationale: 'Sheep Lakes mineral lick (Horseshoe Park) draws bighorns May-June; very reliable in window.' },
+      'bear-lake':  {
+        rarity: 'likely',
+        frequency: 0.40,
+        seasonFrequencies: { spring: 65, summer: 30, fall: 25, winter: 20 },
+        rationale: 'Sheep Lakes mineral lick (Horseshoe Park) draws bighorns May-June; very reliable in window.',
+      },
+    },
+    'Yellow-bellied Marmot': {
+      'trail-ridge': {
+        rarity: 'very_likely',
+        frequency: 0.75,
+        seasonFrequencies: { spring: 40, summer: 90, fall: 60, winter: 1 },
+        rationale: 'Yellow-bellied Marmots sun on rocks along Trail Ridge Road in summer; hibernate Sept-May.',
+      },
+    },
+    'Coyote': {
+      'bear-lake':  { rarity: 'likely', frequency: 0.40, rationale: 'Coyotes routinely visible in open meadows around Estes Park / Moraine Park.' },
     },
   },
 
@@ -482,6 +529,20 @@ export const ZONE_OVERRIDES = {
     'Bald Eagle': {
       'schoodic':    { rarity: 'likely',     frequency: 0.40, rationale: 'Schoodic Peninsula is the most reliable eagle-watching at Acadia.' },
     },
+    'Eastern Chipmunk': {
+      'jordan-pond': { rarity: 'guaranteed', frequency: 0.95, rationale: 'Habituated chipmunks at Jordan Pond House and trail edges throughout the carriage roads.' },
+    },
+    'American Beaver': {
+      'jordan-pond': {
+        rarity: 'unlikely',
+        frequency: 0.20,
+        seasonFrequencies: { spring: 25, summer: 25, fall: 25, winter: 5 },
+        rationale: 'Beaver activity at Jordan Pond and Eagle Lake — lodges visible; the animal itself mostly nocturnal.',
+      },
+    },
+    'Coyote': {
+      'park-loop':   { rarity: 'unlikely', frequency: 0.15, rationale: 'Coyotes occasionally seen along the Park Loop Road at dawn/dusk.' },
+    },
   },
 
   // ── Saguaro ─────────────────────────────────────────────────────────
@@ -538,6 +599,17 @@ export const ZONE_OVERRIDES = {
     'River Otter': {
       'lake':        { rarity: 'unlikely',    frequency: 0.20, rationale: 'Otters along rocky shorelines — reliable for boaters who scan ledges.' },
     },
+    'White-tailed Deer': {
+      'kabetogama-pen': { rarity: 'very_likely', frequency: 0.70, rationale: 'Deer reliably visible in Kabetogama Peninsula meadows year-round.' },
+    },
+    'American Beaver': {
+      'lake':        {
+        rarity: 'likely',
+        frequency: 0.40,
+        seasonFrequencies: { spring: 50, summer: 45, fall: 45, winter: 25 },
+        rationale: 'Beavers and lodges visible from boats along Voyageurs lake shores — lodges year-round, animals mostly at dawn/dusk.',
+      },
+    },
   },
 
   // ── Bryce Canyon ────────────────────────────────────────────────────
@@ -550,6 +622,12 @@ export const ZONE_OVERRIDES = {
     },
     'Mule Deer': {
       'rim-trail':   { rarity: 'very_likely', frequency: 0.75, rationale: 'Browse meadows along the Rim Trail at dawn/dusk.' },
+    },
+    "Steller's Jay": {
+      'rim-trail':   { rarity: 'guaranteed', frequency: 0.92, rationale: "Steller's Jays at every Rim Trail overlook and parking area." },
+    },
+    'Common Raven': {
+      'rim-trail':   { rarity: 'guaranteed', frequency: 0.95, rationale: 'Ravens patrol the rim — visible from every viewpoint.' },
     },
   },
 
@@ -584,6 +662,15 @@ export const ZONE_OVERRIDES = {
     },
     'Western Diamond-backed Rattlesnake': {
       'desert':       { rarity: 'unlikely',   frequency: 0.20, seasonFrequencies: { spring: 25, summer: 30, fall: 20, winter: 5 }, rationale: 'Desert flats — snakes most active spring/summer at dawn/dusk.' },
+    },
+    'Javelina': {
+      'chisos':       { rarity: 'likely',     frequency: 0.45, rationale: 'Javelina herds at Chisos Basin campground / Window Trail at dawn/dusk.' },
+    },
+    'Black Bear': {
+      'chisos':       { rarity: 'unlikely',   frequency: 0.18, seasonFrequencies: { spring: 20, summer: 25, fall: 20, winter: 5 }, rationale: 'Reintroduced black bear population in the Chisos Mountains — sightings on bear sightings reports.' },
+    },
+    'Mountain Lion': {
+      'desert':       { rarity: 'rare',       frequency: 0.04, rationale: 'Big Bend has one of the highest mountain lion densities in the US, but they remain almost-never-seen by casual visitors.' },
     },
   },
 
