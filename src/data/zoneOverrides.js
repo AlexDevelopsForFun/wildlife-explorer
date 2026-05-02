@@ -687,6 +687,139 @@ export const ZONE_OVERRIDES = {
     },
   },
 
+  // ── Mt Rainier (round 4) ────────────────────────────────────────────
+  mountrainier: {
+    'Hoary Marmot': {
+      'paradise': {
+        rarity: 'guaranteed',
+        frequency: 0.92,
+        seasonFrequencies: { spring: 30, summer: 95, fall: 70, winter: 1 },
+        rationale: 'Hoary Marmots sun on rocks at Paradise meadows in July-August — visible from any subalpine trail.',
+      },
+      'sunrise': {
+        rarity: 'very_likely',
+        frequency: 0.80,
+        rationale: 'Marmots in alpine meadows at Sunrise; lower density than Paradise but still routine.',
+      },
+    },
+    'Mule Deer': {
+      'paradise': { rarity: 'very_likely', frequency: 0.75, rationale: 'Habituated deer in Paradise meadows year-round (when accessible).' },
+      'longmire': { rarity: 'likely',      frequency: 0.50, rationale: 'Deer regularly visible in Longmire meadows.' },
+    },
+    'American Black Bear': {
+      'paradise':    { rarity: 'unlikely', frequency: 0.20, seasonFrequencies: { spring: 22, summer: 25, fall: 20, winter: 1 }, rationale: 'Black bears occasionally seen in Paradise/Sunrise meadows; denning in winter.' },
+    },
+    "Clark's Nutcracker": {
+      'sunrise':     { rarity: 'very_likely', frequency: 0.80, rationale: "Clark's Nutcrackers cache whitebark pine seeds at Sunrise — visible at every visit in summer." },
+    },
+    // Note: Roosevelt Elk override removed — Mt Rainier's Carbon River elk are
+    // too sparse in iNat data for the build pipeline to include, so the
+    // override silently failed (caught by auditDataQuality.js).
+  },
+
+  // ── Death Valley (round 4) ──────────────────────────────────────────
+  deathvalley: {
+    'Coyote': {
+      'furnace-creek': { rarity: 'very_likely', frequency: 0.70, rationale: 'Habituated coyotes routinely visible at Furnace Creek — campground, golf course, ranch area.' },
+      'stovepipe-wells': { rarity: 'likely',    frequency: 0.45, rationale: 'Coyotes regularly visible at Stovepipe Wells village.' },
+    },
+    'Common Raven': {
+      'furnace-creek': { rarity: 'guaranteed', frequency: 0.99, rationale: 'Ravens at every Furnace Creek parking area, campsite, and overlook.' },
+      'badwater':      { rarity: 'guaranteed', frequency: 0.97, rationale: 'Ravens patrol the Badwater Basin parking and salt flats.' },
+    },
+    'Common Side-blotched Lizard': {
+      'furnace-creek': { rarity: 'very_likely', frequency: 0.80, seasonFrequencies: { spring: 85, summer: 75, fall: 75, winter: 30 }, rationale: 'Side-blotched lizards on every warm-season visit; dormant in cool months.' },
+    },
+    'Desert Bighorn Sheep': {
+      'panamint':      { rarity: 'unlikely', frequency: 0.20, rationale: 'Desert bighorn at Panamint range — visible to dedicated hikers but not casual visitors.' },
+    },
+  },
+
+  // ── Joshua Tree (round 4) ───────────────────────────────────────────
+  joshuatree: {
+    'Common Side-blotched Lizard': {
+      'hidden-valley':  { rarity: 'guaranteed', frequency: 0.95, rationale: 'Side-blotched lizards on every rock at Hidden Valley / Barker Dam in warm season.' },
+      'jumbo-rocks':    { rarity: 'guaranteed', frequency: 0.92, rationale: 'Lizards basking on Jumbo Rocks formations.' },
+    },
+    'Common Chuckwalla': {
+      'hidden-valley':  { rarity: 'very_likely', frequency: 0.70, rationale: 'Chuckwallas in rocky outcrops at Hidden Valley and Barker Dam.' },
+    },
+    "Gambel's Quail": {
+      'cottonwood':     { rarity: 'very_likely', frequency: 0.75, rationale: "Gambel's Quail coveys at Cottonwood Spring oasis." },
+    },
+    'Cactus Wren': {
+      'cottonwood':     { rarity: 'guaranteed', frequency: 0.95, rationale: 'Cactus Wrens nesting in cholla and yucca at Cottonwood Spring.' },
+      'hidden-valley':  { rarity: 'very_likely', frequency: 0.85, rationale: 'Cactus Wrens vocal at every Hidden Valley trailhead.' },
+    },
+    'Common Raven': {
+      'keys-view':      { rarity: 'guaranteed', frequency: 0.97, rationale: 'Ravens patrol Keys View overlook constantly.' },
+      'jumbo-rocks':    { rarity: 'very_likely', frequency: 0.85, rationale: 'Ravens on Jumbo Rocks formations and campground.' },
+    },
+  },
+
+  // ── Sequoia (round 4) ───────────────────────────────────────────────
+  sequoia: {
+    'Mule Deer': {
+      'giant-forest': {
+        rarity: 'guaranteed',
+        frequency: 0.92,
+        rationale: 'Deer routinely browse Round Meadow and Crescent Meadow visible from any visitor trail.',
+      },
+    },
+    "Steller's Jay": {
+      'giant-forest': { rarity: 'guaranteed', frequency: 0.95, rationale: "Steller's Jays at every Giant Forest campground and picnic area." },
+    },
+    'American Black Bear': {
+      'giant-forest': {
+        rarity: 'unlikely',
+        frequency: 0.18,
+        seasonFrequencies: { spring: 20, summer: 25, fall: 22, winter: 2 },
+        rationale: 'Black bears in Giant Forest area — most active dawn/dusk; denning in winter.',
+      },
+    },
+    'Yellow-bellied Marmot': {
+      'mineral-king': {
+        rarity: 'very_likely',
+        frequency: 0.75,
+        seasonFrequencies: { spring: 30, summer: 90, fall: 60, winter: 1 },
+        rationale: 'Mineral King marmots are notorious for chewing car wires — sun on rocks throughout sub-alpine zones July-Aug.',
+      },
+    },
+  },
+
+  // ── Shenandoah (round 4) ────────────────────────────────────────────
+  shenandoah: {
+    'White-tailed Deer': {
+      'skyline-central': {
+        rarity: 'guaranteed',
+        frequency: 0.98,
+        rationale: 'Big Meadows area has the densest deer population — herd visible to virtually every casual visitor.',
+      },
+      'skyline-north':   { rarity: 'guaranteed', frequency: 0.95, rationale: 'Deer along Skyline Drive in the north district at meadow pull-offs.' },
+      'skyline-south':   { rarity: 'guaranteed', frequency: 0.93, rationale: 'Deer at south district meadows and overlooks.' },
+    },
+    'Black Bear': {
+      'skyline-central': {
+        rarity: 'likely',
+        frequency: 0.40,
+        seasonFrequencies: { spring: 40, summer: 50, fall: 45, winter: 5 },
+        rationale: 'Big Meadows area has the highest bear sighting rate — dawn/dusk pull-offs common reports.',
+      },
+      'skyline-north':   { rarity: 'unlikely', frequency: 0.25, rationale: 'Bears in north district, less concentrated than central.' },
+    },
+    'American Black Bear': {
+      'skyline-central': {
+        rarity: 'likely',
+        frequency: 0.40,
+        seasonFrequencies: { spring: 40, summer: 50, fall: 45, winter: 5 },
+        rationale: 'Same as Black Bear at Big Meadows; cache uses American Black Bear canonical name.',
+      },
+    },
+    'Wild Turkey': {
+      'skyline-central': { rarity: 'very_likely', frequency: 0.75, rationale: 'Wild Turkey flocks in Big Meadows fields.' },
+    },
+  },
+
   // ── Zion ────────────────────────────────────────────────────────────
   zion: {
     'Desert Bighorn Sheep': {

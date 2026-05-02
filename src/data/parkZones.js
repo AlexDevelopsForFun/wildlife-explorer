@@ -172,6 +172,40 @@ export const PARK_ZONES = {
     { id: 'fort-jefferson', label: 'Fort Jefferson / Garden Key',             access: 5, lat: 24.6286, lng: -82.8732, radiusKm: 1 },
     { id: 'open-water',     label: 'Boat / open water (snorkel)',             access: 4, lat: 24.6300, lng: -82.8800, radiusKm: 5 },
   ],
+
+  // ── Round 4 zone additions (2026-04-25) ──────────────────────────
+  mountrainier: [
+    { id: 'paradise',       label: 'Paradise (sub-alpine meadows)',           access: 5, lat: 46.7858, lng: -121.7367, radiusKm: 4 },
+    { id: 'sunrise',        label: 'Sunrise (alpine, NE side)',               access: 4, lat: 46.9145, lng: -121.6438, radiusKm: 5 },
+    { id: 'longmire',       label: 'Longmire / Nisqually entrance',           access: 5, lat: 46.7510, lng: -121.8141, radiusKm: 4 },
+    { id: 'carbon-river',   label: 'Carbon River (NW, rainforest)',           access: 3, lat: 46.9870, lng: -121.9156, radiusKm: 5 },
+  ],
+
+  deathvalley: [
+    { id: 'furnace-creek',  label: 'Furnace Creek (visitor hub)',             access: 5, lat: 36.4615, lng: -116.8674, radiusKm: 4 },
+    { id: 'stovepipe-wells',label: 'Stovepipe Wells / Mesquite Dunes',         access: 4, lat: 36.6047, lng: -117.1450, radiusKm: 5 },
+    { id: 'badwater',       label: 'Badwater Basin / Devils Golf Course',     access: 4, lat: 36.2298, lng: -116.7674, radiusKm: 6 },
+    { id: 'panamint',       label: 'Panamint Range / high elevation',         access: 2, lat: 36.4170, lng: -117.1110, radiusKm: 12 },
+  ],
+
+  joshuatree: [
+    { id: 'hidden-valley',  label: 'Hidden Valley / Barker Dam',              access: 5, lat: 34.0117, lng: -116.1689, radiusKm: 3 },
+    { id: 'cottonwood',     label: 'Cottonwood Spring (south entrance)',      access: 4, lat: 33.7355, lng: -115.8166, radiusKm: 4 },
+    { id: 'jumbo-rocks',    label: 'Jumbo Rocks / Skull Rock',                access: 5, lat: 33.9928, lng: -116.0486, radiusKm: 3 },
+    { id: 'keys-view',      label: 'Keys View',                               access: 5, lat: 33.9276, lng: -116.1873, radiusKm: 2 },
+  ],
+
+  sequoia: [
+    { id: 'giant-forest',   label: 'Giant Forest / Lodgepole',                access: 5, lat: 36.5670, lng: -118.7660, radiusKm: 5 },
+    { id: 'foothills',      label: 'Foothills (chaparral, lower elevations)', access: 4, lat: 36.4882, lng: -118.8261, radiusKm: 6 },
+    { id: 'mineral-king',   label: 'Mineral King (sub-alpine, summer-only)',  access: 3, lat: 36.4500, lng: -118.6000, radiusKm: 8 },
+  ],
+
+  shenandoah: [
+    { id: 'skyline-north',  label: 'Skyline Drive — North District',          access: 5, lat: 38.8240, lng: -78.2080, radiusKm: 12 },
+    { id: 'skyline-central',label: 'Skyline Drive — Central (Big Meadows)',   access: 5, lat: 38.5230, lng: -78.4520, radiusKm: 10 },
+    { id: 'skyline-south',  label: 'Skyline Drive — South District',          access: 5, lat: 38.0760, lng: -78.8410, radiusKm: 12 },
+  ],
 };
 
 // Returns zones for a park, or null if park isn't zoned.
