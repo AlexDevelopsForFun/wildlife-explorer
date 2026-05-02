@@ -687,6 +687,155 @@ export const ZONE_OVERRIDES = {
     },
   },
 
+  // ── Grand Teton (round 7) ───────────────────────────────────────────
+  grandteton: {
+    'American Bison': {
+      'antelope-flats': {
+        rarity: 'guaranteed',
+        frequency: 0.95,
+        rationale: 'Antelope Flats / Mormon Row bison herd visible from Mormon Row Road year-round.',
+      },
+    },
+    'Pronghorn': {
+      'antelope-flats': { rarity: 'very_likely', frequency: 0.80, rationale: 'Pronghorn herds graze the sagebrush flats alongside bison.' },
+    },
+    'Moose': {
+      'moose-wilson': {
+        rarity: 'very_likely',
+        frequency: 0.70,
+        seasonFrequencies: { spring: 65, summer: 75, fall: 70, winter: 50 },
+        rationale: 'Moose-Wilson Road willow flats — one of the most reliable moose viewing roads in the lower 48.',
+      },
+      'oxbow-bend':   { rarity: 'likely', frequency: 0.45, seasonFrequencies: { spring: 45, summer: 55, fall: 50, winter: 30 }, rationale: 'Moose along Snake River willows at Oxbow Bend.' },
+    },
+    'American Black Bear': {
+      'moose-wilson': {
+        rarity: 'unlikely',
+        frequency: 0.25,
+        seasonFrequencies: { spring: 28, summer: 35, fall: 30, winter: 1 },
+        rationale: 'Moose-Wilson Road bears regularly visible in summer/fall berry season; denning winter.',
+      },
+    },
+    'Bald Eagle': {
+      'oxbow-bend':   { rarity: 'very_likely', frequency: 0.75, rationale: 'Bald Eagles fish the Snake River — Oxbow Bend nest sites are legendary.' },
+    },
+    'Trumpeter Swan': {
+      'oxbow-bend':   { rarity: 'very_likely', frequency: 0.70, seasonFrequencies: { spring: 70, summer: 75, fall: 65, winter: 35 }, rationale: 'Trumpeter Swans on the Snake River year-round — Oxbow Bend is reliable.' },
+    },
+  },
+
+  // ── Canyonlands (round 7) ───────────────────────────────────────────
+  canyonlands: {
+    'Common Raven': {
+      'island-sky': { rarity: 'guaranteed', frequency: 0.99, rationale: 'Ravens at every Island in the Sky overlook — unavoidable.' },
+      'needles':    { rarity: 'guaranteed', frequency: 0.97, rationale: 'Ravens patrol the Needles district.' },
+    },
+    'Common Side-blotched Lizard': {
+      'island-sky': { rarity: 'very_likely', frequency: 0.80, seasonFrequencies: { spring: 85, summer: 90, fall: 80, winter: 20 }, rationale: 'Side-blotched lizards everywhere on warm rocks at Island in the Sky.' },
+      'needles':    { rarity: 'very_likely', frequency: 0.75, rationale: 'Side-blotched lizards at every Needles trail.' },
+    },
+    'Mule Deer': {
+      'needles':    { rarity: 'likely', frequency: 0.40, rationale: 'Mule Deer in canyon bottoms and at Squaw Flat campground.' },
+    },
+    'Coyote': {
+      'island-sky': { rarity: 'unlikely', frequency: 0.25, rationale: 'Coyotes at dawn/dusk near Grand View Point and Mesa Arch.' },
+    },
+  },
+
+  // ── Redwood (round 7) ───────────────────────────────────────────────
+  redwood: {
+    'Roosevelt Elk': {
+      'prairie-creek': {
+        rarity: 'guaranteed',
+        frequency: 0.95,
+        rationale: 'Prairie Creek elk herd at the meadows + Gold Bluffs Beach visible to nearly every visitor.',
+      },
+    },
+    'Mule Deer': {
+      'prairie-creek': { rarity: 'likely', frequency: 0.45, rationale: 'Mule Deer also visible in coastal meadows alongside elk.' },
+    },
+    'American Black Bear': {
+      'tall-trees':    { rarity: 'unlikely', frequency: 0.18, seasonFrequencies: { spring: 20, summer: 25, fall: 22, winter: 5 }, rationale: 'Black bears in old-growth groves and along Redwood Creek.' },
+    },
+  },
+
+  // ── Kings Canyon (round 7) ──────────────────────────────────────────
+  kingscanyon: {
+    'Mule Deer': {
+      'cedar-grove': { rarity: 'very_likely', frequency: 0.80, rationale: 'Deer in Zumwalt Meadow and Cedar Grove campgrounds.' },
+      'grant-grove': { rarity: 'very_likely', frequency: 0.75, rationale: 'Deer browsing Grant Grove area at dawn/dusk.' },
+    },
+    "Steller's Jay": {
+      'grant-grove': { rarity: 'guaranteed', frequency: 0.95, rationale: "Steller's Jays at every Grant Grove campsite and picnic area." },
+    },
+    'American Black Bear': {
+      'cedar-grove': { rarity: 'unlikely', frequency: 0.18, seasonFrequencies: { spring: 20, summer: 25, fall: 22, winter: 1 }, rationale: 'Black bears in Cedar Grove canyon area.' },
+    },
+    'Yellow-bellied Marmot': {
+      'high-sierra': {
+        rarity: 'very_likely',
+        frequency: 0.70,
+        seasonFrequencies: { spring: 25, summer: 90, fall: 60, winter: 1 },
+        rationale: 'Marmots in alpine basins (Rae Lakes loop) summer; hibernate Sept-May.',
+      },
+    },
+  },
+
+  // ── Isle Royale (round 7) ───────────────────────────────────────────
+  isleroyale: {
+    'Common Loon': {
+      'rock-harbor': { rarity: 'guaranteed', frequency: 0.97, rationale: 'Loons calling from every Isle Royale lake; Rock Harbor area particularly reliable.' },
+      'windigo':     { rarity: 'guaranteed', frequency: 0.95, rationale: 'Loons on west-side lakes around Windigo.' },
+    },
+    'Moose': {
+      'greenstone':  { rarity: 'likely', frequency: 0.45, seasonFrequencies: { spring: 50, summer: 50, fall: 45, winter: 35 }, rationale: 'Moose in island interior — backpackers see them on roughly half of multi-day trips.' },
+      'rock-harbor': { rarity: 'unlikely', frequency: 0.25, rationale: 'Moose occasionally seen near Rock Harbor; less frequent than interior.' },
+    },
+    'Bald Eagle': {
+      'rock-harbor': { rarity: 'very_likely', frequency: 0.75, rationale: 'Bald Eagles fishing Lake Superior shoreline.' },
+    },
+  },
+
+  // ── Virgin Islands (round 7) ────────────────────────────────────────
+  virginislands: {
+    'Green Iguana': {
+      'trunk-bay':   { rarity: 'guaranteed', frequency: 0.95, rationale: 'Invasive Green Iguanas at every beach, parking lot, and trail.' },
+    },
+    'Green Sea Turtle': {
+      'trunk-bay':   { rarity: 'likely', frequency: 0.50, rationale: 'Green Sea Turtles in seagrass beds at Trunk Bay and Maho Bay — visible to snorkelers.' },
+    },
+    'Hawksbill Sea Turtle': {
+      'buck-island': { rarity: 'unlikely', frequency: 0.25, rationale: 'Hawksbill Sea Turtles around the Buck Island reef — less common than Green but real.' },
+    },
+    'Brown Pelican': {
+      'trunk-bay':   { rarity: 'very_likely', frequency: 0.75, rationale: 'Brown Pelicans diving the bays year-round.' },
+    },
+  },
+
+  // ── Biscayne (round 7) ──────────────────────────────────────────────
+  biscayne: {
+    'Brown Pelican': {
+      'convoy-point': { rarity: 'guaranteed', frequency: 0.92, rationale: 'Brown Pelicans at the visitor center waterfront.' },
+      'boat-tour':    { rarity: 'guaranteed', frequency: 0.97, rationale: 'Brown Pelicans on every boat trip out to the keys.' },
+    },
+    'Common Bottlenose Dolphin': {
+      'boat-tour':    { rarity: 'likely', frequency: 0.50, rationale: 'Bottlenose dolphins visible from boat tours but not guaranteed on shorter trips.' },
+    },
+  },
+
+  // ── New River Gorge (round 7) ───────────────────────────────────────
+  newrivergorge: {
+    'American Black Bear': {
+      'long-point':    { rarity: 'unlikely', frequency: 0.20, seasonFrequencies: { spring: 22, summer: 28, fall: 25, winter: 3 }, rationale: 'Black bears reported regularly along Endless Wall trails; denning winter.' },
+    },
+    'White-tailed Deer': {
+      'grandview':     { rarity: 'very_likely', frequency: 0.85, rationale: 'Deer abundant in gorge forests visible from Grandview overlooks.' },
+    },
+    'Bald Eagle': {
+      'sandstone-falls': { rarity: 'unlikely', frequency: 0.25, rationale: 'Bald Eagles along the lower New River.' },
+    },
+  },
+
   // ── Carlsbad Caverns (round 6) ──────────────────────────────────────
   carlsbadcaverns: {
     'Mexican Free-tailed Bat': {

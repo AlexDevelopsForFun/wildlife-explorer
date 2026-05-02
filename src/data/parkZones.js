@@ -313,6 +313,55 @@ export const PARK_ZONES = {
     { id: 'lakeshore',      label: 'Lakeshore (Cowles Bog, beaches)',         access: 5, lat: 41.6470, lng: -87.0560, radiusKm: 4 },
     { id: 'inland',         label: 'Inland trails (Tolleston / Heron)',       access: 4, lat: 41.6300, lng: -87.1110, radiusKm: 4 },
   ],
+
+  // ── Round 7 zone additions (2026-04-25) ──────────────────────────
+  grandteton: [
+    { id: 'antelope-flats',  label: 'Antelope Flats / Mormon Row (bison)',    access: 5, lat: 43.6730, lng: -110.6680, radiusKm: 5 },
+    { id: 'moose-wilson',    label: 'Moose-Wilson Road (moose, bears)',       access: 5, lat: 43.6580, lng: -110.7300, radiusKm: 6 },
+    { id: 'jenny-lake',      label: 'Jenny Lake / String Lake',               access: 5, lat: 43.7510, lng: -110.7200, radiusKm: 4 },
+    { id: 'oxbow-bend',      label: 'Oxbow Bend / Snake River corridor',      access: 5, lat: 43.8650, lng: -110.5500, radiusKm: 6 },
+  ],
+
+  canyonlands: [
+    { id: 'island-sky',      label: 'Island in the Sky (mesa overlooks)',     access: 5, lat: 38.4570, lng: -109.8200, radiusKm: 6 },
+    { id: 'needles',         label: 'The Needles (south district)',           access: 4, lat: 38.1470, lng: -109.7600, radiusKm: 8 },
+    { id: 'maze',            label: 'The Maze (remote backcountry)',          access: 1, lat: 38.2780, lng: -110.0150, radiusKm: 15 },
+  ],
+
+  redwood: [
+    { id: 'prairie-creek',   label: 'Prairie Creek / Gold Bluffs (elk herd)', access: 5, lat: 41.3640, lng: -124.0220, radiusKm: 5 },
+    { id: 'tall-trees',      label: 'Tall Trees Grove / Redwood Creek',       access: 3, lat: 41.2080, lng: -124.0190, radiusKm: 4 },
+    { id: 'jedediah-smith',  label: 'Jedediah Smith / Stout Grove',           access: 4, lat: 41.7920, lng: -124.0860, radiusKm: 4 },
+  ],
+
+  kingscanyon: [
+    { id: 'cedar-grove',     label: 'Cedar Grove / Zumwalt Meadow',           access: 5, lat: 36.7920, lng: -118.6700, radiusKm: 5 },
+    { id: 'grant-grove',     label: 'Grant Grove (General Grant Tree)',       access: 5, lat: 36.7470, lng: -118.9710, radiusKm: 3 },
+    { id: 'high-sierra',     label: 'High Sierra backcountry (Rae Lakes)',    access: 2, lat: 36.7900, lng: -118.4200, radiusKm: 12 },
+  ],
+
+  isleroyale: [
+    { id: 'rock-harbor',     label: 'Rock Harbor (east side, lodge)',         access: 4, lat: 48.1480, lng: -88.4900, radiusKm: 4 },
+    { id: 'windigo',         label: 'Windigo (west side)',                    access: 3, lat: 47.9100, lng: -89.1500, radiusKm: 4 },
+    { id: 'greenstone',      label: 'Greenstone Ridge Trail (interior)',      access: 2, lat: 48.0200, lng: -88.7500, radiusKm: 8 },
+  ],
+
+  virginislands: [
+    { id: 'trunk-bay',       label: 'Trunk Bay / Cinnamon Bay (snorkel)',     access: 5, lat: 18.3520, lng: -64.7660, radiusKm: 2 },
+    { id: 'reef-bay',        label: 'Reef Bay Trail',                         access: 4, lat: 18.3370, lng: -64.7440, radiusKm: 3 },
+    { id: 'buck-island',     label: 'Buck Island (boat-only, USVI)',          access: 4, lat: 17.7850, lng: -64.6230, radiusKm: 1 },
+  ],
+
+  biscayne: [
+    { id: 'convoy-point',    label: 'Convoy Point (visitor center)',          access: 5, lat: 25.4660, lng: -80.3300, radiusKm: 2 },
+    { id: 'boat-tour',       label: 'Boat tour (Boca Chita / Elliott Key)',   access: 4, lat: 25.5200, lng: -80.2350, radiusKm: 8 },
+  ],
+
+  newrivergorge: [
+    { id: 'long-point',      label: 'Long Point / Endless Wall',              access: 5, lat: 38.0660, lng: -81.0760, radiusKm: 3 },
+    { id: 'grandview',       label: 'Grandview (overlooks)',                  access: 5, lat: 37.8350, lng: -81.0640, radiusKm: 3 },
+    { id: 'sandstone-falls', label: 'Sandstone Falls / lower river',          access: 4, lat: 37.7610, lng: -80.9640, radiusKm: 4 },
+  ],
 };
 
 // Returns zones for a park, or null if park isn't zoned.
