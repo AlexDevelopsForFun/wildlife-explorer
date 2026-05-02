@@ -206,6 +206,64 @@ export const PARK_ZONES = {
     { id: 'skyline-central',label: 'Skyline Drive — Central (Big Meadows)',   access: 5, lat: 38.5230, lng: -78.4520, radiusKm: 10 },
     { id: 'skyline-south',  label: 'Skyline Drive — South District',          access: 5, lat: 38.0760, lng: -78.8410, radiusKm: 12 },
   ],
+
+  // ── Round 5 zone additions (2026-04-25) ──────────────────────────
+  craterlake: [
+    { id: 'rim-village',    label: 'Rim Village / Sinnott Memorial',          access: 5, lat: 42.9111, lng: -122.1429, radiusKm: 3 },
+    { id: 'rim-drive',      label: 'Rim Drive overlooks',                     access: 5, lat: 42.9446, lng: -122.1090, radiusKm: 8 },
+    { id: 'pinnacles',      label: 'Pinnacles / Plaikni Falls (south)',       access: 4, lat: 42.8580, lng: -122.0740, radiusKm: 5 },
+  ],
+
+  lassenvolcanic: [
+    { id: 'manzanita-lake', label: 'Manzanita Lake / NW entrance',            access: 5, lat: 40.5365, lng: -121.5640, radiusKm: 3 },
+    { id: 'bumpass-hell',   label: 'Bumpass Hell / Lassen Peak trailhead',    access: 5, lat: 40.4640, lng: -121.5060, radiusKm: 5 },
+    { id: 'warner-valley',  label: 'Warner Valley / Devils Kitchen',          access: 3, lat: 40.4380, lng: -121.3920, radiusKm: 6 },
+  ],
+
+  pinnacles: [
+    { id: 'east-side',      label: 'East side (visitor center, condor area)', access: 5, lat: 36.4905, lng: -121.1467, radiusKm: 4 },
+    { id: 'west-side',      label: 'West side (Chaparral)',                   access: 4, lat: 36.4880, lng: -121.2070, radiusKm: 4 },
+    { id: 'high-peaks',     label: 'High Peaks Trail',                        access: 3, lat: 36.4810, lng: -121.1800, radiusKm: 3 },
+  ],
+
+  badlands: [
+    { id: 'sage-creek-rim', label: 'Sage Creek Rim Road (bison + prairie)',   access: 5, lat: 43.7980, lng: -102.0530, radiusKm: 8 },
+    { id: 'cedar-pass',     label: 'Cedar Pass / visitor center',             access: 5, lat: 43.7460, lng: -101.9410, radiusKm: 4 },
+    { id: 'roberts-prairie',label: 'Roberts Prairie Dog Town',                access: 5, lat: 43.8240, lng: -102.0140, radiusKm: 2 },
+  ],
+
+  theodoreroosevelt: [
+    { id: 'south-unit',     label: 'South Unit (Painted Canyon, scenic loop)',access: 5, lat: 46.9430, lng: -103.5390, radiusKm: 8 },
+    { id: 'north-unit',     label: 'North Unit (Achenbach Trail area)',       access: 4, lat: 47.5970, lng: -103.3800, radiusKm: 8 },
+    { id: 'elkhorn-ranch',  label: 'Elkhorn Ranch (remote middle unit)',      access: 2, lat: 47.2030, lng: -103.6010, radiusKm: 5 },
+  ],
+
+  mesaverde: [
+    { id: 'cliff-palace',   label: 'Cliff Palace / Chapin Mesa',              access: 5, lat: 37.1694, lng: -108.4729, radiusKm: 4 },
+    { id: 'far-view',       label: 'Far View / Wetherill Mesa',               access: 4, lat: 37.2080, lng: -108.4940, radiusKm: 5 },
+    { id: 'morefield',      label: 'Morefield Campground / entrance',         access: 5, lat: 37.2810, lng: -108.4690, radiusKm: 3 },
+  ],
+
+  capitolreef: [
+    { id: 'fruita',         label: 'Fruita (orchards, visitor center)',       access: 5, lat: 38.2871, lng: -111.2615, radiusKm: 3 },
+    { id: 'scenic-drive',   label: 'Scenic Drive / Capitol Gorge',            access: 5, lat: 38.2570, lng: -111.2330, radiusKm: 6 },
+  ],
+
+  petrifiedforest: [
+    { id: 'painted-desert', label: 'Painted Desert / north entrance',         access: 5, lat: 35.0820, lng: -109.7820, radiusKm: 5 },
+    { id: 'crystal-forest', label: 'Crystal Forest / south scenic road',      access: 5, lat: 34.8050, lng: -109.8730, radiusKm: 5 },
+  ],
+
+  haleakala: [
+    { id: 'summit',         label: 'Summit / Haleakalā Visitor Center',       access: 5, lat: 20.7144, lng: -156.2500, radiusKm: 4 },
+    { id: 'kipahulu',       label: 'Kīpahulu (coast, ʻOheʻo pools)',          access: 4, lat: 20.6610, lng: -156.0440, radiusKm: 4 },
+    { id: 'hosmer-grove',   label: 'Hosmer Grove (sub-alpine forest)',        access: 4, lat: 20.7670, lng: -156.2480, radiusKm: 2 },
+  ],
+
+  windcave: [
+    { id: 'prairie-loop',   label: 'Wildlife Loop / prairie',                 access: 5, lat: 43.5750, lng: -103.4710, radiusKm: 6 },
+    { id: 'visitor-center', label: 'Visitor Center / cave entrance',          access: 5, lat: 43.5560, lng: -103.4780, radiusKm: 2 },
+  ],
 };
 
 // Returns zones for a park, or null if park isn't zoned.

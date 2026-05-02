@@ -687,6 +687,186 @@ export const ZONE_OVERRIDES = {
     },
   },
 
+  // ── Crater Lake (round 5) ───────────────────────────────────────────
+  craterlake: {
+    'Common Golden-mantled Ground Squirrel': {
+      'rim-village':  { rarity: 'guaranteed', frequency: 0.97, rationale: 'Habituated ground squirrels begging at every Rim Village overlook.' },
+      'rim-drive':    { rarity: 'guaranteed', frequency: 0.95, rationale: 'Ground squirrels at every Rim Drive overlook and parking area.' },
+    },
+    "Steller's Jay": {
+      'rim-village':  { rarity: 'guaranteed', frequency: 0.92, rationale: "Steller's Jays at every Rim Village picnic area." },
+    },
+    "Clark's Nutcracker": {
+      'rim-drive':    { rarity: 'very_likely', frequency: 0.80, rationale: "Clark's Nutcrackers cache whitebark pine seeds along Rim Drive." },
+    },
+    'Mule Deer': {
+      'pinnacles':    { rarity: 'likely', frequency: 0.45, rationale: 'Deer in lower forests around Pinnacles / Plaikni Falls trail.' },
+    },
+    'American Black Bear': {
+      'pinnacles':    { rarity: 'unlikely', frequency: 0.15, seasonFrequencies: { spring: 18, summer: 22, fall: 18, winter: 1 }, rationale: 'Black bears in lower forests; denning in winter.' },
+    },
+  },
+
+  // ── Lassen Volcanic (round 5) ───────────────────────────────────────
+  lassenvolcanic: {
+    "Steller's Jay": {
+      'manzanita-lake':  { rarity: 'guaranteed', frequency: 0.95, rationale: "Steller's Jays at Manzanita Lake campground and visitor center." },
+    },
+    'Common Golden-mantled Ground Squirrel': {
+      'bumpass-hell':    { rarity: 'very_likely', frequency: 0.80, rationale: 'Ground squirrels at Bumpass Hell parking and trailhead.' },
+    },
+    'Mule Deer': {
+      'manzanita-lake':  { rarity: 'very_likely', frequency: 0.75, rationale: 'Habituated deer in Manzanita Lake campground meadows.' },
+    },
+    'American Black Bear': {
+      'warner-valley':   { rarity: 'unlikely', frequency: 0.20, seasonFrequencies: { spring: 22, summer: 28, fall: 22, winter: 2 }, rationale: 'Black bears in Warner Valley backcountry; denning winter.' },
+    },
+  },
+
+  // ── Pinnacles (round 5) ─────────────────────────────────────────────
+  pinnacles: {
+    'California Condor': {
+      'east-side':       { rarity: 'likely', frequency: 0.50, rationale: 'East-side condor release area + High Peaks roost — sightings ~50% of casual visits.' },
+      'high-peaks':      { rarity: 'very_likely', frequency: 0.70, rationale: 'High Peaks Trail puts visitors closest to active condor roost.' },
+    },
+    'California Ground Squirrel': {
+      'east-side':       { rarity: 'guaranteed', frequency: 0.97, rationale: 'Habituated ground squirrels at every visitor area.' },
+    },
+    'Acorn Woodpecker': {
+      'east-side':       { rarity: 'guaranteed', frequency: 0.92, rationale: 'Acorn Woodpecker granary trees throughout east side.' },
+    },
+    'California Scrub-Jay': {
+      'east-side':       { rarity: 'very_likely', frequency: 0.80, rationale: 'Scrub-Jays at every campground and oak savanna.' },
+    },
+    'Wild Turkey': {
+      'east-side':       { rarity: 'likely', frequency: 0.50, rationale: 'Wild Turkey flocks regularly cross east-side roads.' },
+    },
+  },
+
+  // ── Badlands (round 5) ──────────────────────────────────────────────
+  badlands: {
+    'American Bison': {
+      'sage-creek-rim':  { rarity: 'very_likely', frequency: 0.85, rationale: 'Sage Creek Rim Road bison herd — visible to 85% of casual visitors who drive the loop.' },
+    },
+    'Pronghorn': {
+      'sage-creek-rim':  { rarity: 'very_likely', frequency: 0.75, rationale: 'Pronghorn herds across Sage Creek Wilderness mixed-grass prairie.' },
+    },
+    'Black-tailed Prairie Dog': {
+      'roberts-prairie': { rarity: 'guaranteed', frequency: 0.99, rationale: 'Roberts Prairie Dog Town hosts thousands of animals — guaranteed sighting.' },
+      'sage-creek-rim':  { rarity: 'very_likely', frequency: 0.85, rationale: 'Multiple prairie dog towns visible from the rim road.' },
+    },
+    'Mule Deer': {
+      'cedar-pass':      { rarity: 'very_likely', frequency: 0.75, rationale: 'Mule Deer in canyons around Cedar Pass campground.' },
+    },
+    'Coyote': {
+      'sage-creek-rim':  { rarity: 'likely', frequency: 0.45, rationale: 'Coyotes hunting prairie dogs along the rim road at dawn/dusk.' },
+    },
+  },
+
+  // ── Theodore Roosevelt (round 5) ────────────────────────────────────
+  theodoreroosevelt: {
+    'American Bison': {
+      'south-unit':  { rarity: 'very_likely', frequency: 0.85, rationale: 'Free-ranging bison herd visible from South Unit scenic loop.' },
+      'north-unit':  { rarity: 'very_likely', frequency: 0.80, rationale: 'North Unit bison herd visible from scenic drive.' },
+    },
+    'Wild Horse': {
+      'south-unit':  { rarity: 'very_likely', frequency: 0.70, rationale: 'Feral horse bands visible from South Unit loop drive.' },
+    },
+    'Pronghorn': {
+      'south-unit':  { rarity: 'very_likely', frequency: 0.75, rationale: 'Pronghorn across the badlands grasslands.' },
+      'north-unit':  { rarity: 'very_likely', frequency: 0.70, rationale: 'Pronghorn herds visible from North Unit road.' },
+    },
+    'Black-tailed Prairie Dog': {
+      'south-unit':  { rarity: 'very_likely', frequency: 0.85, rationale: 'Multiple prairie dog towns along the South Unit scenic loop.' },
+    },
+    'Coyote': {
+      'south-unit':  { rarity: 'likely', frequency: 0.45, rationale: 'Coyotes routinely visible at dawn/dusk in open grasslands.' },
+    },
+    'Mule Deer': {
+      'south-unit':  { rarity: 'very_likely', frequency: 0.75, rationale: 'Mule Deer in badlands canyons and along the river.' },
+    },
+  },
+
+  // ── Mesa Verde (round 5) ────────────────────────────────────────────
+  mesaverde: {
+    'Mule Deer': {
+      'morefield':   { rarity: 'guaranteed', frequency: 0.92, rationale: 'Habituated deer in Morefield Campground meadows.' },
+      'cliff-palace':{ rarity: 'very_likely', frequency: 0.75, rationale: 'Deer browsing along Chapin Mesa cliff dwelling areas.' },
+    },
+    'Wild Turkey': {
+      'morefield':   { rarity: 'very_likely', frequency: 0.75, rationale: 'Wild Turkey flocks in Morefield campground at dawn/dusk.' },
+    },
+    "Gunnison's Prairie Dog": {
+      'far-view':    { rarity: 'unlikely', frequency: 0.20, rationale: "Small Gunnison's prairie dog colony near Far View — easy to miss but findable." },
+    },
+    'Coyote': {
+      'morefield':   { rarity: 'unlikely', frequency: 0.20, rationale: 'Coyotes occasionally cross park roads at dawn/dusk.' },
+    },
+  },
+
+  // ── Capitol Reef (round 5) ──────────────────────────────────────────
+  capitolreef: {
+    'Mule Deer': {
+      'fruita':      { rarity: 'guaranteed', frequency: 0.95, rationale: 'Fruita orchards attract deer nightly — visible to nearly every camper.' },
+    },
+    'Common Raven': {
+      'fruita':      { rarity: 'guaranteed', frequency: 0.97, rationale: 'Ravens at every Fruita parking area and overlook.' },
+      'scenic-drive':{ rarity: 'guaranteed', frequency: 0.95, rationale: 'Ravens patrol the Scenic Drive cliffs.' },
+    },
+    'Rock Squirrel': {
+      'fruita':      { rarity: 'guaranteed', frequency: 0.92, rationale: 'Habituated rock squirrels at Fruita visitor area.' },
+    },
+    'Coyote': {
+      'scenic-drive':{ rarity: 'unlikely', frequency: 0.20, rationale: 'Coyotes occasionally seen on the scenic drive at dawn/dusk.' },
+    },
+  },
+
+  // ── Petrified Forest (round 5) ──────────────────────────────────────
+  petrifiedforest: {
+    'Common Raven': {
+      'painted-desert': { rarity: 'guaranteed', frequency: 0.99, rationale: 'Ravens at Painted Desert Inn and overlooks.' },
+      'crystal-forest': { rarity: 'guaranteed', frequency: 0.97, rationale: 'Ravens patrol Crystal Forest parking and trail.' },
+    },
+    'Pronghorn': {
+      'painted-desert': { rarity: 'likely', frequency: 0.55, rationale: 'Pronghorn herds visible in grasslands near the north entrance.' },
+      'crystal-forest': { rarity: 'likely', frequency: 0.50, rationale: 'Pronghorn across the southern grassland zone.' },
+    },
+    'Black-tailed Jackrabbit': {
+      'crystal-forest': { rarity: 'likely', frequency: 0.45, rationale: 'Jackrabbits in shrub-grasslands at dawn/dusk.' },
+    },
+  },
+
+  // ── Haleakala (round 5) ─────────────────────────────────────────────
+  haleakala: {
+    'Hawaiian Goose': {
+      'summit':      {
+        rarity: 'guaranteed',
+        frequency: 0.92,
+        rationale: 'Nene walk freely around the summit visitor center and parking lot.',
+      },
+      'hosmer-grove':{ rarity: 'very_likely', frequency: 0.70, rationale: 'Nene at Hosmer Grove campground.' },
+    },
+  },
+
+  // ── Wind Cave (round 5) ─────────────────────────────────────────────
+  windcave: {
+    'American Bison': {
+      'prairie-loop':  { rarity: 'very_likely', frequency: 0.85, rationale: 'Free-ranging bison herd of ~400 visible across the wildlife loop.' },
+    },
+    'Pronghorn': {
+      'prairie-loop':  { rarity: 'very_likely', frequency: 0.75, rationale: 'Pronghorn herds across the prairie zone.' },
+    },
+    'Black-tailed Prairie Dog': {
+      'prairie-loop':  { rarity: 'guaranteed', frequency: 0.97, rationale: 'Multiple prairie dog towns visible from the wildlife loop year-round.' },
+    },
+    'Mule Deer': {
+      'prairie-loop':  { rarity: 'likely', frequency: 0.50, rationale: 'Mule Deer in canyons and ravines at edges of prairie.' },
+    },
+    'Coyote': {
+      'prairie-loop':  { rarity: 'likely', frequency: 0.45, rationale: 'Coyotes hunting prairie dogs at dawn/dusk.' },
+    },
+  },
+
   // ── Mt Rainier (round 4) ────────────────────────────────────────────
   mountrainier: {
     'Hoary Marmot': {
