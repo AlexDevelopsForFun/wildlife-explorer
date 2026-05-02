@@ -687,6 +687,196 @@ export const ZONE_OVERRIDES = {
     },
   },
 
+  // ── Carlsbad Caverns (round 6) ──────────────────────────────────────
+  carlsbadcaverns: {
+    'Mexican Free-tailed Bat': {
+      'natural-entrance': {
+        rarity: 'guaranteed',
+        frequency: 0.99,
+        seasonFrequencies: { spring: 60, summer: 99, fall: 75, winter: 1 },
+        rationale: 'Hundreds of thousands emerge nightly from the natural entrance May-October — the headline visitor experience.',
+      },
+    },
+    'Common Raven': {
+      'natural-entrance': { rarity: 'guaranteed', frequency: 0.95, rationale: 'Ravens patrol the natural entrance amphitheater area.' },
+    },
+    'Greater Roadrunner': {
+      'walnut-canyon': { rarity: 'likely', frequency: 0.45, rationale: 'Roadrunners along the Walnut Canyon Desert Drive.' },
+    },
+    'Mule Deer': {
+      'walnut-canyon': { rarity: 'very_likely', frequency: 0.70, rationale: 'Mule Deer in canyons and along the desert drive at dawn/dusk.' },
+    },
+  },
+
+  // ── Mammoth Cave (round 6) ──────────────────────────────────────────
+  mammothcave: {
+    'White-tailed Deer': {
+      'visitor-area': { rarity: 'guaranteed', frequency: 0.92, rationale: 'Deer abundant in surface forests around the visitor center.' },
+      'green-river':  { rarity: 'very_likely', frequency: 0.80, rationale: 'Deer along the Green River bottoms.' },
+    },
+    'Wild Turkey': {
+      'visitor-area': { rarity: 'very_likely', frequency: 0.70, rationale: 'Wild Turkey flocks in surface forests at dawn/dusk.' },
+    },
+    'Eastern Gray Squirrel': {
+      'visitor-area': { rarity: 'guaranteed', frequency: 0.97, rationale: 'Squirrels everywhere in surface forests around the visitor center.' },
+    },
+    'Little Brown Bat': {
+      'visitor-area': {
+        rarity: 'unlikely',
+        frequency: 0.18,
+        rationale: 'Resident bat species; sightings during cave tours have dropped post-WNS but still possible.',
+      },
+    },
+  },
+
+  // ── Lake Clark (round 6) ────────────────────────────────────────────
+  lakeclark: {
+    'Brown Bear': {
+      'silver-salmon': {
+        rarity: 'very_likely',
+        frequency: 0.90,
+        seasonFrequencies: { spring: 60, summer: 95, fall: 85, winter: 1 },
+        rationale: 'Coastal bear-viewing trips at Silver Salmon Creek run ~90% sighting rate during summer salmon runs.',
+      },
+      'chinitna-bay': {
+        rarity: 'very_likely',
+        frequency: 0.85,
+        seasonFrequencies: { spring: 55, summer: 90, fall: 80, winter: 1 },
+        rationale: 'Chinitna Bay bear-viewing comparable to Silver Salmon Creek — both are commercial bear-tour destinations.',
+      },
+      'port-alsworth': { rarity: 'unlikely', frequency: 0.20, rationale: 'Twin Lakes / lodge area bear sightings less frequent than coastal viewing sites.' },
+    },
+    'Sockeye Salmon': {
+      'silver-salmon': { rarity: 'guaranteed', frequency: 0.97, seasonFrequencies: { spring: 5, summer: 95, fall: 30, winter: 1 }, rationale: 'Salmon spawning runs in Silver Salmon Creek peak July-Aug.' },
+    },
+    'Bald Eagle': {
+      'silver-salmon': { rarity: 'very_likely', frequency: 0.80, rationale: 'Bald Eagles at coastal bear-viewing areas during salmon runs.' },
+    },
+    'Moose': {
+      'port-alsworth': { rarity: 'likely', frequency: 0.40, rationale: 'Moose around Port Alsworth and Twin Lakes shoreline.' },
+    },
+  },
+
+  // ── Wrangell-St Elias (round 6) ─────────────────────────────────────
+  wrangellstelias: {
+    'Thinhorn Sheep': {
+      'mccarthy':     { rarity: 'likely', frequency: 0.50, rationale: 'Dall sheep on McCarthy Road cliffs — visible from pull-offs.' },
+      'nabesna-road': { rarity: 'likely', frequency: 0.45, rationale: 'Dall sheep visible from Nabesna Road in summer.' },
+    },
+    'Moose': {
+      'mccarthy':     { rarity: 'likely', frequency: 0.50, rationale: 'Moose along McCarthy Road riparian areas.' },
+    },
+    'Brown Bear': {
+      'mccarthy':     { rarity: 'unlikely', frequency: 0.25, seasonFrequencies: { spring: 30, summer: 35, fall: 25, winter: 1 }, rationale: 'Grizzlies occasional along McCarthy Road; denning winter.' },
+    },
+    'Caribou': {
+      'nabesna-road': { rarity: 'unlikely', frequency: 0.20, rationale: 'Caribou occasionally visible from Nabesna Road in summer.' },
+    },
+  },
+
+  // ── Black Canyon (round 6) ──────────────────────────────────────────
+  blackcanyon: {
+    'Mule Deer': {
+      'south-rim':  { rarity: 'very_likely', frequency: 0.70, rationale: 'Habituated deer at South Rim overlooks and campground.' },
+      'north-rim':  { rarity: 'likely',     frequency: 0.40, rationale: 'Deer on the remote North Rim.' },
+    },
+    'Peregrine Falcon': {
+      'south-rim':  { rarity: 'unlikely', frequency: 0.25, seasonFrequencies: { spring: 30, summer: 35, fall: 25, winter: 5 }, rationale: 'Peregrine Falcons nest in the canyon walls — visible from South Rim overlooks April-Aug.' },
+    },
+    'Common Raven': {
+      'south-rim':  { rarity: 'guaranteed', frequency: 0.95, rationale: 'Ravens patrol South Rim overlooks and campground.' },
+    },
+  },
+
+  // ── Great Sand Dunes (round 6) ──────────────────────────────────────
+  greatsanddunes: {
+    'Mule Deer': {
+      'mosca-pass': { rarity: 'very_likely', frequency: 0.65, rationale: 'Deer at the forest edge near Mosca Pass and Medano Creek.' },
+    },
+    'Pronghorn': {
+      'dunes-base': { rarity: 'unlikely', frequency: 0.20, rationale: 'Pronghorn in grasslands east of the dunes.' },
+    },
+    'Coyote': {
+      'mosca-pass': { rarity: 'likely', frequency: 0.40, rationale: 'Coyotes routinely seen at forest-grassland edges at dawn/dusk.' },
+    },
+  },
+
+  // ── Congaree (round 6) ──────────────────────────────────────────────
+  congaree: {
+    'American Alligator': {
+      'cedar-creek': { rarity: 'unlikely', frequency: 0.20, seasonFrequencies: { spring: 25, summer: 30, fall: 20, winter: 5 }, rationale: 'Alligators in Cedar Creek floodplain sloughs — kayakers and high-water periods boost sightings.' },
+    },
+    'White-tailed Deer': {
+      'boardwalk':   { rarity: 'likely', frequency: 0.40, rationale: 'Deer browsing in floodplain forests visible from the boardwalk.' },
+    },
+    'Wild Turkey': {
+      'boardwalk':   { rarity: 'likely', frequency: 0.45, rationale: 'Wild Turkey flocks in old-growth bottomlands.' },
+    },
+    'Barred Owl': {
+      'boardwalk':   { rarity: 'likely', frequency: 0.40, rationale: 'Barred Owls reliably calling at dawn/dusk along the boardwalk loop.' },
+    },
+  },
+
+  // ── North Cascades (round 6) ────────────────────────────────────────
+  northcascades: {
+    'Hoary Marmot': {
+      'cascade-pass': {
+        rarity: 'very_likely',
+        frequency: 0.80,
+        seasonFrequencies: { spring: 25, summer: 90, fall: 65, winter: 1 },
+        rationale: 'Hoary Marmots on Cascade Pass / Sahale Arm in summer; hibernate Sept-May.',
+      },
+    },
+    'Mountain Goat': {
+      'cascade-pass': {
+        rarity: 'likely',
+        frequency: 0.45,
+        rationale: 'Mountain Goats on the high meadows above Cascade Pass in summer.',
+      },
+    },
+    'American Black Bear': {
+      'hwy-20':       { rarity: 'unlikely', frequency: 0.18, seasonFrequencies: { spring: 20, summer: 25, fall: 22, winter: 1 }, rationale: 'Black bears occasionally cross Highway 20 corridor; denning winter.' },
+    },
+    'Bald Eagle': {
+      'hwy-20':       { rarity: 'very_likely', frequency: 0.75, rationale: 'Bald Eagles at Diablo Lake / Ross Lake along the highway corridor.' },
+    },
+  },
+
+  // ── Indiana Dunes (round 6) ─────────────────────────────────────────
+  indianadunes: {
+    'White-tailed Deer': {
+      'inland':     { rarity: 'very_likely', frequency: 0.75, rationale: 'Deer in dune-edge forests and savanna.' },
+    },
+    'Sandhill Crane': {
+      'lakeshore':  { rarity: 'very_likely', frequency: 0.70, seasonFrequencies: { spring: 90, summer: 60, fall: 95, winter: 5 }, rationale: 'Sandhill Cranes in seasonal wetlands — peak fall migration October-November.' },
+    },
+    'Bald Eagle': {
+      'lakeshore':  { rarity: 'unlikely', frequency: 0.25, rationale: 'Bald Eagles fishing along Lake Michigan shoreline year-round.' },
+    },
+    'Common Loon': {
+      'lakeshore':  { rarity: 'unlikely', frequency: 0.20, seasonFrequencies: { spring: 30, summer: 5, fall: 30, winter: 25 }, rationale: 'Loons on Lake Michigan during migration and winter; absent in summer.' },
+    },
+  },
+
+  // ── Hawaii Volcanoes (round 6 — added species for existing zones) ──
+  hawaiivolcanoes: {
+    'Hawaiian Goose': {
+      'kilauea-summit': {
+        rarity: 'guaranteed',
+        frequency: 0.95,
+        rationale: 'Nene walk freely near Kilauea Caldera and Crater Rim Drive parking areas.',
+      },
+      'kahuku': { rarity: 'very_likely', frequency: 0.70, rationale: 'Nene at the Kahuku Unit pasture/forest — managed habitat for the endangered species.' },
+    },
+    'Hawaiian Hawk': {
+      'kilauea-summit': { rarity: 'unlikely', frequency: 0.25, rationale: 'Endemic Io occasionally visible soaring over Kilauea.' },
+      'kahuku':         { rarity: 'unlikely', frequency: 0.30, rationale: 'Io regularly visible at Kahuku.' },
+    },
+    'Small Indian Mongoose': {
+      'kilauea-summit': { rarity: 'likely', frequency: 0.45, rationale: 'Invasive mongoose — visible along roads and trails.' },
+    },
+  },
+
   // ── Crater Lake (round 5) ───────────────────────────────────────────
   craterlake: {
     'Common Golden-mantled Ground Squirrel': {

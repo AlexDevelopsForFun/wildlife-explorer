@@ -264,6 +264,55 @@ export const PARK_ZONES = {
     { id: 'prairie-loop',   label: 'Wildlife Loop / prairie',                 access: 5, lat: 43.5750, lng: -103.4710, radiusKm: 6 },
     { id: 'visitor-center', label: 'Visitor Center / cave entrance',          access: 5, lat: 43.5560, lng: -103.4780, radiusKm: 2 },
   ],
+
+  // ── Round 6 zone additions (2026-04-25) ──────────────────────────
+  carlsbadcaverns: [
+    { id: 'natural-entrance', label: 'Natural Entrance (bat flight)',          access: 5, lat: 32.1750, lng: -104.4440, radiusKm: 1 },
+    { id: 'walnut-canyon',    label: 'Walnut Canyon Desert Drive',             access: 5, lat: 32.1900, lng: -104.5040, radiusKm: 5 },
+  ],
+
+  mammothcave: [
+    { id: 'visitor-area',   label: 'Visitor Center / Heritage Trail',         access: 5, lat: 37.1862, lng: -86.1003, radiusKm: 2 },
+    { id: 'green-river',    label: 'Green River corridor',                    access: 4, lat: 37.1750, lng: -86.1240, radiusKm: 5 },
+  ],
+
+  lakeclark: [
+    { id: 'silver-salmon',  label: 'Silver Salmon Creek (coastal bears)',     access: 4, lat: 60.0533, lng: -152.7220, radiusKm: 3 },
+    { id: 'chinitna-bay',   label: 'Chinitna Bay (coastal bears)',            access: 4, lat: 59.8740, lng: -152.9550, radiusKm: 5 },
+    { id: 'port-alsworth',  label: 'Port Alsworth (Twin Lakes / lodge area)', access: 4, lat: 60.2010, lng: -154.3140, radiusKm: 4 },
+  ],
+
+  wrangellstelias: [
+    { id: 'mccarthy',       label: 'McCarthy / Kennicott',                    access: 4, lat: 61.4360, lng: -142.9170, radiusKm: 8 },
+    { id: 'nabesna-road',   label: 'Nabesna Road corridor',                   access: 3, lat: 62.4170, lng: -142.9170, radiusKm: 12 },
+  ],
+
+  blackcanyon: [
+    { id: 'south-rim',      label: 'South Rim (main visitor area)',           access: 5, lat: 38.5780, lng: -107.7160, radiusKm: 3 },
+    { id: 'north-rim',      label: 'North Rim (remote)',                      access: 3, lat: 38.6020, lng: -107.7000, radiusKm: 3 },
+    { id: 'east-portal',    label: 'East Portal / Gunnison River',            access: 4, lat: 38.5210, lng: -107.6850, radiusKm: 3 },
+  ],
+
+  greatsanddunes: [
+    { id: 'dunes-base',     label: 'Dunes parking / Medano Creek',            access: 5, lat: 37.7350, lng: -105.5160, radiusKm: 3 },
+    { id: 'mosca-pass',     label: 'Mosca Pass / forest edge',                access: 4, lat: 37.7100, lng: -105.4940, radiusKm: 4 },
+  ],
+
+  congaree: [
+    { id: 'boardwalk',      label: 'Boardwalk Loop (visitor center)',         access: 5, lat: 33.8290, lng: -80.8200, radiusKm: 2 },
+    { id: 'cedar-creek',    label: 'Cedar Creek paddle trail',                access: 4, lat: 33.8400, lng: -80.7900, radiusKm: 4 },
+  ],
+
+  northcascades: [
+    { id: 'hwy-20',         label: 'Highway 20 corridor (Diablo / Ross Lake)',access: 5, lat: 48.7150, lng: -121.0660, radiusKm: 8 },
+    { id: 'cascade-pass',   label: 'Cascade Pass / Sahale Arm',               access: 3, lat: 48.4750, lng: -121.0750, radiusKm: 4 },
+    { id: 'stehekin',       label: 'Stehekin (Lake Chelan, boat access)',     access: 3, lat: 48.3260, lng: -120.7000, radiusKm: 5 },
+  ],
+
+  indianadunes: [
+    { id: 'lakeshore',      label: 'Lakeshore (Cowles Bog, beaches)',         access: 5, lat: 41.6470, lng: -87.0560, radiusKm: 4 },
+    { id: 'inland',         label: 'Inland trails (Tolleston / Heron)',       access: 4, lat: 41.6300, lng: -87.1110, radiusKm: 4 },
+  ],
 };
 
 // Returns zones for a park, or null if park isn't zoned.
