@@ -104,6 +104,94 @@ export const SPECIES_DETECTABILITY = {
   // genuinely exceptional for casual visitors
   'Shrew':                     'cryptic',
   'Vole':                      'cryptic',
+
+  // ── Round 2 expansion (2026-04-25): ~50 more entries ──────────────
+  // Drawn from species that show up in multiple parks at "very_likely" or
+  // "guaranteed" tiers per iNat obs counts but where casual visitor sighting
+  // rate is genuinely much lower (cryptic / nocturnal / fossorial / habitat
+  // specialist). Each entry caps the displayed pill at the tier ceiling
+  // even if the iNat-derived rarity would otherwise place it higher.
+
+  // ── Cryptic small mammals (cap: unlikely) ──────────────────────────
+  'Northern Flying Squirrel':  'cryptic',  // strictly nocturnal, rarely seen
+  'Southern Flying Squirrel':  'cryptic',
+  'Humboldt\'s Flying Squirrel':'cryptic',
+  'Pacific Jumping Mouse':     'cryptic',
+  'Western Jumping Mouse':     'cryptic',
+  'Meadow Jumping Mouse':      'cryptic',
+  'Deer Mouse':                'cryptic',
+  'White-footed Mouse':        'cryptic',
+  'Northwestern Deer Mouse':   'cryptic',
+  'Brush Deermouse':           'cryptic',
+  'Pinyon Mouse':              'cryptic',
+  'Pocket Gopher':             'cryptic',  // fossorial, mounds visible but animal not
+  'Western Pocket Gopher':     'cryptic',
+  'Botta\'s Pocket Gopher':    'cryptic',
+  'Mountain Pocket Gopher':    'cryptic',
+  'Pacific Mole':              'cryptic',  // fossorial
+  'Coast Mole':                'cryptic',
+  'American Shrewmole':        'cryptic',
+  'Vagrant Shrew':             'cryptic',
+  'Trowbridge\'s Shrew':       'cryptic',
+  'Masked Shrew':              'cryptic',
+  'Northern Short-tailed Shrew':'cryptic',
+  'Pygmy Shrew':               'cryptic',
+  'Water Shrew':               'cryptic',
+  'Long-tailed Vole':          'cryptic',
+  'Meadow Vole':               'cryptic',
+  'Red-backed Vole':           'cryptic',
+  'California Vole':           'cryptic',
+  'Western Heather Vole':      'cryptic',
+  'Sagebrush Vole':            'cryptic',
+  'Bushy-tailed Woodrat':      'cryptic',  // mostly nocturnal in middens
+  'White-throated Woodrat':    'cryptic',
+  'Desert Woodrat':            'cryptic',
+
+  // ── Cryptic small carnivores (cap: unlikely) ───────────────────────
+  'Least Weasel':              'cryptic',
+  'Short-tailed Weasel':       'cryptic',
+  'American Mink':             'cryptic',  // semi-aquatic, mostly crepuscular
+  'Mink':                      'cryptic',
+
+  // ── Cryptic herps (cap: unlikely) ──────────────────────────────────
+  'Northern Two-lined Salamander':'cryptic',
+  'Red-backed Salamander':     'cryptic',
+  'Eastern Newt':              'cryptic',  // adults under cover, larvae aquatic
+  'Rough-skinned Newt':        'cryptic',
+  'California Newt':           'cryptic',
+  'Pacific Giant Salamander':  'cryptic',
+  'Spotted Salamander':        'cryptic',
+  'Tiger Salamander':          'cryptic',
+  'Mole Salamander':           'cryptic',
+  'Eastern Hognose Snake':     'cryptic',  // fossorial, often plays dead
+  'Western Hognose Snake':     'cryptic',
+  'Ring-necked Snake':         'cryptic',  // small, secretive
+  'Sharp-tailed Snake':        'cryptic',
+  'Rubber Boa':                'cryptic',  // nocturnal, fossorial
+  'Smooth Greensnake':         'cryptic',
+  'Brown Snake':               'cryptic',
+  'Northern Brown Snake':      'cryptic',
+
+  // ── Hard (cap: likely) — findable but not routine for casual visitor ──
+  'Lynx':                      'hard',
+  'Striped Skunk':             'hard',  // strictly nocturnal but visible at night
+  'Common Raccoon':            'hard',  // nocturnal but suburban-park edge sightings
+  'Western Screech-Owl':       'hard',
+  'Eastern Screech-Owl':       'hard',
+  'Short-eared Owl':           'hard',
+  'Pileated Woodpecker':       'hard',  // large but forest-canopy
+  'White-headed Woodpecker':   'hard',
+  'Lewis\'s Woodpecker':       'hard',
+  'American Three-toed Woodpecker':'hard',
+
+  // ── More cryptic owls (cap: unlikely) ──────────────────────────────
+  'Northern Saw-whet Owl':     'cryptic',
+  'Long-eared Owl':            'cryptic',
+  'Great Gray Owl':            'cryptic',
+  'Northern Hawk Owl':         'cryptic',
+  'Mexican Spotted Owl':       'cryptic',
+  // Note: 'Spotted Owl' already in 'hard' (line 78) — leaving as-is to avoid
+  // changing existing classification. Mexican Spotted Owl handled separately.
 };
 
 /**
