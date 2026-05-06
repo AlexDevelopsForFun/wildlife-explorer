@@ -362,6 +362,41 @@ export const PARK_ZONES = {
     { id: 'grandview',       label: 'Grandview (overlooks)',                  access: 5, lat: 37.8350, lng: -81.0640, radiusKm: 3 },
     { id: 'sandstone-falls', label: 'Sandstone Falls / lower river',          access: 4, lat: 37.7610, lng: -80.9640, radiusKm: 4 },
   ],
+
+  // ── Round 8 zone additions (2026-04-25) — last 7 unzoned parks ───
+  americansamoa: [
+    { id: 'tutuila',         label: 'Tutuila (main island, Pago Pago)',       access: 4, lat: -14.2570, lng: -170.6740, radiusKm: 8 },
+    { id: 'ofu-island',      label: 'Ofu Island (reef snorkel)',              access: 3, lat: -14.1830, lng: -169.6710, radiusKm: 3 },
+  ],
+
+  cuyahogavalley: [
+    { id: 'towpath',         label: 'Towpath Trail (canal corridor)',         access: 5, lat: 41.2710, lng: -81.5790, radiusKm: 8 },
+    { id: 'brandywine',      label: 'Brandywine Falls / Boston Mill',         access: 5, lat: 41.2750, lng: -81.5430, radiusKm: 4 },
+  ],
+
+  gatesofthearctic: [
+    { id: 'arrigetch',       label: 'Arrigetch Peaks / Brooks Range core',    access: 1, lat: 67.4170, lng: -154.0000, radiusKm: 30 },
+    { id: 'noatak',          label: 'Noatak River corridor',                  access: 2, lat: 67.7000, lng: -154.5000, radiusKm: 25 },
+  ],
+
+  gatewayarch: [
+    { id: 'riverfront',      label: 'Riverfront / Arch grounds',              access: 5, lat: 38.6247, lng: -90.1848, radiusKm: 1 },
+  ],
+
+  guadalupemountains: [
+    { id: 'mckittrick',      label: 'McKittrick Canyon (riparian)',           access: 4, lat: 31.9810, lng: -104.7530, radiusKm: 4 },
+    { id: 'pine-springs',    label: 'Pine Springs / Guadalupe Peak trail',    access: 5, lat: 31.8910, lng: -104.8240, radiusKm: 3 },
+  ],
+
+  kobukvalley: [
+    { id: 'onion-portage',   label: 'Onion Portage (caribou crossing)',       access: 2, lat: 67.0890, lng: -158.7000, radiusKm: 4 },
+    { id: 'great-kobuk-dunes',label: 'Great Kobuk Sand Dunes',                access: 2, lat: 67.0250, lng: -159.4640, radiusKm: 8 },
+  ],
+
+  whitesands: [
+    { id: 'dune-drive',      label: 'Dunes Drive (interior dunes)',           access: 5, lat: 32.7790, lng: -106.3300, radiusKm: 5 },
+    { id: 'alkali-flat',     label: 'Alkali Flat trail (deep dunes)',         access: 4, lat: 32.7950, lng: -106.3060, radiusKm: 3 },
+  ],
 };
 
 // Returns zones for a park, or null if park isn't zoned.

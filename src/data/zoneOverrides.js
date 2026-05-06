@@ -51,6 +51,7 @@ export const ZONE_OVERRIDES = {
         rarity: 'guaranteed',
         frequency: 0.95,
         seasonFrequencies: { spring: 70, summer: 75, fall: 95, winter: 70 },
+        peakWindow: { startMonthDay: '09-20', endMonthDay: '10-20', label: 'Peak rut: late Sept – mid Oct' },
         rationale: 'Cataloochee re-introduced herd (~200 animals). Fall rut (Sept-Oct) at dawn/dusk = near-100% sighting. Off-rut still very likely in valley meadows.',
       },
       'newfound-gap': {
@@ -85,6 +86,7 @@ export const ZONE_OVERRIDES = {
         rarity: 'likely',
         frequency: 0.50,
         seasonFrequencies: { spring: 1, summer: 90, fall: 1, winter: 1 },
+        peakWindow: { startMonthDay: '05-25', endMonthDay: '06-15', label: 'Peak: late May – mid June' },
         rationale: 'Synchronous fireflies (Photinus carolinus) display in late May-early June around Elkmont and Cataloochee — lottery permits required during peak.',
       },
     },
@@ -292,6 +294,7 @@ export const ZONE_OVERRIDES = {
         rarity: 'guaranteed',
         frequency: 0.95,
         seasonFrequencies: { spring: 80, summer: 80, fall: 99, winter: 90 },
+        peakWindow: { startMonthDay: '09-15', endMonthDay: '10-15', label: 'Peak rut: mid-Sept – mid-Oct' },
         rationale: 'Estes Park / Moraine Park / Horseshoe Park elk herds are the iconic RMNP wildlife experience, especially in fall rut.',
       },
       'trail-ridge':{
@@ -329,6 +332,7 @@ export const ZONE_OVERRIDES = {
         rarity: 'guaranteed',
         frequency: 0.99,
         seasonFrequencies: { spring: 30, summer: 99, fall: 75, winter: 5 },
+        peakWindow: { startMonthDay: '07-01', endMonthDay: '08-05', label: 'Peak salmon run: July – early Aug' },
         rationale: 'Brooks Falls bear-viewing platform in July = effectively guaranteed (multiple bears visible at once during salmon run).',
       },
       'brooks-camp': {
@@ -687,6 +691,88 @@ export const ZONE_OVERRIDES = {
     },
   },
 
+  // ── Round 8 zone additions (last 7 unzoned parks) ───────────────────
+  americansamoa: {
+    'Pacific Flying-fox': {
+      'tutuila':    { rarity: 'very_likely', frequency: 0.75, rationale: 'Flying foxes visible at dawn/dusk on Tutuila — endemic Samoan flying fox (Pteropus tonganus + Samoan species).' },
+      'ofu-island': { rarity: 'very_likely', frequency: 0.70, rationale: 'Ofu Island flying foxes visible from Tumu Mountain area.' },
+    },
+    'Green Sea Turtle': {
+      'ofu-island': { rarity: 'likely', frequency: 0.50, rationale: 'Green Sea Turtles in seagrass beds at Ofu Island reef — visible to snorkelers.' },
+    },
+    'Brown Booby': {
+      'ofu-island': { rarity: 'very_likely', frequency: 0.75, rationale: 'Brown Booby colonies on Ofu coastal cliffs.' },
+    },
+  },
+
+  cuyahogavalley: {
+    'White-tailed Deer': {
+      'towpath':    { rarity: 'guaranteed', frequency: 0.92, rationale: 'Heavy deer population visible along the entire Towpath Trail at any time of day.' },
+    },
+    'Eastern Gray Squirrel': {
+      'towpath':    { rarity: 'guaranteed', frequency: 0.97, rationale: 'Squirrels everywhere along the canal corridor.' },
+    },
+    'Bald Eagle': {
+      'brandywine': { rarity: 'unlikely', frequency: 0.25, rationale: 'Bald Eagles fishing the Cuyahoga River near Brandywine Falls.' },
+    },
+    'American Beaver': {
+      'towpath':    { rarity: 'unlikely', frequency: 0.20, rationale: 'Beaver lodges along the canal — animal mostly nocturnal.' },
+    },
+  },
+
+  gatesofthearctic: {
+    'Caribou': {
+      'arrigetch':  { rarity: 'likely', frequency: 0.40, seasonFrequencies: { spring: 35, summer: 50, fall: 55, winter: 30 }, rationale: 'Western Arctic caribou herd (~200,000 animals) moves through the park; expedition trips during migration windows boost rates.' },
+    },
+    'Brown Bear': {
+      'arrigetch':  { rarity: 'unlikely', frequency: 0.25, seasonFrequencies: { spring: 25, summer: 35, fall: 30, winter: 1 }, rationale: 'Grizzlies in Brooks Range; denning winter.' },
+    },
+    'Moose': {
+      'noatak':     { rarity: 'unlikely', frequency: 0.20, rationale: 'Moose along the Noatak River willows.' },
+    },
+  },
+
+  gatewayarch: {
+    'Eastern Gray Squirrel': {
+      'riverfront': { rarity: 'guaranteed', frequency: 0.99, rationale: 'Habituated squirrels on every Arch grounds lawn — urban park standard.' },
+    },
+    'American Robin': {
+      'riverfront': { rarity: 'very_likely', frequency: 0.85, rationale: 'American Robins on Arch grounds lawns year-round.' },
+    },
+  },
+
+  guadalupemountains: {
+    'Mule Deer': {
+      'mckittrick': { rarity: 'very_likely', frequency: 0.70, rationale: 'Mule Deer along McKittrick Canyon riparian corridor.' },
+      'pine-springs':{ rarity: 'very_likely', frequency: 0.65, rationale: 'Mule Deer at Pine Springs visitor center area.' },
+    },
+    'Elk': {
+      'mckittrick': { rarity: 'likely', frequency: 0.40, rationale: 'Reintroduced elk herd in McKittrick Canyon.' },
+    },
+  },
+
+  kobukvalley: {
+    'Caribou': {
+      'onion-portage': {
+        rarity: 'guaranteed',
+        frequency: 0.95,
+        seasonFrequencies: { spring: 5, summer: 10, fall: 95, winter: 25 },
+        peakWindow: { startMonthDay: '08-20', endMonthDay: '10-05', label: 'Peak migration: late Aug – early Oct' },
+        rationale: 'Tens of thousands of caribou cross the Kobuk River at Onion Portage during fall migration (late August - early October).',
+      },
+    },
+  },
+
+  whitesands: {
+    'Western Earless Lizard': {
+      'dune-drive':  { rarity: 'very_likely', frequency: 0.85, seasonFrequencies: { spring: 90, summer: 95, fall: 80, winter: 25 }, rationale: 'White-color form endemic to White Sands — visible on every warm-season dune walk.' },
+      'alkali-flat': { rarity: 'likely', frequency: 0.45, rationale: 'Lizards in deeper interior dune areas; lower density than Dunes Drive.' },
+    },
+    'Coyote': {
+      'dune-drive':  { rarity: 'unlikely', frequency: 0.15, rationale: 'Coyotes occasionally cross dunes at dawn/dusk.' },
+    },
+  },
+
   // ── Grand Teton (round 7) ───────────────────────────────────────────
   grandteton: {
     'American Bison': {
@@ -843,6 +929,7 @@ export const ZONE_OVERRIDES = {
         rarity: 'guaranteed',
         frequency: 0.99,
         seasonFrequencies: { spring: 60, summer: 99, fall: 75, winter: 1 },
+        peakWindow: { startMonthDay: '06-01', endMonthDay: '08-31', label: 'Peak bat flight: June – August' },
         rationale: 'Hundreds of thousands emerge nightly from the natural entrance May-October — the headline visitor experience.',
       },
     },
@@ -997,7 +1084,7 @@ export const ZONE_OVERRIDES = {
       'inland':     { rarity: 'very_likely', frequency: 0.75, rationale: 'Deer in dune-edge forests and savanna.' },
     },
     'Sandhill Crane': {
-      'lakeshore':  { rarity: 'very_likely', frequency: 0.70, seasonFrequencies: { spring: 90, summer: 60, fall: 95, winter: 5 }, rationale: 'Sandhill Cranes in seasonal wetlands — peak fall migration October-November.' },
+      'lakeshore':  { rarity: 'very_likely', frequency: 0.70, seasonFrequencies: { spring: 90, summer: 60, fall: 95, winter: 5 }, peakWindow: { startMonthDay: '10-15', endMonthDay: '11-20', label: 'Peak fall migration: mid-Oct – mid-Nov' }, rationale: 'Sandhill Cranes in seasonal wetlands — peak fall migration October-November.' },
     },
     'Bald Eagle': {
       'lakeshore':  { rarity: 'unlikely', frequency: 0.25, rationale: 'Bald Eagles fishing along Lake Michigan shoreline year-round.' },

@@ -1880,6 +1880,18 @@ body, #root {
   color: var(--text-tip, #2d6a4f);
 }
 
+/* Peak-window variant — concentration events (Cataloochee elk rut, Brooks
+   Falls salmon run, Carlsbad bat flight, Sandhill Crane migration, etc.).
+   Slightly warmer color than the default best-time chip so the curated
+   week-precision data reads as supplementary trip-planning info. */
+.best-time--peak {
+  background: var(--bg-peak, #fff5e6);
+  border-color: var(--border-peak, #f5d8a8);
+  margin-left: 6px;
+}
+.best-time--peak .best-time__label { color: var(--text-peak-badge, #8a6d3b); }
+.best-time--peak .best-time__value { color: var(--text-peak, #6b4d1f); }
+
 /* ── Consolidated muted footer ─────────────────────────────────────────────
    Replaces the old pill row (source-tags, verified-badge, season/migration
    badges). One muted line: seasons · migration · activity · via sources.  */

@@ -1824,6 +1824,22 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, parkEffort = null, locat
           </div>
         );
       })()}
+      {/* Concentration-event peak window — surfaces curated week-precision
+          peak data when the user has selected a zone with a known event
+          (Cataloochee elk rut, Brooks Falls salmon run, Carlsbad bat
+          flight, etc.). Subtle chip below the best-time-to-view row so
+          peak-timing-aware visitors can plan their trip. */}
+      {(() => {
+        if (!activeZone) return null;
+        const peak = animal.zones?.[activeZone]?.peakWindow;
+        if (!peak?.label) return null;
+        return (
+          <div className="best-time best-time--peak" title="Curated peak window for this concentration event — sightings approach guaranteed during this window, drop sharply outside it.">
+            <span className="best-time__label">Concentration peak</span>
+            <span className="best-time__value">🎯 {peak.label}</span>
+          </div>
+        );
+      })()}
       {(() => {
         const segments = [];
         const displaySeasons = animal.displaySeasons ?? [animal.bestSeason ?? 'spring'];
