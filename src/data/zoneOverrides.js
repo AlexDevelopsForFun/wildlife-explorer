@@ -118,7 +118,7 @@ export const ZONE_OVERRIDES = {
       },
     },
     'Sandhill Crane': {
-      'hayden-valley': { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 75, summer: 85, fall: 60, winter: 5 }, rationale: 'Sandhill Cranes nest in Hayden Valley meadows summer.' },
+      'hayden-valley': { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 75, summer: 85, fall: 60, winter: 5 }, peakWindow: { startMonthDay: '05-15', endMonthDay: '08-15', label: 'Peak nesting: mid-May – mid-Aug' }, rationale: 'Sandhill Cranes nest in Hayden Valley meadows summer.' },
     },
     'American Black Bear': {
       'mammoth':       {
@@ -171,8 +171,8 @@ export const ZONE_OVERRIDES = {
       },
     },
     'American Bison': {
-      'lamar-valley':  { rarity: 'guaranteed', frequency: 0.99, rationale: 'Lamar Valley is the densest bison habitat in the park.' },
-      'hayden-valley': { rarity: 'guaranteed', frequency: 0.99, rationale: 'Hayden Valley bison herds visible from road year-round.' },
+      'lamar-valley':  { rarity: 'guaranteed', frequency: 0.99, peakWindow: { startMonthDay: '07-15', endMonthDay: '08-15', label: 'Peak rut: mid-July – mid-Aug' }, rationale: 'Lamar Valley is the densest bison habitat in the park.' },
+      'hayden-valley': { rarity: 'guaranteed', frequency: 0.99, peakWindow: { startMonthDay: '07-15', endMonthDay: '08-15', label: 'Peak rut: mid-July – mid-Aug' }, rationale: 'Hayden Valley bison herds visible from road year-round.' },
       'old-faithful':  { rarity: 'very_likely', frequency: 0.75, rationale: 'Bison wander Geyser Basin boardwalks — frequent but not guaranteed.' },
     },
     'American Elk': {
@@ -203,7 +203,7 @@ export const ZONE_OVERRIDES = {
       },
     },
     'American Pika': {
-      'going-to-sun':   { rarity: 'likely',      frequency: 0.50, seasonFrequencies: { spring: 25, summer: 65, fall: 55, winter: 5 }, rationale: 'Pikas calling from talus along Logan Pass area trails in summer.' },
+      'going-to-sun':   { rarity: 'likely',      frequency: 0.50, seasonFrequencies: { spring: 25, summer: 65, fall: 55, winter: 5 }, peakWindow: { startMonthDay: '07-01', endMonthDay: '09-15', label: 'Peak hay-cutting: July – mid-Sept' }, rationale: 'Pikas calling from talus along Logan Pass area trails in summer.' },
     },
     'Moose': {
       'many-glacier':   { rarity: 'likely',      frequency: 0.45, seasonFrequencies: { spring: 50, summer: 55, fall: 45, winter: 30 }, rationale: 'Moose at Fishercap Lake / Swiftcurrent willow thickets.' },
@@ -214,6 +214,7 @@ export const ZONE_OVERRIDES = {
         rarity: 'very_likely',
         frequency: 0.65,
         seasonFrequencies: { spring: 40, summer: 70, fall: 60, winter: 20 },
+        peakWindow: { startMonthDay: '07-01', endMonthDay: '08-31', label: 'Peak: July – August' },
         rationale: 'Logan Pass area + Hidden Lake Trail — goats reliably visible on cliffs above the road in summer.',
       },
       'many-glacier': {
@@ -231,7 +232,8 @@ export const ZONE_OVERRIDES = {
         rarity: 'unlikely',
         frequency: 0.25,
         seasonFrequencies: { spring: 30, summer: 30, fall: 25, winter: 1 },
-        rationale: 'Many Glacier valley grizzly density is the highest in the park; near-zero in winter (denning).',
+        peakWindow: { startMonthDay: '08-15', endMonthDay: '10-15', label: 'Peak berry season: mid-Aug – mid-Oct' },
+        rationale: 'Many Glacier valley grizzly density is the highest in the park; bears at low elevation berry patches in late summer / early fall; near-zero in winter (denning).',
       },
     },
   },
@@ -266,7 +268,7 @@ export const ZONE_OVERRIDES = {
       },
     },
     'Roosevelt Elk': {
-      'hoh-rainforest':  { rarity: 'very_likely', frequency: 0.70, rationale: 'Hoh herd visible along trails and river corridor year-round.' },
+      'hoh-rainforest':  { rarity: 'very_likely', frequency: 0.70, peakWindow: { startMonthDay: '09-15', endMonthDay: '10-31', label: 'Peak rut + bugling: mid-Sept – Oct' }, rationale: 'Hoh herd visible along trails and river corridor year-round; rut peaks Sept-Oct with audible bugling.' },
       'kalaloch':        { rarity: 'likely',      frequency: 0.40, rationale: 'Beach-strip elk crossings reported regularly.' },
     },
     'Mule Deer': {
@@ -290,7 +292,8 @@ export const ZONE_OVERRIDES = {
         rarity: 'very_likely',
         frequency: 0.75,
         seasonFrequencies: { spring: 30, summer: 90, fall: 75, winter: 5 },
-        rationale: 'Alpine talus along Trail Ridge Road — pikas reliably calling from rocks within a few meters of pullouts in summer.',
+        peakWindow: { startMonthDay: '07-01', endMonthDay: '09-15', label: 'Peak hay-cutting: July – mid-Sept' },
+        rationale: 'Alpine talus along Trail Ridge Road — pikas reliably calling from rocks within a few meters of pullouts in summer; "hay-cutting" months Jul-Sep when they cure vegetation for winter.',
       },
     },
     'American Elk': {
@@ -322,6 +325,7 @@ export const ZONE_OVERRIDES = {
         rarity: 'very_likely',
         frequency: 0.75,
         seasonFrequencies: { spring: 40, summer: 90, fall: 60, winter: 1 },
+        peakWindow: { startMonthDay: '07-01', endMonthDay: '08-31', label: 'Peak: July – August' },
         rationale: 'Yellow-bellied Marmots sun on rocks along Trail Ridge Road in summer; hibernate Sept-May.',
       },
     },
@@ -518,7 +522,7 @@ export const ZONE_OVERRIDES = {
       'flamingo':    { rarity: 'very_likely', frequency: 0.65, rationale: 'Spoonbills feed in Florida Bay shallows; reliably visible from Flamingo area boats.' },
     },
     'American Crocodile': {
-      'flamingo':    { rarity: 'likely', frequency: 0.45, rationale: 'American crocodiles at the Flamingo marina — the most reliable place to see them.' },
+      'flamingo':    { rarity: 'likely', frequency: 0.45, peakWindow: { startMonthDay: '12-01', endMonthDay: '04-30', label: 'Peak basking season: Dec – April' }, rationale: 'American crocodiles at the Flamingo marina — the most reliable place to see them; cool months bring more basking on banks.' },
     },
   },
 
@@ -526,7 +530,7 @@ export const ZONE_OVERRIDES = {
   acadia: {
     'Harbor Seal': {
       'park-loop':   { rarity: 'likely',     frequency: 0.40, rationale: 'Sand Beach / Schoodic shorelines — seals haul out on rocks visible from Park Loop pull-offs.' },
-      'schoodic':    { rarity: 'very_likely', frequency: 0.65, rationale: 'Schoodic Peninsula has the most reliable seal-watching at Acadia.' },
+      'schoodic':    { rarity: 'very_likely', frequency: 0.65, peakWindow: { startMonthDay: '06-01', endMonthDay: '08-31', label: 'Peak haul-out + pupping: June – August' }, rationale: 'Schoodic Peninsula has the most reliable seal-watching at Acadia; June-August pupping pulls more seals to ledges.' },
     },
     'White-tailed Deer': {
       'jordan-pond': { rarity: 'guaranteed', frequency: 0.92, rationale: 'Jordan Pond / Bubble Pond meadows have the highest-visibility deer at Acadia.' },
@@ -539,6 +543,7 @@ export const ZONE_OVERRIDES = {
         rarity: 'very_likely',
         frequency: 0.70,
         seasonFrequencies: { spring: 65, summer: 85, fall: 50, winter: 5 },
+        peakWindow: { startMonthDay: '06-01', endMonthDay: '08-15', label: 'Peak nesting: June – mid-Aug' },
         rationale: 'Loons reliably calling from Jordan Pond and Eagle Lake in summer; migrate to coastal waters fall-winter.',
       },
     },
@@ -570,8 +575,8 @@ export const ZONE_OVERRIDES = {
       'west-tucson': { rarity: 'very_likely', frequency: 0.85, rationale: 'Cactus wrens nesting in cholla and saguaro along West District trails.' },
     },
     'Javelina': {
-      'east-rincon': { rarity: 'likely',     frequency: 0.45, rationale: 'Rincon Mountain District foothills + Cactus Forest Loop — javelina herds visible at dawn/dusk.' },
-      'west-tucson': { rarity: 'likely',     frequency: 0.40, rationale: 'West District wash trails see regular javelina activity.' },
+      'east-rincon': { rarity: 'likely',     frequency: 0.45, peakWindow: { startMonthDay: '03-01', endMonthDay: '05-31', label: 'Peak: March – May (cooler dawn/dusk)' }, rationale: 'Rincon Mountain District foothills + Cactus Forest Loop — javelina herds visible at dawn/dusk; cooler spring months draw them out longer.' },
+      'west-tucson': { rarity: 'likely',     frequency: 0.40, peakWindow: { startMonthDay: '03-01', endMonthDay: '05-31', label: 'Peak: March – May' }, rationale: 'West District wash trails see regular javelina activity.' },
     },
     'Desert Spiny Lizard': {
       'east-rincon': { rarity: 'very_likely', frequency: 0.70, rationale: 'Rincon foothills — lizards basking on exposed rocks throughout the day.' },
@@ -604,7 +609,7 @@ export const ZONE_OVERRIDES = {
   // ── Voyageurs ───────────────────────────────────────────────────────
   voyageurs: {
     'Common Loon': {
-      'lake':        { rarity: 'guaranteed',  frequency: 0.98, rationale: 'Loons on every visit — Voyageurs has one of the densest loon populations in the lower 48.' },
+      'lake':        { rarity: 'guaranteed',  frequency: 0.98, peakWindow: { startMonthDay: '06-01', endMonthDay: '08-31', label: 'Peak nesting: June – August' }, rationale: 'Loons on every visit — Voyageurs has one of the densest loon populations in the lower 48.' },
     },
     'Bald Eagle': {
       'lake':        { rarity: 'very_likely', frequency: 0.85, rationale: 'Eagles regularly visible from boat trips and visitor center waterfront.' },
@@ -677,7 +682,7 @@ export const ZONE_OVERRIDES = {
       'chisos':       { rarity: 'guaranteed', frequency: 0.95, rationale: 'Mexican Jay flocks at every Chisos Basin trailhead and campsite.' },
     },
     'Western Diamond-backed Rattlesnake': {
-      'desert':       { rarity: 'unlikely',   frequency: 0.20, seasonFrequencies: { spring: 25, summer: 30, fall: 20, winter: 5 }, rationale: 'Desert flats — snakes most active spring/summer at dawn/dusk.' },
+      'desert':       { rarity: 'unlikely',   frequency: 0.20, seasonFrequencies: { spring: 25, summer: 30, fall: 20, winter: 5 }, peakWindow: { startMonthDay: '04-01', endMonthDay: '09-30', label: 'Peak active season: April – September' }, rationale: 'Desert flats — snakes most active spring/summer at dawn/dusk; brumation Nov-Feb.' },
     },
     'Javelina': {
       'chisos':       { rarity: 'likely',     frequency: 0.45, rationale: 'Javelina herds at Chisos Basin campground / Window Trail at dawn/dusk.' },
@@ -777,8 +782,8 @@ export const ZONE_OVERRIDES = {
 
   whitesands: {
     'Western Earless Lizard': {
-      'dune-drive':  { rarity: 'very_likely', frequency: 0.85, seasonFrequencies: { spring: 90, summer: 95, fall: 80, winter: 25 }, rationale: 'White-color form endemic to White Sands — visible on every warm-season dune walk.' },
-      'alkali-flat': { rarity: 'likely', frequency: 0.45, rationale: 'Lizards in deeper interior dune areas; lower density than Dunes Drive.' },
+      'dune-drive':  { rarity: 'very_likely', frequency: 0.85, seasonFrequencies: { spring: 90, summer: 95, fall: 80, winter: 25 }, peakWindow: { startMonthDay: '04-01', endMonthDay: '09-30', label: 'Peak active season: April – September' }, rationale: 'White-color form endemic to White Sands — visible on every warm-season dune walk.' },
+      'alkali-flat': { rarity: 'likely', frequency: 0.45, peakWindow: { startMonthDay: '04-01', endMonthDay: '09-30', label: 'Peak active season: April – September' }, rationale: 'Lizards in deeper interior dune areas; lower density than Dunes Drive.' },
     },
     'Coyote': {
       'dune-drive':  { rarity: 'unlikely', frequency: 0.15, rationale: 'Coyotes occasionally cross dunes at dawn/dusk.' },
@@ -874,6 +879,7 @@ export const ZONE_OVERRIDES = {
         rarity: 'very_likely',
         frequency: 0.70,
         seasonFrequencies: { spring: 25, summer: 90, fall: 60, winter: 1 },
+        peakWindow: { startMonthDay: '07-01', endMonthDay: '08-31', label: 'Peak: July – August' },
         rationale: 'Marmots in alpine basins (Rae Lakes loop) summer; hibernate Sept-May.',
       },
     },
@@ -1187,7 +1193,7 @@ export const ZONE_OVERRIDES = {
   // ── Badlands (round 5) ──────────────────────────────────────────────
   badlands: {
     'American Bison': {
-      'sage-creek-rim':  { rarity: 'very_likely', frequency: 0.85, rationale: 'Sage Creek Rim Road bison herd — visible to 85% of casual visitors who drive the loop.' },
+      'sage-creek-rim':  { rarity: 'very_likely', frequency: 0.85, peakWindow: { startMonthDay: '07-15', endMonthDay: '08-15', label: 'Peak rut: mid-July – mid-Aug' }, rationale: 'Sage Creek Rim Road bison herd — visible to 85% of casual visitors who drive the loop.' },
     },
     'Pronghorn': {
       'sage-creek-rim':  { rarity: 'very_likely', frequency: 0.75, rationale: 'Pronghorn herds across Sage Creek Wilderness mixed-grass prairie.' },
@@ -1207,8 +1213,8 @@ export const ZONE_OVERRIDES = {
   // ── Theodore Roosevelt (round 5) ────────────────────────────────────
   theodoreroosevelt: {
     'American Bison': {
-      'south-unit':  { rarity: 'very_likely', frequency: 0.85, rationale: 'Free-ranging bison herd visible from South Unit scenic loop.' },
-      'north-unit':  { rarity: 'very_likely', frequency: 0.80, rationale: 'North Unit bison herd visible from scenic drive.' },
+      'south-unit':  { rarity: 'very_likely', frequency: 0.85, peakWindow: { startMonthDay: '07-15', endMonthDay: '08-15', label: 'Peak rut: mid-July – mid-Aug' }, rationale: 'Free-ranging bison herd visible from South Unit scenic loop.' },
+      'north-unit':  { rarity: 'very_likely', frequency: 0.80, peakWindow: { startMonthDay: '07-15', endMonthDay: '08-15', label: 'Peak rut: mid-July – mid-Aug' }, rationale: 'North Unit bison herd visible from scenic drive.' },
     },
     'Wild Horse': {
       'south-unit':  { rarity: 'very_likely', frequency: 0.70, rationale: 'Feral horse bands visible from South Unit loop drive.' },
@@ -1248,7 +1254,7 @@ export const ZONE_OVERRIDES = {
   // ── Capitol Reef (round 5) ──────────────────────────────────────────
   capitolreef: {
     'Mule Deer': {
-      'fruita':      { rarity: 'guaranteed', frequency: 0.95, rationale: 'Fruita orchards attract deer nightly — visible to nearly every camper.' },
+      'fruita':      { rarity: 'guaranteed', frequency: 0.95, peakWindow: { startMonthDay: '08-01', endMonthDay: '10-31', label: 'Peak orchard fruit season: Aug – October' }, rationale: 'Fruita orchards attract deer nightly — visible to nearly every camper; ripening fruit Aug-Oct concentrates the herd.' },
     },
     'Common Raven': {
       'fruita':      { rarity: 'guaranteed', frequency: 0.97, rationale: 'Ravens at every Fruita parking area and overlook.' },
@@ -1292,7 +1298,7 @@ export const ZONE_OVERRIDES = {
   // ── Wind Cave (round 5) ─────────────────────────────────────────────
   windcave: {
     'American Bison': {
-      'prairie-loop':  { rarity: 'very_likely', frequency: 0.85, rationale: 'Free-ranging bison herd of ~400 visible across the wildlife loop.' },
+      'prairie-loop':  { rarity: 'very_likely', frequency: 0.85, peakWindow: { startMonthDay: '07-15', endMonthDay: '08-15', label: 'Peak rut: mid-July – mid-Aug' }, rationale: 'Free-ranging bison herd of ~400 visible across the wildlife loop.' },
     },
     'Pronghorn': {
       'prairie-loop':  { rarity: 'very_likely', frequency: 0.75, rationale: 'Pronghorn herds across the prairie zone.' },
@@ -1350,7 +1356,7 @@ export const ZONE_OVERRIDES = {
       'badwater':      { rarity: 'guaranteed', frequency: 0.97, rationale: 'Ravens patrol the Badwater Basin parking and salt flats.' },
     },
     'Common Side-blotched Lizard': {
-      'furnace-creek': { rarity: 'very_likely', frequency: 0.80, seasonFrequencies: { spring: 85, summer: 75, fall: 75, winter: 30 }, rationale: 'Side-blotched lizards on every warm-season visit; dormant in cool months.' },
+      'furnace-creek': { rarity: 'very_likely', frequency: 0.80, seasonFrequencies: { spring: 85, summer: 75, fall: 75, winter: 30 }, peakWindow: { startMonthDay: '03-01', endMonthDay: '06-30', label: 'Peak active season: March – June (cooler than summer)' }, rationale: 'Side-blotched lizards on every warm-season visit; dormant in cool months. Spring + early summer best — Death Valley summer heat sends them to refugia.' },
     },
     'Desert Bighorn Sheep': {
       'panamint':      { rarity: 'unlikely', frequency: 0.20, rationale: 'Desert bighorn at Panamint range — visible to dedicated hikers but not casual visitors.' },
@@ -1360,8 +1366,8 @@ export const ZONE_OVERRIDES = {
   // ── Joshua Tree (round 4) ───────────────────────────────────────────
   joshuatree: {
     'Common Side-blotched Lizard': {
-      'hidden-valley':  { rarity: 'guaranteed', frequency: 0.95, rationale: 'Side-blotched lizards on every rock at Hidden Valley / Barker Dam in warm season.' },
-      'jumbo-rocks':    { rarity: 'guaranteed', frequency: 0.92, rationale: 'Lizards basking on Jumbo Rocks formations.' },
+      'hidden-valley':  { rarity: 'guaranteed', frequency: 0.95, peakWindow: { startMonthDay: '04-01', endMonthDay: '09-30', label: 'Peak active season: April – September' }, rationale: 'Side-blotched lizards on every rock at Hidden Valley / Barker Dam in warm season.' },
+      'jumbo-rocks':    { rarity: 'guaranteed', frequency: 0.92, peakWindow: { startMonthDay: '04-01', endMonthDay: '09-30', label: 'Peak active season: April – September' }, rationale: 'Lizards basking on Jumbo Rocks formations.' },
     },
     'Common Chuckwalla': {
       'hidden-valley':  { rarity: 'very_likely', frequency: 0.70, rationale: 'Chuckwallas in rocky outcrops at Hidden Valley and Barker Dam.' },
@@ -1404,6 +1410,7 @@ export const ZONE_OVERRIDES = {
         rarity: 'very_likely',
         frequency: 0.75,
         seasonFrequencies: { spring: 30, summer: 90, fall: 60, winter: 1 },
+        peakWindow: { startMonthDay: '07-01', endMonthDay: '08-31', label: 'Peak: July – August' },
         rationale: 'Mineral King marmots are notorious for chewing car wires — sun on rocks throughout sub-alpine zones July-Aug.',
       },
     },
