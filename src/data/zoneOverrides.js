@@ -146,6 +146,7 @@ export const ZONE_OVERRIDES = {
         rarity: 'likely',
         frequency: 0.32,
         seasonFrequencies: { spring: 30, summer: 25, fall: 35, winter: 50 },
+        peakWindow: { startMonthDay: '12-15', endMonthDay: '03-15', label: 'Peak winter dawn-watch: Dec – mid-Mar' },
         rationale: 'Lamar Valley with dawn spotting-scope effort — the only place in the lower 48 with predictable wolf viewing.',
       },
       'hayden-valley': {
@@ -159,6 +160,7 @@ export const ZONE_OVERRIDES = {
         rarity: 'likely',
         frequency: 0.40,
         seasonFrequencies: { spring: 50, summer: 45, fall: 35, winter: 5 },
+        peakWindow: { startMonthDay: '05-15', endMonthDay: '06-30', label: 'Peak carcass season: mid-May – June' },
         rationale: 'Hayden Valley spring/summer carcass season — bears actively visible from road.',
       },
       'lamar-valley': {
@@ -190,6 +192,7 @@ export const ZONE_OVERRIDES = {
         rarity: 'very_likely',
         frequency: 0.75,
         seasonFrequencies: { spring: 30, summer: 90, fall: 65, winter: 2 },
+        peakWindow: { startMonthDay: '07-01', endMonthDay: '08-31', label: 'Peak: July – August' },
         rationale: 'Hoary marmots at Logan Pass and Hidden Lake area, peak July-August; hibernate Sept-May.',
       },
       'many-glacier':   {
@@ -258,6 +261,7 @@ export const ZONE_OVERRIDES = {
         rarity: 'guaranteed',
         frequency: 0.90,
         seasonFrequencies: { spring: 50, summer: 95, fall: 80, winter: 5 },
+        peakWindow: { startMonthDay: '07-01', endMonthDay: '08-31', label: 'Peak: July – August' },
         rationale: 'Hurricane Ridge meadows in July-August — marmots sun themselves on rocks visible from the visitor center.',
       },
     },
@@ -309,6 +313,7 @@ export const ZONE_OVERRIDES = {
         rarity: 'likely',
         frequency: 0.40,
         seasonFrequencies: { spring: 65, summer: 30, fall: 25, winter: 20 },
+        peakWindow: { startMonthDay: '05-01', endMonthDay: '06-30', label: 'Peak mineral-lick visits: May – June' },
         rationale: 'Sheep Lakes mineral lick (Horseshoe Park) draws bighorns May-June; very reliable in window.',
       },
     },
@@ -359,6 +364,7 @@ export const ZONE_OVERRIDES = {
         rarity: 'very_likely',
         frequency: 0.85,
         seasonFrequencies: { spring: 60, summer: 90, fall: 70, winter: 5 },
+        peakWindow: { startMonthDay: '07-01', endMonthDay: '08-31', label: 'Peak feeding: July – August' },
         rationale: 'Full-day Kenai Fjords boat tours report humpback sightings on ~80-90% of summer trips; humpbacks migrate to Hawaii in winter.',
       },
     },
@@ -367,6 +373,7 @@ export const ZONE_OVERRIDES = {
         rarity: 'unlikely',
         frequency: 0.25,
         seasonFrequencies: { spring: 25, summer: 30, fall: 20, winter: 10 },
+        peakWindow: { startMonthDay: '06-15', endMonthDay: '08-15', label: 'Peak: mid-June – mid-Aug' },
         rationale: 'Orca pods seen on ~25-30% of summer boat tours.',
       },
     },
@@ -378,6 +385,7 @@ export const ZONE_OVERRIDES = {
         rarity: 'very_likely',
         frequency: 0.80,
         seasonFrequencies: { spring: 50, summer: 90, fall: 60, winter: 5 },
+        peakWindow: { startMonthDay: '05-15', endMonthDay: '08-15', label: 'Peak breeding: mid-May – mid-Aug' },
         rationale: 'Puffins at Chiswell Islands rookery — peak breeding May-Aug; depart for open ocean in winter.',
       },
     },
@@ -386,6 +394,7 @@ export const ZONE_OVERRIDES = {
         rarity: 'very_likely',
         frequency: 0.75,
         seasonFrequencies: { spring: 45, summer: 85, fall: 55, winter: 5 },
+        peakWindow: { startMonthDay: '05-15', endMonthDay: '08-15', label: 'Peak breeding: mid-May – mid-Aug' },
         rationale: 'Horned puffins at Chiswell Islands rookery alongside tufted; same seasonal pattern.',
       },
     },
@@ -398,6 +407,7 @@ export const ZONE_OVERRIDES = {
         rarity: 'very_likely',
         frequency: 0.80,
         seasonFrequencies: { spring: 50, summer: 85, fall: 60, winter: 10 },
+        peakWindow: { startMonthDay: '07-01', endMonthDay: '08-31', label: 'Peak feeding: July – August' },
         rationale: 'Glacier Bay NPS day-cruise reports humpback sightings on ~80% of summer trips (feeding aggregations).',
       },
     },
@@ -430,6 +440,7 @@ export const ZONE_OVERRIDES = {
         rarity: 'very_likely',
         frequency: 0.75,
         seasonFrequencies: { spring: 60, summer: 80, fall: 70, winter: 5 },
+        peakWindow: { startMonthDay: '06-15', endMonthDay: '08-31', label: 'Peak bus-tour season: mid-June – August' },
         rationale: 'Denali Park Road bus-tour caribou sighting rate is ~70-80% June-Aug (NPS published stats); park road closed Sept-May.',
       },
     },
@@ -499,6 +510,7 @@ export const ZONE_OVERRIDES = {
         rarity: 'likely',
         frequency: 0.40,
         seasonFrequencies: { spring: 25, summer: 15, fall: 25, winter: 60 },
+        peakWindow: { startMonthDay: '12-15', endMonthDay: '03-15', label: 'Peak winter aggregation: Dec – mid-Mar' },
         rationale: 'Winter manatee aggregations at Flamingo / Florida Bay warm-water refugia — sighting rate jumps to ~60% in winter.',
       },
     },
@@ -572,17 +584,17 @@ export const ZONE_OVERRIDES = {
       'boat-tour':   { rarity: 'very_likely', frequency: 0.85, rationale: 'Channel crossing puts dolphin pods alongside the boat on most trips.' },
     },
     'Blue Whale': {
-      'boat-tour':   { rarity: 'unlikely',    frequency: 0.20, seasonFrequencies: { spring: 10, summer: 35, fall: 25, winter: 5 }, rationale: 'Summer-only — feeding aggregations off Santa Cruz Island.' },
+      'boat-tour':   { rarity: 'unlikely',    frequency: 0.20, seasonFrequencies: { spring: 10, summer: 35, fall: 25, winter: 5 }, peakWindow: { startMonthDay: '07-01', endMonthDay: '09-15', label: 'Peak feeding: July – mid-Sept' }, rationale: 'Summer-only — feeding aggregations off Santa Cruz Island.' },
     },
     'Humpback Whale': {
-      'boat-tour':   { rarity: 'likely',      frequency: 0.40, seasonFrequencies: { spring: 30, summer: 50, fall: 45, winter: 10 }, rationale: 'Summer feeding migration — sightings on ~40% of crossings.' },
+      'boat-tour':   { rarity: 'likely',      frequency: 0.40, seasonFrequencies: { spring: 30, summer: 50, fall: 45, winter: 10 }, peakWindow: { startMonthDay: '06-15', endMonthDay: '10-15', label: 'Peak feeding: mid-June – mid-Oct' }, rationale: 'Summer feeding migration — sightings on ~40% of crossings.' },
     },
     'California Sea Lion': {
       'boat-tour':   { rarity: 'guaranteed',  frequency: 0.97, rationale: 'Sea lion rookeries at Anacapa and Santa Barbara — visible from every boat trip.' },
       'anacapa':     { rarity: 'guaranteed',  frequency: 0.99, rationale: 'Anacapa rookery — hundreds visible from the cliffs.' },
     },
     'Brown Pelican': {
-      'anacapa':     { rarity: 'guaranteed',  frequency: 0.98, rationale: 'Anacapa is the only major Brown Pelican breeding colony in the western US — guaranteed nesting season.' },
+      'anacapa':     { rarity: 'guaranteed',  frequency: 0.98, peakWindow: { startMonthDay: '04-01', endMonthDay: '07-31', label: 'Peak breeding: April – July' }, rationale: 'Anacapa is the only major Brown Pelican breeding colony in the western US — guaranteed nesting season.' },
     },
     'Island Fox': {
       'santa-cruz':  { rarity: 'very_likely', frequency: 0.70, rationale: 'Endemic Santa Cruz Island fox — habituated, often seen at Scorpion campground.' },
@@ -619,7 +631,7 @@ export const ZONE_OVERRIDES = {
   // ── Bryce Canyon ────────────────────────────────────────────────────
   brycecanyon: {
     'Utah Prairie Dog': {
-      'fairyland':   { rarity: 'guaranteed',  frequency: 0.95, rationale: 'Fairyland / Sunrise Point meadows host the largest Utah Prairie Dog colony in the park.' },
+      'fairyland':   { rarity: 'guaranteed',  frequency: 0.95, peakWindow: { startMonthDay: '04-15', endMonthDay: '08-31', label: 'Peak active season: mid-April – August' }, rationale: 'Fairyland / Sunrise Point meadows host the largest Utah Prairie Dog colony in the park.' },
     },
     "Common Golden-mantled Ground Squirrel": {
       'rim-trail':   { rarity: 'guaranteed',  frequency: 0.98, rationale: 'Beg at every overlook along the Rim Trail.' },
@@ -681,10 +693,10 @@ export const ZONE_OVERRIDES = {
   // ── Dry Tortugas ────────────────────────────────────────────────────
   drytortugas: {
     'Sooty Tern': {
-      'fort-jefferson': { rarity: 'guaranteed', frequency: 0.99, seasonFrequencies: { spring: 99, summer: 99, fall: 30, winter: 5 }, rationale: 'Bush Key colony — hundreds of thousands of nesting Sooty Terns visible from Fort Jefferson April-Aug.' },
+      'fort-jefferson': { rarity: 'guaranteed', frequency: 0.99, seasonFrequencies: { spring: 99, summer: 99, fall: 30, winter: 5 }, peakWindow: { startMonthDay: '04-15', endMonthDay: '08-31', label: 'Peak nesting: mid-April – August' }, rationale: 'Bush Key colony — hundreds of thousands of nesting Sooty Terns visible from Fort Jefferson April-Aug.' },
     },
     'Brown Noddy': {
-      'fort-jefferson': { rarity: 'guaranteed', frequency: 0.97, seasonFrequencies: { spring: 99, summer: 99, fall: 25, winter: 5 }, rationale: 'Brown Noddy nesting alongside Sooty Terns on Bush Key.' },
+      'fort-jefferson': { rarity: 'guaranteed', frequency: 0.97, seasonFrequencies: { spring: 99, summer: 99, fall: 25, winter: 5 }, peakWindow: { startMonthDay: '04-15', endMonthDay: '08-31', label: 'Peak nesting: mid-April – August' }, rationale: 'Brown Noddy nesting alongside Sooty Terns on Bush Key.' },
     },
     'Magnificent Frigatebird': {
       'fort-jefferson': { rarity: 'very_likely', frequency: 0.85, rationale: 'Frigatebirds soaring over the fort year-round.' },
@@ -972,18 +984,20 @@ export const ZONE_OVERRIDES = {
         rarity: 'very_likely',
         frequency: 0.90,
         seasonFrequencies: { spring: 60, summer: 95, fall: 85, winter: 1 },
+        peakWindow: { startMonthDay: '07-01', endMonthDay: '08-31', label: 'Peak salmon run: July – August' },
         rationale: 'Coastal bear-viewing trips at Silver Salmon Creek run ~90% sighting rate during summer salmon runs.',
       },
       'chinitna-bay': {
         rarity: 'very_likely',
         frequency: 0.85,
         seasonFrequencies: { spring: 55, summer: 90, fall: 80, winter: 1 },
+        peakWindow: { startMonthDay: '07-01', endMonthDay: '08-31', label: 'Peak salmon run: July – August' },
         rationale: 'Chinitna Bay bear-viewing comparable to Silver Salmon Creek — both are commercial bear-tour destinations.',
       },
       'port-alsworth': { rarity: 'unlikely', frequency: 0.20, rationale: 'Twin Lakes / lodge area bear sightings less frequent than coastal viewing sites.' },
     },
     'Sockeye Salmon': {
-      'silver-salmon': { rarity: 'guaranteed', frequency: 0.97, seasonFrequencies: { spring: 5, summer: 95, fall: 30, winter: 1 }, rationale: 'Salmon spawning runs in Silver Salmon Creek peak July-Aug.' },
+      'silver-salmon': { rarity: 'guaranteed', frequency: 0.97, seasonFrequencies: { spring: 5, summer: 95, fall: 30, winter: 1 }, peakWindow: { startMonthDay: '07-01', endMonthDay: '08-15', label: 'Peak spawning run: July – mid-Aug' }, rationale: 'Salmon spawning runs in Silver Salmon Creek peak July-Aug.' },
     },
     'Bald Eagle': {
       'silver-salmon': { rarity: 'very_likely', frequency: 0.80, rationale: 'Bald Eagles at coastal bear-viewing areas during salmon runs.' },
@@ -1060,6 +1074,7 @@ export const ZONE_OVERRIDES = {
         rarity: 'very_likely',
         frequency: 0.80,
         seasonFrequencies: { spring: 25, summer: 90, fall: 65, winter: 1 },
+        peakWindow: { startMonthDay: '07-01', endMonthDay: '08-31', label: 'Peak: July – August' },
         rationale: 'Hoary Marmots on Cascade Pass / Sahale Arm in summer; hibernate Sept-May.',
       },
     },
@@ -1152,8 +1167,8 @@ export const ZONE_OVERRIDES = {
   // ── Pinnacles (round 5) ─────────────────────────────────────────────
   pinnacles: {
     'California Condor': {
-      'east-side':       { rarity: 'likely', frequency: 0.50, rationale: 'East-side condor release area + High Peaks roost — sightings ~50% of casual visits.' },
-      'high-peaks':      { rarity: 'very_likely', frequency: 0.70, rationale: 'High Peaks Trail puts visitors closest to active condor roost.' },
+      'east-side':       { rarity: 'likely', frequency: 0.50, peakWindow: { startMonthDay: '03-01', endMonthDay: '11-30', label: 'Peak: spring – fall' }, rationale: 'East-side condor release area + High Peaks roost — sightings ~50% of casual visits.' },
+      'high-peaks':      { rarity: 'very_likely', frequency: 0.70, peakWindow: { startMonthDay: '03-01', endMonthDay: '11-30', label: 'Peak: spring – fall' }, rationale: 'High Peaks Trail puts visitors closest to active condor roost.' },
     },
     'California Ground Squirrel': {
       'east-side':       { rarity: 'guaranteed', frequency: 0.97, rationale: 'Habituated ground squirrels at every visitor area.' },
@@ -1300,6 +1315,7 @@ export const ZONE_OVERRIDES = {
         rarity: 'guaranteed',
         frequency: 0.92,
         seasonFrequencies: { spring: 30, summer: 95, fall: 70, winter: 1 },
+        peakWindow: { startMonthDay: '07-01', endMonthDay: '08-31', label: 'Peak: July – August' },
         rationale: 'Hoary Marmots sun on rocks at Paradise meadows in July-August — visible from any subalpine trail.',
       },
       'sunrise': {
