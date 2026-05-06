@@ -31,9 +31,12 @@ import {
   OVERRIDES_REVIEWED_AT,
   OVERRIDES_EXPIRY_MONTHS,
   OVERRIDES_REVIEWED_AT_BY_PARK,
+  OVERRIDES_REVIEWED_AT_BY_ENTRY,
   daysSince,
   effectiveReviewedAt,
+  effectiveReviewedAtForEntry,
   isExpired,
+  isExpiredEntry,
 } from '../src/services/rarityOverrideMeta.js';
 
 const limitDays = OVERRIDES_EXPIRY_MONTHS * 30;
@@ -57,13 +60,41 @@ if (Object.keys(OVERRIDES_REVIEWED_AT_BY_PARK).length > 0) {
   }
 }
 
-if (globalExpired || expiredParks.length > 0) {
+// ── Per-entry granular review check ────────────────────────────────────
+// Surfaces individual (park, species) entries with their own review dates.
+// Lets curators track high-volatility entries (recent reintroductions,
+// invasions, die-offs) without forcing a global review when only one
+// entry needs attention.
+const entryParkIds = Object.keys(OVERRIDES_REVIEWED_AT_BY_ENTRY);
+const expiredEntries = [];
+if (entryParkIds.length > 0) {
+  console.log(`\n   Per-entry overrides:`);
+  for (const parkId of entryParkIds.sort()) {
+    const speciesMap = OVERRIDES_REVIEWED_AT_BY_ENTRY[parkId];
+    for (const speciesName of Object.keys(speciesMap).sort()) {
+      const reviewedAt = effectiveReviewedAtForEntry(parkId, speciesName);
+      const age = daysSince(reviewedAt);
+      const expired = isExpiredEntry(parkId, speciesName);
+      if (expired) expiredEntries.push({ parkId, speciesName });
+      const flag = expired ? '⚠️ EXPIRED' : '✓ ok';
+      console.log(`     ${parkId.padEnd(20)} ${speciesName.padEnd(28)} ${reviewedAt}   (${age}d)  ${flag}`);
+    }
+  }
+}
+
+if (globalExpired || expiredParks.length > 0 || expiredEntries.length > 0) {
   console.error(`\n❌ Override curation is stale.`);
   if (globalExpired) {
     console.error(`   The global review date (${OVERRIDES_REVIEWED_AT}) is ${globalAgeDays - limitDays} days past expiry.`);
   }
   if (expiredParks.length > 0) {
     console.error(`   Expired per-park overrides: ${expiredParks.join(', ')}`);
+  }
+  if (expiredEntries.length > 0) {
+    console.error(`   Expired per-entry overrides:`);
+    for (const e of expiredEntries) {
+      console.error(`     - [${e.parkId}] ${e.speciesName}`);
+    }
   }
   console.error(`\n   To unblock:`);
   console.error(`     1. Review the RARITY_OVERRIDES tables in:`);
