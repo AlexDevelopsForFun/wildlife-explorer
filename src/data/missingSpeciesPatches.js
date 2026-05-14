@@ -213,6 +213,30 @@ export const MISSING_SPECIES_PATCHES = [
     activityPeriod: 'diurnal',
   },
 
+  // ── Denali: Spruce Grouse + Boreal Chickadee (silent dropout audit) ──
+  {
+    parkId: 'denali',
+    name: 'Spruce Grouse',
+    scientificName: 'Canachites canadensis',
+    animalType: 'bird',
+    rarity: 'unlikely',
+    frequency: 0.18,
+    funFact: 'Spruce Grouse forage in spruce forests around the park entrance and along the Park Road taiga zones — boreal forest specialist with 127+ iNat research-grade obs at Denali.',
+    seasons: ['spring', 'summer', 'fall', 'winter'],
+    activityPeriod: 'diurnal',
+  },
+  {
+    parkId: 'denali',
+    name: 'Boreal Chickadee',
+    scientificName: 'Poecile hudsonicus',
+    animalType: 'bird',
+    rarity: 'likely',
+    frequency: 0.40,
+    funFact: 'Boreal Chickadees in Denali spruce forests near the entrance and along the Park Road — vocal year-round in conifer canopy.',
+    seasons: ['spring', 'summer', 'fall', 'winter'],
+    activityPeriod: 'diurnal',
+  },
+
   // ── Gateway Arch: White-tailed Deer + Red Fox (urban park) ─────────
   {
     parkId: 'gatewayarch',
