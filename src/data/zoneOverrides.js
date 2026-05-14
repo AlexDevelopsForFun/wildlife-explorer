@@ -103,11 +103,11 @@ export const ZONE_OVERRIDES = {
   // ── Yellowstone (expanded coverage 2026-04-25) ──────────────────────
   yellowstone: {
     'Pronghorn': {
-      'lamar-valley': { rarity: 'very_likely', frequency: 0.75, rationale: 'Pronghorn herds visible across Lamar Valley grasslands.' },
-      'mammoth':      { rarity: 'likely',      frequency: 0.50, rationale: 'Pronghorn in the Gardiner / Mammoth corridor.' },
+      'lamar-valley': { rarity: 'very_likely', frequency: 0.75, peakWindow: { startMonthDay: '05-15', endMonthDay: '06-30', label: 'Peak fawning: mid-May – June' }, rationale: 'Pronghorn herds visible across Lamar Valley grasslands; fawns hidden mid-May through June.' },
+      'mammoth':      { rarity: 'likely',      frequency: 0.50, peakWindow: { startMonthDay: '05-15', endMonthDay: '06-30', label: 'Peak fawning: mid-May – June' }, rationale: 'Pronghorn in the Gardiner / Mammoth corridor.' },
     },
     'Bighorn Sheep': {
-      'lamar-valley':  { rarity: 'likely',     frequency: 0.40, rationale: 'Bighorn rams visible on Specimen Ridge near Lamar Valley.' },
+      'lamar-valley':  { rarity: 'likely',     frequency: 0.40, peakWindow: { startMonthDay: '11-15', endMonthDay: '12-31', label: 'Peak rut: mid-Nov – Dec' }, rationale: 'Bighorn rams visible on Specimen Ridge near Lamar Valley; rut Nov-Dec brings them to lower elevations and increases ram-clash visibility.' },
       'mammoth':       { rarity: 'unlikely',   frequency: 0.25, rationale: 'Bighorn occasionally on cliffs north of Mammoth.' },
     },
     'Trumpeter Swan': {
@@ -177,7 +177,7 @@ export const ZONE_OVERRIDES = {
       'old-faithful':  { rarity: 'very_likely', frequency: 0.75, rationale: 'Bison wander Geyser Basin boardwalks — frequent but not guaranteed.' },
     },
     'American Elk': {
-      'mammoth':       { rarity: 'guaranteed', frequency: 0.95, rationale: 'Mammoth Hot Springs resident elk herd grazes the lawns and terraces year-round.' },
+      'mammoth':       { rarity: 'guaranteed', frequency: 0.95, peakWindow: { startMonthDay: '09-15', endMonthDay: '10-31', label: 'Peak rut + bugling: mid-Sept – Oct' }, rationale: 'Mammoth Hot Springs resident elk herd grazes the lawns and terraces year-round; bull bugling Sept-Oct is iconic.' },
       'lamar-valley':  { rarity: 'very_likely', frequency: 0.75, rationale: 'Elk visible in valley meadows alongside bison.' },
     },
     'Coyote': {
@@ -225,7 +225,7 @@ export const ZONE_OVERRIDES = {
       },
     },
     'Bighorn Sheep': {
-      'many-glacier':   { rarity: 'likely', frequency: 0.45, rationale: 'Many Glacier slopes are reliable summer bighorn habitat.' },
+      'many-glacier':   { rarity: 'likely', frequency: 0.45, peakWindow: { startMonthDay: '11-15', endMonthDay: '12-31', label: 'Peak rut: mid-Nov – Dec' }, rationale: 'Many Glacier slopes are reliable summer bighorn habitat; rut concentrates rams at lower elevations.' },
       'going-to-sun':   { rarity: 'likely', frequency: 0.35, rationale: 'Logan Pass area sightings common in summer.' },
     },
     'Grizzly Bear': {
@@ -273,7 +273,7 @@ export const ZONE_OVERRIDES = {
       'kalaloch':        { rarity: 'likely',      frequency: 0.40, rationale: 'Beach-strip elk crossings reported regularly.' },
     },
     'Mule Deer': {
-      'hurricane-ridge': { rarity: 'guaranteed', frequency: 0.95, rationale: 'Habituated deer at Hurricane Ridge meadows and parking area.' },
+      'hurricane-ridge': { rarity: 'guaranteed', frequency: 0.95, peakWindow: { startMonthDay: '10-15', endMonthDay: '11-30', label: 'Peak rut: mid-Oct – Nov' }, rationale: 'Habituated deer at Hurricane Ridge meadows and parking area; rut Oct-Nov increases activity.' },
     },
   },
 
@@ -534,7 +534,7 @@ export const ZONE_OVERRIDES = {
       'schoodic':    { rarity: 'very_likely', frequency: 0.65, peakWindow: { startMonthDay: '06-01', endMonthDay: '08-31', label: 'Peak haul-out + pupping: June – August' }, rationale: 'Schoodic Peninsula has the most reliable seal-watching at Acadia; June-August pupping pulls more seals to ledges.' },
     },
     'White-tailed Deer': {
-      'jordan-pond': { rarity: 'guaranteed', frequency: 0.92, rationale: 'Jordan Pond / Bubble Pond meadows have the highest-visibility deer at Acadia.' },
+      'jordan-pond': { rarity: 'guaranteed', frequency: 0.92, peakWindow: { startMonthDay: '10-15', endMonthDay: '11-30', label: 'Peak rut: mid-Oct – Nov' }, rationale: 'Jordan Pond / Bubble Pond meadows have the highest-visibility deer at Acadia; rut peaks fall.' },
     },
     'American Herring Gull': {
       'park-loop':   { rarity: 'guaranteed', frequency: 0.99, rationale: 'Gulls at every coastal overlook — Sand Beach, Thunder Hole, Otter Cliffs.' },
@@ -603,7 +603,7 @@ export const ZONE_OVERRIDES = {
       'anacapa':     { rarity: 'guaranteed',  frequency: 0.98, peakWindow: { startMonthDay: '04-01', endMonthDay: '07-31', label: 'Peak breeding: April – July' }, rationale: 'Anacapa is the only major Brown Pelican breeding colony in the western US — guaranteed nesting season.' },
     },
     'Island Fox': {
-      'santa-cruz':  { rarity: 'very_likely', frequency: 0.70, rationale: 'Endemic Santa Cruz Island fox — habituated, often seen at Scorpion campground.' },
+      'santa-cruz':  { rarity: 'very_likely', frequency: 0.70, peakWindow: { startMonthDay: '03-01', endMonthDay: '06-30', label: 'Peak breeding + pupping: March – June' }, rationale: 'Endemic Santa Cruz Island fox — habituated, often seen at Scorpion campground; pupping period concentrates activity at den sites.' },
     },
   },
 
@@ -1185,7 +1185,7 @@ export const ZONE_OVERRIDES = {
       'east-side':       { rarity: 'guaranteed', frequency: 0.92, peakWindow: { startMonthDay: '04-01', endMonthDay: '07-31', label: 'Peak breeding: April – July' }, rationale: 'Acorn Woodpecker granary trees throughout east side; breeding-season activity makes them especially visible Apr-Jul.' },
     },
     'California Scrub-Jay': {
-      'east-side':       { rarity: 'very_likely', frequency: 0.80, rationale: 'Scrub-Jays at every campground and oak savanna.' },
+      'east-side':       { rarity: 'very_likely', frequency: 0.80, peakWindow: { startMonthDay: '04-01', endMonthDay: '06-30', label: 'Peak breeding: April – June' }, rationale: 'Scrub-Jays at every campground and oak savanna; vocal during breeding season.' },
     },
     'Wild Turkey': {
       'east-side':       { rarity: 'likely', frequency: 0.50, rationale: 'Wild Turkey flocks regularly cross east-side roads.' },
@@ -1239,7 +1239,7 @@ export const ZONE_OVERRIDES = {
   // ── Mesa Verde (round 5) ────────────────────────────────────────────
   mesaverde: {
     'Mule Deer': {
-      'morefield':   { rarity: 'guaranteed', frequency: 0.92, rationale: 'Habituated deer in Morefield Campground meadows.' },
+      'morefield':   { rarity: 'guaranteed', frequency: 0.92, peakWindow: { startMonthDay: '10-15', endMonthDay: '11-30', label: 'Peak rut: mid-Oct – Nov' }, rationale: 'Habituated deer in Morefield Campground meadows; rut peaks fall.' },
       'cliff-palace':{ rarity: 'very_likely', frequency: 0.75, rationale: 'Deer browsing along Chapin Mesa cliff dwelling areas.' },
     },
     'Wild Turkey': {
@@ -1333,7 +1333,7 @@ export const ZONE_OVERRIDES = {
       },
     },
     'Mule Deer': {
-      'paradise': { rarity: 'very_likely', frequency: 0.75, rationale: 'Habituated deer in Paradise meadows year-round (when accessible).' },
+      'paradise': { rarity: 'very_likely', frequency: 0.75, peakWindow: { startMonthDay: '10-15', endMonthDay: '11-30', label: 'Peak rut: mid-Oct – Nov' }, rationale: 'Habituated deer in Paradise meadows year-round (when accessible); rut increases activity Oct-Nov.' },
       'longmire': { rarity: 'likely',      frequency: 0.50, rationale: 'Deer regularly visible in Longmire meadows.' },
     },
     'American Black Bear': {
