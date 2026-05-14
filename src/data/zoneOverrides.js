@@ -172,7 +172,7 @@ export const ZONE_OVERRIDES = {
       },
     },
     'American Bison': {
-      'lamar-valley':  { rarity: 'guaranteed', frequency: 0.99, peakWindow: { startMonthDay: '07-15', endMonthDay: '08-15', label: 'Peak rut: mid-July – mid-Aug' }, rationale: 'Lamar Valley is the densest bison habitat in the park.' },
+      'lamar-valley':  { rarity: 'guaranteed', frequency: 0.99, peakWindow: { startMonthDay: '04-15', endMonthDay: '05-31', label: 'Peak calving (red dogs): mid-April – May' }, rationale: 'Lamar Valley is the densest bison habitat in the park; spring calves ("red dogs") are an iconic April-May sight.' },
       'hayden-valley': { rarity: 'guaranteed', frequency: 0.99, peakWindow: { startMonthDay: '07-15', endMonthDay: '08-15', label: 'Peak rut: mid-July – mid-Aug' }, rationale: 'Hayden Valley bison herds visible from road year-round.' },
       'old-faithful':  { rarity: 'very_likely', frequency: 0.75, rationale: 'Bison wander Geyser Basin boardwalks — frequent but not guaranteed.' },
     },
@@ -537,7 +537,7 @@ export const ZONE_OVERRIDES = {
       'jordan-pond': { rarity: 'guaranteed', frequency: 0.92, peakWindow: { startMonthDay: '10-15', endMonthDay: '11-30', label: 'Peak rut: mid-Oct – Nov' }, rationale: 'Jordan Pond / Bubble Pond meadows have the highest-visibility deer at Acadia; rut peaks fall.' },
     },
     'American Herring Gull': {
-      'park-loop':   { rarity: 'guaranteed', frequency: 0.99, rationale: 'Gulls at every coastal overlook — Sand Beach, Thunder Hole, Otter Cliffs.' },
+      'park-loop':   { rarity: 'guaranteed', frequency: 0.99, peakWindow: { startMonthDay: '05-01', endMonthDay: '08-15', label: 'Peak breeding: May – mid-Aug' }, rationale: 'Gulls at every coastal overlook — Sand Beach, Thunder Hole, Otter Cliffs; breeding plumage + chicks May-Aug.' },
     },
     'Common Loon': {
       'jordan-pond': {
@@ -677,7 +677,7 @@ export const ZONE_OVERRIDES = {
   // ── Big Bend (additional zones) ─────────────────────────────────────
   bigbend: {
     'Greater Roadrunner': {
-      'rio-grande':   { rarity: 'guaranteed', frequency: 0.92, rationale: 'Roadrunners reliably along Rio Grande Village trails and roads.' },
+      'rio-grande':   { rarity: 'guaranteed', frequency: 0.92, peakWindow: { startMonthDay: '03-01', endMonthDay: '06-30', label: 'Peak breeding + activity: March – June' }, rationale: 'Roadrunners reliably along Rio Grande Village trails and roads; breeding pairs + courtship displays March-June.' },
     },
     'Mexican Jay': {
       'chisos':       { rarity: 'guaranteed', frequency: 0.95, peakWindow: { startMonthDay: '04-01', endMonthDay: '07-31', label: 'Peak breeding + cooperative-flock activity: April – July' }, rationale: 'Mexican Jay flocks at every Chisos Basin trailhead and campsite; cooperative breeding flocks most vocal Apr-Jul.' },
@@ -705,7 +705,7 @@ export const ZONE_OVERRIDES = {
       'fort-jefferson': { rarity: 'guaranteed', frequency: 0.97, seasonFrequencies: { spring: 99, summer: 99, fall: 25, winter: 5 }, peakWindow: { startMonthDay: '04-15', endMonthDay: '08-31', label: 'Peak nesting: mid-April – August' }, rationale: 'Brown Noddy nesting alongside Sooty Terns on Bush Key.' },
     },
     'Magnificent Frigatebird': {
-      'fort-jefferson': { rarity: 'very_likely', frequency: 0.85, rationale: 'Frigatebirds soaring over the fort year-round.' },
+      'fort-jefferson': { rarity: 'very_likely', frequency: 0.85, peakWindow: { startMonthDay: '11-01', endMonthDay: '04-30', label: 'Peak breeding (males display): Nov – April' }, rationale: 'Frigatebirds soaring over the fort year-round; males display inflated red throat pouches Nov-April.' },
     },
   },
 
@@ -1017,8 +1017,8 @@ export const ZONE_OVERRIDES = {
   // ── Wrangell-St Elias (round 6) ─────────────────────────────────────
   wrangellstelias: {
     'Thinhorn Sheep': {
-      'mccarthy':     { rarity: 'likely', frequency: 0.50, rationale: 'Dall sheep on McCarthy Road cliffs — visible from pull-offs.' },
-      'nabesna-road': { rarity: 'likely', frequency: 0.45, rationale: 'Dall sheep visible from Nabesna Road in summer.' },
+      'mccarthy':     { rarity: 'likely', frequency: 0.50, peakWindow: { startMonthDay: '11-15', endMonthDay: '12-31', label: 'Peak rut: mid-Nov – Dec' }, rationale: 'Dall sheep on McCarthy Road cliffs — visible from pull-offs; rut concentrates rams + ram-clashes.' },
+      'nabesna-road': { rarity: 'likely', frequency: 0.45, peakWindow: { startMonthDay: '11-15', endMonthDay: '12-31', label: 'Peak rut: mid-Nov – Dec' }, rationale: 'Dall sheep visible from Nabesna Road in summer.' },
     },
     'Moose': {
       'mccarthy':     { rarity: 'likely', frequency: 0.50, peakWindow: { startMonthDay: '09-15', endMonthDay: '10-31', label: 'Peak rut: mid-Sept – Oct' }, rationale: 'Moose along McCarthy Road riparian areas; rut concentrates bulls Sept-Oct.' },
@@ -1089,6 +1089,7 @@ export const ZONE_OVERRIDES = {
       'cascade-pass': {
         rarity: 'likely',
         frequency: 0.45,
+        peakWindow: { startMonthDay: '07-01', endMonthDay: '08-31', label: 'Peak: July – August' },
         rationale: 'Mountain Goats on the high meadows above Cascade Pass in summer.',
       },
     },
@@ -1096,7 +1097,7 @@ export const ZONE_OVERRIDES = {
       'hwy-20':       { rarity: 'unlikely', frequency: 0.18, seasonFrequencies: { spring: 20, summer: 25, fall: 22, winter: 1 }, rationale: 'Black bears occasionally cross Highway 20 corridor; denning winter.' },
     },
     'Bald Eagle': {
-      'hwy-20':       { rarity: 'very_likely', frequency: 0.75, rationale: 'Bald Eagles at Diablo Lake / Ross Lake along the highway corridor.' },
+      'hwy-20':       { rarity: 'very_likely', frequency: 0.75, peakWindow: { startMonthDay: '04-01', endMonthDay: '07-31', label: 'Peak nesting: April – July' }, rationale: 'Bald Eagles at Diablo Lake / Ross Lake along the highway corridor; nesting peak Apr-Jul makes them most predictable.' },
     },
   },
 
@@ -1128,8 +1129,8 @@ export const ZONE_OVERRIDES = {
       'kahuku': { rarity: 'very_likely', frequency: 0.70, peakWindow: { startMonthDay: '10-01', endMonthDay: '03-31', label: 'Peak breeding: Oct – March' }, rationale: 'Nene at the Kahuku Unit pasture/forest — managed habitat for the endangered species.' },
     },
     'Hawaiian Hawk': {
-      'kilauea-summit': { rarity: 'unlikely', frequency: 0.25, rationale: 'Endemic Io occasionally visible soaring over Kilauea.' },
-      'kahuku':         { rarity: 'unlikely', frequency: 0.30, rationale: 'Io regularly visible at Kahuku.' },
+      'kilauea-summit': { rarity: 'unlikely', frequency: 0.25, peakWindow: { startMonthDay: '03-01', endMonthDay: '06-30', label: 'Peak breeding: March – June' }, rationale: 'Endemic Io occasionally visible soaring over Kilauea; breeding season most active.' },
+      'kahuku':         { rarity: 'unlikely', frequency: 0.30, peakWindow: { startMonthDay: '03-01', endMonthDay: '06-30', label: 'Peak breeding: March – June' }, rationale: 'Io regularly visible at Kahuku.' },
     },
     'Small Indian Mongoose': {
       'kilauea-summit': { rarity: 'likely', frequency: 0.45, rationale: 'Invasive mongoose — visible along roads and trails.' },
@@ -1490,8 +1491,8 @@ export const ZONE_OVERRIDES = {
     },
     'American Black Bear': {
       'valley':       { rarity: 'unlikely', frequency: 0.15, rationale: 'Despite bear-aware messaging, casual Valley visitors see bears on ~15% of summer trips.' },
-      'tuolumne':     { rarity: 'unlikely', frequency: 0.20, rationale: 'Tuolumne Meadows campers report regular bear activity at dusk.' },
-      'high-country': { rarity: 'unlikely', frequency: 0.20, rationale: 'Backcountry bear sightings are common but not guaranteed.' },
+      'tuolumne':     { rarity: 'unlikely', frequency: 0.20, peakWindow: { startMonthDay: '08-01', endMonthDay: '09-30', label: 'Peak berry season: Aug – Sept' }, rationale: 'Tuolumne Meadows campers report regular bear activity at dusk; berry season Aug-Sept brings them to subalpine meadows.' },
+      'high-country': { rarity: 'unlikely', frequency: 0.20, peakWindow: { startMonthDay: '08-01', endMonthDay: '09-30', label: 'Peak berry season: Aug – Sept' }, rationale: 'Backcountry bear sightings are common but not guaranteed.' },
     },
     "Steller's Jay": {
       'valley':       { rarity: 'guaranteed', frequency: 0.95, rationale: 'Steller\'s Jays at every Valley campground and picnic area.' },
