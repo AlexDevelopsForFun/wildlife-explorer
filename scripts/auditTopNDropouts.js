@@ -155,7 +155,7 @@ async function main() {
     ? new Set(process.env.PARKS.split(',').map(s => s.trim()))
     : null;
   const TOP_N = process.env.TOP_N ? Number(process.env.TOP_N) : 10;
-  const MIN_OBS_FLAG = 50;  // Flag species with ≥ this many obs as potentially-flagship
+  const MIN_OBS_FLAG = process.env.MIN_OBS_FLAG ? Number(process.env.MIN_OBS_FLAG) : 50;
 
   // Load place_ids from build script via grep parsing (avoids importing the
   // build script's main() side-effect)
