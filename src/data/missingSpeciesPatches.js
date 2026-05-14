@@ -41,7 +41,7 @@
  * Curation: bump MISSING_SPECIES_REVIEWED_AT when adding/changing entries.
  */
 
-export const MISSING_SPECIES_REVIEWED_AT = '2026-04-25';
+export const MISSING_SPECIES_REVIEWED_AT = '2026-05-14';
 
 export const MISSING_SPECIES_PATCHES = [
   // ── Redwood: Roosevelt Elk (Prairie Creek herd is the flagship) ────
@@ -213,180 +213,25 @@ export const MISSING_SPECIES_PATCHES = [
     activityPeriod: 'diurnal',
   },
 
-  // ── Elk silent-dropout pattern (6 parks) ─────────────────────────────
-  // The build pipeline systematically drops "Elk" (Cervus canadensis) at
-  // parks where iNat obs counts are low (10-60). Caught via
-  // scripts/auditTopNDropouts.js. Each park has a real but modest elk
-  // presence — populations are mostly transient or relict, not flagship
-  // herds. Patched in at 'rare' or 'unlikely' tier appropriately.
-  {
-    parkId: 'glacier',
-    name: 'Elk',
-    scientificName: 'Cervus canadensis',
-    animalType: 'mammal',
-    rarity: 'unlikely',
-    frequency: 0.22,
-    funFact: 'Elk in Glacier are most visible in fall along the North Fork and in meadow edges around Many Glacier — bugling males in September are a highlight of the rut.',
-    seasons: ['spring', 'summer', 'fall', 'winter'],
-    activityPeriod: 'crepuscular',
-  },
-  {
-    parkId: 'mountrainier',
-    name: 'Elk',
-    scientificName: 'Cervus canadensis',
-    animalType: 'mammal',
-    rarity: 'rare',
-    frequency: 0.05,
-    funFact: 'Roosevelt Elk in the Carbon River and Cowlitz Divide areas — small population spilling over from Olympic Peninsula source herds.',
-    seasons: ['spring', 'summer', 'fall', 'winter'],
-    activityPeriod: 'crepuscular',
-  },
-  {
-    parkId: 'windcave',
-    name: 'Elk',
-    scientificName: 'Cervus canadensis',
-    animalType: 'mammal',
-    rarity: 'unlikely',
-    frequency: 0.20,
-    funFact: 'Reintroduced elk herd in the Black Hills — visible in forested edges around the Wildlife Loop at dawn/dusk.',
-    seasons: ['spring', 'summer', 'fall', 'winter'],
-    activityPeriod: 'crepuscular',
-  },
-  {
-    parkId: 'petrifiedforest',
-    name: 'Elk',
-    scientificName: 'Cervus canadensis',
-    animalType: 'mammal',
-    rarity: 'rare',
-    frequency: 0.05,
-    funFact: 'Elk occasionally cross the park grasslands — small transient population from the surrounding Chinle area.',
-    seasons: ['spring', 'summer', 'fall', 'winter'],
-    activityPeriod: 'crepuscular',
-  },
-  {
-    parkId: 'theodoreroosevelt',
-    name: 'Elk',
-    scientificName: 'Cervus canadensis',
-    animalType: 'mammal',
-    rarity: 'rare',
-    frequency: 0.05,
-    funFact: 'Reintroduced elk herd in Theodore Roosevelt — visible occasionally in badlands canyons; smaller population than bison.',
-    seasons: ['spring', 'summer', 'fall', 'winter'],
-    activityPeriod: 'crepuscular',
-  },
-  {
-    parkId: 'greatsanddunes',
-    name: 'Elk',
-    scientificName: 'Cervus canadensis',
-    animalType: 'mammal',
-    rarity: 'rare',
-    frequency: 0.05,
-    funFact: 'Elk in the Sangre de Cristo foothills — visible occasionally at the forest-grassland edge near Mosca Pass.',
-    seasons: ['spring', 'summer', 'fall', 'winter'],
-    activityPeriod: 'crepuscular',
-  },
-
-  // ── Rocky Mountain Mountain Goat (rare visitor — not breeding) ─────
-  {
-    parkId: 'rockymountain',
-    name: 'Mountain Goat',
-    scientificName: 'Oreamnos americanus',
-    animalType: 'mammal',
-    rarity: 'rare',
-    frequency: 0.04,
-    funFact: 'Mountain Goats occasionally visit RMNP from Mount Evans / Pikes Peak source herds — not a resident population, but documented sightings on Trail Ridge area cliffs.',
-    seasons: ['spring', 'summer', 'fall'],
-    activityPeriod: 'diurnal',
-  },
-
-  // ── Denali Redpoll (boreal songbird) ───────────────────────────────
-  {
-    parkId: 'denali',
-    name: 'Redpoll',
-    scientificName: 'Acanthis flammea',
-    animalType: 'bird',
-    rarity: 'unlikely',
-    frequency: 0.20,
-    funFact: 'Common Redpolls in Denali boreal forests and shrub tundra — small finch with a red forecrown patch; especially visible at bird feeders + winter flocks.',
-    seasons: ['spring', 'summer', 'fall', 'winter'],
-    activityPeriod: 'diurnal',
-  },
-
-  // ── Denali: Spruce Grouse + Boreal Chickadee (silent dropout audit) ──
-  {
-    parkId: 'denali',
-    name: 'Spruce Grouse',
-    scientificName: 'Canachites canadensis',
-    animalType: 'bird',
-    rarity: 'unlikely',
-    frequency: 0.18,
-    funFact: 'Spruce Grouse forage in spruce forests around the park entrance and along the Park Road taiga zones — boreal forest specialist with 127+ iNat research-grade obs at Denali.',
-    seasons: ['spring', 'summer', 'fall', 'winter'],
-    activityPeriod: 'diurnal',
-  },
-  {
-    parkId: 'denali',
-    name: 'Boreal Chickadee',
-    scientificName: 'Poecile hudsonicus',
-    animalType: 'bird',
-    rarity: 'likely',
-    frequency: 0.40,
-    funFact: 'Boreal Chickadees in Denali spruce forests near the entrance and along the Park Road — vocal year-round in conifer canopy.',
-    seasons: ['spring', 'summer', 'fall', 'winter'],
-    activityPeriod: 'diurnal',
-  },
-
-  // ── Channel Islands: Bald Eagle (flagship recovery story, 117+ obs) ──
-  {
-    parkId: 'channelislands',
-    name: 'Bald Eagle',
-    scientificName: 'Haliaeetus leucocephalus',
-    animalType: 'bird',
-    rarity: 'likely',
-    frequency: 0.45,
-    funFact: 'Bald Eagles were reintroduced to the Channel Islands after DDT extirpation — now successfully nesting on Santa Cruz, Santa Rosa, and Anacapa. One of the great recovery stories on the West Coast.',
-    seasons: ['spring', 'summer', 'fall', 'winter'],
-    activityPeriod: 'diurnal',
-  },
-
-  // ── Death Valley: Red-headed Woodpecker (rare oasis visitor) ───────
-  {
-    parkId: 'deathvalley',
-    name: 'Red-headed Woodpecker',
-    scientificName: 'Melanerpes erythrocephalus',
-    animalType: 'bird',
-    rarity: 'rare',
-    frequency: 0.04,
-    funFact: 'Red-headed Woodpeckers turn up rarely at Furnace Creek and other oasis stops in Death Valley — out of normal range, but desert oases pull migrant strays.',
-    seasons: ['spring', 'fall'],
-    activityPeriod: 'diurnal',
-  },
-
-  // ── Acadia: Eastern Meadow Vole (small mammal often missed) ────────
-  {
-    parkId: 'acadia',
-    name: 'Eastern Meadow Vole',
-    scientificName: 'Microtus pennsylvanicus',
-    animalType: 'mammal',
-    rarity: 'unlikely',
-    frequency: 0.18,
-    funFact: 'Meadow Voles are abundant in grassy and wetland-edge habitats across Acadia, but cryptic — most often glimpsed as fast brown shapes diving into runways under grass.',
-    seasons: ['spring', 'summer', 'fall', 'winter'],
-    activityPeriod: 'cathemeral',
-  },
-
-  // ── Hawaii Volcanoes: Red Junglefowl (introduced, around campgrounds) ──
-  {
-    parkId: 'hawaiivolcanoes',
-    name: 'Red Junglefowl',
-    scientificName: 'Gallus gallus',
-    animalType: 'bird',
-    rarity: 'unlikely',
-    frequency: 0.20,
-    funFact: 'Feral Red Junglefowl roam campgrounds and lower elevations of Hawaii Volcanoes — descendants of Polynesian-introduced ancestors and modern feral chickens.',
-    seasons: ['spring', 'summer', 'fall', 'winter'],
-    activityPeriod: 'diurnal',
-  },
+  // ── REMOVED 2026-05-14: 15 patches no longer needed ─────────────────
+  // The following used to be patched in at runtime but are now produced
+  // naturally by the build pipeline thanks to the dedup sci-name and
+  // NPS not-in-park bug fixes (commit d250cf3 + targeted rebuild):
+  //   • Elk at glacier, mountrainier, windcave, petrifiedforest,
+  //     theodoreroosevelt, greatsanddunes (dedup sci-name fix)
+  //   • Mountain Goat @ rockymountain
+  //   • Redpoll @ denali
+  //   • Spruce Grouse @ denali
+  //   • Boreal Chickadee @ denali
+  //   • Bald Eagle @ channelislands
+  //   • Red-headed Woodpecker @ deathvalley
+  //   • Eastern Meadow Vole @ acadia
+  //   • Red Junglefowl @ hawaiivolcanoes
+  //   (above 8 fixed via NPS not-in-park override now respecting iNat
+  //    evidence ≥10 obs)
+  //
+  // Regression coverage: scripts/testRarityPipeline.js tests 7-9 guard
+  // against re-introduction of either bug.
 
   // ── Gateway Arch: White-tailed Deer + Red Fox (urban park) ─────────
   {

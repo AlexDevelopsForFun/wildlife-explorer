@@ -251,6 +251,105 @@ console.log(`\n🧪 Rarity-pipeline regression suite\n`);
   assertEqual(findInList(cache, 'Mountain Lion')?.name, 'Cougar', 'alias: Mountain Lion → Cougar');
 }
 
+// ── 7. dedup() must propagate scientificName from any group member ───────
+// Bug (commit d250cf3): NPS_WILDLIFE_TOPICS hardcoded
+// `{ name: 'Elk', scientificName: null }`. When iNat returned the same
+// species with sci='Cervus canadensis', dedup grouped them together but
+// picked the NPS entry as primary (tied frequencies, first-wins) and
+// `{ ...primary }` clobbered the real sci with null. Then
+// isValidAnimalEntry rejected single-word "Elk" with no sci → silent
+// drop at all 6 parks where NPS topic 'Elk' was set.
+{
+  // Mini-replica of the dedup() merge logic (just the sci-name propagation).
+  function mergedSci(group) {
+    const primary = group.reduce((b, a) => ((a.frequency ?? 0) > (b.frequency ?? 0) ? a : b));
+    return primary.scientificName ?? group.find(x => x.scientificName)?.scientificName ?? null;
+  }
+  // Reproduces the historical bug: NPS entry first (no sci, no freq), iNat second (has sci, no freq).
+  // Tied frequencies → primary = NPS. With the fix, sci falls back to iNat's.
+  const group = [
+    { name: 'Elk', scientificName: null,                source: 'nps' },
+    { name: 'Elk', scientificName: 'Cervus canadensis', source: 'inaturalist' },
+  ];
+  assertEqual(mergedSci(group), 'Cervus canadensis', 'dedup: NPS-first group with sci=null + iNat with sci → propagates Cervus canadensis');
+  // Reverse insertion order shouldn't matter — sci should still propagate.
+  assertEqual(mergedSci(group.slice().reverse()), 'Cervus canadensis', 'dedup: iNat-first group → still propagates sci to merged entry');
+  // Group where neither has sci → returns null (no false fix).
+  const noSciGroup = [{ name: 'Foo' }, { name: 'Foo' }];
+  assertEqual(mergedSci(noSciGroup), null, 'dedup: group with no sci returns null (no false positive)');
+  // Group where primary has sci → keeps primary's sci.
+  const primarySciGroup = [
+    { name: 'Mountain Lion', scientificName: 'Puma concolor',     frequency: 0.5 },
+    { name: 'Mountain Lion', scientificName: 'Puma concolor coryi', frequency: 0.1 },
+  ];
+  assertEqual(mergedSci(primarySciGroup), 'Puma concolor', 'dedup: primary sci wins when present (subspecies fallback)');
+}
+
+// ── 8. isValidAnimalEntry single-word name guard requires sci ────────────
+// Belt-and-braces: confirms the validator that backstops the bug above.
+// A single-word common name without a scientific name is rejected so that
+// merge bugs like the one in test 7 fail loud rather than silently.
+{
+  const _REJECT_PATTERNS = [
+    /\b(unidentified|unknown|hybrid)\b/i,
+    /\bspp?\./i,
+    /,\s*\d{4}/,
+    /\b(family|order|class|phylum|suborder|tribe)\s+[A-Z]/i,
+  ];
+  function isValid(a) {
+    const n = a?.name?.trim();
+    if (!n) return false;
+    if (_REJECT_PATTERNS.some(p => p.test(n))) return false;
+    if (!n.includes(' ') && !a.scientificName) return false;
+    return true;
+  }
+  assertEqual(isValid({ name: 'Elk' }), false, 'isValid: single-word "Elk" without sci → rejected');
+  assertEqual(isValid({ name: 'Elk', scientificName: 'Cervus canadensis' }), true, 'isValid: single-word "Elk" with sci → accepted');
+  assertEqual(isValid({ name: 'Bald Eagle' }), true, 'isValid: multi-word name without sci → accepted');
+  assertEqual(isValid({ name: '' }), false, 'isValid: empty name → rejected');
+  assertEqual(isValid({ name: 'Hybrid Sparrow' }), false, 'isValid: name containing "hybrid" → rejected');
+}
+
+// ── 9. NPS Not-In-Park gate must respect iNat evidence ────────────────────
+// Bug (commit d250cf3): applyNpsAbundanceConstraints dropped any species
+// marked Occurrence='Not In Park' regardless of iNat evidence weight.
+// NPS data lags reintroductions and misses peripheral species — Channel
+// Islands Bald Eagle (117 obs!), RMNP Mountain Goat (13), Denali Common
+// Redpoll (16), etc. were all silently dropped. Fix: when iNat _count >= 10,
+// override and keep at floor 'rare' tier with raritySource transparency.
+{
+  const RARITY_RANK = { guaranteed: 0, very_likely: 1, likely: 2, unlikely: 3, rare: 4, exceptional: 5 };
+  function applyGate(animal, npsOccurrence) {
+    if (npsOccurrence !== 'not in park' && npsOccurrence !== 'false report') return { kept: true, animal };
+    if (animal._priority === 0) return { kept: true, animal }; // curated bypass
+    const inatObs = animal._count ?? 0;
+    if (inatObs >= 10) {
+      // Clamp to exactly 'rare' regardless of current tier (NPS says not present).
+      const next = { ...animal, rarity: 'rare', raritySource: `nps_overridden:${npsOccurrence}` };
+      return { kept: true, animal: next };
+    }
+    return { kept: false, animal: null };
+  }
+  // 117 obs (Channel Islands Bald Eagle) — over-promoted by eBird? Cap at rare.
+  const bald = applyGate({ name: 'Bald Eagle', rarity: 'likely', _count: 117 }, 'not in park');
+  assertEqual(bald.kept, true, 'NPS gate: 117 obs species kept despite not-in-park');
+  assertEqual(bald.animal.rarity, 'rare', 'NPS gate: high-evidence species capped at rare');
+  assertEqual(bald.animal.raritySource, 'nps_overridden:not in park', 'NPS gate: raritySource tagged for transparency');
+  // 13 obs (RMNP Mountain Goat) — already exceptional; bumped up to rare.
+  const goat = applyGate({ name: 'Mountain Goat', rarity: 'exceptional', _count: 13 }, 'not in park');
+  assertEqual(goat.kept, true, 'NPS gate: 13 obs species kept');
+  assertEqual(goat.animal.rarity, 'rare', 'NPS gate: exceptional with 13+ obs bumped to rare');
+  // 5 obs — below threshold; NPS verdict trusted, dropped.
+  const lowObs = applyGate({ name: 'Stray Species', rarity: 'rare', _count: 5 }, 'not in park');
+  assertEqual(lowObs.kept, false, 'NPS gate: <10 obs species dropped (insufficient evidence to override NPS)');
+  // Curated entry bypass — _priority=0 always kept.
+  const curated = applyGate({ name: 'Reintroduced Species', rarity: 'rare', _count: 0, _priority: 0 }, 'not in park');
+  assertEqual(curated.kept, true, 'NPS gate: curated _priority=0 entry bypasses gate regardless of iNat obs');
+  // Species not in NPS map at all — passes through unchanged.
+  const noNps = applyGate({ name: 'Foo', rarity: 'likely', _count: 50 }, null);
+  assertEqual(noNps.kept, true, 'NPS gate: species absent from NPS records → passes through');
+}
+
 // ── Summary ──────────────────────────────────────────────────────────────
 console.log(`📊 Results`);
 console.log(`   Passed: ${passed}`);

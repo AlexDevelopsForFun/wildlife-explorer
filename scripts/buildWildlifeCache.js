@@ -1713,14 +1713,13 @@ function applyNpsAbundanceConstraints(animals, npsData, parkId) {
       // documentation.
       const inatObs = a._count ?? 0;
       if (inatObs >= 10) {
-        const currentRank = RARITY_RANK[a.rarity] ?? 5;
-        const rareRank    = RARITY_RANK['rare'];
-        if (currentRank < rareRank) {
-          a.rarity = 'rare';
-          a.raritySource = `nps_overridden:${nps.occurrence}`;
-        } else {
-          a.raritySource = `nps_overridden:${nps.occurrence}`;
-        }
+        // Clamp to exactly 'rare' tier — NPS says not present, so the species
+        // is by definition uncommon at this park. Don't over-promote (when
+        // current is more common than rare) and don't leave at exceptional
+        // (when current is rarer than rare): 10+ research-grade obs justifies
+        // at least 'rare' presence.
+        a.rarity = 'rare';
+        a.raritySource = `nps_overridden:${nps.occurrence}`;
         overridden++;
         kept.push(a);
         continue;
