@@ -1285,39 +1285,42 @@ async function getInatSpecies(lat, lng, taxonKey, wideNet = false, placeId = nul
 // Removed (never appeared in any park's actual topic list):
 //   'Moose', 'Bears - Grizzly', 'Bears - Black', 'Deer', 'Otters',
 //   'Manatees', 'Seals and Sea Lions', 'Eagles', 'Salamanders', 'Butterflies and Moths'
+// scientificName included so dedup can match cross-source duplicates by sci-key
+// (without it, NPS-topic entries used to silently displace iNat-derived entries
+// in dedup tie-breaks and lose their sci name during merge).
 const NPS_WILDLIFE_TOPICS = {
   // ── Ungulates ───────────────────────────────────────────────────────────────
-  'Bison':                    { name: 'American Bison',     emoji: '🦬', animalType: 'mammal',  rarity: 'guaranteed'  },
-  'Elk':                      { name: 'Elk',                emoji: '🦌', animalType: 'mammal',  rarity: 'likely'      },
-  'Horses (wild)':            { name: 'Wild Horse',         emoji: '🐴', animalType: 'mammal',  rarity: 'unlikely'    },
+  'Bison':                    { name: 'American Bison',     scientificName: 'Bison bison',              emoji: '🦬', animalType: 'mammal',  rarity: 'guaranteed'  },
+  'Elk':                      { name: 'Elk',                scientificName: 'Cervus canadensis',        emoji: '🦌', animalType: 'mammal',  rarity: 'likely'      },
+  'Horses (wild)':            { name: 'Wild Horse',         scientificName: 'Equus ferus caballus',     emoji: '🐴', animalType: 'mammal',  rarity: 'unlikely'    },
   // ── Carnivores ──────────────────────────────────────────────────────────────
-  'Wolves':                   { name: 'Gray Wolf',          emoji: '🐺', animalType: 'mammal',  rarity: 'unlikely'    },
-  'Cats (wild)':              { name: 'Mountain Lion',      emoji: '🐆', animalType: 'mammal',  rarity: 'exceptional' },
+  'Wolves':                   { name: 'Gray Wolf',          scientificName: 'Canis lupus',              emoji: '🐺', animalType: 'mammal',  rarity: 'unlikely'    },
+  'Cats (wild)':              { name: 'Mountain Lion',      scientificName: 'Puma concolor',            emoji: '🐆', animalType: 'mammal',  rarity: 'exceptional' },
   // ── Marine ──────────────────────────────────────────────────────────────────
-  'Whales':                   { name: 'Humpback Whale',     emoji: '🐋', animalType: 'marine',  rarity: 'unlikely'    },
+  'Whales':                   { name: 'Humpback Whale',     scientificName: 'Megaptera novaeangliae',   emoji: '🐋', animalType: 'marine',  rarity: 'unlikely'    },
   // ── Reptiles ────────────────────────────────────────────────────────────────
-  'Alligators or Crocodiles': { name: 'American Alligator', emoji: '🐊', animalType: 'reptile', rarity: 'guaranteed'  },
+  'Alligators or Crocodiles': { name: 'American Alligator', scientificName: 'Alligator mississippiensis', emoji: '🐊', animalType: 'reptile', rarity: 'guaranteed'  },
   // 'Tortoises and Turtles' resolved per-park in getNpsTopics via NPS_TURTLE_BY_PARK
 };
 
 // Per-park turtle species for the 'Tortoises and Turtles' NPS topic (mirrors apiService.js).
 const NPS_TURTLE_BY_PARK = {
-  zion:    { name: 'Desert Tortoise',      emoji: '🐢', animalType: 'reptile', rarity: 'unlikely' },
-  grca:    { name: 'Desert Tortoise',      emoji: '🐢', animalType: 'reptile', rarity: 'unlikely' },
-  jotr:    { name: 'Desert Tortoise',      emoji: '🐢', animalType: 'reptile', rarity: 'unlikely' },
-  moja:    { name: 'Desert Tortoise',      emoji: '🐢', animalType: 'reptile', rarity: 'unlikely' },
-  deva:    { name: 'Desert Tortoise',      emoji: '🐢', animalType: 'reptile', rarity: 'unlikely' },
-  cong:    { name: 'Eastern Box Turtle',   emoji: '🐢', animalType: 'reptile', rarity: 'unlikely' },
-  shen:    { name: 'Eastern Box Turtle',   emoji: '🐢', animalType: 'reptile', rarity: 'unlikely' },
-  grsm:    { name: 'Eastern Box Turtle',   emoji: '🐢', animalType: 'reptile', rarity: 'unlikely' },
-  ever:    { name: 'Green Sea Turtle',     emoji: '🐢', animalType: 'reptile', rarity: 'rare'     },
-  bith:    { name: 'Green Sea Turtle',     emoji: '🐢', animalType: 'reptile', rarity: 'rare'     },
-  cuis:    { name: 'Loggerhead Sea Turtle',emoji: '🐢', animalType: 'reptile', rarity: 'rare'     },
-  capehe:  { name: 'Loggerhead Sea Turtle',emoji: '🐢', animalType: 'reptile', rarity: 'rare'     },
-  acad:    { name: 'Painted Turtle',       emoji: '🐢', animalType: 'reptile', rarity: 'unlikely' },
-  sara:    { name: 'Painted Turtle',       emoji: '🐢', animalType: 'reptile', rarity: 'unlikely' },
+  zion:    { name: 'Desert Tortoise',      scientificName: 'Gopherus agassizii',  emoji: '🐢', animalType: 'reptile', rarity: 'unlikely' },
+  grca:    { name: 'Desert Tortoise',      scientificName: 'Gopherus agassizii',  emoji: '🐢', animalType: 'reptile', rarity: 'unlikely' },
+  jotr:    { name: 'Desert Tortoise',      scientificName: 'Gopherus agassizii',  emoji: '🐢', animalType: 'reptile', rarity: 'unlikely' },
+  moja:    { name: 'Desert Tortoise',      scientificName: 'Gopherus agassizii',  emoji: '🐢', animalType: 'reptile', rarity: 'unlikely' },
+  deva:    { name: 'Desert Tortoise',      scientificName: 'Gopherus agassizii',  emoji: '🐢', animalType: 'reptile', rarity: 'unlikely' },
+  cong:    { name: 'Eastern Box Turtle',   scientificName: 'Terrapene carolina',  emoji: '🐢', animalType: 'reptile', rarity: 'unlikely' },
+  shen:    { name: 'Eastern Box Turtle',   scientificName: 'Terrapene carolina',  emoji: '🐢', animalType: 'reptile', rarity: 'unlikely' },
+  grsm:    { name: 'Eastern Box Turtle',   scientificName: 'Terrapene carolina',  emoji: '🐢', animalType: 'reptile', rarity: 'unlikely' },
+  ever:    { name: 'Green Sea Turtle',     scientificName: 'Chelonia mydas',      emoji: '🐢', animalType: 'reptile', rarity: 'rare'     },
+  bith:    { name: 'Green Sea Turtle',     scientificName: 'Chelonia mydas',      emoji: '🐢', animalType: 'reptile', rarity: 'rare'     },
+  cuis:    { name: 'Loggerhead Sea Turtle',scientificName: 'Caretta caretta',     emoji: '🐢', animalType: 'reptile', rarity: 'rare'     },
+  capehe:  { name: 'Loggerhead Sea Turtle',scientificName: 'Caretta caretta',     emoji: '🐢', animalType: 'reptile', rarity: 'rare'     },
+  acad:    { name: 'Painted Turtle',       scientificName: 'Chrysemys picta',     emoji: '🐢', animalType: 'reptile', rarity: 'unlikely' },
+  sara:    { name: 'Painted Turtle',       scientificName: 'Chrysemys picta',     emoji: '🐢', animalType: 'reptile', rarity: 'unlikely' },
 };
-const NPS_TURTLE_DEFAULT = { name: 'Desert Tortoise', emoji: '🐢', animalType: 'reptile', rarity: 'unlikely' };
+const NPS_TURTLE_DEFAULT = { name: 'Desert Tortoise', scientificName: 'Gopherus agassizii', emoji: '🐢', animalType: 'reptile', rarity: 'unlikely' };
 
 async function getNpsTopics(parkCode) {
   if (!NPS_KEY || !parkCode) return [];
@@ -1332,11 +1335,14 @@ async function getNpsTopics(parkCode) {
   const animals = [];
 
   // Standard topic → species mappings
+  // info now carries scientificName so dedup can join NPS-topic entries with
+  // iNat-derived ones via sci-key (was: hardcoded null, which caused
+  // single-word names like "Elk" to be silently rejected by isValidAnimalEntry
+  // when the merged primary inherited null sci).
   for (const [topic, info] of Object.entries(NPS_WILDLIFE_TOPICS)) {
     if (!topicSet.has(topic)) continue;
     animals.push({
       ...info,
-      scientificName: null,
       seasons: ['spring', 'summer', 'fall', 'winter'],
       bestSeason: 'summer',
       source: 'nps',
@@ -1349,7 +1355,6 @@ async function getNpsTopics(parkCode) {
     const turtleInfo = NPS_TURTLE_BY_PARK[parkCode] ?? NPS_TURTLE_DEFAULT;
     animals.push({
       ...turtleInfo,
-      scientificName: null,
       seasons: ['spring', 'summer', 'fall'],
       bestSeason: 'summer',
       source: 'nps',
@@ -1524,7 +1529,23 @@ function dedup(animals) {
       }
     }
 
-    return { ...primary, seasons: mergedSeasons, rarity: mergedRarity, raritySource: mergedRaritySource, sources: allSources.length ? allSources : undefined, ...(mergedMigration ? { migrationStatus: mergedMigration } : {}) };
+    // BUGFIX: scientificName must propagate from any group member that has one.
+    // NPS topic tags create entries with sci=null; when an iNat entry with the
+    // same common name is added later, dedup picked the NPS entry as primary
+    // (tied frequencies, first-wins) and the merged entry inherited null sci.
+    // Then isValidAnimalEntry would reject single-word names without sci,
+    // silently dropping species like "Elk" at parks where the NPS topic tag
+    // arrived before the iNat data. (Caught via auditTopNDropouts.js — Elk
+    // dropped at 6 parks: Glacier, Mt Rainier, Wind Cave, Petrified Forest,
+    // Theodore Roosevelt, Great Sand Dunes.)
+    const mergedSci = primary.scientificName
+                    ?? g.find(x => x.scientificName)?.scientificName
+                    ?? null;
+    // Preserve max iNat _count across the group so downstream filters
+    // (NPS not-in-park override, mammal floor) can see real evidence weight.
+    const mergedCount = Math.max(0, ...g.map(x => x._count ?? 0));
+
+    return { ...primary, scientificName: mergedSci, _count: mergedCount, seasons: mergedSeasons, rarity: mergedRarity, raritySource: mergedRaritySource, sources: allSources.length ? allSources : undefined, ...(mergedMigration ? { migrationStatus: mergedMigration } : {}) };
   });
 }
 
@@ -1666,7 +1687,7 @@ function applyNpsAbundanceConstraints(animals, npsData, parkId) {
     return null;
   }
 
-  let dropped = 0, floored = 0, ceiled = 0;
+  let dropped = 0, floored = 0, ceiled = 0, overridden = 0;
   const kept = [];
   for (const a of animals) {
     const nps = lookup(a);
@@ -1678,6 +1699,29 @@ function applyNpsAbundanceConstraints(animals, npsData, parkId) {
       // Curated entries still kept — sometimes wildlifeData has good reason
       // to surface a species the NPS list lags on (recent reintroductions).
       if (a._priority === 0) {
+        kept.push(a);
+        continue;
+      }
+      // NPS records lag reintroductions and miss peripheral species. When iNat
+      // has substantial research-grade evidence (≥10 obs), trust the photo data
+      // over NPS's "Not In Park" verdict — but cap rarity at 'rare' so the
+      // species shows but doesn't get over-promoted. Caught by
+      // auditTopNDropouts.js: Channel Islands Bald Eagle (117 obs!), RMNP
+      // Mountain Goat (13), Denali Redpoll (16), Death Valley Red-headed
+      // Woodpecker (16), Acadia Eastern Meadow Vole (12), Hawaii Volcanoes
+      // Red Junglefowl (12) — all marked "Not In Park" by NPS despite iNat
+      // documentation.
+      const inatObs = a._count ?? 0;
+      if (inatObs >= 10) {
+        const currentRank = RARITY_RANK[a.rarity] ?? 5;
+        const rareRank    = RARITY_RANK['rare'];
+        if (currentRank < rareRank) {
+          a.rarity = 'rare';
+          a.raritySource = `nps_overridden:${nps.occurrence}`;
+        } else {
+          a.raritySource = `nps_overridden:${nps.occurrence}`;
+        }
+        overridden++;
         kept.push(a);
         continue;
       }
@@ -1713,8 +1757,8 @@ function applyNpsAbundanceConstraints(animals, npsData, parkId) {
     kept.push(a);
   }
 
-  if (dropped || floored || ceiled) {
-    console.log(`  [${parkId}] NPS abundance: dropped ${dropped} not-in-park, floored ${floored}, ceiled ${ceiled}`);
+  if (dropped || floored || ceiled || overridden) {
+    console.log(`  [${parkId}] NPS abundance: dropped ${dropped} not-in-park, floored ${floored}, ceiled ${ceiled}, overridden ${overridden} (iNat≥10obs kept despite not-in-park)`);
   }
   return kept;
 }
