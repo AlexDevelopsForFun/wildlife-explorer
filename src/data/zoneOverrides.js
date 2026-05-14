@@ -94,7 +94,8 @@ export const ZONE_OVERRIDES = {
       'cades-cove': {
         rarity: 'guaranteed',
         frequency: 0.97,
-        rationale: 'Cades Cove meadows host the densest deer population in the park.',
+        peakWindow: { startMonthDay: '10-15', endMonthDay: '11-30', label: 'Peak rut: mid-Oct – Nov' },
+        rationale: 'Cades Cove meadows host the densest deer population in the park; rut peaks Oct-Nov when bucks chase does in the open fields.',
       },
     },
   },
@@ -180,7 +181,7 @@ export const ZONE_OVERRIDES = {
       'lamar-valley':  { rarity: 'very_likely', frequency: 0.75, rationale: 'Elk visible in valley meadows alongside bison.' },
     },
     'Coyote': {
-      'lamar-valley':  { rarity: 'likely', frequency: 0.55, rationale: 'Highly visible in open valley terrain — often seen following wolf kills.' },
+      'lamar-valley':  { rarity: 'likely', frequency: 0.55, peakWindow: { startMonthDay: '12-01', endMonthDay: '02-28', label: 'Peak winter coat + visibility: Dec – Feb' }, rationale: 'Highly visible in open valley terrain — often seen following wolf kills; winter pelage + snow contrast makes them maximally visible.' },
       'hayden-valley': { rarity: 'likely', frequency: 0.50, rationale: 'Open valley sightings common.' },
     },
   },
@@ -206,7 +207,7 @@ export const ZONE_OVERRIDES = {
       'going-to-sun':   { rarity: 'likely',      frequency: 0.50, seasonFrequencies: { spring: 25, summer: 65, fall: 55, winter: 5 }, peakWindow: { startMonthDay: '07-01', endMonthDay: '09-15', label: 'Peak hay-cutting: July – mid-Sept' }, rationale: 'Pikas calling from talus along Logan Pass area trails in summer.' },
     },
     'Moose': {
-      'many-glacier':   { rarity: 'likely',      frequency: 0.45, seasonFrequencies: { spring: 50, summer: 55, fall: 45, winter: 30 }, rationale: 'Moose at Fishercap Lake / Swiftcurrent willow thickets.' },
+      'many-glacier':   { rarity: 'likely',      frequency: 0.45, seasonFrequencies: { spring: 50, summer: 55, fall: 45, winter: 30 }, peakWindow: { startMonthDay: '09-15', endMonthDay: '10-31', label: 'Peak rut + bugling: mid-Sept – Oct' }, rationale: 'Moose at Fishercap Lake / Swiftcurrent willow thickets; rut Sept-Oct concentrates bulls.' },
       'two-medicine':   { rarity: 'likely',      frequency: 0.40, rationale: 'Moose along the lake shore willows.' },
     },
     'Mountain Goat': {
@@ -425,7 +426,7 @@ export const ZONE_OVERRIDES = {
       'bartlett-cove': { rarity: 'very_likely', frequency: 0.70, rationale: 'Frequent in Bartlett Cove waters near visitor center.' },
     },
     'Sea Otter': {
-      'boat-tour': { rarity: 'very_likely', frequency: 0.85, rationale: 'Sea otters in lower bay observed on most cruises year-round.' },
+      'boat-tour': { rarity: 'very_likely', frequency: 0.85, peakWindow: { startMonthDay: '04-01', endMonthDay: '07-31', label: 'Peak pupping: April – July' }, rationale: 'Sea otters in lower bay observed on most cruises year-round; pups visible spring-summer.' },
     },
     'Orca': {
       'boat-tour': {
@@ -569,10 +570,10 @@ export const ZONE_OVERRIDES = {
   // ── Saguaro ─────────────────────────────────────────────────────────
   saguaro: {
     "Gambel's Quail": {
-      'west-tucson': { rarity: 'guaranteed', frequency: 0.95, rationale: 'Tucson Mountain District wash trails — quail coveys at every visit.' },
+      'west-tucson': { rarity: 'guaranteed', frequency: 0.95, peakWindow: { startMonthDay: '03-01', endMonthDay: '05-31', label: 'Peak vocal breeding: March – May' }, rationale: 'Tucson Mountain District wash trails — quail coveys at every visit; males calling from prominent perches in spring.' },
     },
     'Cactus Wren': {
-      'west-tucson': { rarity: 'very_likely', frequency: 0.85, rationale: 'Cactus wrens nesting in cholla and saguaro along West District trails.' },
+      'west-tucson': { rarity: 'very_likely', frequency: 0.85, peakWindow: { startMonthDay: '04-01', endMonthDay: '06-30', label: 'Peak breeding: April – June' }, rationale: 'Cactus wrens nesting in cholla and saguaro along West District trails.' },
     },
     'Javelina': {
       'east-rincon': { rarity: 'likely',     frequency: 0.45, peakWindow: { startMonthDay: '03-01', endMonthDay: '05-31', label: 'Peak: March – May (cooler dawn/dusk)' }, rationale: 'Rincon Mountain District foothills + Cactus Forest Loop — javelina herds visible at dawn/dusk; cooler spring months draw them out longer.' },
@@ -595,8 +596,8 @@ export const ZONE_OVERRIDES = {
       'boat-tour':   { rarity: 'likely',      frequency: 0.40, seasonFrequencies: { spring: 30, summer: 50, fall: 45, winter: 10 }, peakWindow: { startMonthDay: '06-15', endMonthDay: '10-15', label: 'Peak feeding: mid-June – mid-Oct' }, rationale: 'Summer feeding migration — sightings on ~40% of crossings.' },
     },
     'California Sea Lion': {
-      'boat-tour':   { rarity: 'guaranteed',  frequency: 0.97, rationale: 'Sea lion rookeries at Anacapa and Santa Barbara — visible from every boat trip.' },
-      'anacapa':     { rarity: 'guaranteed',  frequency: 0.99, rationale: 'Anacapa rookery — hundreds visible from the cliffs.' },
+      'boat-tour':   { rarity: 'guaranteed',  frequency: 0.97, peakWindow: { startMonthDay: '06-01', endMonthDay: '08-15', label: 'Peak pupping: June – mid-Aug' }, rationale: 'Sea lion rookeries at Anacapa and Santa Barbara — visible from every boat trip; pups visible at rookeries June-Aug.' },
+      'anacapa':     { rarity: 'guaranteed',  frequency: 0.99, peakWindow: { startMonthDay: '06-01', endMonthDay: '08-15', label: 'Peak pupping: June – mid-Aug' }, rationale: 'Anacapa rookery — hundreds visible from the cliffs.' },
     },
     'Brown Pelican': {
       'anacapa':     { rarity: 'guaranteed',  frequency: 0.98, peakWindow: { startMonthDay: '04-01', endMonthDay: '07-31', label: 'Peak breeding: April – July' }, rationale: 'Anacapa is the only major Brown Pelican breeding colony in the western US — guaranteed nesting season.' },
@@ -612,7 +613,7 @@ export const ZONE_OVERRIDES = {
       'lake':        { rarity: 'guaranteed',  frequency: 0.98, peakWindow: { startMonthDay: '06-01', endMonthDay: '08-31', label: 'Peak nesting: June – August' }, rationale: 'Loons on every visit — Voyageurs has one of the densest loon populations in the lower 48.' },
     },
     'Bald Eagle': {
-      'lake':        { rarity: 'very_likely', frequency: 0.85, rationale: 'Eagles regularly visible from boat trips and visitor center waterfront.' },
+      'lake':        { rarity: 'very_likely', frequency: 0.85, peakWindow: { startMonthDay: '04-01', endMonthDay: '07-31', label: 'Peak nesting: April – July' }, rationale: 'Eagles regularly visible from boat trips and visitor center waterfront; nesting peak Apr-Jul makes them most predictable.' },
     },
     'Moose': {
       'kabetogama-pen': { rarity: 'likely',   frequency: 0.35, seasonFrequencies: { spring: 35, summer: 30, fall: 40, winter: 25 }, rationale: 'Kabetogama Peninsula trails are the most reliable moose habitat.' },
@@ -679,7 +680,7 @@ export const ZONE_OVERRIDES = {
       'rio-grande':   { rarity: 'guaranteed', frequency: 0.92, rationale: 'Roadrunners reliably along Rio Grande Village trails and roads.' },
     },
     'Mexican Jay': {
-      'chisos':       { rarity: 'guaranteed', frequency: 0.95, rationale: 'Mexican Jay flocks at every Chisos Basin trailhead and campsite.' },
+      'chisos':       { rarity: 'guaranteed', frequency: 0.95, peakWindow: { startMonthDay: '04-01', endMonthDay: '07-31', label: 'Peak breeding + cooperative-flock activity: April – July' }, rationale: 'Mexican Jay flocks at every Chisos Basin trailhead and campsite; cooperative breeding flocks most vocal Apr-Jul.' },
     },
     'Western Diamond-backed Rattlesnake': {
       'desert':       { rarity: 'unlikely',   frequency: 0.20, seasonFrequencies: { spring: 25, summer: 30, fall: 20, winter: 5 }, peakWindow: { startMonthDay: '04-01', endMonthDay: '09-30', label: 'Peak active season: April – September' }, rationale: 'Desert flats — snakes most active spring/summer at dawn/dusk; brumation Nov-Feb.' },
@@ -892,7 +893,7 @@ export const ZONE_OVERRIDES = {
       'windigo':     { rarity: 'guaranteed', frequency: 0.95, rationale: 'Loons on west-side lakes around Windigo.' },
     },
     'Moose': {
-      'greenstone':  { rarity: 'likely', frequency: 0.45, seasonFrequencies: { spring: 50, summer: 50, fall: 45, winter: 35 }, rationale: 'Moose in island interior — backpackers see them on roughly half of multi-day trips.' },
+      'greenstone':  { rarity: 'likely', frequency: 0.45, seasonFrequencies: { spring: 50, summer: 50, fall: 45, winter: 35 }, peakWindow: { startMonthDay: '09-15', endMonthDay: '10-31', label: 'Peak rut: mid-Sept – Oct' }, rationale: 'Moose in island interior — backpackers see them on roughly half of multi-day trips; rut concentrates them in willow flats.' },
       'rock-harbor': { rarity: 'unlikely', frequency: 0.25, rationale: 'Moose occasionally seen near Rock Harbor; less frequent than interior.' },
     },
     'Bald Eagle': {
@@ -1006,7 +1007,7 @@ export const ZONE_OVERRIDES = {
       'silver-salmon': { rarity: 'guaranteed', frequency: 0.97, seasonFrequencies: { spring: 5, summer: 95, fall: 30, winter: 1 }, peakWindow: { startMonthDay: '07-01', endMonthDay: '08-15', label: 'Peak spawning run: July – mid-Aug' }, rationale: 'Salmon spawning runs in Silver Salmon Creek peak July-Aug.' },
     },
     'Bald Eagle': {
-      'silver-salmon': { rarity: 'very_likely', frequency: 0.80, rationale: 'Bald Eagles at coastal bear-viewing areas during salmon runs.' },
+      'silver-salmon': { rarity: 'very_likely', frequency: 0.80, peakWindow: { startMonthDay: '07-01', endMonthDay: '08-31', label: 'Peak salmon-run feeding: July – August' }, rationale: 'Bald Eagles at coastal bear-viewing areas during salmon runs.' },
     },
     'Moose': {
       'port-alsworth': { rarity: 'likely', frequency: 0.40, rationale: 'Moose around Port Alsworth and Twin Lakes shoreline.' },
@@ -1020,7 +1021,7 @@ export const ZONE_OVERRIDES = {
       'nabesna-road': { rarity: 'likely', frequency: 0.45, rationale: 'Dall sheep visible from Nabesna Road in summer.' },
     },
     'Moose': {
-      'mccarthy':     { rarity: 'likely', frequency: 0.50, rationale: 'Moose along McCarthy Road riparian areas.' },
+      'mccarthy':     { rarity: 'likely', frequency: 0.50, peakWindow: { startMonthDay: '09-15', endMonthDay: '10-31', label: 'Peak rut: mid-Sept – Oct' }, rationale: 'Moose along McCarthy Road riparian areas; rut concentrates bulls Sept-Oct.' },
     },
     'Brown Bear': {
       'mccarthy':     { rarity: 'unlikely', frequency: 0.25, seasonFrequencies: { spring: 30, summer: 35, fall: 25, winter: 1 }, rationale: 'Grizzlies occasional along McCarthy Road; denning winter.' },
@@ -1121,9 +1122,10 @@ export const ZONE_OVERRIDES = {
       'kilauea-summit': {
         rarity: 'guaranteed',
         frequency: 0.95,
-        rationale: 'Nene walk freely near Kilauea Caldera and Crater Rim Drive parking areas.',
+        peakWindow: { startMonthDay: '10-01', endMonthDay: '03-31', label: 'Peak breeding: Oct – March' },
+        rationale: 'Nene walk freely near Kilauea Caldera and Crater Rim Drive parking areas; breeding season Oct-Mar concentrates them at lower elevations.',
       },
-      'kahuku': { rarity: 'very_likely', frequency: 0.70, rationale: 'Nene at the Kahuku Unit pasture/forest — managed habitat for the endangered species.' },
+      'kahuku': { rarity: 'very_likely', frequency: 0.70, peakWindow: { startMonthDay: '10-01', endMonthDay: '03-31', label: 'Peak breeding: Oct – March' }, rationale: 'Nene at the Kahuku Unit pasture/forest — managed habitat for the endangered species.' },
     },
     'Hawaiian Hawk': {
       'kilauea-summit': { rarity: 'unlikely', frequency: 0.25, rationale: 'Endemic Io occasionally visible soaring over Kilauea.' },
@@ -1144,7 +1146,7 @@ export const ZONE_OVERRIDES = {
       'rim-village':  { rarity: 'guaranteed', frequency: 0.92, rationale: "Steller's Jays at every Rim Village picnic area." },
     },
     "Clark's Nutcracker": {
-      'rim-drive':    { rarity: 'very_likely', frequency: 0.80, rationale: "Clark's Nutcrackers cache whitebark pine seeds along Rim Drive." },
+      'rim-drive':    { rarity: 'very_likely', frequency: 0.80, peakWindow: { startMonthDay: '08-01', endMonthDay: '10-15', label: 'Peak seed-caching: Aug – mid-Oct' }, rationale: "Clark's Nutcrackers cache whitebark pine seeds along Rim Drive; activity peaks in late summer when cones ripen." },
     },
     'Mule Deer': {
       'pinnacles':    { rarity: 'likely', frequency: 0.45, rationale: 'Deer in lower forests around Pinnacles / Plaikni Falls trail.' },
@@ -1180,7 +1182,7 @@ export const ZONE_OVERRIDES = {
       'east-side':       { rarity: 'guaranteed', frequency: 0.97, rationale: 'Habituated ground squirrels at every visitor area.' },
     },
     'Acorn Woodpecker': {
-      'east-side':       { rarity: 'guaranteed', frequency: 0.92, rationale: 'Acorn Woodpecker granary trees throughout east side.' },
+      'east-side':       { rarity: 'guaranteed', frequency: 0.92, peakWindow: { startMonthDay: '04-01', endMonthDay: '07-31', label: 'Peak breeding: April – July' }, rationale: 'Acorn Woodpecker granary trees throughout east side; breeding-season activity makes them especially visible Apr-Jul.' },
     },
     'California Scrub-Jay': {
       'east-side':       { rarity: 'very_likely', frequency: 0.80, rationale: 'Scrub-Jays at every campground and oak savanna.' },
@@ -1199,8 +1201,8 @@ export const ZONE_OVERRIDES = {
       'sage-creek-rim':  { rarity: 'very_likely', frequency: 0.75, rationale: 'Pronghorn herds across Sage Creek Wilderness mixed-grass prairie.' },
     },
     'Black-tailed Prairie Dog': {
-      'roberts-prairie': { rarity: 'guaranteed', frequency: 0.99, rationale: 'Roberts Prairie Dog Town hosts thousands of animals — guaranteed sighting.' },
-      'sage-creek-rim':  { rarity: 'very_likely', frequency: 0.85, rationale: 'Multiple prairie dog towns visible from the rim road.' },
+      'roberts-prairie': { rarity: 'guaranteed', frequency: 0.99, peakWindow: { startMonthDay: '04-01', endMonthDay: '08-31', label: 'Peak active season: April – August' }, rationale: 'Roberts Prairie Dog Town hosts thousands of animals — guaranteed sighting; warm-season above-ground activity.' },
+      'sage-creek-rim':  { rarity: 'very_likely', frequency: 0.85, peakWindow: { startMonthDay: '04-01', endMonthDay: '08-31', label: 'Peak active season: April – August' }, rationale: 'Multiple prairie dog towns visible from the rim road.' },
     },
     'Mule Deer': {
       'cedar-pass':      { rarity: 'very_likely', frequency: 0.75, rationale: 'Mule Deer in canyons around Cedar Pass campground.' },
@@ -1217,14 +1219,14 @@ export const ZONE_OVERRIDES = {
       'north-unit':  { rarity: 'very_likely', frequency: 0.80, peakWindow: { startMonthDay: '07-15', endMonthDay: '08-15', label: 'Peak rut: mid-July – mid-Aug' }, rationale: 'North Unit bison herd visible from scenic drive.' },
     },
     'Wild Horse': {
-      'south-unit':  { rarity: 'very_likely', frequency: 0.70, rationale: 'Feral horse bands visible from South Unit loop drive.' },
+      'south-unit':  { rarity: 'very_likely', frequency: 0.70, peakWindow: { startMonthDay: '04-15', endMonthDay: '06-30', label: 'Peak foaling: mid-April – June' }, rationale: 'Feral horse bands visible from South Unit loop drive; foals visible spring-early summer.' },
     },
     'Pronghorn': {
       'south-unit':  { rarity: 'very_likely', frequency: 0.75, rationale: 'Pronghorn across the badlands grasslands.' },
       'north-unit':  { rarity: 'very_likely', frequency: 0.70, rationale: 'Pronghorn herds visible from North Unit road.' },
     },
     'Black-tailed Prairie Dog': {
-      'south-unit':  { rarity: 'very_likely', frequency: 0.85, rationale: 'Multiple prairie dog towns along the South Unit scenic loop.' },
+      'south-unit':  { rarity: 'very_likely', frequency: 0.85, peakWindow: { startMonthDay: '04-01', endMonthDay: '08-31', label: 'Peak active season: April – August' }, rationale: 'Multiple prairie dog towns along the South Unit scenic loop.' },
     },
     'Coyote': {
       'south-unit':  { rarity: 'likely', frequency: 0.45, rationale: 'Coyotes routinely visible at dawn/dusk in open grasslands.' },
@@ -1275,8 +1277,8 @@ export const ZONE_OVERRIDES = {
       'crystal-forest': { rarity: 'guaranteed', frequency: 0.97, rationale: 'Ravens patrol Crystal Forest parking and trail.' },
     },
     'Pronghorn': {
-      'painted-desert': { rarity: 'likely', frequency: 0.55, rationale: 'Pronghorn herds visible in grasslands near the north entrance.' },
-      'crystal-forest': { rarity: 'likely', frequency: 0.50, rationale: 'Pronghorn across the southern grassland zone.' },
+      'painted-desert': { rarity: 'likely', frequency: 0.55, peakWindow: { startMonthDay: '05-15', endMonthDay: '06-30', label: 'Peak fawning: mid-May – June' }, rationale: 'Pronghorn herds visible in grasslands near the north entrance; fawns visible May-June.' },
+      'crystal-forest': { rarity: 'likely', frequency: 0.50, peakWindow: { startMonthDay: '05-15', endMonthDay: '06-30', label: 'Peak fawning: mid-May – June' }, rationale: 'Pronghorn across the southern grassland zone.' },
     },
     'Black-tailed Jackrabbit': {
       'crystal-forest': { rarity: 'likely', frequency: 0.45, rationale: 'Jackrabbits in shrub-grasslands at dawn/dusk.' },
@@ -1304,7 +1306,7 @@ export const ZONE_OVERRIDES = {
       'prairie-loop':  { rarity: 'very_likely', frequency: 0.75, rationale: 'Pronghorn herds across the prairie zone.' },
     },
     'Black-tailed Prairie Dog': {
-      'prairie-loop':  { rarity: 'guaranteed', frequency: 0.97, rationale: 'Multiple prairie dog towns visible from the wildlife loop year-round.' },
+      'prairie-loop':  { rarity: 'guaranteed', frequency: 0.97, peakWindow: { startMonthDay: '04-01', endMonthDay: '08-31', label: 'Peak active season: April – August' }, rationale: 'Multiple prairie dog towns visible from the wildlife loop year-round; warm-season above-ground activity.' },
     },
     'Mule Deer': {
       'prairie-loop':  { rarity: 'likely', frequency: 0.50, rationale: 'Mule Deer in canyons and ravines at edges of prairie.' },
@@ -1335,7 +1337,7 @@ export const ZONE_OVERRIDES = {
       'longmire': { rarity: 'likely',      frequency: 0.50, rationale: 'Deer regularly visible in Longmire meadows.' },
     },
     'American Black Bear': {
-      'paradise':    { rarity: 'unlikely', frequency: 0.20, seasonFrequencies: { spring: 22, summer: 25, fall: 20, winter: 1 }, rationale: 'Black bears occasionally seen in Paradise/Sunrise meadows; denning in winter.' },
+      'paradise':    { rarity: 'unlikely', frequency: 0.20, seasonFrequencies: { spring: 22, summer: 25, fall: 20, winter: 1 }, peakWindow: { startMonthDay: '08-01', endMonthDay: '09-30', label: 'Peak berry season: Aug – Sept' }, rationale: 'Black bears occasionally seen in Paradise/Sunrise meadows; berry season Aug-Sept brings them to subalpine zones; denning in winter.' },
     },
     "Clark's Nutcracker": {
       'sunrise':     { rarity: 'very_likely', frequency: 0.80, rationale: "Clark's Nutcrackers cache whitebark pine seeds at Sunrise — visible at every visit in summer." },
@@ -1370,14 +1372,14 @@ export const ZONE_OVERRIDES = {
       'jumbo-rocks':    { rarity: 'guaranteed', frequency: 0.92, peakWindow: { startMonthDay: '04-01', endMonthDay: '09-30', label: 'Peak active season: April – September' }, rationale: 'Lizards basking on Jumbo Rocks formations.' },
     },
     'Common Chuckwalla': {
-      'hidden-valley':  { rarity: 'very_likely', frequency: 0.70, rationale: 'Chuckwallas in rocky outcrops at Hidden Valley and Barker Dam.' },
+      'hidden-valley':  { rarity: 'very_likely', frequency: 0.70, peakWindow: { startMonthDay: '04-01', endMonthDay: '09-30', label: 'Peak active season: April – September' }, rationale: 'Chuckwallas in rocky outcrops at Hidden Valley and Barker Dam; brumation Nov-Mar.' },
     },
     "Gambel's Quail": {
       'cottonwood':     { rarity: 'very_likely', frequency: 0.75, rationale: "Gambel's Quail coveys at Cottonwood Spring oasis." },
     },
     'Cactus Wren': {
-      'cottonwood':     { rarity: 'guaranteed', frequency: 0.95, rationale: 'Cactus Wrens nesting in cholla and yucca at Cottonwood Spring.' },
-      'hidden-valley':  { rarity: 'very_likely', frequency: 0.85, rationale: 'Cactus Wrens vocal at every Hidden Valley trailhead.' },
+      'cottonwood':     { rarity: 'guaranteed', frequency: 0.95, peakWindow: { startMonthDay: '04-01', endMonthDay: '06-30', label: 'Peak breeding: April – June' }, rationale: 'Cactus Wrens nesting in cholla and yucca at Cottonwood Spring; vocal during breeding season.' },
+      'hidden-valley':  { rarity: 'very_likely', frequency: 0.85, peakWindow: { startMonthDay: '04-01', endMonthDay: '06-30', label: 'Peak breeding: April – June' }, rationale: 'Cactus Wrens vocal at every Hidden Valley trailhead.' },
     },
     'Common Raven': {
       'keys-view':      { rarity: 'guaranteed', frequency: 0.97, rationale: 'Ravens patrol Keys View overlook constantly.' },
@@ -1391,7 +1393,8 @@ export const ZONE_OVERRIDES = {
       'giant-forest': {
         rarity: 'guaranteed',
         frequency: 0.92,
-        rationale: 'Deer routinely browse Round Meadow and Crescent Meadow visible from any visitor trail.',
+        peakWindow: { startMonthDay: '10-15', endMonthDay: '11-30', label: 'Peak rut: mid-Oct – Nov' },
+        rationale: 'Deer routinely browse Round Meadow and Crescent Meadow visible from any visitor trail; rut peaks fall.',
       },
     },
     "Steller's Jay": {
@@ -1482,7 +1485,7 @@ export const ZONE_OVERRIDES = {
   // ── Yosemite (expanded) ─────────────────────────────────────────────
   yosemite: {
     'Mule Deer': {
-      'valley': { rarity: 'guaranteed', frequency: 0.95, rationale: 'Habituated deer in Cook\'s Meadow and Stoneman Meadow — essentially every Valley visitor sees them.' },
+      'valley': { rarity: 'guaranteed', frequency: 0.95, peakWindow: { startMonthDay: '10-15', endMonthDay: '11-30', label: 'Peak rut: mid-Oct – Nov' }, rationale: 'Habituated deer in Cook\'s Meadow and Stoneman Meadow — essentially every Valley visitor sees them; rut peaks fall.' },
       'tuolumne': { rarity: 'very_likely', frequency: 0.80, rationale: 'Deer in Tuolumne Meadows visible from any pullout.' },
     },
     'American Black Bear': {
