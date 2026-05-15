@@ -212,7 +212,7 @@ export const ZONE_OVERRIDES = {
     },
     'Moose': {
       'many-glacier':   { rarity: 'likely',      frequency: 0.45, seasonFrequencies: { spring: 50, summer: 55, fall: 45, winter: 30 }, peakWindow: { startMonthDay: '09-15', endMonthDay: '10-31', label: 'Peak rut + bugling: mid-Sept – Oct' }, rationale: 'Moose at Fishercap Lake / Swiftcurrent willow thickets; rut Sept-Oct concentrates bulls.' },
-      'two-medicine':   { rarity: 'likely',      frequency: 0.40, rationale: 'Moose along the lake shore willows.' },
+      'two-medicine':   { rarity: 'likely',      frequency: 0.40, seasonFrequencies: { spring: 45, summer: 50, fall: 40, winter: 20 }, rationale: 'Moose along the lake shore willows; less seen winter (Two Medicine area mostly closed).' },
     },
     'Mountain Goat': {
       'going-to-sun': {
@@ -225,12 +225,13 @@ export const ZONE_OVERRIDES = {
       'many-glacier': {
         rarity: 'likely',
         frequency: 0.40,
-        rationale: 'Goat-watching from Many Glacier hotel and trails.',
+        seasonFrequencies: { spring: 30, summer: 55, fall: 40, winter: 10 },
+        rationale: 'Goat-watching from Many Glacier hotel and trails; access limited in winter.',
       },
     },
     'Bighorn Sheep': {
-      'many-glacier':   { rarity: 'likely', frequency: 0.45, peakWindow: { startMonthDay: '11-15', endMonthDay: '12-31', label: 'Peak rut: mid-Nov – Dec' }, rationale: 'Many Glacier slopes are reliable summer bighorn habitat; rut concentrates rams at lower elevations.' },
-      'going-to-sun':   { rarity: 'likely', frequency: 0.35, rationale: 'Logan Pass area sightings common in summer.' },
+      'many-glacier':   { rarity: 'likely', frequency: 0.45, seasonFrequencies: { spring: 35, summer: 45, fall: 50, winter: 55 }, peakWindow: { startMonthDay: '11-15', endMonthDay: '12-31', label: 'Peak rut: mid-Nov – Dec' }, rationale: 'Many Glacier slopes are reliable summer bighorn habitat; rut concentrates rams at lower elevations in late fall/winter.' },
+      'going-to-sun':   { rarity: 'likely', frequency: 0.35, seasonFrequencies: { spring: 25, summer: 50, fall: 35, winter: 5 }, rationale: 'Logan Pass area sightings common in summer; Going-to-Sun Road closed Oct-Jun.' },
     },
     'Grizzly Bear': {
       'many-glacier':   {
@@ -246,14 +247,14 @@ export const ZONE_OVERRIDES = {
   // ── Olympic (expanded) ──────────────────────────────────────────────
   olympic: {
     'American Crow': {
-      'kalaloch':        { rarity: 'guaranteed', frequency: 0.95, rationale: 'Crows at every coastal beach (cache uses American Crow; the Northwestern Crow population was lumped into American Crow taxonomically in 2020).' },
+      'kalaloch':        { rarity: 'guaranteed', frequency: 0.95, seasonFrequencies: { spring: 95, summer: 95, fall: 95, winter: 90 }, rationale: 'Crows at every coastal beach year-round (cache uses American Crow; the Northwestern Crow population was lumped into American Crow taxonomically in 2020).' },
     },
     'Bald Eagle': {
-      'kalaloch':        { rarity: 'very_likely', frequency: 0.75, rationale: 'Bald eagles fishing the surf zone year-round.' },
-      'lake-crescent':   { rarity: 'likely',      frequency: 0.55, rationale: 'Bald eagles fishing Lake Crescent and Sol Duc.' },
+      'kalaloch':        { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 75, summer: 65, fall: 80, winter: 80 }, rationale: 'Bald eagles fishing the surf zone year-round; fall salmon-run + winter aggregations boost.' },
+      'lake-crescent':   { rarity: 'likely',      frequency: 0.55, seasonFrequencies: { spring: 55, summer: 50, fall: 65, winter: 50 }, rationale: 'Bald eagles fishing Lake Crescent and Sol Duc; year-round.' },
     },
     'River Otter': {
-      'lake-crescent':   { rarity: 'unlikely',    frequency: 0.20, rationale: 'River otters in Lake Crescent and Sol Duc River.' },
+      'lake-crescent':   { rarity: 'unlikely',    frequency: 0.20, seasonFrequencies: { spring: 22, summer: 25, fall: 20, winter: 12 }, rationale: 'River otters in Lake Crescent and Sol Duc River; mostly crepuscular, year-round residents.' },
     },
     'Black Bear': {
       'hoh-rainforest':  {
