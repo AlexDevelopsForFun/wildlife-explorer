@@ -274,11 +274,11 @@ export const ZONE_OVERRIDES = {
       },
     },
     'Roosevelt Elk': {
-      'hoh-rainforest':  { rarity: 'very_likely', frequency: 0.70, peakWindow: { startMonthDay: '09-15', endMonthDay: '10-31', label: 'Peak rut + bugling: mid-Sept – Oct' }, rationale: 'Hoh herd visible along trails and river corridor year-round; rut peaks Sept-Oct with audible bugling.' },
-      'kalaloch':        { rarity: 'likely',      frequency: 0.40, rationale: 'Beach-strip elk crossings reported regularly.' },
+      'hoh-rainforest':  { rarity: 'very_likely', frequency: 0.70, seasonFrequencies: { spring: 70, summer: 65, fall: 85, winter: 60 }, peakWindow: { startMonthDay: '09-15', endMonthDay: '10-31', label: 'Peak rut + bugling: mid-Sept – Oct' }, rationale: 'Hoh herd visible along trails and river corridor year-round (mild rainforest, no migration); rut peaks Sept-Oct with audible bugling.' },
+      'kalaloch':        { rarity: 'likely',      frequency: 0.40, seasonFrequencies: { spring: 40, summer: 35, fall: 50, winter: 38 }, rationale: 'Beach-strip elk crossings reported regularly year-round; fall rut bump.' },
     },
     'Mule Deer': {
-      'hurricane-ridge': { rarity: 'guaranteed', frequency: 0.95, peakWindow: { startMonthDay: '10-15', endMonthDay: '11-30', label: 'Peak rut: mid-Oct – Nov' }, rationale: 'Habituated deer at Hurricane Ridge meadows and parking area; rut Oct-Nov increases activity.' },
+      'hurricane-ridge': { rarity: 'guaranteed', frequency: 0.95, seasonFrequencies: { spring: 70, summer: 99, fall: 85, winter: 10 }, peakWindow: { startMonthDay: '10-15', endMonthDay: '11-30', label: 'Peak rut: mid-Oct – Nov' }, rationale: 'Habituated deer at Hurricane Ridge meadows and parking area; Hurricane Ridge Road often closed/limited by snow in winter.' },
     },
   },
 
@@ -388,7 +388,7 @@ export const ZONE_OVERRIDES = {
       },
     },
     'Steller Sea Lion': {
-      'boat-tour': { rarity: 'guaranteed', frequency: 0.95, rationale: 'Steller sea lions reliably visible at Chiswell Islands rookery.' },
+      'boat-tour': { rarity: 'guaranteed', frequency: 0.95, seasonFrequencies: { spring: 90, summer: 97, fall: 90, winter: 50 }, rationale: 'Steller sea lions reliably visible at Chiswell Islands rookery; year-round haulout but Kenai Fjords boat tours are sharply reduced/weather-limited in winter.' },
     },
     'Tufted Puffin': {
       'boat-tour': {
@@ -428,10 +428,10 @@ export const ZONE_OVERRIDES = {
         seasonFrequencies: { spring: 80, summer: 97, fall: 90, winter: 50 },
         rationale: 'Harbor seals on icebergs at Margerie / Johns Hopkins glaciers — peak summer pupping season; some access closed in winter.',
       },
-      'bartlett-cove': { rarity: 'very_likely', frequency: 0.70, rationale: 'Frequent in Bartlett Cove waters near visitor center.' },
+      'bartlett-cove': { rarity: 'very_likely', frequency: 0.70, seasonFrequencies: { spring: 65, summer: 80, fall: 65, winter: 40 }, rationale: 'Frequent in Bartlett Cove waters near visitor center; year-round but lower winter visitor access.' },
     },
     'Sea Otter': {
-      'boat-tour': { rarity: 'very_likely', frequency: 0.85, peakWindow: { startMonthDay: '04-01', endMonthDay: '07-31', label: 'Peak pupping: April – July' }, rationale: 'Sea otters in lower bay observed on most cruises year-round; pups visible spring-summer.' },
+      'boat-tour': { rarity: 'very_likely', frequency: 0.85, seasonFrequencies: { spring: 80, summer: 92, fall: 80, winter: 45 }, peakWindow: { startMonthDay: '04-01', endMonthDay: '07-31', label: 'Peak pupping: April – July' }, rationale: 'Sea otters in lower bay observed on most cruises; resident year-round but Glacier Bay day-boats run mainly May–Sept.' },
     },
     'Orca': {
       'boat-tour': {
@@ -531,7 +531,7 @@ export const ZONE_OVERRIDES = {
       'flamingo':    { rarity: 'very_likely', frequency: 0.65, seasonFrequencies: { spring: 65, summer: 45, fall: 60, winter: 80 }, rationale: 'Spoonbills feed in Florida Bay shallows; reliably visible from Flamingo area boats; winter dry-season concentration peak (many disperse north to breed in summer).' },
     },
     'American Crocodile': {
-      'flamingo':    { rarity: 'likely', frequency: 0.45, peakWindow: { startMonthDay: '12-01', endMonthDay: '04-30', label: 'Peak basking season: Dec – April' }, rationale: 'American crocodiles at the Flamingo marina — the most reliable place to see them; cool months bring more basking on banks.' },
+      'flamingo':    { rarity: 'likely', frequency: 0.45, seasonFrequencies: { spring: 50, summer: 30, fall: 40, winter: 65 }, peakWindow: { startMonthDay: '12-01', endMonthDay: '04-30', label: 'Peak basking season: Dec – April' }, rationale: 'American crocodiles at the Flamingo marina — the most reliable place to see them; cool dry-season months bring more daytime basking on banks (winter peak, opposite of temperate reptiles).' },
     },
   },
 
@@ -664,21 +664,21 @@ export const ZONE_OVERRIDES = {
   // ── Arches ──────────────────────────────────────────────────────────
   arches: {
     'Common Raven': {
-      'devils-garden': { rarity: 'guaranteed', frequency: 0.99, rationale: 'Ravens at every arch overlook — guaranteed at Devils Garden trailhead.' },
-      'windows':       { rarity: 'guaranteed', frequency: 0.99, rationale: 'Constant raven activity around Windows / Balanced Rock.' },
+      'devils-garden': { rarity: 'guaranteed', frequency: 0.99, seasonFrequencies: { spring: 99, summer: 97, fall: 99, winter: 92 }, rationale: 'Ravens at every arch overlook — guaranteed at Devils Garden trailhead year-round.' },
+      'windows':       { rarity: 'guaranteed', frequency: 0.99, seasonFrequencies: { spring: 99, summer: 97, fall: 99, winter: 92 }, rationale: 'Constant raven activity around Windows / Balanced Rock year-round.' },
     },
     'Desert Cottontail': {
-      'devils-garden': { rarity: 'likely',    frequency: 0.45, rationale: 'Cottontails at trailheads at dawn/dusk.' },
+      'devils-garden': { rarity: 'likely',    frequency: 0.45, seasonFrequencies: { spring: 50, summer: 45, fall: 45, winter: 38 }, rationale: 'Cottontails at trailheads at dawn/dusk year-round; slightly less visible in cold winter.' },
     },
   },
 
   // ── Great Basin ─────────────────────────────────────────────────────
   greatbasin: {
     "Steller's Jay": {
-      'lehman-caves':  { rarity: 'guaranteed', frequency: 0.95, rationale: "Steller's Jays at every campsite and picnic table around Lehman Caves." },
+      'lehman-caves':  { rarity: 'guaranteed', frequency: 0.95, seasonFrequencies: { spring: 92, summer: 95, fall: 95, winter: 80 }, rationale: "Steller's Jays at every campsite and picnic table around Lehman Caves; non-migratory, slightly lower winter visitor access." },
     },
     'Mule Deer': {
-      'wheeler-peak':  { rarity: 'very_likely', frequency: 0.75, rationale: 'Sub-alpine deer at Wheeler Peak campground and Bristlecone Pine trail.' },
+      'wheeler-peak':  { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 50, summer: 90, fall: 75, winter: 5 }, rationale: 'Sub-alpine deer at Wheeler Peak campground and Bristlecone Pine trail; Wheeler Peak Scenic Drive closed by snow ~Nov–May, deer descend.' },
     },
   },
 
@@ -713,7 +713,7 @@ export const ZONE_OVERRIDES = {
       'fort-jefferson': { rarity: 'guaranteed', frequency: 0.97, seasonFrequencies: { spring: 99, summer: 99, fall: 25, winter: 5 }, peakWindow: { startMonthDay: '04-15', endMonthDay: '08-31', label: 'Peak nesting: mid-April – August' }, rationale: 'Brown Noddy nesting alongside Sooty Terns on Bush Key.' },
     },
     'Magnificent Frigatebird': {
-      'fort-jefferson': { rarity: 'very_likely', frequency: 0.85, peakWindow: { startMonthDay: '11-01', endMonthDay: '04-30', label: 'Peak breeding (males display): Nov – April' }, rationale: 'Frigatebirds soaring over the fort year-round; males display inflated red throat pouches Nov-April.' },
+      'fort-jefferson': { rarity: 'very_likely', frequency: 0.85, seasonFrequencies: { spring: 88, summer: 78, fall: 80, winter: 90 }, peakWindow: { startMonthDay: '11-01', endMonthDay: '04-30', label: 'Peak breeding (males display): Nov – April' }, rationale: 'Frigatebirds soaring over the fort year-round; males display inflated red throat pouches Nov-April (winter breeding peak).' },
     },
   },
 
@@ -754,26 +754,26 @@ export const ZONE_OVERRIDES = {
       'arrigetch':  { rarity: 'unlikely', frequency: 0.25, seasonFrequencies: { spring: 25, summer: 35, fall: 30, winter: 1 }, rationale: 'Grizzlies in Brooks Range; denning winter.' },
     },
     'Moose': {
-      'noatak':     { rarity: 'unlikely', frequency: 0.20, rationale: 'Moose along the Noatak River willows.' },
+      'noatak':     { rarity: 'unlikely', frequency: 0.20, seasonFrequencies: { spring: 20, summer: 28, fall: 25, winter: 8 }, rationale: 'Moose along the Noatak River willows; remote Arctic park — expedition access mainly summer.' },
     },
   },
 
   gatewayarch: {
     'Eastern Gray Squirrel': {
-      'riverfront': { rarity: 'guaranteed', frequency: 0.99, rationale: 'Habituated squirrels on every Arch grounds lawn — urban park standard.' },
+      'riverfront': { rarity: 'guaranteed', frequency: 0.99, seasonFrequencies: { spring: 99, summer: 99, fall: 99, winter: 92 }, rationale: 'Habituated squirrels on every Arch grounds lawn — urban park standard, year-round.' },
     },
     'American Robin': {
-      'riverfront': { rarity: 'very_likely', frequency: 0.85, rationale: 'American Robins on Arch grounds lawns year-round.' },
+      'riverfront': { rarity: 'very_likely', frequency: 0.85, seasonFrequencies: { spring: 95, summer: 90, fall: 85, winter: 55 }, rationale: 'American Robins on Arch grounds lawns; abundant spring-fall, partial winter withdrawal (some flocks remain on the urban riverfront).' },
     },
   },
 
   guadalupemountains: {
     'Mule Deer': {
-      'mckittrick': { rarity: 'very_likely', frequency: 0.70, rationale: 'Mule Deer along McKittrick Canyon riparian corridor.' },
-      'pine-springs':{ rarity: 'very_likely', frequency: 0.65, rationale: 'Mule Deer at Pine Springs visitor center area.' },
+      'mckittrick': { rarity: 'very_likely', frequency: 0.70, seasonFrequencies: { spring: 70, summer: 68, fall: 78, winter: 60 }, rationale: 'Mule Deer along McKittrick Canyon riparian corridor year-round; fall rut bump.' },
+      'pine-springs':{ rarity: 'very_likely', frequency: 0.65, seasonFrequencies: { spring: 65, summer: 62, fall: 72, winter: 55 }, rationale: 'Mule Deer at Pine Springs visitor center area year-round.' },
     },
     'Elk': {
-      'mckittrick': { rarity: 'likely', frequency: 0.40, rationale: 'Reintroduced elk herd in McKittrick Canyon.' },
+      'mckittrick': { rarity: 'likely', frequency: 0.40, seasonFrequencies: { spring: 40, summer: 35, fall: 50, winter: 38 }, rationale: 'Reintroduced elk herd in McKittrick Canyon; fall rut concentration; year-round resident.' },
     },
   },
 
@@ -792,10 +792,10 @@ export const ZONE_OVERRIDES = {
   whitesands: {
     'Western Earless Lizard': {
       'dune-drive':  { rarity: 'very_likely', frequency: 0.85, seasonFrequencies: { spring: 90, summer: 95, fall: 80, winter: 25 }, peakWindow: { startMonthDay: '04-01', endMonthDay: '09-30', label: 'Peak active season: April – September' }, rationale: 'White-color form endemic to White Sands — visible on every warm-season dune walk.' },
-      'alkali-flat': { rarity: 'likely', frequency: 0.45, peakWindow: { startMonthDay: '04-01', endMonthDay: '09-30', label: 'Peak active season: April – September' }, rationale: 'Lizards in deeper interior dune areas; lower density than Dunes Drive.' },
+      'alkali-flat': { rarity: 'likely', frequency: 0.45, seasonFrequencies: { spring: 50, summer: 55, fall: 42, winter: 8 }, peakWindow: { startMonthDay: '04-01', endMonthDay: '09-30', label: 'Peak active season: April – September' }, rationale: 'Lizards in deeper interior dune areas; lower density than Dunes Drive; brumate (dormant) in cold winter.' },
     },
     'Coyote': {
-      'dune-drive':  { rarity: 'unlikely', frequency: 0.15, rationale: 'Coyotes occasionally cross dunes at dawn/dusk.' },
+      'dune-drive':  { rarity: 'unlikely', frequency: 0.15, seasonFrequencies: { spring: 16, summer: 12, fall: 16, winter: 18 }, rationale: 'Coyotes occasionally cross dunes at dawn/dusk; winter snow-contrast (gypsum + occasional snow) slight visibility boost.' },
     },
   },
 
@@ -861,11 +861,12 @@ export const ZONE_OVERRIDES = {
       'prairie-creek': {
         rarity: 'guaranteed',
         frequency: 0.95,
-        rationale: 'Prairie Creek elk herd at the meadows + Gold Bluffs Beach visible to nearly every visitor.',
+        seasonFrequencies: { spring: 93, summer: 92, fall: 97, winter: 90 },
+        rationale: 'Prairie Creek elk herd at the meadows + Gold Bluffs Beach visible to nearly every visitor year-round (mild coastal redwood climate, no migration); fall rut bump.',
       },
     },
     'Mule Deer': {
-      'prairie-creek': { rarity: 'likely', frequency: 0.45, rationale: 'Mule Deer also visible in coastal meadows alongside elk.' },
+      'prairie-creek': { rarity: 'likely', frequency: 0.45, seasonFrequencies: { spring: 45, summer: 45, fall: 52, winter: 40 }, rationale: 'Mule Deer also visible in coastal meadows alongside elk year-round; fall rut bump.' },
     },
     'American Black Bear': {
       'tall-trees':    { rarity: 'unlikely', frequency: 0.18, seasonFrequencies: { spring: 20, summer: 25, fall: 22, winter: 5 }, rationale: 'Black bears in old-growth groves and along Redwood Creek.' },
@@ -929,11 +930,11 @@ export const ZONE_OVERRIDES = {
   // ── Biscayne (round 7) ──────────────────────────────────────────────
   biscayne: {
     'Brown Pelican': {
-      'convoy-point': { rarity: 'guaranteed', frequency: 0.92, rationale: 'Brown Pelicans at the visitor center waterfront.' },
-      'boat-tour':    { rarity: 'guaranteed', frequency: 0.97, rationale: 'Brown Pelicans on every boat trip out to the keys.' },
+      'convoy-point': { rarity: 'guaranteed', frequency: 0.92, seasonFrequencies: { spring: 92, summer: 88, fall: 92, winter: 95 }, rationale: 'Brown Pelicans at the visitor center waterfront year-round; subtropical, mild winter influx of northern migrants.' },
+      'boat-tour':    { rarity: 'guaranteed', frequency: 0.97, seasonFrequencies: { spring: 97, summer: 92, fall: 97, winter: 99 }, rationale: 'Brown Pelicans on every boat trip out to the keys year-round.' },
     },
     'Common Bottlenose Dolphin': {
-      'boat-tour':    { rarity: 'likely', frequency: 0.50, rationale: 'Bottlenose dolphins visible from boat tours but not guaranteed on shorter trips.' },
+      'boat-tour':    { rarity: 'likely', frequency: 0.50, seasonFrequencies: { spring: 50, summer: 52, fall: 50, winter: 48 }, rationale: 'Bottlenose dolphins visible from boat tours but not guaranteed on shorter trips; resident population, aseasonal.' },
     },
   },
 
@@ -943,10 +944,10 @@ export const ZONE_OVERRIDES = {
       'long-point':    { rarity: 'unlikely', frequency: 0.20, seasonFrequencies: { spring: 22, summer: 28, fall: 25, winter: 3 }, rationale: 'Black bears reported regularly along Endless Wall trails; denning winter.' },
     },
     'White-tailed Deer': {
-      'grandview':     { rarity: 'very_likely', frequency: 0.85, rationale: 'Deer abundant in gorge forests visible from Grandview overlooks.' },
+      'grandview':     { rarity: 'very_likely', frequency: 0.85, seasonFrequencies: { spring: 82, summer: 82, fall: 92, winter: 72 }, rationale: 'Deer abundant in gorge forests visible from Grandview overlooks year-round; fall rut bump.' },
     },
     'Bald Eagle': {
-      'sandstone-falls': { rarity: 'unlikely', frequency: 0.25, rationale: 'Bald Eagles along the lower New River.' },
+      'sandstone-falls': { rarity: 'unlikely', frequency: 0.25, seasonFrequencies: { spring: 28, summer: 22, fall: 25, winter: 25 }, rationale: 'Bald Eagles along the lower New River; year-round residents (nesting pairs on the river).' },
     },
   },
 
@@ -962,13 +963,13 @@ export const ZONE_OVERRIDES = {
       },
     },
     'Common Raven': {
-      'natural-entrance': { rarity: 'guaranteed', frequency: 0.95, rationale: 'Ravens patrol the natural entrance amphitheater area.' },
+      'natural-entrance': { rarity: 'guaranteed', frequency: 0.95, seasonFrequencies: { spring: 95, summer: 95, fall: 93, winter: 85 }, rationale: 'Ravens patrol the natural entrance amphitheater area year-round.' },
     },
     'Greater Roadrunner': {
-      'walnut-canyon': { rarity: 'likely', frequency: 0.45, rationale: 'Roadrunners along the Walnut Canyon Desert Drive.' },
+      'walnut-canyon': { rarity: 'likely', frequency: 0.45, seasonFrequencies: { spring: 50, summer: 42, fall: 45, winter: 42 }, rationale: 'Roadrunners along the Walnut Canyon Desert Drive year-round (non-migratory desert resident).' },
     },
     'Mule Deer': {
-      'walnut-canyon': { rarity: 'very_likely', frequency: 0.70, rationale: 'Mule Deer in canyons and along the desert drive at dawn/dusk.' },
+      'walnut-canyon': { rarity: 'very_likely', frequency: 0.70, seasonFrequencies: { spring: 68, summer: 68, fall: 78, winter: 60 }, rationale: 'Mule Deer in canyons and along the desert drive at dawn/dusk year-round; fall rut bump.' },
     },
   },
 
@@ -1011,16 +1012,16 @@ export const ZONE_OVERRIDES = {
         peakWindow: { startMonthDay: '07-01', endMonthDay: '08-31', label: 'Peak salmon run: July – August' },
         rationale: 'Chinitna Bay bear-viewing comparable to Silver Salmon Creek — both are commercial bear-tour destinations.',
       },
-      'port-alsworth': { rarity: 'unlikely', frequency: 0.20, rationale: 'Twin Lakes / lodge area bear sightings less frequent than coastal viewing sites.' },
+      'port-alsworth': { rarity: 'unlikely', frequency: 0.20, seasonFrequencies: { spring: 25, summer: 30, fall: 22, winter: 1 }, rationale: 'Twin Lakes / lodge area bear sightings less frequent than coastal viewing sites; denning Nov–Apr.' },
     },
     'Sockeye Salmon': {
       'silver-salmon': { rarity: 'guaranteed', frequency: 0.97, seasonFrequencies: { spring: 5, summer: 95, fall: 30, winter: 1 }, peakWindow: { startMonthDay: '07-01', endMonthDay: '08-15', label: 'Peak spawning run: July – mid-Aug' }, rationale: 'Salmon spawning runs in Silver Salmon Creek peak July-Aug.' },
     },
     'Bald Eagle': {
-      'silver-salmon': { rarity: 'very_likely', frequency: 0.80, peakWindow: { startMonthDay: '07-01', endMonthDay: '08-31', label: 'Peak salmon-run feeding: July – August' }, rationale: 'Bald Eagles at coastal bear-viewing areas during salmon runs.' },
+      'silver-salmon': { rarity: 'very_likely', frequency: 0.80, seasonFrequencies: { spring: 60, summer: 90, fall: 80, winter: 20 }, peakWindow: { startMonthDay: '07-01', endMonthDay: '08-31', label: 'Peak salmon-run feeding: July – August' }, rationale: 'Bald Eagles at coastal bear-viewing areas during salmon runs; some overwinter near open coastal water.' },
     },
     'Moose': {
-      'port-alsworth': { rarity: 'likely', frequency: 0.40, rationale: 'Moose around Port Alsworth and Twin Lakes shoreline.' },
+      'port-alsworth': { rarity: 'likely', frequency: 0.40, seasonFrequencies: { spring: 42, summer: 45, fall: 45, winter: 25 }, rationale: 'Moose around Port Alsworth and Twin Lakes shoreline; year-round resident, harder winter access.' },
     },
   },
 
@@ -1044,27 +1045,27 @@ export const ZONE_OVERRIDES = {
   // ── Black Canyon (round 6) ──────────────────────────────────────────
   blackcanyon: {
     'Mule Deer': {
-      'south-rim':  { rarity: 'very_likely', frequency: 0.70, rationale: 'Habituated deer at South Rim overlooks and campground.' },
-      'north-rim':  { rarity: 'likely',     frequency: 0.40, rationale: 'Deer on the remote North Rim.' },
+      'south-rim':  { rarity: 'very_likely', frequency: 0.70, seasonFrequencies: { spring: 68, summer: 75, fall: 78, winter: 35 }, rationale: 'Habituated deer at South Rim overlooks and campground; South Rim Road closes past the visitor center in winter snow.' },
+      'north-rim':  { rarity: 'likely',     frequency: 0.40, seasonFrequencies: { spring: 35, summer: 55, fall: 45, winter: 1 }, rationale: 'Deer on the remote North Rim; North Rim Road closed by snow ~Nov–May.' },
     },
     'Peregrine Falcon': {
       'south-rim':  { rarity: 'unlikely', frequency: 0.25, seasonFrequencies: { spring: 30, summer: 35, fall: 25, winter: 5 }, rationale: 'Peregrine Falcons nest in the canyon walls — visible from South Rim overlooks April-Aug.' },
     },
     'Common Raven': {
-      'south-rim':  { rarity: 'guaranteed', frequency: 0.95, rationale: 'Ravens patrol South Rim overlooks and campground.' },
+      'south-rim':  { rarity: 'guaranteed', frequency: 0.95, seasonFrequencies: { spring: 95, summer: 95, fall: 93, winter: 80 }, rationale: 'Ravens patrol South Rim overlooks and campground year-round; slightly lower winter visitor access.' },
     },
   },
 
   // ── Great Sand Dunes (round 6) ──────────────────────────────────────
   greatsanddunes: {
     'Mule Deer': {
-      'mosca-pass': { rarity: 'very_likely', frequency: 0.65, rationale: 'Deer at the forest edge near Mosca Pass and Medano Creek.' },
+      'mosca-pass': { rarity: 'very_likely', frequency: 0.65, seasonFrequencies: { spring: 60, summer: 75, fall: 70, winter: 40 }, rationale: 'Deer at the forest edge near Mosca Pass and Medano Creek; some descend in deep-snow winter (high-elevation San Luis Valley).' },
     },
     'Pronghorn': {
-      'dunes-base': { rarity: 'unlikely', frequency: 0.20, rationale: 'Pronghorn in grasslands east of the dunes.' },
+      'dunes-base': { rarity: 'unlikely', frequency: 0.20, seasonFrequencies: { spring: 22, summer: 28, fall: 22, winter: 10 }, rationale: 'Pronghorn in grasslands east of the dunes; reduced in deep winter.' },
     },
     'Coyote': {
-      'mosca-pass': { rarity: 'likely', frequency: 0.40, rationale: 'Coyotes routinely seen at forest-grassland edges at dawn/dusk.' },
+      'mosca-pass': { rarity: 'likely', frequency: 0.40, seasonFrequencies: { spring: 40, summer: 38, fall: 42, winter: 48 }, rationale: 'Coyotes routinely seen at forest-grassland edges at dawn/dusk; winter snow-contrast boost.' },
     },
   },
 
@@ -1074,13 +1075,13 @@ export const ZONE_OVERRIDES = {
       'cedar-creek': { rarity: 'unlikely', frequency: 0.20, seasonFrequencies: { spring: 25, summer: 30, fall: 20, winter: 5 }, rationale: 'Alligators in Cedar Creek floodplain sloughs — kayakers and high-water periods boost sightings.' },
     },
     'White-tailed Deer': {
-      'boardwalk':   { rarity: 'likely', frequency: 0.40, rationale: 'Deer browsing in floodplain forests visible from the boardwalk.' },
+      'boardwalk':   { rarity: 'likely', frequency: 0.40, seasonFrequencies: { spring: 40, summer: 38, fall: 48, winter: 35 }, rationale: 'Deer browsing in floodplain forests visible from the boardwalk year-round (mild SC climate); fall rut bump, summer flooding can disperse them.' },
     },
     'Wild Turkey': {
-      'boardwalk':   { rarity: 'likely', frequency: 0.45, rationale: 'Wild Turkey flocks in old-growth bottomlands.' },
+      'boardwalk':   { rarity: 'likely', frequency: 0.45, seasonFrequencies: { spring: 50, summer: 42, fall: 50, winter: 42 }, rationale: 'Wild Turkey flocks in old-growth bottomlands year-round; spring gobbling + fall flocks peak.' },
     },
     'Barred Owl': {
-      'boardwalk':   { rarity: 'likely', frequency: 0.40, rationale: 'Barred Owls reliably calling at dawn/dusk along the boardwalk loop.' },
+      'boardwalk':   { rarity: 'likely', frequency: 0.40, seasonFrequencies: { spring: 45, summer: 38, fall: 40, winter: 42 }, rationale: 'Barred Owls reliably calling at dawn/dusk along the boardwalk loop year-round; non-migratory; late-winter courtship calling peak.' },
     },
   },
 
@@ -1099,28 +1100,29 @@ export const ZONE_OVERRIDES = {
       'cascade-pass': {
         rarity: 'likely',
         frequency: 0.45,
+        seasonFrequencies: { spring: 10, summer: 70, fall: 40, winter: 1 },
         peakWindow: { startMonthDay: '07-01', endMonthDay: '08-31', label: 'Peak: July – August' },
-        rationale: 'Mountain Goats on the high meadows above Cascade Pass in summer.',
+        rationale: 'Mountain Goats on the high meadows above Cascade Pass in summer; Cascade Pass trail snow-bound most of the year (access ~July–Oct).',
       },
     },
     'American Black Bear': {
-      'hwy-20':       { rarity: 'unlikely', frequency: 0.18, seasonFrequencies: { spring: 20, summer: 25, fall: 22, winter: 1 }, rationale: 'Black bears occasionally cross Highway 20 corridor; denning winter.' },
+      'hwy-20':       { rarity: 'unlikely', frequency: 0.18, seasonFrequencies: { spring: 20, summer: 25, fall: 22, winter: 1 }, rationale: 'Black bears occasionally cross Highway 20 corridor; Hwy 20 (North Cascades Hwy) closed by snow ~Nov–Apr; denning winter.' },
     },
     'Bald Eagle': {
-      'hwy-20':       { rarity: 'very_likely', frequency: 0.75, peakWindow: { startMonthDay: '04-01', endMonthDay: '07-31', label: 'Peak nesting: April – July' }, rationale: 'Bald Eagles at Diablo Lake / Ross Lake along the highway corridor; nesting peak Apr-Jul makes them most predictable.' },
+      'hwy-20':       { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 75, summer: 70, fall: 80, winter: 30 }, peakWindow: { startMonthDay: '04-01', endMonthDay: '07-31', label: 'Peak nesting: April – July' }, rationale: 'Bald Eagles at Diablo Lake / Ross Lake along the highway corridor; Hwy 20 closed by snow ~Nov–Apr limiting winter access.' },
     },
   },
 
   // ── Indiana Dunes (round 6) ─────────────────────────────────────────
   indianadunes: {
     'White-tailed Deer': {
-      'inland':     { rarity: 'very_likely', frequency: 0.75, rationale: 'Deer in dune-edge forests and savanna.' },
+      'inland':     { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 72, summer: 72, fall: 82, winter: 62 }, rationale: 'Deer in dune-edge forests and savanna year-round; fall rut bump.' },
     },
     'Sandhill Crane': {
       'lakeshore':  { rarity: 'very_likely', frequency: 0.70, seasonFrequencies: { spring: 90, summer: 60, fall: 95, winter: 5 }, peakWindow: { startMonthDay: '10-15', endMonthDay: '11-20', label: 'Peak fall migration: mid-Oct – mid-Nov' }, rationale: 'Sandhill Cranes in seasonal wetlands — peak fall migration October-November.' },
     },
     'Bald Eagle': {
-      'lakeshore':  { rarity: 'unlikely', frequency: 0.25, rationale: 'Bald Eagles fishing along Lake Michigan shoreline year-round.' },
+      'lakeshore':  { rarity: 'unlikely', frequency: 0.25, seasonFrequencies: { spring: 25, summer: 18, fall: 28, winter: 30 }, rationale: 'Bald Eagles fishing along Lake Michigan shoreline year-round; winter influx as inland waters freeze, concentrating birds on open lake.' },
     },
     'Common Loon': {
       'lakeshore':  { rarity: 'unlikely', frequency: 0.20, seasonFrequencies: { spring: 30, summer: 5, fall: 30, winter: 25 }, rationale: 'Loons on Lake Michigan during migration and winter; absent in summer.' },
@@ -1171,13 +1173,13 @@ export const ZONE_OVERRIDES = {
   // ── Lassen Volcanic (round 5) ───────────────────────────────────────
   lassenvolcanic: {
     "Steller's Jay": {
-      'manzanita-lake':  { rarity: 'guaranteed', frequency: 0.95, rationale: "Steller's Jays at Manzanita Lake campground and visitor center." },
+      'manzanita-lake':  { rarity: 'guaranteed', frequency: 0.95, seasonFrequencies: { spring: 90, summer: 95, fall: 92, winter: 70 }, rationale: "Steller's Jays at Manzanita Lake campground and visitor center; non-migratory, Manzanita Lake area accessible year-round (lower elevation, NW entrance)." },
     },
     'Common Golden-mantled Ground Squirrel': {
-      'bumpass-hell':    { rarity: 'very_likely', frequency: 0.80, rationale: 'Ground squirrels at Bumpass Hell parking and trailhead.' },
+      'bumpass-hell':    { rarity: 'very_likely', frequency: 0.80, seasonFrequencies: { spring: 10, summer: 92, fall: 55, winter: 1 }, rationale: 'Ground squirrels at Bumpass Hell parking and trailhead; main park road + trail snow-bound ~Nov–Jul, and squirrels hibernate Sept–May.' },
     },
     'Mule Deer': {
-      'manzanita-lake':  { rarity: 'very_likely', frequency: 0.75, rationale: 'Habituated deer in Manzanita Lake campground meadows.' },
+      'manzanita-lake':  { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 70, summer: 85, fall: 80, winter: 35 }, rationale: 'Habituated deer in Manzanita Lake campground meadows; some descend below the park in deep-snow winter.' },
     },
     'American Black Bear': {
       'warner-valley':   { rarity: 'unlikely', frequency: 0.20, seasonFrequencies: { spring: 22, summer: 28, fall: 22, winter: 2 }, rationale: 'Black bears in Warner Valley backcountry; denning winter.' },
@@ -1342,18 +1344,19 @@ export const ZONE_OVERRIDES = {
       'sunrise': {
         rarity: 'very_likely',
         frequency: 0.80,
-        rationale: 'Marmots in alpine meadows at Sunrise; lower density than Paradise but still routine.',
+        seasonFrequencies: { spring: 10, summer: 95, fall: 60, winter: 1 },
+        rationale: 'Marmots in alpine meadows at Sunrise; lower density than Paradise but still routine. Sunrise Road closed by snow ~Oct–Jul; marmots also hibernate Sept–May.',
       },
     },
     'Mule Deer': {
-      'paradise': { rarity: 'very_likely', frequency: 0.75, peakWindow: { startMonthDay: '10-15', endMonthDay: '11-30', label: 'Peak rut: mid-Oct – Nov' }, rationale: 'Habituated deer in Paradise meadows year-round (when accessible); rut increases activity Oct-Nov.' },
-      'longmire': { rarity: 'likely',      frequency: 0.50, rationale: 'Deer regularly visible in Longmire meadows.' },
+      'paradise': { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 50, summer: 90, fall: 70, winter: 5 }, peakWindow: { startMonthDay: '10-15', endMonthDay: '11-30', label: 'Peak rut: mid-Oct – Nov' }, rationale: 'Habituated deer in Paradise meadows; Paradise Road plowed but meadows snow-covered in winter, deer move to lower elevations.' },
+      'longmire': { rarity: 'likely',      frequency: 0.50, seasonFrequencies: { spring: 50, summer: 55, fall: 60, winter: 35 }, rationale: 'Deer regularly visible in Longmire meadows; lower elevation, accessible year-round.' },
     },
     'American Black Bear': {
       'paradise':    { rarity: 'unlikely', frequency: 0.20, seasonFrequencies: { spring: 22, summer: 25, fall: 20, winter: 1 }, peakWindow: { startMonthDay: '08-01', endMonthDay: '09-30', label: 'Peak berry season: Aug – Sept' }, rationale: 'Black bears occasionally seen in Paradise/Sunrise meadows; berry season Aug-Sept brings them to subalpine zones; denning in winter.' },
     },
     "Clark's Nutcracker": {
-      'sunrise':     { rarity: 'very_likely', frequency: 0.80, rationale: "Clark's Nutcrackers cache whitebark pine seeds at Sunrise — visible at every visit in summer." },
+      'sunrise':     { rarity: 'very_likely', frequency: 0.80, seasonFrequencies: { spring: 10, summer: 90, fall: 80, winter: 1 }, rationale: "Clark's Nutcrackers cache whitebark pine seeds at Sunrise — visible at every summer visit; Sunrise Road closed by snow ~Oct–Jul (winter access ~0 even though birds are present)." },
     },
     // Note: Roosevelt Elk override removed — Mt Rainier's Carbon River elk are
     // too sparse in iNat data for the build pipeline to include, so the
@@ -1463,7 +1466,7 @@ export const ZONE_OVERRIDES = {
       },
     },
     'Wild Turkey': {
-      'skyline-central': { rarity: 'very_likely', frequency: 0.75, rationale: 'Wild Turkey flocks in Big Meadows fields.' },
+      'skyline-central': { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 80, summer: 70, fall: 82, winter: 55 }, rationale: 'Wild Turkey flocks in Big Meadows fields; spring gobbling + fall flock-aggregation peaks; Skyline Drive winter-closure risk.' },
     },
   },
 
