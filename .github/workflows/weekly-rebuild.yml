@@ -52,10 +52,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: "20"
           cache: npm
@@ -78,10 +78,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: "20"
           cache: npm
@@ -104,7 +104,7 @@ jobs:
         run: node scripts/buildWildlifeCache.js
 
       - name: Upload shard cache
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: cache-shard-${{ matrix.shard }}
           path: shard-${{ matrix.shard }}.json
@@ -123,10 +123,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: "20"
           cache: npm
@@ -144,7 +144,7 @@ jobs:
           echo "Pre-rebuild species entries: $PRE"
 
       - name: Download all shard caches
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           path: shards/
           pattern: cache-shard-*

@@ -13,8 +13,8 @@
       "source": "URL or full citation",
       "rationale": "1-2 sentence note on why this anchor is trustworthy and any caveats"
     },
-    "lastReviewed": "2026-04-25",
-    "anchorCount": 50,
+    "lastReviewed": "2026-05-14",
+    "anchorCount": 139,
     "zoneSchemaNote": "When `zone` is set, the calibration script uses the species' zone-specific rarity (animal.zones[zone]) instead of the park-level rarity. Zone IDs match src/data/parkZones.js."
   },
   "anchors": [
@@ -852,6 +852,23 @@
 
     { "parkId": "congaree", "species": "American Alligator", "season": "year-round", "visitorEffort": "casual", "probability": 0.40, "tierExpected": "likely", "confidence": "medium", "source": "Congaree NPS boardwalk visitor sightings.", "rationale": "Alligators in floodplain sloughs visible from the boardwalk." },
 
-    { "parkId": "guadalupemountains", "species": "Mule Deer", "season": "year-round", "visitorEffort": "casual", "probability": 0.65, "tierExpected": "very_likely", "confidence": "medium", "source": "Guadalupe Mountains NPS visitor sightings.", "rationale": "Deer at McKittrick Canyon and Pine Springs visitor areas." }
+    { "parkId": "guadalupemountains", "species": "Mule Deer", "season": "year-round", "visitorEffort": "casual", "probability": 0.65, "tierExpected": "very_likely", "confidence": "medium", "source": "Guadalupe Mountains NPS visitor sightings.", "rationale": "Deer at McKittrick Canyon and Pine Springs visitor areas." },
+
+    { "parkId": "acadia", "species": "White-tailed Deer", "season": "year-round", "visitorEffort": "casual", "probability": 0.85, "tierExpected": "very_likely", "confidence": "high", "source": "Acadia NPS Park Loop Road and Schoodic visitor sightings.", "rationale": "Deer reliably visible along Park Loop Road meadows and Sieur de Monts area year-round." },
+    { "parkId": "acadia", "species": "Common Loon", "season": "summer", "visitorEffort": "casual", "probability": 0.55, "tierExpected": "likely", "confidence": "medium", "source": "Acadia NPS Jordan Pond / Eagle Lake summer waterbird reports.", "rationale": "Loons reliably present on Jordan Pond, Eagle Lake, and other freshwater lakes in summer." },
+    { "parkId": "acadia", "species": "Bald Eagle", "season": "year-round", "visitorEffort": "casual", "probability": 0.45, "tierExpected": "likely", "confidence": "medium", "source": "Acadia NPS coastal raptor reports — eagles on Mount Desert Island offshore islands.", "rationale": "Bald Eagles patrol the coastal islands and Frenchman Bay; routinely visible from Cadillac Mountain or Schoodic." },
+
+    { "parkId": "joshuatree", "species": "Common Raven", "season": "year-round", "visitorEffort": "casual", "probability": 0.97, "tierExpected": "guaranteed", "confidence": "high", "source": "Joshua Tree NPS visitor center and overlook sightings.", "rationale": "Ravens at every visitor center, parking area, and rock formation — JTree's most reliable bird." },
+    { "parkId": "joshuatree", "species": "Black-tailed Jackrabbit", "season": "year-round", "visitorEffort": "casual", "probability": 0.40, "tierExpected": "likely", "confidence": "medium", "source": "Joshua Tree NPS dawn/dusk wildlife reports.", "rationale": "Jackrabbits reliably visible at dawn/dusk along desert roads — Hidden Valley, Cottonwood." },
+    { "parkId": "joshuatree", "species": "Desert Bighorn Sheep", "season": "year-round", "visitorEffort": "casual", "probability": 0.10, "tierExpected": "unlikely", "confidence": "medium", "source": "Joshua Tree NPS Bighorn Sheep monitoring.", "rationale": "Resident bighorn band visible occasionally at Barker Dam / Wonderland of Rocks; lucky sightings only." },
+
+    { "parkId": "indianadunes", "species": "Eastern Gray Squirrel", "season": "year-round", "visitorEffort": "casual", "probability": 0.95, "tierExpected": "guaranteed", "confidence": "high", "source": "Indiana Dunes NPS forested visitor area sightings.", "rationale": "Habituated squirrels at every visitor center, picnic area, and trailhead." },
+    { "parkId": "indianadunes", "species": "Sandhill Crane", "season": "spring", "visitorEffort": "casual", "probability": 0.40, "tierExpected": "likely", "confidence": "medium", "source": "Indiana Dunes NPS spring/fall migration reports — Jasper-Pulaski FWA staging.", "rationale": "Sandhill Cranes pass through dune wetlands during migration; reliably overhead in March-April." },
+
+    { "parkId": "cuyahogavalley", "species": "Eastern Gray Squirrel", "season": "year-round", "visitorEffort": "casual", "probability": 0.99, "tierExpected": "guaranteed", "confidence": "high", "source": "Cuyahoga Valley NPS Boston Mill / Towpath visitor sightings.", "rationale": "Habituated squirrels at every parking area, picnic spot, and trailhead in the urban-edge park." },
+    { "parkId": "cuyahogavalley", "species": "Wild Turkey", "season": "year-round", "visitorEffort": "casual", "probability": 0.50, "tierExpected": "likely", "confidence": "medium", "source": "Cuyahoga Valley NPS Towpath and forest-edge wildlife reports.", "rationale": "Turkey flocks regularly visible along the Towpath Trail forest edges and farm areas." },
+
+    { "parkId": "hotsprings", "species": "Northern Cardinal", "season": "year-round", "visitorEffort": "casual", "probability": 0.85, "tierExpected": "very_likely", "confidence": "high", "source": "Hot Springs NPS Bathhouse Row / Promenade bird sightings.", "rationale": "Cardinals at every Bathhouse Row tree and Promenade shrub year-round — urban park standard." },
+    { "parkId": "hotsprings", "species": "White-tailed Deer", "season": "year-round", "visitorEffort": "casual", "probability": 0.30, "tierExpected": "unlikely", "confidence": "medium", "source": "Hot Springs NPS Hot Springs Mountain trail sightings.", "rationale": "Deer in the surrounding wooded slopes; visible to hikers but not casual Bathhouse Row visitors." }
   ]
 }
