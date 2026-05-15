@@ -56,7 +56,7 @@ export const DETECTABILITY_LEVELS = {
 //
 // Curation discipline: bump DETECTABILITY_REVIEWED_AT below when adding or
 // changing entries.
-export const DETECTABILITY_REVIEWED_AT = '2026-04-25';
+export const DETECTABILITY_REVIEWED_AT = '2026-05-14';
 
 export const SPECIES_DETECTABILITY = {
   // ── Hard (capped at "likely" max) ──────────────────────────────────────
@@ -192,6 +192,94 @@ export const SPECIES_DETECTABILITY = {
   'Mexican Spotted Owl':       'cryptic',
   // Note: 'Spotted Owl' already in 'hard' (line 78) — leaving as-is to avoid
   // changing existing classification. Mexican Spotted Owl handled separately.
+
+  // ── Round 3 expansion (2026-05-14): bats, nightbirds, more herps ──
+  // Bats: nearly all bat species are cryptic for casual visitors. They're
+  // photographed by researchers at roosts/maternity sites, inflating iNat
+  // counts, but day visitors see them only as fast silhouettes at dusk.
+  'Little Brown Bat':          'cryptic',
+  'Big Brown Bat':             'cryptic',
+  'Silver-haired Bat':         'cryptic',
+  'Hoary Bat':                 'cryptic',
+  'Eastern Red Bat':           'cryptic',
+  'Western Red Bat':           'cryptic',
+  'Townsend\'s Big-eared Bat': 'cryptic',
+  'Pallid Bat':                'cryptic',
+  'California Myotis':         'cryptic',
+  'Yuma Myotis':               'cryptic',
+  'Long-eared Myotis':         'cryptic',
+  'Long-legged Myotis':        'cryptic',
+  'Western Small-footed Myotis':'cryptic',
+  'Tricolored Bat':            'cryptic',
+  'Northern Long-eared Bat':   'cryptic',
+  // NB: Brazilian / Mexican Free-tailed Bat intentionally NOT classified.
+  // These species concentrate at the Carlsbad Caverns natural entrance for
+  // the NPS evening bat-flight program — a formal, reliable visitor
+  // experience. A park-level 'cryptic' cap would underrate the Carlsbad
+  // anchor by 3 tiers (calibration regressed 0.27 → 0.37 when added).
+  // At parks WITHOUT a bat-flight program the iNat/eBird tier already
+  // converges to 'unlikely'/'rare' on its own — no detectability cap
+  // needed.
+
+  // ── Cryptic nightjars / nighthawks (cap: unlikely) ─────────────────
+  // Calling at dusk/night, roost camouflaged on the ground or branches by day.
+  'Common Nighthawk':          'hard',  // visible aerial-feeding at dusk = hard, not cryptic
+  'Lesser Nighthawk':          'hard',
+  'Common Poorwill':           'cryptic',
+  'Eastern Whip-poor-will':    'cryptic',
+  'Mexican Whip-poor-will':    'cryptic',
+  'Chuck-will\'s-widow':       'cryptic',
+
+  // ── Cryptic forest birds (cap: unlikely) ───────────────────────────
+  // Skulkers and canopy specialists where visual sightings are rare even
+  // when birds are vocal and abundant.
+  'Yellow-billed Cuckoo':      'cryptic',  // sneaky canopy
+  'Black-billed Cuckoo':       'cryptic',
+  'Black Rail':                'cryptic',
+  'Yellow Rail':               'cryptic',
+  'Virginia Rail':             'cryptic',
+  'Sora':                      'hard',  // calls heard, sometimes seen at marsh edges
+  'American Bittern':          'cryptic',  // master of camouflage
+  'Least Bittern':             'cryptic',
+  'Northern Saw-whet Owl':     'cryptic',  // (duplicate; harmless — JS object keys are last-wins)
+
+  // ── Cryptic snakes (cap: unlikely) ─────────────────────────────────
+  'Worm Snake':                'cryptic',
+  'Eastern Worm Snake':        'cryptic',
+  'Mud Snake':                 'cryptic',  // burrowing, secretive
+  'Rainbow Snake':             'cryptic',
+  'Pine Snake':                'cryptic',  // fossorial
+  'Gopher Snake':              'hard',     // big and conspicuous when crossing roads
+  'Glossy Snake':              'cryptic',
+  'Long-nosed Snake':          'cryptic',
+  'Western Shovel-nosed Snake':'cryptic',
+  'Lyre Snake':                'cryptic',
+  'Night Snake':               'cryptic',  // nocturnal
+
+  // ── Cryptic salamanders / amphibians (cap: unlikely) ───────────────
+  'Slimy Salamander':          'cryptic',
+  'Northern Slimy Salamander': 'cryptic',
+  'Long-toed Salamander':      'cryptic',
+  'Pacific Newt':              'cryptic',
+  'Spring Salamander':         'cryptic',
+  'Dusky Salamander':          'cryptic',
+  'Northern Dusky Salamander': 'cryptic',
+  'Two-toed Amphiuma':         'cryptic',  // aquatic + nocturnal
+  'Greater Siren':             'cryptic',
+  'Lesser Siren':              'cryptic',
+
+  // ── Cryptic small carnivores not yet covered (cap: unlikely) ───────
+  'Swift Fox':                 'cryptic',  // grassland, shy
+  'Long-tailed Vole':          'cryptic',  // (duplicate; harmless)
+  'Black-footed Ferret':       'cryptic',  // endangered, nocturnal, prairie-dog burrows
+
+  // ── Hard nocturnal generalists (cap: likely) ───────────────────────
+  // Visible at night/dusk along park roads but easily missed by daytime visitors.
+  'Hooded Skunk':              'hard',
+  'Common Opossum':            'hard',
+  'Virginia Opossum':          'hard',
+  'White-nosed Coati':         'hard',  // diurnal but specific habitat
+  'Coati':                     'hard',
 };
 
 /**
