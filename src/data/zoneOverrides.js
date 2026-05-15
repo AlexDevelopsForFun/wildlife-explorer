@@ -975,20 +975,21 @@ export const ZONE_OVERRIDES = {
   // ── Mammoth Cave (round 6) ──────────────────────────────────────────
   mammothcave: {
     'White-tailed Deer': {
-      'visitor-area': { rarity: 'guaranteed', frequency: 0.92, rationale: 'Deer abundant in surface forests around the visitor center.' },
-      'green-river':  { rarity: 'very_likely', frequency: 0.80, rationale: 'Deer along the Green River bottoms.' },
+      'visitor-area': { rarity: 'guaranteed', frequency: 0.92, seasonFrequencies: { spring: 90, summer: 90, fall: 99, winter: 85 }, rationale: 'Deer abundant in surface forests around the visitor center; fall rut bump, year-round resident.' },
+      'green-river':  { rarity: 'very_likely', frequency: 0.80, seasonFrequencies: { spring: 80, summer: 80, fall: 88, winter: 70 }, rationale: 'Deer along the Green River bottoms year-round.' },
     },
     'Wild Turkey': {
-      'visitor-area': { rarity: 'very_likely', frequency: 0.70, rationale: 'Wild Turkey flocks in surface forests at dawn/dusk.' },
+      'visitor-area': { rarity: 'very_likely', frequency: 0.70, seasonFrequencies: { spring: 75, summer: 65, fall: 78, winter: 60 }, rationale: 'Wild Turkey flocks in surface forests at dawn/dusk; fall flock-aggregation peak.' },
     },
     'Eastern Gray Squirrel': {
-      'visitor-area': { rarity: 'guaranteed', frequency: 0.97, rationale: 'Squirrels everywhere in surface forests around the visitor center.' },
+      'visitor-area': { rarity: 'guaranteed', frequency: 0.97, seasonFrequencies: { spring: 97, summer: 97, fall: 97, winter: 88 }, rationale: 'Squirrels everywhere in surface forests around the visitor center year-round.' },
     },
     'Little Brown Bat': {
       'visitor-area': {
         rarity: 'unlikely',
         frequency: 0.18,
-        rationale: 'Resident bat species; sightings during cave tours have dropped post-WNS but still possible.',
+        seasonFrequencies: { spring: 20, summer: 25, fall: 18, winter: 8 },
+        rationale: 'Resident bat species; sightings during cave tours have dropped post-WNS but still possible; winter hibernation reduces activity.',
       },
     },
   },
@@ -1283,15 +1284,15 @@ export const ZONE_OVERRIDES = {
   // ── Petrified Forest (round 5) ──────────────────────────────────────
   petrifiedforest: {
     'Common Raven': {
-      'painted-desert': { rarity: 'guaranteed', frequency: 0.99, rationale: 'Ravens at Painted Desert Inn and overlooks.' },
-      'crystal-forest': { rarity: 'guaranteed', frequency: 0.97, rationale: 'Ravens patrol Crystal Forest parking and trail.' },
+      'painted-desert': { rarity: 'guaranteed', frequency: 0.99, seasonFrequencies: { spring: 99, summer: 99, fall: 97, winter: 92 }, rationale: 'Ravens at Painted Desert Inn and overlooks year-round.' },
+      'crystal-forest': { rarity: 'guaranteed', frequency: 0.97, seasonFrequencies: { spring: 97, summer: 97, fall: 95, winter: 88 }, rationale: 'Ravens patrol Crystal Forest parking and trail year-round.' },
     },
     'Pronghorn': {
-      'painted-desert': { rarity: 'likely', frequency: 0.55, peakWindow: { startMonthDay: '05-15', endMonthDay: '06-30', label: 'Peak fawning: mid-May – June' }, rationale: 'Pronghorn herds visible in grasslands near the north entrance; fawns visible May-June.' },
-      'crystal-forest': { rarity: 'likely', frequency: 0.50, peakWindow: { startMonthDay: '05-15', endMonthDay: '06-30', label: 'Peak fawning: mid-May – June' }, rationale: 'Pronghorn across the southern grassland zone.' },
+      'painted-desert': { rarity: 'likely', frequency: 0.55, seasonFrequencies: { spring: 55, summer: 65, fall: 55, winter: 35 }, peakWindow: { startMonthDay: '05-15', endMonthDay: '06-30', label: 'Peak fawning: mid-May – June' }, rationale: 'Pronghorn herds in grasslands near the north entrance; fawns May-June; year-round but more dispersed in cold high-desert winter.' },
+      'crystal-forest': { rarity: 'likely', frequency: 0.50, seasonFrequencies: { spring: 50, summer: 60, fall: 50, winter: 30 }, peakWindow: { startMonthDay: '05-15', endMonthDay: '06-30', label: 'Peak fawning: mid-May – June' }, rationale: 'Pronghorn across the southern grassland zone; reduced winter.' },
     },
     'Black-tailed Jackrabbit': {
-      'crystal-forest': { rarity: 'likely', frequency: 0.45, rationale: 'Jackrabbits in shrub-grasslands at dawn/dusk.' },
+      'crystal-forest': { rarity: 'likely', frequency: 0.45, seasonFrequencies: { spring: 50, summer: 50, fall: 45, winter: 35 }, rationale: 'Jackrabbits in shrub-grasslands at dawn/dusk; year-round resident, slightly less visible in cold winter.' },
     },
   },
 
@@ -1301,28 +1302,29 @@ export const ZONE_OVERRIDES = {
       'summit':      {
         rarity: 'guaranteed',
         frequency: 0.92,
-        rationale: 'Nene walk freely around the summit visitor center and parking lot.',
+        seasonFrequencies: { spring: 90, summer: 88, fall: 92, winter: 95 },
+        rationale: 'Nene walk freely around the summit visitor center and parking lot year-round; breeding season (Oct–Mar) concentrates them at higher elevations.',
       },
-      'hosmer-grove':{ rarity: 'very_likely', frequency: 0.70, rationale: 'Nene at Hosmer Grove campground.' },
+      'hosmer-grove':{ rarity: 'very_likely', frequency: 0.70, seasonFrequencies: { spring: 70, summer: 65, fall: 72, winter: 75 }, rationale: 'Nene at Hosmer Grove campground year-round; tropical alpine — no migration, mild breeding-season uptick.' },
     },
   },
 
   // ── Wind Cave (round 5) ─────────────────────────────────────────────
   windcave: {
     'American Bison': {
-      'prairie-loop':  { rarity: 'very_likely', frequency: 0.85, peakWindow: { startMonthDay: '07-15', endMonthDay: '08-15', label: 'Peak rut: mid-July – mid-Aug' }, rationale: 'Free-ranging bison herd of ~400 visible across the wildlife loop.' },
+      'prairie-loop':  { rarity: 'very_likely', frequency: 0.85, seasonFrequencies: { spring: 85, summer: 90, fall: 85, winter: 70 }, peakWindow: { startMonthDay: '07-15', endMonthDay: '08-15', label: 'Peak rut: mid-July – mid-Aug' }, rationale: 'Free-ranging bison herd of ~400 visible across the wildlife loop year-round (SD prairie winters cold but herd stays).' },
     },
     'Pronghorn': {
-      'prairie-loop':  { rarity: 'very_likely', frequency: 0.75, rationale: 'Pronghorn herds across the prairie zone.' },
+      'prairie-loop':  { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 75, summer: 85, fall: 75, winter: 30 }, rationale: 'Pronghorn herds across the prairie zone; reduced/dispersed in deep winter.' },
     },
     'Black-tailed Prairie Dog': {
-      'prairie-loop':  { rarity: 'guaranteed', frequency: 0.97, peakWindow: { startMonthDay: '04-01', endMonthDay: '08-31', label: 'Peak active season: April – August' }, rationale: 'Multiple prairie dog towns visible from the wildlife loop year-round; warm-season above-ground activity.' },
+      'prairie-loop':  { rarity: 'guaranteed', frequency: 0.97, seasonFrequencies: { spring: 95, summer: 99, fall: 80, winter: 12 }, peakWindow: { startMonthDay: '04-01', endMonthDay: '08-31', label: 'Peak active season: April – August' }, rationale: 'Multiple prairie dog towns visible from the wildlife loop; winter torpor sharply reduces surface activity.' },
     },
     'Mule Deer': {
-      'prairie-loop':  { rarity: 'likely', frequency: 0.50, rationale: 'Mule Deer in canyons and ravines at edges of prairie.' },
+      'prairie-loop':  { rarity: 'likely', frequency: 0.50, seasonFrequencies: { spring: 48, summer: 50, fall: 58, winter: 42 }, rationale: 'Mule Deer in canyons and ravines at edges of prairie; fall rut bump, year-round resident.' },
     },
     'Coyote': {
-      'prairie-loop':  { rarity: 'likely', frequency: 0.45, rationale: 'Coyotes hunting prairie dogs at dawn/dusk.' },
+      'prairie-loop':  { rarity: 'likely', frequency: 0.45, seasonFrequencies: { spring: 45, summer: 40, fall: 45, winter: 55 }, rationale: 'Coyotes hunting prairie dogs at dawn/dusk; winter snow-contrast boost.' },
     },
   },
 
@@ -1360,40 +1362,40 @@ export const ZONE_OVERRIDES = {
   // ── Death Valley (round 4) ──────────────────────────────────────────
   deathvalley: {
     'Coyote': {
-      'furnace-creek': { rarity: 'very_likely', frequency: 0.70, rationale: 'Habituated coyotes routinely visible at Furnace Creek — campground, golf course, ranch area.' },
-      'stovepipe-wells': { rarity: 'likely',    frequency: 0.45, rationale: 'Coyotes regularly visible at Stovepipe Wells village.' },
+      'furnace-creek': { rarity: 'very_likely', frequency: 0.70, seasonFrequencies: { spring: 75, summer: 55, fall: 70, winter: 80 }, rationale: 'Habituated coyotes routinely visible at Furnace Creek — campground, golf course, ranch area; summer extreme heat reduces daytime activity, peak winter (mild, peak visitor season).' },
+      'stovepipe-wells': { rarity: 'likely',    frequency: 0.45, seasonFrequencies: { spring: 50, summer: 30, fall: 45, winter: 55 }, rationale: 'Coyotes regularly visible at Stovepipe Wells village; summer heat suppresses daytime sightings.' },
     },
     'Common Raven': {
-      'furnace-creek': { rarity: 'guaranteed', frequency: 0.99, rationale: 'Ravens at every Furnace Creek parking area, campsite, and overlook.' },
-      'badwater':      { rarity: 'guaranteed', frequency: 0.97, rationale: 'Ravens patrol the Badwater Basin parking and salt flats.' },
+      'furnace-creek': { rarity: 'guaranteed', frequency: 0.99, seasonFrequencies: { spring: 99, summer: 95, fall: 99, winter: 99 }, rationale: 'Ravens at every Furnace Creek parking area, campsite, and overlook year-round.' },
+      'badwater':      { rarity: 'guaranteed', frequency: 0.97, seasonFrequencies: { spring: 97, summer: 90, fall: 97, winter: 99 }, rationale: 'Ravens patrol the Badwater Basin parking and salt flats; slightly fewer in extreme summer heat.' },
     },
     'Common Side-blotched Lizard': {
       'furnace-creek': { rarity: 'very_likely', frequency: 0.80, seasonFrequencies: { spring: 85, summer: 75, fall: 75, winter: 30 }, peakWindow: { startMonthDay: '03-01', endMonthDay: '06-30', label: 'Peak active season: March – June (cooler than summer)' }, rationale: 'Side-blotched lizards on every warm-season visit; dormant in cool months. Spring + early summer best — Death Valley summer heat sends them to refugia.' },
     },
     'Desert Bighorn Sheep': {
-      'panamint':      { rarity: 'unlikely', frequency: 0.20, rationale: 'Desert bighorn at Panamint range — visible to dedicated hikers but not casual visitors.' },
+      'panamint':      { rarity: 'unlikely', frequency: 0.20, seasonFrequencies: { spring: 25, summer: 15, fall: 22, winter: 22 }, rationale: 'Desert bighorn at Panamint range — visible to dedicated hikers but not casual visitors; year-round desert resident, slightly lower in extreme summer heat.' },
     },
   },
 
   // ── Joshua Tree (round 4) ───────────────────────────────────────────
   joshuatree: {
     'Common Side-blotched Lizard': {
-      'hidden-valley':  { rarity: 'guaranteed', frequency: 0.95, peakWindow: { startMonthDay: '04-01', endMonthDay: '09-30', label: 'Peak active season: April – September' }, rationale: 'Side-blotched lizards on every rock at Hidden Valley / Barker Dam in warm season.' },
-      'jumbo-rocks':    { rarity: 'guaranteed', frequency: 0.92, peakWindow: { startMonthDay: '04-01', endMonthDay: '09-30', label: 'Peak active season: April – September' }, rationale: 'Lizards basking on Jumbo Rocks formations.' },
+      'hidden-valley':  { rarity: 'guaranteed', frequency: 0.95, seasonFrequencies: { spring: 95, summer: 95, fall: 85, winter: 15 }, peakWindow: { startMonthDay: '04-01', endMonthDay: '09-30', label: 'Peak active season: April – September' }, rationale: 'Side-blotched lizards on every rock at Hidden Valley / Barker Dam in warm season; brumate (dormant) in cold high-desert winter.' },
+      'jumbo-rocks':    { rarity: 'guaranteed', frequency: 0.92, seasonFrequencies: { spring: 92, summer: 92, fall: 80, winter: 12 }, peakWindow: { startMonthDay: '04-01', endMonthDay: '09-30', label: 'Peak active season: April – September' }, rationale: 'Lizards basking on Jumbo Rocks formations; winter brumation.' },
     },
     'Common Chuckwalla': {
-      'hidden-valley':  { rarity: 'very_likely', frequency: 0.70, peakWindow: { startMonthDay: '04-01', endMonthDay: '09-30', label: 'Peak active season: April – September' }, rationale: 'Chuckwallas in rocky outcrops at Hidden Valley and Barker Dam; brumation Nov-Mar.' },
+      'hidden-valley':  { rarity: 'very_likely', frequency: 0.70, seasonFrequencies: { spring: 75, summer: 85, fall: 55, winter: 1 }, peakWindow: { startMonthDay: '04-01', endMonthDay: '09-30', label: 'Peak active season: April – September' }, rationale: 'Chuckwallas in rocky outcrops at Hidden Valley and Barker Dam; brumation Nov-Mar (winter ~0).' },
     },
     "Gambel's Quail": {
-      'cottonwood':     { rarity: 'very_likely', frequency: 0.75, rationale: "Gambel's Quail coveys at Cottonwood Spring oasis." },
+      'cottonwood':     { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 85, summer: 70, fall: 72, winter: 70 }, rationale: "Gambel's Quail coveys at Cottonwood Spring oasis year-round; spring breeding-season vocal peak." },
     },
     'Cactus Wren': {
-      'cottonwood':     { rarity: 'guaranteed', frequency: 0.95, peakWindow: { startMonthDay: '04-01', endMonthDay: '06-30', label: 'Peak breeding: April – June' }, rationale: 'Cactus Wrens nesting in cholla and yucca at Cottonwood Spring; vocal during breeding season.' },
-      'hidden-valley':  { rarity: 'very_likely', frequency: 0.85, peakWindow: { startMonthDay: '04-01', endMonthDay: '06-30', label: 'Peak breeding: April – June' }, rationale: 'Cactus Wrens vocal at every Hidden Valley trailhead.' },
+      'cottonwood':     { rarity: 'guaranteed', frequency: 0.95, seasonFrequencies: { spring: 99, summer: 90, fall: 92, winter: 90 }, peakWindow: { startMonthDay: '04-01', endMonthDay: '06-30', label: 'Peak breeding: April – June' }, rationale: 'Cactus Wrens nesting in cholla and yucca at Cottonwood Spring; non-migratory desert resident, vocal in breeding season.' },
+      'hidden-valley':  { rarity: 'very_likely', frequency: 0.85, seasonFrequencies: { spring: 92, summer: 82, fall: 82, winter: 80 }, peakWindow: { startMonthDay: '04-01', endMonthDay: '06-30', label: 'Peak breeding: April – June' }, rationale: 'Cactus Wrens vocal at every Hidden Valley trailhead; year-round resident.' },
     },
     'Common Raven': {
-      'keys-view':      { rarity: 'guaranteed', frequency: 0.97, rationale: 'Ravens patrol Keys View overlook constantly.' },
-      'jumbo-rocks':    { rarity: 'very_likely', frequency: 0.85, rationale: 'Ravens on Jumbo Rocks formations and campground.' },
+      'keys-view':      { rarity: 'guaranteed', frequency: 0.97, seasonFrequencies: { spring: 97, summer: 95, fall: 97, winter: 92 }, rationale: 'Ravens patrol Keys View overlook constantly year-round.' },
+      'jumbo-rocks':    { rarity: 'very_likely', frequency: 0.85, seasonFrequencies: { spring: 88, summer: 82, fall: 85, winter: 80 }, rationale: 'Ravens on Jumbo Rocks formations and campground year-round.' },
     },
   },
 
@@ -1436,10 +1438,11 @@ export const ZONE_OVERRIDES = {
       'skyline-central': {
         rarity: 'guaranteed',
         frequency: 0.98,
-        rationale: 'Big Meadows area has the densest deer population — herd visible to virtually every casual visitor.',
+        seasonFrequencies: { spring: 95, summer: 97, fall: 99, winter: 75 },
+        rationale: 'Big Meadows area has the densest deer population — herd visible to virtually every casual visitor; Skyline Drive may close in winter snow/ice.',
       },
-      'skyline-north':   { rarity: 'guaranteed', frequency: 0.95, rationale: 'Deer along Skyline Drive in the north district at meadow pull-offs.' },
-      'skyline-south':   { rarity: 'guaranteed', frequency: 0.93, rationale: 'Deer at south district meadows and overlooks.' },
+      'skyline-north':   { rarity: 'guaranteed', frequency: 0.95, seasonFrequencies: { spring: 92, summer: 95, fall: 97, winter: 70 }, rationale: 'Deer along Skyline Drive in the north district at meadow pull-offs; winter road-closure risk.' },
+      'skyline-south':   { rarity: 'guaranteed', frequency: 0.93, seasonFrequencies: { spring: 90, summer: 93, fall: 95, winter: 65 }, rationale: 'Deer at south district meadows and overlooks; winter road-closure risk.' },
     },
     'Black Bear': {
       'skyline-central': {
@@ -1448,7 +1451,7 @@ export const ZONE_OVERRIDES = {
         seasonFrequencies: { spring: 40, summer: 50, fall: 45, winter: 5 },
         rationale: 'Big Meadows area has the highest bear sighting rate — dawn/dusk pull-offs common reports.',
       },
-      'skyline-north':   { rarity: 'unlikely', frequency: 0.25, rationale: 'Bears in north district, less concentrated than central.' },
+      'skyline-north':   { rarity: 'unlikely', frequency: 0.25, seasonFrequencies: { spring: 25, summer: 32, fall: 28, winter: 2 }, rationale: 'Bears in north district, less concentrated than central; denning in winter.' },
     },
     'American Black Bear': {
       'skyline-central': {
