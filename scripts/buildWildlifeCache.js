@@ -2136,6 +2136,19 @@ async function main() {
       cache[loc.id] = { animals: results[idx], builtAt };
     });
 
+    // Incremental partial-save: write what we have so far after every batch.
+    // Without this, an iNat 429 spiral or hung connection can lose hours of
+    // accumulated work because the final write only happens at script end.
+    // A long-running rebuild with this safety net can be killed mid-flight
+    // and the work-so-far is still recoverable for mergeShards.js.
+    if (PARTIAL_OUT) {
+      try {
+        writeFileSync(PARTIAL_OUT, JSON.stringify(cache, null, 2), 'utf8');
+      } catch (err) {
+        console.warn(`  ⚠  Incremental save failed: ${err.message}`);
+      }
+    }
+
     if (i + BATCH < locationsToProcess.length) await sleep(BATCH_DELAY);
   }
 
