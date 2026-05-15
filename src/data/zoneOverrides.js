@@ -685,22 +685,22 @@ export const ZONE_OVERRIDES = {
   // ── Big Bend (additional zones) ─────────────────────────────────────
   bigbend: {
     'Greater Roadrunner': {
-      'rio-grande':   { rarity: 'guaranteed', frequency: 0.92, peakWindow: { startMonthDay: '03-01', endMonthDay: '06-30', label: 'Peak breeding + activity: March – June' }, rationale: 'Roadrunners reliably along Rio Grande Village trails and roads; breeding pairs + courtship displays March-June.' },
+      'rio-grande':   { rarity: 'guaranteed', frequency: 0.92, seasonFrequencies: { spring: 95, summer: 88, fall: 90, winter: 88 }, peakWindow: { startMonthDay: '03-01', endMonthDay: '06-30', label: 'Peak breeding + activity: March – June' }, rationale: 'Roadrunners reliably along Rio Grande Village trails and roads year-round (non-migratory desert resident); courtship displays March-June.' },
     },
     'Mexican Jay': {
-      'chisos':       { rarity: 'guaranteed', frequency: 0.95, peakWindow: { startMonthDay: '04-01', endMonthDay: '07-31', label: 'Peak breeding + cooperative-flock activity: April – July' }, rationale: 'Mexican Jay flocks at every Chisos Basin trailhead and campsite; cooperative breeding flocks most vocal Apr-Jul.' },
+      'chisos':       { rarity: 'guaranteed', frequency: 0.95, seasonFrequencies: { spring: 95, summer: 95, fall: 92, winter: 88 }, peakWindow: { startMonthDay: '04-01', endMonthDay: '07-31', label: 'Peak breeding + cooperative-flock activity: April – July' }, rationale: 'Mexican Jay flocks at every Chisos Basin trailhead and campsite year-round; cooperative breeding flocks most vocal Apr-Jul.' },
     },
     'Western Diamond-backed Rattlesnake': {
       'desert':       { rarity: 'unlikely',   frequency: 0.20, seasonFrequencies: { spring: 25, summer: 30, fall: 20, winter: 5 }, peakWindow: { startMonthDay: '04-01', endMonthDay: '09-30', label: 'Peak active season: April – September' }, rationale: 'Desert flats — snakes most active spring/summer at dawn/dusk; brumation Nov-Feb.' },
     },
     'Javelina': {
-      'chisos':       { rarity: 'likely',     frequency: 0.45, rationale: 'Javelina herds at Chisos Basin campground / Window Trail at dawn/dusk.' },
+      'chisos':       { rarity: 'likely',     frequency: 0.45, seasonFrequencies: { spring: 50, summer: 38, fall: 45, winter: 50 }, rationale: 'Javelina herds at Chisos Basin campground / Window Trail at dawn/dusk; summer heat shifts them more nocturnal.' },
     },
     'Black Bear': {
       'chisos':       { rarity: 'unlikely',   frequency: 0.18, seasonFrequencies: { spring: 20, summer: 25, fall: 20, winter: 5 }, rationale: 'Reintroduced black bear population in the Chisos Mountains — sightings on bear sightings reports.' },
     },
     'Mountain Lion': {
-      'desert':       { rarity: 'rare',       frequency: 0.04, rationale: 'Big Bend has one of the highest mountain lion densities in the US, but they remain almost-never-seen by casual visitors.' },
+      'desert':       { rarity: 'rare',       frequency: 0.04, seasonFrequencies: { spring: 4, summer: 3, fall: 4, winter: 5 }, rationale: 'Big Bend has one of the highest mountain lion densities in the US, but they remain almost-never-seen by casual visitors year-round.' },
     },
   },
 
@@ -720,29 +720,29 @@ export const ZONE_OVERRIDES = {
   // ── Round 8 zone additions (last 7 unzoned parks) ───────────────────
   americansamoa: {
     'Pacific Flying-fox': {
-      'tutuila':    { rarity: 'very_likely', frequency: 0.75, rationale: 'Flying foxes visible at dawn/dusk on Tutuila — endemic Samoan flying fox (Pteropus tonganus + Samoan species).' },
-      'ofu-island': { rarity: 'very_likely', frequency: 0.70, rationale: 'Ofu Island flying foxes visible from Tumu Mountain area.' },
+      'tutuila':    { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 75, summer: 75, fall: 75, winter: 75 }, rationale: 'Flying foxes visible at dawn/dusk on Tutuila year-round — equatorial tropics, no seasonality (endemic Samoan flying fox).' },
+      'ofu-island': { rarity: 'very_likely', frequency: 0.70, seasonFrequencies: { spring: 70, summer: 70, fall: 70, winter: 70 }, rationale: 'Ofu Island flying foxes visible from Tumu Mountain area year-round — equatorial, aseasonal.' },
     },
     'Green Sea Turtle': {
-      'ofu-island': { rarity: 'likely', frequency: 0.50, rationale: 'Green Sea Turtles in seagrass beds at Ofu Island reef — visible to snorkelers.' },
+      'ofu-island': { rarity: 'likely', frequency: 0.50, seasonFrequencies: { spring: 50, summer: 55, fall: 50, winter: 45 }, rationale: 'Green Sea Turtles in seagrass beds at Ofu Island reef — visible to snorkelers year-round; mild nesting-season uptick.' },
     },
     'Brown Booby': {
-      'ofu-island': { rarity: 'very_likely', frequency: 0.75, rationale: 'Brown Booby colonies on Ofu coastal cliffs.' },
+      'ofu-island': { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 75, summer: 75, fall: 75, winter: 75 }, rationale: 'Brown Booby colonies on Ofu coastal cliffs year-round — tropical seabird, aseasonal.' },
     },
   },
 
   cuyahogavalley: {
     'White-tailed Deer': {
-      'towpath':    { rarity: 'guaranteed', frequency: 0.92, rationale: 'Heavy deer population visible along the entire Towpath Trail at any time of day.' },
+      'towpath':    { rarity: 'guaranteed', frequency: 0.92, seasonFrequencies: { spring: 90, summer: 90, fall: 97, winter: 82 }, rationale: 'Heavy deer population visible along the entire Towpath Trail at any time of day; fall rut bump, year-round resident.' },
     },
     'Eastern Gray Squirrel': {
-      'towpath':    { rarity: 'guaranteed', frequency: 0.97, rationale: 'Squirrels everywhere along the canal corridor.' },
+      'towpath':    { rarity: 'guaranteed', frequency: 0.97, seasonFrequencies: { spring: 97, summer: 97, fall: 97, winter: 88 }, rationale: 'Squirrels everywhere along the canal corridor year-round.' },
     },
     'Bald Eagle': {
-      'brandywine': { rarity: 'unlikely', frequency: 0.25, rationale: 'Bald Eagles fishing the Cuyahoga River near Brandywine Falls.' },
+      'brandywine': { rarity: 'unlikely', frequency: 0.25, seasonFrequencies: { spring: 28, summer: 25, fall: 25, winter: 22 }, rationale: 'Bald Eagles fishing the Cuyahoga River near Brandywine Falls; year-round residents (nesting pairs established).' },
     },
     'American Beaver': {
-      'towpath':    { rarity: 'unlikely', frequency: 0.20, rationale: 'Beaver lodges along the canal — animal mostly nocturnal.' },
+      'towpath':    { rarity: 'unlikely', frequency: 0.20, seasonFrequencies: { spring: 25, summer: 22, fall: 22, winter: 12 }, rationale: 'Beaver lodges along the canal — animal mostly nocturnal/crepuscular; less active under winter ice.' },
     },
   },
 
@@ -898,31 +898,31 @@ export const ZONE_OVERRIDES = {
   // ── Isle Royale (round 7) ───────────────────────────────────────────
   isleroyale: {
     'Common Loon': {
-      'rock-harbor': { rarity: 'guaranteed', frequency: 0.97, rationale: 'Loons calling from every Isle Royale lake; Rock Harbor area particularly reliable.' },
-      'windigo':     { rarity: 'guaranteed', frequency: 0.95, rationale: 'Loons on west-side lakes around Windigo.' },
+      'rock-harbor': { rarity: 'guaranteed', frequency: 0.97, seasonFrequencies: { spring: 80, summer: 99, fall: 75, winter: 1 }, rationale: 'Loons calling from every Isle Royale lake in summer; Rock Harbor area particularly reliable. Park CLOSED Nov–mid-Apr (winter ~0).' },
+      'windigo':     { rarity: 'guaranteed', frequency: 0.95, seasonFrequencies: { spring: 75, summer: 99, fall: 70, winter: 1 }, rationale: 'Loons on west-side lakes around Windigo in summer; park closed in winter.' },
     },
     'Moose': {
-      'greenstone':  { rarity: 'likely', frequency: 0.45, seasonFrequencies: { spring: 50, summer: 50, fall: 45, winter: 35 }, peakWindow: { startMonthDay: '09-15', endMonthDay: '10-31', label: 'Peak rut: mid-Sept – Oct' }, rationale: 'Moose in island interior — backpackers see them on roughly half of multi-day trips; rut concentrates them in willow flats.' },
-      'rock-harbor': { rarity: 'unlikely', frequency: 0.25, rationale: 'Moose occasionally seen near Rock Harbor; less frequent than interior.' },
+      'greenstone':  { rarity: 'likely', frequency: 0.45, seasonFrequencies: { spring: 45, summer: 50, fall: 50, winter: 1 }, peakWindow: { startMonthDay: '09-15', endMonthDay: '10-31', label: 'Peak rut: mid-Sept – Oct' }, rationale: 'Moose in island interior — backpackers see them on roughly half of multi-day trips; rut concentrates them in willow flats. Park closed Nov–mid-Apr.' },
+      'rock-harbor': { rarity: 'unlikely', frequency: 0.25, seasonFrequencies: { spring: 25, summer: 28, fall: 28, winter: 1 }, rationale: 'Moose occasionally seen near Rock Harbor; less frequent than interior; park closed in winter.' },
     },
     'Bald Eagle': {
-      'rock-harbor': { rarity: 'very_likely', frequency: 0.75, rationale: 'Bald Eagles fishing Lake Superior shoreline.' },
+      'rock-harbor': { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 70, summer: 80, fall: 70, winter: 1 }, rationale: 'Bald Eagles fishing Lake Superior shoreline in the open season; park closed Nov–mid-Apr.' },
     },
   },
 
   // ── Virgin Islands (round 7) ────────────────────────────────────────
   virginislands: {
     'Green Iguana': {
-      'trunk-bay':   { rarity: 'guaranteed', frequency: 0.95, rationale: 'Invasive Green Iguanas at every beach, parking lot, and trail.' },
+      'trunk-bay':   { rarity: 'guaranteed', frequency: 0.95, seasonFrequencies: { spring: 95, summer: 97, fall: 92, winter: 88 }, rationale: 'Invasive Green Iguanas at every beach, parking lot, and trail year-round; Caribbean tropics, mild winter dip in basking activity.' },
     },
     'Green Sea Turtle': {
-      'trunk-bay':   { rarity: 'likely', frequency: 0.50, rationale: 'Green Sea Turtles in seagrass beds at Trunk Bay and Maho Bay — visible to snorkelers.' },
+      'trunk-bay':   { rarity: 'likely', frequency: 0.50, seasonFrequencies: { spring: 50, summer: 55, fall: 50, winter: 45 }, rationale: 'Green Sea Turtles in seagrass beds at Trunk Bay and Maho Bay — visible to snorkelers year-round; mild nesting-season uptick.' },
     },
     'Hawksbill Sea Turtle': {
-      'buck-island': { rarity: 'unlikely', frequency: 0.25, rationale: 'Hawksbill Sea Turtles around the Buck Island reef — less common than Green but real.' },
+      'buck-island': { rarity: 'unlikely', frequency: 0.25, seasonFrequencies: { spring: 25, summer: 32, fall: 28, winter: 18 }, rationale: 'Hawksbill Sea Turtles around the Buck Island reef — less common than Green but real; summer nesting-season peak.' },
     },
     'Brown Pelican': {
-      'trunk-bay':   { rarity: 'very_likely', frequency: 0.75, rationale: 'Brown Pelicans diving the bays year-round.' },
+      'trunk-bay':   { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 75, summer: 75, fall: 75, winter: 72 }, rationale: 'Brown Pelicans diving the bays year-round — resident Caribbean population, aseasonal.' },
     },
   },
 
@@ -1027,17 +1027,17 @@ export const ZONE_OVERRIDES = {
   // ── Wrangell-St Elias (round 6) ─────────────────────────────────────
   wrangellstelias: {
     'Thinhorn Sheep': {
-      'mccarthy':     { rarity: 'likely', frequency: 0.50, peakWindow: { startMonthDay: '11-15', endMonthDay: '12-31', label: 'Peak rut: mid-Nov – Dec' }, rationale: 'Dall sheep on McCarthy Road cliffs — visible from pull-offs; rut concentrates rams + ram-clashes.' },
-      'nabesna-road': { rarity: 'likely', frequency: 0.45, peakWindow: { startMonthDay: '11-15', endMonthDay: '12-31', label: 'Peak rut: mid-Nov – Dec' }, rationale: 'Dall sheep visible from Nabesna Road in summer.' },
+      'mccarthy':     { rarity: 'likely', frequency: 0.50, seasonFrequencies: { spring: 45, summer: 55, fall: 50, winter: 30 }, peakWindow: { startMonthDay: '11-15', endMonthDay: '12-31', label: 'Peak rut: mid-Nov – Dec' }, rationale: 'Dall sheep on McCarthy Road cliffs — visible from pull-offs in the accessible season; McCarthy Road largely impassable in deep winter.' },
+      'nabesna-road': { rarity: 'likely', frequency: 0.45, seasonFrequencies: { spring: 40, summer: 55, fall: 45, winter: 25 }, peakWindow: { startMonthDay: '11-15', endMonthDay: '12-31', label: 'Peak rut: mid-Nov – Dec' }, rationale: 'Dall sheep visible from Nabesna Road in summer; reduced winter road access.' },
     },
     'Moose': {
-      'mccarthy':     { rarity: 'likely', frequency: 0.50, peakWindow: { startMonthDay: '09-15', endMonthDay: '10-31', label: 'Peak rut: mid-Sept – Oct' }, rationale: 'Moose along McCarthy Road riparian areas; rut concentrates bulls Sept-Oct.' },
+      'mccarthy':     { rarity: 'likely', frequency: 0.50, seasonFrequencies: { spring: 50, summer: 55, fall: 55, winter: 20 }, peakWindow: { startMonthDay: '09-15', endMonthDay: '10-31', label: 'Peak rut: mid-Sept – Oct' }, rationale: 'Moose along McCarthy Road riparian areas; rut concentrates bulls Sept-Oct; reduced winter road access.' },
     },
     'Brown Bear': {
       'mccarthy':     { rarity: 'unlikely', frequency: 0.25, seasonFrequencies: { spring: 30, summer: 35, fall: 25, winter: 1 }, rationale: 'Grizzlies occasional along McCarthy Road; denning winter.' },
     },
     'Caribou': {
-      'nabesna-road': { rarity: 'unlikely', frequency: 0.20, rationale: 'Caribou occasionally visible from Nabesna Road in summer.' },
+      'nabesna-road': { rarity: 'unlikely', frequency: 0.20, seasonFrequencies: { spring: 20, summer: 25, fall: 25, winter: 10 }, rationale: 'Caribou occasionally visible from Nabesna Road in summer; reduced winter road access.' },
     },
   },
 
@@ -1133,17 +1133,18 @@ export const ZONE_OVERRIDES = {
       'kilauea-summit': {
         rarity: 'guaranteed',
         frequency: 0.95,
+        seasonFrequencies: { spring: 92, summer: 88, fall: 95, winter: 99 },
         peakWindow: { startMonthDay: '10-01', endMonthDay: '03-31', label: 'Peak breeding: Oct – March' },
-        rationale: 'Nene walk freely near Kilauea Caldera and Crater Rim Drive parking areas; breeding season Oct-Mar concentrates them at lower elevations.',
+        rationale: 'Nene walk freely near Kilauea Caldera and Crater Rim Drive parking; breeding season Oct-Mar (austral-style winter) concentrates them at summit — INVERTED vs mainland (no migration, tropical).',
       },
-      'kahuku': { rarity: 'very_likely', frequency: 0.70, peakWindow: { startMonthDay: '10-01', endMonthDay: '03-31', label: 'Peak breeding: Oct – March' }, rationale: 'Nene at the Kahuku Unit pasture/forest — managed habitat for the endangered species.' },
+      'kahuku': { rarity: 'very_likely', frequency: 0.70, seasonFrequencies: { spring: 68, summer: 62, fall: 70, winter: 78 }, peakWindow: { startMonthDay: '10-01', endMonthDay: '03-31', label: 'Peak breeding: Oct – March' }, rationale: 'Nene at the Kahuku Unit pasture/forest — managed habitat; winter breeding-season peak.' },
     },
     'Hawaiian Hawk': {
-      'kilauea-summit': { rarity: 'unlikely', frequency: 0.25, peakWindow: { startMonthDay: '03-01', endMonthDay: '06-30', label: 'Peak breeding: March – June' }, rationale: 'Endemic Io occasionally visible soaring over Kilauea; breeding season most active.' },
-      'kahuku':         { rarity: 'unlikely', frequency: 0.30, peakWindow: { startMonthDay: '03-01', endMonthDay: '06-30', label: 'Peak breeding: March – June' }, rationale: 'Io regularly visible at Kahuku.' },
+      'kilauea-summit': { rarity: 'unlikely', frequency: 0.25, seasonFrequencies: { spring: 30, summer: 25, fall: 22, winter: 22 }, peakWindow: { startMonthDay: '03-01', endMonthDay: '06-30', label: 'Peak breeding: March – June' }, rationale: 'Endemic Io occasionally visible soaring over Kilauea; non-migratory, spring breeding-season display peak.' },
+      'kahuku':         { rarity: 'unlikely', frequency: 0.30, seasonFrequencies: { spring: 35, summer: 30, fall: 28, winter: 27 }, peakWindow: { startMonthDay: '03-01', endMonthDay: '06-30', label: 'Peak breeding: March – June' }, rationale: 'Io regularly visible at Kahuku; year-round resident.' },
     },
     'Small Indian Mongoose': {
-      'kilauea-summit': { rarity: 'likely', frequency: 0.45, rationale: 'Invasive mongoose — visible along roads and trails.' },
+      'kilauea-summit': { rarity: 'likely', frequency: 0.45, seasonFrequencies: { spring: 45, summer: 48, fall: 45, winter: 42 }, rationale: 'Invasive mongoose — visible along roads and trails year-round (tropical, diurnal, aseasonal).' },
     },
   },
 
@@ -1267,17 +1268,17 @@ export const ZONE_OVERRIDES = {
   // ── Capitol Reef (round 5) ──────────────────────────────────────────
   capitolreef: {
     'Mule Deer': {
-      'fruita':      { rarity: 'guaranteed', frequency: 0.95, peakWindow: { startMonthDay: '08-01', endMonthDay: '10-31', label: 'Peak orchard fruit season: Aug – October' }, rationale: 'Fruita orchards attract deer nightly — visible to nearly every camper; ripening fruit Aug-Oct concentrates the herd.' },
+      'fruita':      { rarity: 'guaranteed', frequency: 0.95, seasonFrequencies: { spring: 90, summer: 90, fall: 99, winter: 85 }, peakWindow: { startMonthDay: '08-01', endMonthDay: '10-31', label: 'Peak orchard fruit season: Aug – October' }, rationale: 'Fruita orchards attract deer nightly — visible to nearly every camper; ripening fruit Aug-Oct concentrates the herd; year-round resident.' },
     },
     'Common Raven': {
-      'fruita':      { rarity: 'guaranteed', frequency: 0.97, rationale: 'Ravens at every Fruita parking area and overlook.' },
-      'scenic-drive':{ rarity: 'guaranteed', frequency: 0.95, rationale: 'Ravens patrol the Scenic Drive cliffs.' },
+      'fruita':      { rarity: 'guaranteed', frequency: 0.97, seasonFrequencies: { spring: 97, summer: 97, fall: 95, winter: 90 }, rationale: 'Ravens at every Fruita parking area and overlook year-round.' },
+      'scenic-drive':{ rarity: 'guaranteed', frequency: 0.95, seasonFrequencies: { spring: 95, summer: 95, fall: 93, winter: 85 }, rationale: 'Ravens patrol the Scenic Drive cliffs year-round.' },
     },
     'Rock Squirrel': {
-      'fruita':      { rarity: 'guaranteed', frequency: 0.92, rationale: 'Habituated rock squirrels at Fruita visitor area.' },
+      'fruita':      { rarity: 'guaranteed', frequency: 0.92, seasonFrequencies: { spring: 92, summer: 99, fall: 85, winter: 45 }, rationale: 'Habituated rock squirrels at Fruita visitor area; less active in winter cold (semi-torpid).' },
     },
     'Coyote': {
-      'scenic-drive':{ rarity: 'unlikely', frequency: 0.20, rationale: 'Coyotes occasionally seen on the scenic drive at dawn/dusk.' },
+      'scenic-drive':{ rarity: 'unlikely', frequency: 0.20, seasonFrequencies: { spring: 22, summer: 18, fall: 22, winter: 25 }, rationale: 'Coyotes occasionally seen on the scenic drive at dawn/dusk; winter snow-contrast boost.' },
     },
   },
 
