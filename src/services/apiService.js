@@ -364,7 +364,9 @@ const RARITY_OVERRIDES = {
   lakeclark:             { 'Brown Bear': 'very_likely', 'Sockeye Salmon': 'guaranteed' },
   // ── Hawaii ───────────────────────────────────────────────────────────────
   // Nene walk freely near Kilauea Caldera / Crater Rim Drive visitor areas
-  hawaiivolcanoes:       { 'Nene': 'guaranteed', 'Hawaiian Hawk': 'unlikely', 'Hawaiian Goose': 'guaranteed' },
+  // Common Myna: introduced and ubiquitous at lowland visitor areas (anchor 0.95).
+  hawaiivolcanoes:       { 'Nene': 'guaranteed', 'Hawaiian Hawk': 'unlikely', 'Hawaiian Goose': 'guaranteed', 'Common Myna': 'guaranteed' },
+  // Haleakala Nene: anchor 0.90 (summit visitor center habituated birds — every visitor sees them).
   haleakala:             { 'Nene': 'guaranteed', 'Hawaiian Goose': 'guaranteed' },
   // ── Island / Tropical ────────────────────────────────────────────────────
   // Green Iguanas at every beach / parking lot in USVI (invasive, extremely common)
