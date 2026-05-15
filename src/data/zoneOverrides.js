@@ -103,12 +103,12 @@ export const ZONE_OVERRIDES = {
   // ── Yellowstone (expanded coverage 2026-04-25) ──────────────────────
   yellowstone: {
     'Pronghorn': {
-      'lamar-valley': { rarity: 'very_likely', frequency: 0.75, peakWindow: { startMonthDay: '05-15', endMonthDay: '06-30', label: 'Peak fawning: mid-May – June' }, rationale: 'Pronghorn herds visible across Lamar Valley grasslands; fawns hidden mid-May through June.' },
-      'mammoth':      { rarity: 'likely',      frequency: 0.50, peakWindow: { startMonthDay: '05-15', endMonthDay: '06-30', label: 'Peak fawning: mid-May – June' }, rationale: 'Pronghorn in the Gardiner / Mammoth corridor.' },
+      'lamar-valley': { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 60, summer: 80, fall: 75, winter: 10 }, peakWindow: { startMonthDay: '05-15', endMonthDay: '06-30', label: 'Peak fawning: mid-May – June' }, rationale: 'Pronghorn herds visible across Lamar Valley grasslands; fawns hidden mid-May through June. Most herd migrates south in winter.' },
+      'mammoth':      { rarity: 'likely',      frequency: 0.50, seasonFrequencies: { spring: 45, summer: 60, fall: 55, winter: 5 }, peakWindow: { startMonthDay: '05-15', endMonthDay: '06-30', label: 'Peak fawning: mid-May – June' }, rationale: 'Pronghorn in the Gardiner / Mammoth corridor; minimal in winter (most migrate south).' },
     },
     'Bighorn Sheep': {
-      'lamar-valley':  { rarity: 'likely',     frequency: 0.40, peakWindow: { startMonthDay: '11-15', endMonthDay: '12-31', label: 'Peak rut: mid-Nov – Dec' }, rationale: 'Bighorn rams visible on Specimen Ridge near Lamar Valley; rut Nov-Dec brings them to lower elevations and increases ram-clash visibility.' },
-      'mammoth':       { rarity: 'unlikely',   frequency: 0.25, rationale: 'Bighorn occasionally on cliffs north of Mammoth.' },
+      'lamar-valley':  { rarity: 'likely',     frequency: 0.40, seasonFrequencies: { spring: 35, summer: 30, fall: 45, winter: 60 }, peakWindow: { startMonthDay: '11-15', endMonthDay: '12-31', label: 'Peak rut: mid-Nov – Dec' }, rationale: 'Bighorn rams visible on Specimen Ridge near Lamar Valley; rut Nov-Dec brings them to lower elevations and increases ram-clash visibility.' },
+      'mammoth':       { rarity: 'unlikely',   frequency: 0.25, seasonFrequencies: { spring: 25, summer: 20, fall: 30, winter: 35 }, rationale: 'Bighorn occasionally on cliffs north of Mammoth; lower elevations in winter make sightings more likely.' },
     },
     'Trumpeter Swan': {
       'hayden-valley': {
@@ -136,10 +136,10 @@ export const ZONE_OVERRIDES = {
         seasonFrequencies: { spring: 18, summer: 18, fall: 15, winter: 8 },
         rationale: 'Moose occasional in willow thickets along Lamar River; less visible in deep winter snow.',
       },
-      'yellowstone-lake': { rarity: 'unlikely', frequency: 0.20, rationale: 'Moose at south arm of Yellowstone Lake riparian areas.' },
+      'yellowstone-lake': { rarity: 'unlikely', frequency: 0.20, seasonFrequencies: { spring: 25, summer: 30, fall: 20, winter: 5 }, rationale: 'Moose at south arm of Yellowstone Lake riparian areas; minimal in winter (deep snow).' },
     },
     'Red Fox': {
-      'mammoth':       { rarity: 'unlikely',   frequency: 0.20, rationale: 'Foxes around Mammoth Hot Springs and Lamar Valley pull-offs.' },
+      'mammoth':       { rarity: 'unlikely',   frequency: 0.20, seasonFrequencies: { spring: 25, summer: 20, fall: 20, winter: 25 }, rationale: 'Foxes around Mammoth Hot Springs and Lamar Valley pull-offs; year-round sightings (winter pelage gives slight visibility boost).' },
     },
     // ── Existing Yellowstone overrides (preserved from earlier rounds) ────
     'Gray Wolf': {
@@ -153,7 +153,8 @@ export const ZONE_OVERRIDES = {
       'hayden-valley': {
         rarity: 'unlikely',
         frequency: 0.18,
-        rationale: 'Wolves visit Hayden Valley but less consistently than Lamar.',
+        seasonFrequencies: { spring: 18, summer: 15, fall: 22, winter: 30 },
+        rationale: 'Wolves visit Hayden Valley but less consistently than Lamar; winter visibility boost (snow contrast + leafless shrubs).',
       },
     },
     'Grizzly Bear': {
@@ -172,17 +173,17 @@ export const ZONE_OVERRIDES = {
       },
     },
     'American Bison': {
-      'lamar-valley':  { rarity: 'guaranteed', frequency: 0.99, peakWindow: { startMonthDay: '04-15', endMonthDay: '05-31', label: 'Peak calving (red dogs): mid-April – May' }, rationale: 'Lamar Valley is the densest bison habitat in the park; spring calves ("red dogs") are an iconic April-May sight.' },
-      'hayden-valley': { rarity: 'guaranteed', frequency: 0.99, peakWindow: { startMonthDay: '07-15', endMonthDay: '08-15', label: 'Peak rut: mid-July – mid-Aug' }, rationale: 'Hayden Valley bison herds visible from road year-round.' },
-      'old-faithful':  { rarity: 'very_likely', frequency: 0.75, rationale: 'Bison wander Geyser Basin boardwalks — frequent but not guaranteed.' },
+      'lamar-valley':  { rarity: 'guaranteed', frequency: 0.99, seasonFrequencies: { spring: 99, summer: 99, fall: 99, winter: 92 }, peakWindow: { startMonthDay: '04-15', endMonthDay: '05-31', label: 'Peak calving (red dogs): mid-April – May' }, rationale: 'Lamar Valley is the densest bison habitat in the park; spring calves ("red dogs") are an iconic April-May sight.' },
+      'hayden-valley': { rarity: 'guaranteed', frequency: 0.99, seasonFrequencies: { spring: 95, summer: 99, fall: 95, winter: 90 }, peakWindow: { startMonthDay: '07-15', endMonthDay: '08-15', label: 'Peak rut: mid-July – mid-Aug' }, rationale: 'Hayden Valley bison herds visible from road year-round.' },
+      'old-faithful':  { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 65, summer: 80, fall: 70, winter: 60 }, rationale: 'Bison wander Geyser Basin boardwalks — frequent but not guaranteed.' },
     },
     'American Elk': {
-      'mammoth':       { rarity: 'guaranteed', frequency: 0.95, peakWindow: { startMonthDay: '09-15', endMonthDay: '10-31', label: 'Peak rut + bugling: mid-Sept – Oct' }, rationale: 'Mammoth Hot Springs resident elk herd grazes the lawns and terraces year-round; bull bugling Sept-Oct is iconic.' },
-      'lamar-valley':  { rarity: 'very_likely', frequency: 0.75, rationale: 'Elk visible in valley meadows alongside bison.' },
+      'mammoth':       { rarity: 'guaranteed', frequency: 0.95, seasonFrequencies: { spring: 90, summer: 92, fall: 99, winter: 95 }, peakWindow: { startMonthDay: '09-15', endMonthDay: '10-31', label: 'Peak rut + bugling: mid-Sept – Oct' }, rationale: 'Mammoth Hot Springs resident elk herd grazes the lawns and terraces year-round; bull bugling Sept-Oct is iconic.' },
+      'lamar-valley':  { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 70, summer: 75, fall: 90, winter: 60 }, rationale: 'Elk visible in valley meadows alongside bison; rut + winter herd-aggregation peaks.' },
     },
     'Coyote': {
-      'lamar-valley':  { rarity: 'likely', frequency: 0.55, peakWindow: { startMonthDay: '12-01', endMonthDay: '02-28', label: 'Peak winter coat + visibility: Dec – Feb' }, rationale: 'Highly visible in open valley terrain — often seen following wolf kills; winter pelage + snow contrast makes them maximally visible.' },
-      'hayden-valley': { rarity: 'likely', frequency: 0.50, rationale: 'Open valley sightings common.' },
+      'lamar-valley':  { rarity: 'likely', frequency: 0.55, seasonFrequencies: { spring: 50, summer: 50, fall: 55, winter: 70 }, peakWindow: { startMonthDay: '12-01', endMonthDay: '02-28', label: 'Peak winter coat + visibility: Dec – Feb' }, rationale: 'Highly visible in open valley terrain — often seen following wolf kills; winter pelage + snow contrast makes them maximally visible.' },
+      'hayden-valley': { rarity: 'likely', frequency: 0.50, seasonFrequencies: { spring: 45, summer: 50, fall: 50, winter: 60 }, rationale: 'Open valley sightings common; winter visibility boost like Lamar.' },
     },
   },
 
@@ -262,7 +263,7 @@ export const ZONE_OVERRIDES = {
     'Olympic Marmot': {
       'hurricane-ridge': {
         rarity: 'guaranteed',
-        frequency: 0.90,
+        frequency: 0.93,
         seasonFrequencies: { spring: 50, summer: 95, fall: 80, winter: 5 },
         peakWindow: { startMonthDay: '07-01', endMonthDay: '08-31', label: 'Peak: July – August' },
         rationale: 'Hurricane Ridge meadows in July-August — marmots sun themselves on rocks visible from the visitor center.',
