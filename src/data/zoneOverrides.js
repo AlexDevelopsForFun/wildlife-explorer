@@ -500,19 +500,22 @@ export const ZONE_OVERRIDES = {
       'anhinga-trail': {
         rarity: 'guaranteed',
         frequency: 0.99,
-        rationale: 'Alligators visible from the Anhinga Trail boardwalk on essentially every visit, all seasons.',
+        seasonFrequencies: { spring: 99, summer: 95, fall: 97, winter: 99 },
+        rationale: 'Alligators visible from the Anhinga Trail boardwalk on essentially every visit; dry-season (winter) concentrates them at remaining gator holes — peak visibility.',
       },
       'shark-valley': {
         rarity: 'guaranteed',
         frequency: 0.95,
-        rationale: 'Shark Valley loop puts visitors face-to-face with alligators along the entire trail.',
+        seasonFrequencies: { spring: 95, summer: 88, fall: 92, winter: 99 },
+        rationale: 'Shark Valley loop puts visitors face-to-face with alligators; winter dry-season concentration along the canal is the best window.',
       },
     },
     'Anhinga': {
       'anhinga-trail': {
         rarity: 'guaranteed',
         frequency: 0.98,
-        rationale: 'Trail is named for them — reliably perched in the open along the boardwalk.',
+        seasonFrequencies: { spring: 98, summer: 90, fall: 95, winter: 99 },
+        rationale: 'Trail is named for them — reliably perched in the open along the boardwalk; winter dry-season peak concentration.',
       },
     },
     'West Indian Manatee': {
@@ -525,7 +528,7 @@ export const ZONE_OVERRIDES = {
       },
     },
     'Roseate Spoonbill': {
-      'flamingo':    { rarity: 'very_likely', frequency: 0.65, rationale: 'Spoonbills feed in Florida Bay shallows; reliably visible from Flamingo area boats.' },
+      'flamingo':    { rarity: 'very_likely', frequency: 0.65, seasonFrequencies: { spring: 65, summer: 45, fall: 60, winter: 80 }, rationale: 'Spoonbills feed in Florida Bay shallows; reliably visible from Flamingo area boats; winter dry-season concentration peak (many disperse north to breed in summer).' },
     },
     'American Crocodile': {
       'flamingo':    { rarity: 'likely', frequency: 0.45, peakWindow: { startMonthDay: '12-01', endMonthDay: '04-30', label: 'Peak basking season: Dec – April' }, rationale: 'American crocodiles at the Flamingo marina — the most reliable place to see them; cool months bring more basking on banks.' },
@@ -1182,81 +1185,81 @@ export const ZONE_OVERRIDES = {
   // ── Pinnacles (round 5) ─────────────────────────────────────────────
   pinnacles: {
     'California Condor': {
-      'east-side':       { rarity: 'likely', frequency: 0.50, peakWindow: { startMonthDay: '03-01', endMonthDay: '11-30', label: 'Peak: spring – fall' }, rationale: 'East-side condor release area + High Peaks roost — sightings ~50% of casual visits.' },
-      'high-peaks':      { rarity: 'very_likely', frequency: 0.70, peakWindow: { startMonthDay: '03-01', endMonthDay: '11-30', label: 'Peak: spring – fall' }, rationale: 'High Peaks Trail puts visitors closest to active condor roost.' },
+      'east-side':       { rarity: 'likely', frequency: 0.50, seasonFrequencies: { spring: 55, summer: 50, fall: 55, winter: 35 }, peakWindow: { startMonthDay: '03-01', endMonthDay: '11-30', label: 'Peak: spring – fall' }, rationale: 'East-side condor release area + High Peaks roost — sightings ~50% of casual visits; thermal-soaring days in warm months best.' },
+      'high-peaks':      { rarity: 'very_likely', frequency: 0.70, seasonFrequencies: { spring: 75, summer: 70, fall: 75, winter: 50 }, peakWindow: { startMonthDay: '03-01', endMonthDay: '11-30', label: 'Peak: spring – fall' }, rationale: 'High Peaks Trail puts visitors closest to active condor roost.' },
     },
     'California Ground Squirrel': {
-      'east-side':       { rarity: 'guaranteed', frequency: 0.97, rationale: 'Habituated ground squirrels at every visitor area.' },
+      'east-side':       { rarity: 'guaranteed', frequency: 0.97, seasonFrequencies: { spring: 97, summer: 99, fall: 90, winter: 55 }, rationale: 'Habituated ground squirrels at every visitor area; less active in winter cold.' },
     },
     'Acorn Woodpecker': {
-      'east-side':       { rarity: 'guaranteed', frequency: 0.92, peakWindow: { startMonthDay: '04-01', endMonthDay: '07-31', label: 'Peak breeding: April – July' }, rationale: 'Acorn Woodpecker granary trees throughout east side; breeding-season activity makes them especially visible Apr-Jul.' },
+      'east-side':       { rarity: 'guaranteed', frequency: 0.92, seasonFrequencies: { spring: 95, summer: 92, fall: 90, winter: 85 }, peakWindow: { startMonthDay: '04-01', endMonthDay: '07-31', label: 'Peak breeding: April – July' }, rationale: 'Acorn Woodpecker granary trees throughout east side; non-migratory, present year-round; breeding-season activity peaks Apr-Jul.' },
     },
     'California Scrub-Jay': {
-      'east-side':       { rarity: 'very_likely', frequency: 0.80, peakWindow: { startMonthDay: '04-01', endMonthDay: '06-30', label: 'Peak breeding: April – June' }, rationale: 'Scrub-Jays at every campground and oak savanna; vocal during breeding season.' },
+      'east-side':       { rarity: 'very_likely', frequency: 0.80, seasonFrequencies: { spring: 85, summer: 80, fall: 78, winter: 75 }, peakWindow: { startMonthDay: '04-01', endMonthDay: '06-30', label: 'Peak breeding: April – June' }, rationale: 'Scrub-Jays at every campground and oak savanna; non-migratory; vocal during breeding season.' },
     },
     'Wild Turkey': {
-      'east-side':       { rarity: 'likely', frequency: 0.50, rationale: 'Wild Turkey flocks regularly cross east-side roads.' },
+      'east-side':       { rarity: 'likely', frequency: 0.50, seasonFrequencies: { spring: 55, summer: 48, fall: 55, winter: 45 }, rationale: 'Wild Turkey flocks regularly cross east-side roads; fall flock-aggregation peak.' },
     },
   },
 
   // ── Badlands (round 5) ──────────────────────────────────────────────
   badlands: {
     'American Bison': {
-      'sage-creek-rim':  { rarity: 'very_likely', frequency: 0.85, peakWindow: { startMonthDay: '07-15', endMonthDay: '08-15', label: 'Peak rut: mid-July – mid-Aug' }, rationale: 'Sage Creek Rim Road bison herd — visible to 85% of casual visitors who drive the loop.' },
+      'sage-creek-rim':  { rarity: 'very_likely', frequency: 0.85, seasonFrequencies: { spring: 85, summer: 90, fall: 85, winter: 65 }, peakWindow: { startMonthDay: '07-15', endMonthDay: '08-15', label: 'Peak rut: mid-July – mid-Aug' }, rationale: 'Sage Creek Rim Road bison herd — visible to 85% of casual visitors who drive the loop; year-round residents (SD prairie winters cold).' },
     },
     'Pronghorn': {
-      'sage-creek-rim':  { rarity: 'very_likely', frequency: 0.75, rationale: 'Pronghorn herds across Sage Creek Wilderness mixed-grass prairie.' },
+      'sage-creek-rim':  { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 75, summer: 85, fall: 75, winter: 30 }, rationale: 'Pronghorn herds across Sage Creek Wilderness mixed-grass prairie; reduced/dispersed in deep winter.' },
     },
     'Black-tailed Prairie Dog': {
-      'roberts-prairie': { rarity: 'guaranteed', frequency: 0.99, peakWindow: { startMonthDay: '04-01', endMonthDay: '08-31', label: 'Peak active season: April – August' }, rationale: 'Roberts Prairie Dog Town hosts thousands of animals — guaranteed sighting; warm-season above-ground activity.' },
-      'sage-creek-rim':  { rarity: 'very_likely', frequency: 0.85, peakWindow: { startMonthDay: '04-01', endMonthDay: '08-31', label: 'Peak active season: April – August' }, rationale: 'Multiple prairie dog towns visible from the rim road.' },
+      'roberts-prairie': { rarity: 'guaranteed', frequency: 0.99, seasonFrequencies: { spring: 95, summer: 99, fall: 80, winter: 15 }, peakWindow: { startMonthDay: '04-01', endMonthDay: '08-31', label: 'Peak active season: April – August' }, rationale: 'Roberts Prairie Dog Town hosts thousands of animals — guaranteed warm-season sighting; winter torpor sharply cuts surface activity.' },
+      'sage-creek-rim':  { rarity: 'very_likely', frequency: 0.85, seasonFrequencies: { spring: 85, summer: 90, fall: 70, winter: 12 }, peakWindow: { startMonthDay: '04-01', endMonthDay: '08-31', label: 'Peak active season: April – August' }, rationale: 'Multiple prairie dog towns visible from the rim road; winter torpor.' },
     },
     'Mule Deer': {
-      'cedar-pass':      { rarity: 'very_likely', frequency: 0.75, rationale: 'Mule Deer in canyons around Cedar Pass campground.' },
+      'cedar-pass':      { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 72, summer: 75, fall: 82, winter: 60 }, rationale: 'Mule Deer in canyons around Cedar Pass campground; fall rut bump, year-round resident.' },
     },
     'Coyote': {
-      'sage-creek-rim':  { rarity: 'likely', frequency: 0.45, rationale: 'Coyotes hunting prairie dogs along the rim road at dawn/dusk.' },
+      'sage-creek-rim':  { rarity: 'likely', frequency: 0.45, seasonFrequencies: { spring: 45, summer: 40, fall: 45, winter: 55 }, rationale: 'Coyotes hunting prairie dogs along the rim road at dawn/dusk; winter snow-contrast boost.' },
     },
   },
 
   // ── Theodore Roosevelt (round 5) ────────────────────────────────────
   theodoreroosevelt: {
     'American Bison': {
-      'south-unit':  { rarity: 'very_likely', frequency: 0.85, peakWindow: { startMonthDay: '07-15', endMonthDay: '08-15', label: 'Peak rut: mid-July – mid-Aug' }, rationale: 'Free-ranging bison herd visible from South Unit scenic loop.' },
-      'north-unit':  { rarity: 'very_likely', frequency: 0.80, peakWindow: { startMonthDay: '07-15', endMonthDay: '08-15', label: 'Peak rut: mid-July – mid-Aug' }, rationale: 'North Unit bison herd visible from scenic drive.' },
+      'south-unit':  { rarity: 'very_likely', frequency: 0.85, seasonFrequencies: { spring: 85, summer: 90, fall: 85, winter: 70 }, peakWindow: { startMonthDay: '07-15', endMonthDay: '08-15', label: 'Peak rut: mid-July – mid-Aug' }, rationale: 'Free-ranging bison herd visible from South Unit scenic loop year-round (ND winters cold but herd stays).' },
+      'north-unit':  { rarity: 'very_likely', frequency: 0.80, seasonFrequencies: { spring: 80, summer: 88, fall: 80, winter: 60 }, peakWindow: { startMonthDay: '07-15', endMonthDay: '08-15', label: 'Peak rut: mid-July – mid-Aug' }, rationale: 'North Unit bison herd visible from scenic drive; reduced winter road access.' },
     },
     'Wild Horse': {
-      'south-unit':  { rarity: 'very_likely', frequency: 0.70, peakWindow: { startMonthDay: '04-15', endMonthDay: '06-30', label: 'Peak foaling: mid-April – June' }, rationale: 'Feral horse bands visible from South Unit loop drive; foals visible spring-early summer.' },
+      'south-unit':  { rarity: 'very_likely', frequency: 0.70, seasonFrequencies: { spring: 70, summer: 75, fall: 70, winter: 55 }, peakWindow: { startMonthDay: '04-15', endMonthDay: '06-30', label: 'Peak foaling: mid-April – June' }, rationale: 'Feral horse bands visible from South Unit loop drive; foals visible spring-early summer; year-round residents.' },
     },
     'Pronghorn': {
-      'south-unit':  { rarity: 'very_likely', frequency: 0.75, rationale: 'Pronghorn across the badlands grasslands.' },
-      'north-unit':  { rarity: 'very_likely', frequency: 0.70, rationale: 'Pronghorn herds visible from North Unit road.' },
+      'south-unit':  { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 75, summer: 85, fall: 75, winter: 25 }, rationale: 'Pronghorn across the badlands grasslands; some seasonal movement to lower ground in deep winter.' },
+      'north-unit':  { rarity: 'very_likely', frequency: 0.70, seasonFrequencies: { spring: 70, summer: 80, fall: 70, winter: 20 }, rationale: 'Pronghorn herds visible from North Unit road; reduced winter.' },
     },
     'Black-tailed Prairie Dog': {
-      'south-unit':  { rarity: 'very_likely', frequency: 0.85, peakWindow: { startMonthDay: '04-01', endMonthDay: '08-31', label: 'Peak active season: April – August' }, rationale: 'Multiple prairie dog towns along the South Unit scenic loop.' },
+      'south-unit':  { rarity: 'very_likely', frequency: 0.85, seasonFrequencies: { spring: 85, summer: 90, fall: 70, winter: 10 }, peakWindow: { startMonthDay: '04-01', endMonthDay: '08-31', label: 'Peak active season: April – August' }, rationale: 'Multiple prairie dog towns along the South Unit scenic loop; winter torpor sharply reduces surface activity.' },
     },
     'Coyote': {
-      'south-unit':  { rarity: 'likely', frequency: 0.45, rationale: 'Coyotes routinely visible at dawn/dusk in open grasslands.' },
+      'south-unit':  { rarity: 'likely', frequency: 0.45, seasonFrequencies: { spring: 45, summer: 40, fall: 45, winter: 55 }, rationale: 'Coyotes routinely visible at dawn/dusk in open grasslands; winter snow-contrast boost.' },
     },
     'Mule Deer': {
-      'south-unit':  { rarity: 'very_likely', frequency: 0.75, rationale: 'Mule Deer in badlands canyons and along the river.' },
+      'south-unit':  { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 72, summer: 75, fall: 82, winter: 60 }, rationale: 'Mule Deer in badlands canyons and along the river; fall rut bump, year-round resident.' },
     },
   },
 
   // ── Mesa Verde (round 5) ────────────────────────────────────────────
   mesaverde: {
     'Mule Deer': {
-      'morefield':   { rarity: 'guaranteed', frequency: 0.92, peakWindow: { startMonthDay: '10-15', endMonthDay: '11-30', label: 'Peak rut: mid-Oct – Nov' }, rationale: 'Habituated deer in Morefield Campground meadows; rut peaks fall.' },
-      'cliff-palace':{ rarity: 'very_likely', frequency: 0.75, rationale: 'Deer browsing along Chapin Mesa cliff dwelling areas.' },
+      'morefield':   { rarity: 'guaranteed', frequency: 0.92, seasonFrequencies: { spring: 88, summer: 90, fall: 99, winter: 70 }, peakWindow: { startMonthDay: '10-15', endMonthDay: '11-30', label: 'Peak rut: mid-Oct – Nov' }, rationale: 'Habituated deer in Morefield Campground meadows; rut peaks fall; some descend off the mesa in deep-snow winter.' },
+      'cliff-palace':{ rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 75, summer: 75, fall: 85, winter: 1 }, rationale: 'Deer browsing along Chapin Mesa cliff dwelling areas; cliff-dwelling tours closed late Oct–Apr.' },
     },
     'Wild Turkey': {
-      'morefield':   { rarity: 'very_likely', frequency: 0.75, rationale: 'Wild Turkey flocks in Morefield campground at dawn/dusk.' },
+      'morefield':   { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 75, summer: 72, fall: 82, winter: 60 }, rationale: 'Wild Turkey flocks in Morefield campground at dawn/dusk; fall flock-aggregation peak.' },
     },
     "Gunnison's Prairie Dog": {
-      'far-view':    { rarity: 'unlikely', frequency: 0.20, rationale: "Small Gunnison's prairie dog colony near Far View — easy to miss but findable." },
+      'far-view':    { rarity: 'unlikely', frequency: 0.20, seasonFrequencies: { spring: 25, summer: 28, fall: 18, winter: 1 }, rationale: "Small Gunnison's prairie dog colony near Far View — easy to miss but findable; true hibernator (Oct–Mar dormant)." },
     },
     'Coyote': {
-      'morefield':   { rarity: 'unlikely', frequency: 0.20, rationale: 'Coyotes occasionally cross park roads at dawn/dusk.' },
+      'morefield':   { rarity: 'unlikely', frequency: 0.20, seasonFrequencies: { spring: 20, summer: 18, fall: 22, winter: 25 }, rationale: 'Coyotes occasionally cross park roads at dawn/dusk; winter snow-contrast boost.' },
     },
   },
 
