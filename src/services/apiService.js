@@ -295,6 +295,8 @@ const RARITY_OVERRIDES = {
   // Mule Deer: common throughout Wind Cave grasslands (was unlikely)
   // Black-tailed Prairie Dog: anchor 0.97 guaranteed (multiple visible colonies on park roads).
   windcave:              { 'American Bison': 'very_likely', 'Pronghorn': 'very_likely', 'Black-tailed Prairie Dog': 'guaranteed', 'Mule Deer': 'likely' },
+  // Great Sand Dunes Common Raven anchor 0.85 very_likely (every overlook + dune-field area).
+  greatsanddunes:        { 'Common Raven': 'very_likely' },
   theodoreroosevelt:     { 'American Bison': 'very_likely', 'Pronghorn': 'very_likely', 'Black-tailed Prairie Dog': 'very_likely', 'Wild Horse': 'very_likely' },
   // ── Rocky Mountain / Sierra Nevada / Southwest ───────────────────────────
   // Moose: anchor 0.40 likely (Kawuneeche Valley sightings — concentrated, not park-wide).
@@ -325,10 +327,12 @@ const RARITY_OVERRIDES = {
   petrifiedforest:       { 'Common Raven': 'guaranteed', 'Pronghorn': 'likely' },
   // Mule Deer: habituated at Morefield Campground (anchor very_likely 0.85). Was 'unlikely' — long-standing typo correction.
   mesaverde:             { 'Mule Deer': 'very_likely', 'Wild Turkey': 'very_likely', "Gunnison's Prairie Dog": 'rare' },
-  blackcanyon:           { 'Mule Deer': 'very_likely', 'Peregrine Falcon': 'unlikely' },
+  // Common Raven anchor 0.92 guaranteed (Painted Wall + South Rim overlooks).
+  blackcanyon:           { 'Mule Deer': 'very_likely', 'Peregrine Falcon': 'unlikely', 'Common Raven': 'guaranteed' },
   // Steller's Jay: at every campsite / picnic table in the Lehman Caves zone (anchor 0.92 guaranteed)
   greatbasin:            { 'Mule Deer': 'very_likely', "Steller's Jay": 'guaranteed', 'Pronghorn': 'likely' },
-  guadalupemountains:    { 'Mule Deer': 'very_likely', 'Elk': 'likely' },
+  // Common Raven anchor 0.92 guaranteed (every visitor area).
+  guadalupemountains:    { 'Mule Deer': 'very_likely', 'Elk': 'likely', 'Common Raven': 'guaranteed' },
   // Common Side-blotched Lizard: 3563 iNat obs — highest count of all zero-guar parks
   // Anchor: Common Raven 0.97 guaranteed (every visitor center); Black-tailed Jackrabbit 0.40 likely (dawn/dusk reliable).
   joshuatree:            { 'Common Side-blotched Lizard': 'guaranteed', 'Common Chuckwalla': 'very_likely', 'Common Raven': 'guaranteed', 'Black-tailed Jackrabbit': 'likely' },
@@ -371,17 +375,22 @@ const RARITY_OVERRIDES = {
   // Sea Otter: anchor 0.95 guaranteed (every summer boat tour reports otters).
   // Humpback Whale: anchor 0.85 very_likely on summer boat tours; non-boat visitors much lower.
   kenaifjords:           { 'Sea Otter': 'guaranteed', 'Harbor Seal': 'likely', 'Tufted Puffin': 'very_likely', 'Horned Puffin': 'very_likely', 'Orca': 'unlikely', 'California Sea Lion': 'likely', 'Humpback Whale': 'very_likely' },
-  wrangell:              { 'Dall Sheep': 'very_likely', 'Moose': 'very_likely', 'Brown Bear': 'likely' },
-  wrangellstelias:       { 'Dall Sheep': 'very_likely', 'Moose': 'very_likely', 'Brown Bear': 'likely' },
+  // Moose anchor 0.45 likely (McCarthy / Nabesna willows but not all summer visits).
+  wrangell:              { 'Dall Sheep': 'very_likely', 'Moose': 'likely', 'Brown Bear': 'likely' },
+  wrangellstelias:       { 'Dall Sheep': 'very_likely', 'Moose': 'likely', 'Brown Bear': 'likely' },
   // Brown Bear: Silver Salmon Creek / Chinitna Bay bear-viewing trips have ~85% sighting rate (anchor).
   // Bald Eagle: anchor 0.85 very_likely (salmon-rich Cook Inlet / Tuxedni Bay).
   lakeclark:             { 'Brown Bear': 'very_likely', 'Sockeye Salmon': 'guaranteed', 'Bald Eagle': 'very_likely' },
+  // Gates / Kobuk Bald Eagle: anchor 0.55 likely on summer expeditions (salmon-run river corridors).
+  gatesofthearctic:      { 'Bald Eagle': 'likely' },
+  kobukvalley:           { 'Bald Eagle': 'likely' },
   // ── Hawaii ───────────────────────────────────────────────────────────────
   // Nene walk freely near Kilauea Caldera / Crater Rim Drive visitor areas
   // Common Myna: introduced and ubiquitous at lowland visitor areas (anchor 0.95).
   hawaiivolcanoes:       { 'Nene': 'guaranteed', 'Hawaiian Hawk': 'unlikely', 'Hawaiian Goose': 'guaranteed', 'Common Myna': 'guaranteed' },
   // Haleakala Nene: anchor 0.90 (summit visitor center habituated birds — every visitor sees them).
-  haleakala:             { 'Nene': 'guaranteed', 'Hawaiian Goose': 'guaranteed' },
+  // Common Myna: anchor 0.85 very_likely at Hosmer Grove / lower elevations.
+  haleakala:             { 'Nene': 'guaranteed', 'Hawaiian Goose': 'guaranteed', 'Common Myna': 'very_likely' },
   // ── Island / Tropical ────────────────────────────────────────────────────
   // Green Iguanas at every beach / parking lot in USVI (invasive, extremely common)
   // Green Sea Turtle: corrected to unlikely — present but not reliably seen on snorkel trips (was very_likely)
