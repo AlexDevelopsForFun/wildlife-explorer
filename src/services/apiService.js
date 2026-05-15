@@ -342,9 +342,10 @@ const RARITY_OVERRIDES = {
   pinnacles:             { 'California Ground Squirrel': 'guaranteed', 'California Condor': 'likely', 'Acorn Woodpecker': 'very_likely', 'California Scrub-Jay': 'very_likely' },
   // Golden-mantled Ground Squirrel: approaches visitors at every Rim Drive overlook (701 obs)
   craterlake:            { "Common Golden-mantled Ground Squirrel": 'guaranteed', "Clark's Nutcracker": 'very_likely' },
-  // Hoary Marmot: sunbathing on rocks at Paradise / Sunrise — unavoidable (1853 obs)
+  // Hoary Marmot: park-level 'very_likely' (anchor 0.85 — Paradise visit ~92%, other zones lower).
+  // Zone override 'paradise' bumps to guaranteed for visitors at the iconic Paradise meadows.
   // Black Bear: anchor 0.10 unlikely (occasional sightings on trails, not a routine encounter).
-  mountrainier:          { 'Hoary Marmot': 'guaranteed', 'Canada Jay': 'very_likely', 'Sooty Grouse': 'very_likely', 'Black Bear': 'unlikely', 'American Black Bear': 'unlikely' },
+  mountrainier:          { 'Hoary Marmot': 'very_likely', 'Canada Jay': 'very_likely', 'Sooty Grouse': 'very_likely', 'Black Bear': 'unlikely', 'American Black Bear': 'unlikely' },
   // North Cascades: Bald Eagles fish the Diablo Lake / Ross Lake corridor — visible from highway viewpoints (anchor 0.65 very_likely)
   northcascades:         { 'Bald Eagle': 'very_likely' },
   // Roosevelt Elk herd at Prairie Creek / Gold Bluffs Beach (1416 obs as "Wapiti" on iNat).
