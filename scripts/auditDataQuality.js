@@ -372,11 +372,38 @@ async function main() {
       }
     }
   }
+  // Defensive entries — common-name variants intentionally kept for resilience
+  // even though the canonical name is already classified. If iNat ever returns
+  // these as preferred_common_name at some park, the cap still applies.
+  // Generic family-level entries ('Shrew', 'Vole', etc.) are matched against
+  // the runtime substring/family heuristic, not exact name lookup.
+  const DEFENSIVE_ALIASES = new Set([
+    'Cougar', 'Puma',                                    // → Mountain Lion
+    'American Pine Marten', 'Pacific Marten',            // → American Marten
+    'Pygmy Owl',                                         // → Northern Pygmy-Owl
+    'Western Spotted Skunk',                             // → Spotted Skunk
+    'Mink',                                              // → American Mink
+    'North American River Otter',                        // → River Otter
+    'Northern Brown Snake',                              // → Brown Snake
+    'Eastern Worm Snake',                                // → Worm Snake
+    'Northern Slimy Salamander',                         // → Slimy Salamander
+    'Northern Two-lined Salamander',                     // alias variants
+    'Northern Dusky Salamander',                         // → Dusky Salamander
+    'Mexican Whip-poor-will', 'Eastern Whip-poor-will',  // Whip-poor-will splits
+    'Common Opossum', 'Virginia Opossum',                // alias pair
+    'Coati',                                             // → White-nosed Coati
+    'Lynx',                                              // → Canada Lynx
+    // Family/genus-level entries — match via substring not exact name
+    'Shrew', 'Vole',
+    // Defensive bat aliases
+    'Western Red Bat', 'Hoary Bat', 'Northern Long-eared Bat',
+  ]);
   const orphanDetectability = [];
   for (const name of Object.keys(SPECIES_DETECTABILITY)) {
     const lower = name.toLowerCase().trim();
     if (allCacheNames.has(name)) continue;
     if (allCacheNamesLower.has(lower)) continue;
+    if (DEFENSIVE_ALIASES.has(name)) continue;
     // Alias-aware: NAME_ALIASES[lower] returns an array of canonical names — match if any are in cache.
     const aliases = NAME_ALIASES[lower] ?? [];
     if (aliases.some(alt => allCacheNamesLower.has(alt.toLowerCase()))) continue;
