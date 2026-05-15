@@ -280,6 +280,61 @@ export const SPECIES_DETECTABILITY = {
   'Virginia Opossum':          'hard',
   'White-nosed Coati':         'hard',  // diurnal but specific habitat
   'Coati':                     'hard',
+
+  // ── Round 4 expansion (2026-05-14): over-tier'd herps ──────────────
+  // Snakes, salamanders, frogs & lizards are photographed disproportionately
+  // by herpers (inflating iNat counts to guaranteed/very_likely) but a
+  // casual visitor on a typical walk almost never encounters them. Audit
+  // (over-tier'd-cryptic scan) surfaced these as the worst offenders.
+
+  // Salamanders → cryptic (under cover / nocturnal / aquatic; casual
+  // visitors essentially never see them even where abundant)
+  'Eastern Red-backed Salamander': 'cryptic',
+  'Red-backed Salamander':       'cryptic',
+  'Seal Salamander':             'cryptic',
+  'Shenandoah Salamander':       'cryptic',
+  'Cherokee Blackbelly Salamander':'cryptic',
+  'Blue Ridge Two-lined Salamander':'cryptic',
+  'Red-cheeked Salamander':      'cryptic',
+  'Imitator Salamander':         'cryptic',
+  'Northwestern Salamander':     'cryptic',
+  'California Slender Salamander':'cryptic',
+
+  // Garter / water / colubrid snakes → hard (baskers, sometimes seen at
+  // water edges, but not a routine casual sighting)
+  'Common Garter Snake':         'hard',
+  'Western Terrestrial Garter Snake':'hard',
+  'Northwestern Garter Snake':   'hard',
+  'Common Watersnake':           'hard',
+  'Brown Watersnake':            'hard',
+  'Banded Watersnake':           'hard',
+  'Florida Green Watersnake':    'hard',
+  'Plain-bellied Watersnake':    'hard',
+  'Eastern Ratsnake':            'hard',
+  'North American Racer':        'hard',
+
+  // Frogs & toads → hard (heard far more than seen; chorus/treefrogs
+  // especially are near-invisible to casual daytime visitors)
+  'Pacific Chorus Frog':         'hard',
+  'Pacific Treefrog':            'hard',
+  'Green Frog':                  'hard',
+  'Wood Frog':                   'hard',
+  'Cascades Frog':               'hard',
+  'Northern Red-legged Frog':    'hard',
+  'American Toad':               'hard',
+  'Red-spotted Toad':            'hard',
+  'Southern Toad':               'hard',
+  'Western Toad':                'hard',
+  'Cuban Treefrog':              'hard',
+
+  // Skinks & whiptails → hard (fast, brief glimpses; iNat-inflated by
+  // dedicated reptile photographers)
+  'Western Whiptail':            'hard',
+  'Marbled Whiptail':            'hard',
+  'Rusty-rumped Whiptail':       'hard',
+  'Common Five-lined Skink':     'hard',
+  'Southeastern Five-lined Skink':'hard',
+  'Broad-headed Skink':          'hard',
 };
 
 /**
