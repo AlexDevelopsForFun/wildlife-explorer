@@ -291,20 +291,23 @@ const RARITY_OVERRIDES = {
   // Mountain Goat corrected: seen regularly on Going-to-the-Sun Road but not 60%+ likely.
   // Grizzly Bear corrected: 15-25% encounter rate at Glacier.
   glacier:               { 'Mountain Goat': 'unlikely', 'Grizzly Bear': 'unlikely', 'Bighorn Sheep': 'very_likely', 'Bald Eagle': 'likely' },
-  badlands:              { 'American Bison': 'very_likely', 'Pronghorn': 'very_likely', 'Black-tailed Prairie Dog': 'guaranteed' },
+  // Bighorn Sheep: anchor 0.25 unlikely — Pinnacles/Cedar Pass area only, not every loop drive.
+  badlands:              { 'American Bison': 'very_likely', 'Pronghorn': 'very_likely', 'Black-tailed Prairie Dog': 'guaranteed', 'Bighorn Sheep': 'unlikely' },
   // Mule Deer: common throughout Wind Cave grasslands (was unlikely)
   // Black-tailed Prairie Dog: anchor 0.97 guaranteed (multiple visible colonies on park roads).
   windcave:              { 'American Bison': 'very_likely', 'Pronghorn': 'very_likely', 'Black-tailed Prairie Dog': 'guaranteed', 'Mule Deer': 'likely' },
   // Great Sand Dunes Common Raven anchor 0.85 very_likely (every overlook + dune-field area).
   greatsanddunes:        { 'Common Raven': 'very_likely' },
-  theodoreroosevelt:     { 'American Bison': 'very_likely', 'Pronghorn': 'very_likely', 'Black-tailed Prairie Dog': 'very_likely', 'Wild Horse': 'very_likely' },
+  // Bighorn Sheep: anchor 0.08 rare — reintroduced, rugged badlands, genuinely hard to spot.
+  theodoreroosevelt:     { 'American Bison': 'very_likely', 'Pronghorn': 'very_likely', 'Black-tailed Prairie Dog': 'very_likely', 'Wild Horse': 'very_likely', 'Bighorn Sheep': 'rare' },
   // ── Rocky Mountain / Sierra Nevada / Southwest ───────────────────────────
   // Moose: anchor 0.40 likely (Kawuneeche Valley sightings — concentrated, not park-wide).
   rockymountain:         { 'American Elk': 'guaranteed', 'Elk': 'guaranteed', 'Mule Deer': 'very_likely', 'Bighorn Sheep': 'likely', 'Moose': 'likely', 'American Pika': 'very_likely' },
   // Mule Deer: anchor 0.90 guaranteed (Tuolumne Meadows / Cook's Meadow).
   yosemite:              { 'California Ground Squirrel': 'guaranteed', "Steller's Jay": 'very_likely', 'Mule Deer': 'guaranteed', 'Black Bear': 'unlikely', 'American Black Bear': 'unlikely' },
   // Common Raven anchor 0.92 guaranteed (every desert loop pullout).
-  saguaro:               { "Gambel's Quail": 'guaranteed', 'Cactus Wren': 'very_likely', 'Gila Woodpecker': 'very_likely', 'Javelina': 'likely', 'Desert Spiny Lizard': 'likely', 'Common Raven': 'guaranteed' },
+  // Mountain Lion: anchor 0.01 exceptional — resident but essentially never seen (detectability cryptic cap floors at unlikely, so set explicitly).
+  saguaro:               { "Gambel's Quail": 'guaranteed', 'Cactus Wren': 'very_likely', 'Gila Woodpecker': 'very_likely', 'Javelina': 'likely', 'Desert Spiny Lizard': 'likely', 'Common Raven': 'guaranteed', 'Mountain Lion': 'exceptional' },
   // Common Raven: at every overlook rim-wide, impossible to miss (1469 iNat obs)
   grandcanyon:           { 'Common Raven': 'guaranteed', 'Rock Squirrel': 'very_likely', 'Mule Deer': 'very_likely', 'Elk': 'likely', 'American Bison': 'unlikely' },
   // Desert Bighorn Sheep: 986 iNat obs, year-round on canyon walls — but most visitors are shuttle-only
@@ -345,7 +348,8 @@ const RARITY_OVERRIDES = {
   // California Condor: anchor 0.45 likely (~half of casual visits per release-site sightings) — was 'very_likely', too optimistic.
   pinnacles:             { 'California Ground Squirrel': 'guaranteed', 'California Condor': 'likely', 'Acorn Woodpecker': 'very_likely', 'California Scrub-Jay': 'very_likely' },
   // Golden-mantled Ground Squirrel: approaches visitors at every Rim Drive overlook (701 obs)
-  craterlake:            { "Common Golden-mantled Ground Squirrel": 'guaranteed', "Clark's Nutcracker": 'very_likely' },
+  // American Black Bear: anchor 0.06 rare — dense forest, very few rim-area sightings.
+  craterlake:            { "Common Golden-mantled Ground Squirrel": 'guaranteed', "Clark's Nutcracker": 'very_likely', 'American Black Bear': 'rare', 'Black Bear': 'rare' },
   // Hoary Marmot: park-level 'very_likely' (anchor 0.85 — Paradise visit ~92%, other zones lower).
   // Zone override 'paradise' bumps to guaranteed for visitors at the iconic Paradise meadows.
   // Black Bear: anchor 0.10 unlikely (occasional sightings on trails, not a routine encounter).
@@ -354,11 +358,14 @@ const RARITY_OVERRIDES = {
   northcascades:         { 'Bald Eagle': 'very_likely' },
   // Roosevelt Elk herd at Prairie Creek / Gold Bluffs Beach (1416 obs as "Wapiti" on iNat).
   // Steller's Jay anchor 0.92 guaranteed (every grove picnic area).
-  redwood:               { 'Roosevelt Elk': 'guaranteed', "Steller's Jay": 'guaranteed' },
+  // American Black Bear: anchor 0.12 unlikely — backcountry/meadow edges, infrequent roadside.
+  redwood:               { 'Roosevelt Elk': 'guaranteed', "Steller's Jay": 'guaranteed', 'American Black Bear': 'unlikely', 'Black Bear': 'unlikely' },
   // Steller's Jay: guaranteed at every Sierra Nevada campground / picnic area
-  kingscanyon:           { "Steller's Jay": 'guaranteed' },
+  // American Black Bear: anchor 0.12 unlikely — Cedar Grove, not a routine casual sighting.
+  kingscanyon:           { "Steller's Jay": 'guaranteed', 'American Black Bear': 'unlikely', 'Black Bear': 'unlikely' },
   // Mule Deer: routine in Round Meadow / Crescent Meadow (anchor 0.90 guaranteed)
-  sequoia:               { "Steller's Jay": 'guaranteed', 'Mule Deer': 'guaranteed' },
+  // American Black Bear: anchor 0.15 unlikely — Giant Forest bear-aware program ~15% of summer visits.
+  sequoia:               { "Steller's Jay": 'guaranteed', 'Mule Deer': 'guaranteed', 'American Black Bear': 'unlikely', 'Black Bear': 'unlikely' },
   // Golden-mantled Ground Squirrel anchor 0.92 guaranteed (Manzanita Lake / Bumpass Hell parking).
   lassenvolcanic:        { "Steller's Jay": 'guaranteed', "Common Golden-mantled Ground Squirrel": 'guaranteed' },
   // Greater Roadrunner: 995 iNat obs — seen near visitor center, roads, campgrounds throughout.
