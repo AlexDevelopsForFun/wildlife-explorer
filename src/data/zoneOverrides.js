@@ -291,7 +291,7 @@ export const ZONE_OVERRIDES = {
         seasonFrequencies: { spring: 65, summer: 80, fall: 75, winter: 50 },
         rationale: 'West-side Kawuneeche Valley moose herd — willows along the Colorado River source. Most reliable moose viewing in the park.',
       },
-      'bear-lake': { rarity: 'unlikely', frequency: 0.15, rationale: 'East-side moose are rare; mostly seen in Sprague Lake / Glacier Basin meadows.' },
+      'bear-lake': { rarity: 'unlikely', frequency: 0.15, seasonFrequencies: { spring: 15, summer: 20, fall: 18, winter: 5 }, rationale: 'East-side moose are rare; mostly seen in Sprague Lake / Glacier Basin meadows; minimal in deep-snow winter.' },
     },
     'American Pika': {
       'trail-ridge': {
@@ -336,7 +336,7 @@ export const ZONE_OVERRIDES = {
       },
     },
     'Coyote': {
-      'bear-lake':  { rarity: 'likely', frequency: 0.40, rationale: 'Coyotes routinely visible in open meadows around Estes Park / Moraine Park.' },
+      'bear-lake':  { rarity: 'likely', frequency: 0.40, seasonFrequencies: { spring: 40, summer: 38, fall: 42, winter: 50 }, rationale: 'Coyotes routinely visible in open meadows around Estes Park / Moraine Park; winter snow-contrast + elk-carcass scavenging boost.' },
     },
   },
 
@@ -802,11 +802,12 @@ export const ZONE_OVERRIDES = {
       'antelope-flats': {
         rarity: 'guaranteed',
         frequency: 0.95,
-        rationale: 'Antelope Flats / Mormon Row bison herd visible from Mormon Row Road year-round.',
+        seasonFrequencies: { spring: 92, summer: 97, fall: 95, winter: 80 },
+        rationale: 'Antelope Flats / Mormon Row bison herd visible from Mormon Row Road year-round; Mormon Row access reduced in deep winter.',
       },
     },
     'Pronghorn': {
-      'antelope-flats': { rarity: 'very_likely', frequency: 0.80, rationale: 'Pronghorn herds graze the sagebrush flats alongside bison.' },
+      'antelope-flats': { rarity: 'very_likely', frequency: 0.80, seasonFrequencies: { spring: 75, summer: 90, fall: 80, winter: 1 }, rationale: 'Pronghorn herds graze the sagebrush flats alongside bison spring-fall; migrate ~150 mi south to the Green River Basin for winter.' },
     },
     'Moose': {
       'moose-wilson': {
@@ -826,7 +827,7 @@ export const ZONE_OVERRIDES = {
       },
     },
     'Bald Eagle': {
-      'oxbow-bend':   { rarity: 'very_likely', frequency: 0.75, rationale: 'Bald Eagles fish the Snake River — Oxbow Bend nest sites are legendary.' },
+      'oxbow-bend':   { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 75, summer: 70, fall: 80, winter: 65 }, rationale: 'Bald Eagles fish the Snake River — Oxbow Bend nest sites are legendary; year-round residents with fall congregation peak.' },
     },
     'Trumpeter Swan': {
       'oxbow-bend':   { rarity: 'very_likely', frequency: 0.70, seasonFrequencies: { spring: 70, summer: 75, fall: 65, winter: 35 }, rationale: 'Trumpeter Swans on the Snake River year-round — Oxbow Bend is reliable.' },
@@ -871,11 +872,11 @@ export const ZONE_OVERRIDES = {
   // ── Kings Canyon (round 7) ──────────────────────────────────────────
   kingscanyon: {
     'Mule Deer': {
-      'cedar-grove': { rarity: 'very_likely', frequency: 0.80, rationale: 'Deer in Zumwalt Meadow and Cedar Grove campgrounds.' },
-      'grant-grove': { rarity: 'very_likely', frequency: 0.75, rationale: 'Deer browsing Grant Grove area at dawn/dusk.' },
+      'cedar-grove': { rarity: 'very_likely', frequency: 0.80, seasonFrequencies: { spring: 60, summer: 90, fall: 85, winter: 1 }, rationale: 'Deer in Zumwalt Meadow and Cedar Grove campgrounds; Cedar Grove road (Hwy 180) closed Nov-Apr.' },
+      'grant-grove': { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 70, summer: 80, fall: 85, winter: 55 }, rationale: 'Deer browsing Grant Grove area at dawn/dusk; Grant Grove open year-round (lower elevation).' },
     },
     "Steller's Jay": {
-      'grant-grove': { rarity: 'guaranteed', frequency: 0.95, rationale: "Steller's Jays at every Grant Grove campsite and picnic area." },
+      'grant-grove': { rarity: 'guaranteed', frequency: 0.95, seasonFrequencies: { spring: 95, summer: 95, fall: 95, winter: 88 }, rationale: "Steller's Jays at every Grant Grove campsite and picnic area year-round." },
     },
     'American Black Bear': {
       'cedar-grove': { rarity: 'unlikely', frequency: 0.18, seasonFrequencies: { spring: 20, summer: 25, fall: 22, winter: 1 }, rationale: 'Black bears in Cedar Grove canyon area.' },
@@ -1399,12 +1400,13 @@ export const ZONE_OVERRIDES = {
       'giant-forest': {
         rarity: 'guaranteed',
         frequency: 0.92,
+        seasonFrequencies: { spring: 88, summer: 92, fall: 99, winter: 75 },
         peakWindow: { startMonthDay: '10-15', endMonthDay: '11-30', label: 'Peak rut: mid-Oct – Nov' },
-        rationale: 'Deer routinely browse Round Meadow and Crescent Meadow visible from any visitor trail; rut peaks fall.',
+        rationale: 'Deer routinely browse Round Meadow and Crescent Meadow visible from any visitor trail; rut peaks fall; some descend to lower elevations in deep-snow winter.',
       },
     },
     "Steller's Jay": {
-      'giant-forest': { rarity: 'guaranteed', frequency: 0.95, rationale: "Steller's Jays at every Giant Forest campground and picnic area." },
+      'giant-forest': { rarity: 'guaranteed', frequency: 0.95, seasonFrequencies: { spring: 95, summer: 95, fall: 95, winter: 88 }, rationale: "Steller's Jays at every Giant Forest campground and picnic area year-round." },
     },
     'American Black Bear': {
       'giant-forest': {
@@ -1464,11 +1466,13 @@ export const ZONE_OVERRIDES = {
       'east-zion': {
         rarity: 'likely',
         frequency: 0.50,
-        rationale: 'Desert bighorn reliably visible on cliffs along the Mt Carmel Highway / East Zion area.',
+        seasonFrequencies: { spring: 55, summer: 45, fall: 55, winter: 45 },
+        rationale: 'Desert bighorn reliably visible on cliffs along the Mt Carmel Highway / East Zion area year-round (desert species, no hibernation/migration).',
       },
       'main-canyon': {
         rarity: 'unlikely',
         frequency: 0.20,
+        seasonFrequencies: { spring: 22, summer: 18, fall: 22, winter: 18 },
         rationale: 'Bighorn occasionally visible from canyon trails but less concentrated than East Zion.',
       },
     },
@@ -1476,14 +1480,16 @@ export const ZONE_OVERRIDES = {
       'main-canyon': {
         rarity: 'guaranteed',
         frequency: 0.92,
-        rationale: 'Mule deer browse the canyon meadows along Riverside Walk and visitor center on essentially every visit.',
+        seasonFrequencies: { spring: 92, summer: 90, fall: 95, winter: 85 },
+        rationale: 'Mule deer browse the canyon meadows along Riverside Walk and visitor center on essentially every visit year-round (mild low-desert canyon climate).',
       },
     },
     'Rock Squirrel': {
       'main-canyon': {
         rarity: 'guaranteed',
         frequency: 0.95,
-        rationale: 'Habituated rock squirrels at every canyon overlook and trail.',
+        seasonFrequencies: { spring: 95, summer: 99, fall: 90, winter: 55 },
+        rationale: 'Habituated rock squirrels at every canyon overlook and trail; less active in winter cold.',
       },
     },
   },
