@@ -259,8 +259,11 @@ const RARITY_OVERRIDES = {
   drytortugas:           { 'Sooty Tern': 'guaranteed', 'Brown Noddy': 'guaranteed', 'Magnificent Frigatebird': 'very_likely', 'American Alligator': 'exceptional' }, // data quality: no alligators at DT
   // ── East / Appalachian ───────────────────────────────────────────────────
   // Elk: reintroduced 2001, 200+ animal herd in Cataloochee Valley (was unlikely)
-  greatsmokymountains:   { 'White-tailed Deer': 'guaranteed', 'Black Bear': 'unlikely', 'Wild Turkey': 'very_likely', 'Elk': 'likely', 'Red Salamander': 'likely' },
-  shenandoah:            { 'White-tailed Deer': 'guaranteed', 'Wild Turkey': 'very_likely', 'Black Bear': 'likely', 'Timber Rattlesnake': 'likely', 'Spring Peeper': 'exceptional' },
+  // Anchors: Black Bear 0.40 likely (Cades Cove visible most visits); Elk fall 0.20 unlikely
+  // (Cataloochee herd reliable but most visitors don't go there — zone override bumps Cataloochee to guaranteed).
+  greatsmokymountains:   { 'White-tailed Deer': 'guaranteed', 'Black Bear': 'likely', 'American Black Bear': 'likely', 'Wild Turkey': 'very_likely', 'Elk': 'unlikely', 'Red Salamander': 'likely' },
+  // Black Bear: anchor 0.25 unlikely (NPS reports — visible to dedicated hikers but not casual visitors).
+  shenandoah:            { 'White-tailed Deer': 'guaranteed', 'Wild Turkey': 'very_likely', 'Black Bear': 'unlikely', 'American Black Bear': 'unlikely', 'Timber Rattlesnake': 'likely', 'Spring Peeper': 'exceptional' },
   // Herring Gulls everywhere at Bar Harbor/ocean viewpoints (624 iNat obs — top species at Acadia)
   // Bald Eagle: anchor 0.45 likely — birds patrol Frenchman Bay & Schoodic, visible from Cadillac (was incorrectly 'rare')
   acadia:                { 'American Herring Gull': 'guaranteed', 'Bald Eagle': 'likely', 'White-tailed Deer': 'very_likely', 'Harbor Seal': 'likely', 'Common Loon': 'likely', 'Grey Seal': 'unlikely', 'Humpback Whale': 'unlikely' },
@@ -272,7 +275,8 @@ const RARITY_OVERRIDES = {
   newrivergorge:         { 'White-tailed Deer': 'very_likely', 'Black Bear': 'unlikely', 'American Black Bear': 'unlikely' },
   // Anchor: Eastern Gray Squirrel 0.99 guaranteed (urban-edge park, every parking area); White-tailed Deer 0.85 very_likely.
   cuyahogavalley:        { 'White-tailed Deer': 'very_likely', 'Eastern Gray Squirrel': 'guaranteed', 'Wild Turkey': 'likely' },
-  mammothcave:           { 'Little Brown Bat': 'guaranteed', 'White-tailed Deer': 'likely' },
+  // Eastern Gray Squirrel: anchor 0.92 guaranteed (visitor center / hotel grounds).
+  mammothcave:           { 'Little Brown Bat': 'guaranteed', 'White-tailed Deer': 'likely', 'Eastern Gray Squirrel': 'guaranteed' },
   // Hot Springs is mostly urban (Bathhouse Row); deer in surrounding hills only — but squirrels are everywhere on lawns.
   // Northern Cardinal: top resident songbird, in every Promenade tree.
   hotsprings:            { 'White-tailed Deer': 'unlikely', 'Eastern Gray Squirrel': 'guaranteed', 'Northern Cardinal': 'very_likely' },
@@ -281,7 +285,8 @@ const RARITY_OVERRIDES = {
   // Eastern Gray Squirrels on every lawn around the Arch (urban park — squirrels guaranteed)
   // White-tailed Deer + Red Fox patched in via missingSpeciesPatches.js (build pipeline drops them at this small urban park).
   gatewayarch:           { 'Eastern Gray Squirrel': 'guaranteed', 'American Robin': 'very_likely', 'White-tailed Deer': 'unlikely', 'Red Fox': 'rare' },
-  voyageurs:             { 'Common Loon': 'guaranteed', 'Bald Eagle': 'very_likely', 'Moose': 'likely' },
+  // Moose: anchor 0.20 unlikely — concentrated on Kabetogama Peninsula, dedicated hikers only (not casual boat visitors).
+  voyageurs:             { 'Common Loon': 'guaranteed', 'Bald Eagle': 'very_likely', 'Moose': 'unlikely' },
   // ── Rocky Mountain / Great Plains ────────────────────────────────────────
   // Mountain Goat corrected: seen regularly on Going-to-the-Sun Road but not 60%+ likely.
   // Grizzly Bear corrected: 15-25% encounter rate at Glacier.
@@ -292,10 +297,12 @@ const RARITY_OVERRIDES = {
   windcave:              { 'American Bison': 'very_likely', 'Pronghorn': 'very_likely', 'Black-tailed Prairie Dog': 'guaranteed', 'Mule Deer': 'likely' },
   theodoreroosevelt:     { 'American Bison': 'very_likely', 'Pronghorn': 'very_likely', 'Black-tailed Prairie Dog': 'very_likely', 'Wild Horse': 'very_likely' },
   // ── Rocky Mountain / Sierra Nevada / Southwest ───────────────────────────
-  rockymountain:         { 'American Elk': 'guaranteed', 'Elk': 'guaranteed', 'Mule Deer': 'very_likely', 'Bighorn Sheep': 'likely', 'Moose': 'very_likely', 'American Pika': 'very_likely' },
+  // Moose: anchor 0.40 likely (Kawuneeche Valley sightings — concentrated, not park-wide).
+  rockymountain:         { 'American Elk': 'guaranteed', 'Elk': 'guaranteed', 'Mule Deer': 'very_likely', 'Bighorn Sheep': 'likely', 'Moose': 'likely', 'American Pika': 'very_likely' },
   // Mule Deer: anchor 0.90 guaranteed (Tuolumne Meadows / Cook's Meadow).
   yosemite:              { 'California Ground Squirrel': 'guaranteed', "Steller's Jay": 'very_likely', 'Mule Deer': 'guaranteed', 'Black Bear': 'unlikely', 'American Black Bear': 'unlikely' },
-  saguaro:               { "Gambel's Quail": 'guaranteed', 'Cactus Wren': 'very_likely', 'Gila Woodpecker': 'very_likely', 'Javelina': 'likely', 'Desert Spiny Lizard': 'likely' },
+  // Common Raven anchor 0.92 guaranteed (every desert loop pullout).
+  saguaro:               { "Gambel's Quail": 'guaranteed', 'Cactus Wren': 'very_likely', 'Gila Woodpecker': 'very_likely', 'Javelina': 'likely', 'Desert Spiny Lizard': 'likely', 'Common Raven': 'guaranteed' },
   // Common Raven: at every overlook rim-wide, impossible to miss (1469 iNat obs)
   grandcanyon:           { 'Common Raven': 'guaranteed', 'Rock Squirrel': 'very_likely', 'Mule Deer': 'very_likely', 'Elk': 'likely', 'American Bison': 'unlikely' },
   // Desert Bighorn Sheep: 986 iNat obs, year-round on canyon walls — but most visitors are shuttle-only
@@ -303,14 +310,16 @@ const RARITY_OVERRIDES = {
   // zone anchor 0.50 likely. Compromise at 'likely' for park-level pill; zone overrides handle Mt Carmel.
   zion:                  { 'Rock Squirrel': 'guaranteed', 'Mule Deer': 'very_likely', 'Desert Cottontail': 'likely', 'Coyote': 'likely', 'Desert Bighorn Sheep': 'likely' },
   // Golden-mantled Ground Squirrel: begs at every viewpoint rim-wide
-  // Utah Prairie Dog: colony at Sunrise Point, summer-active only — anchor 0.65 very_likely (was 'guaranteed', too high for casual visit)
-  brycecanyon:           { 'Utah Prairie Dog': 'very_likely', "Common Golden-mantled Ground Squirrel": 'guaranteed', 'Mule Deer': 'very_likely', 'Common Raven': 'very_likely', 'Pronghorn': 'very_likely' },
+  // Utah Prairie Dog: colony at Sunrise Point, summer-active only — anchor 0.65 very_likely (was 'guaranteed', too high for casual visit).
+  // Common Raven: anchor 0.97 guaranteed (every viewpoint).
+  brycecanyon:           { 'Utah Prairie Dog': 'very_likely', "Common Golden-mantled Ground Squirrel": 'guaranteed', 'Mule Deer': 'very_likely', 'Common Raven': 'guaranteed', 'Pronghorn': 'very_likely' },
   // Ravens at every arch overlook (524 iNat obs — most observed bird at Arches)
   arches:                { 'Common Raven': 'guaranteed', 'Mule Deer': 'likely', 'Coyote': 'likely', 'Desert Cottontail': 'likely' },
   // Ravens at Island in the Sky / Needles overlooks
   canyonlands:           { 'Common Raven': 'guaranteed', 'Common Side-blotched Lizard': 'very_likely', 'Mule Deer': 'likely' },
-  // Deer visit Capitol Reef orchards nightly, common throughout (273 obs)
-  capitolreef:           { 'Mule Deer': 'guaranteed', 'Common Raven': 'very_likely', 'Coyote': 'likely' },
+  // Deer visit Capitol Reef orchards nightly, common throughout (273 obs).
+  // Common Raven: anchor 0.95 guaranteed (every overlook + Fruita campground).
+  capitolreef:           { 'Mule Deer': 'guaranteed', 'Common Raven': 'guaranteed', 'Coyote': 'likely' },
   // Ravens at every Petrified Forest overlook (528 obs — top iNat species)
   // Pronghorn: anchor 0.55 likely (visible from park road grasslands but not all visits) — was 'very_likely'.
   petrifiedforest:       { 'Common Raven': 'guaranteed', 'Pronghorn': 'likely' },
@@ -325,8 +334,9 @@ const RARITY_OVERRIDES = {
   joshuatree:            { 'Common Side-blotched Lizard': 'guaranteed', 'Common Chuckwalla': 'very_likely', 'Common Raven': 'guaranteed', 'Black-tailed Jackrabbit': 'likely' },
   // Ravens at Furnace Creek / Badwater / every visitor area
   deathvalley:           { 'Common Raven': 'guaranteed', 'Coyote': 'very_likely', 'Common Side-blotched Lizard': 'very_likely' },
-  // Western Earless Lizard: common white-sands color form on every dune walk (322 obs)
-  whitesands:            { 'Western Earless Lizard': 'guaranteed' },
+  // Western Earless Lizard: common white-sands color form on every dune walk (322 obs).
+  // Common Raven anchor 0.93 guaranteed (every dune-loop pullout + visitor center).
+  whitesands:            { 'Western Earless Lizard': 'guaranteed', 'Common Raven': 'guaranteed' },
   // California Ground Squirrel: everywhere at visitor areas (735 obs).
   // California Condor: anchor 0.45 likely (~half of casual visits per release-site sightings) — was 'very_likely', too optimistic.
   pinnacles:             { 'California Ground Squirrel': 'guaranteed', 'California Condor': 'likely', 'Acorn Woodpecker': 'very_likely', 'California Scrub-Jay': 'very_likely' },
@@ -337,20 +347,23 @@ const RARITY_OVERRIDES = {
   mountrainier:          { 'Hoary Marmot': 'guaranteed', 'Canada Jay': 'very_likely', 'Sooty Grouse': 'very_likely', 'Black Bear': 'unlikely', 'American Black Bear': 'unlikely' },
   // North Cascades: Bald Eagles fish the Diablo Lake / Ross Lake corridor — visible from highway viewpoints (anchor 0.65 very_likely)
   northcascades:         { 'Bald Eagle': 'very_likely' },
-  // Roosevelt Elk herd at Prairie Creek / Gold Bluffs Beach (1416 obs as "Wapiti" on iNat)
-  redwood:               { 'Roosevelt Elk': 'guaranteed', "Steller's Jay": 'very_likely' },
+  // Roosevelt Elk herd at Prairie Creek / Gold Bluffs Beach (1416 obs as "Wapiti" on iNat).
+  // Steller's Jay anchor 0.92 guaranteed (every grove picnic area).
+  redwood:               { 'Roosevelt Elk': 'guaranteed', "Steller's Jay": 'guaranteed' },
   // Steller's Jay: guaranteed at every Sierra Nevada campground / picnic area
   kingscanyon:           { "Steller's Jay": 'guaranteed' },
   // Mule Deer: routine in Round Meadow / Crescent Meadow (anchor 0.90 guaranteed)
   sequoia:               { "Steller's Jay": 'guaranteed', 'Mule Deer': 'guaranteed' },
-  lassenvolcanic:        { "Steller's Jay": 'guaranteed', "Common Golden-mantled Ground Squirrel": 'very_likely' },
-  // Greater Roadrunner: 995 iNat obs — seen near visitor center, roads, campgrounds throughout
-  bigbend:               { 'Greater Roadrunner': 'guaranteed', 'Mexican Jay': 'very_likely', 'Cactus Wren': 'very_likely', 'Western Diamond-backed Rattlesnake': 'very_likely' },
+  // Golden-mantled Ground Squirrel anchor 0.92 guaranteed (Manzanita Lake / Bumpass Hell parking).
+  lassenvolcanic:        { "Steller's Jay": 'guaranteed', "Common Golden-mantled Ground Squirrel": 'guaranteed' },
+  // Greater Roadrunner: 995 iNat obs — seen near visitor center, roads, campgrounds throughout.
+  // Common Raven anchor 0.93 guaranteed (Chisos Basin parking + Santa Elena overlook).
+  bigbend:               { 'Greater Roadrunner': 'guaranteed', 'Mexican Jay': 'very_likely', 'Cactus Wren': 'very_likely', 'Western Diamond-backed Rattlesnake': 'very_likely', 'Common Raven': 'guaranteed' },
   // ── Southwest caves ──────────────────────────────────────────────────────
   carlsbadcaverns:       { 'Mexican Free-tailed Bat': 'guaranteed' },
   // ── Alaska ───────────────────────────────────────────────────────────────
-  // Anchor calibration (NPS bus tour reports): Brown Bear 0.80 very_likely, Dall Sheep 0.85 very_likely, Moose 0.40 likely.
-  denali:                { 'Brown Bear': 'very_likely', 'Caribou': 'very_likely', 'Moose': 'likely', 'Dall Sheep': 'very_likely', 'Arctic Ground Squirrel': 'guaranteed', 'Grizzly Bear': 'very_likely' },
+  // Anchor calibration (NPS bus tour reports): Brown Bear 0.80 very_likely, Dall Sheep 0.85 very_likely, Moose 0.40 likely, Gray Wolf 0.18 unlikely.
+  denali:                { 'Brown Bear': 'very_likely', 'Caribou': 'very_likely', 'Moose': 'likely', 'Dall Sheep': 'very_likely', 'Arctic Ground Squirrel': 'guaranteed', 'Grizzly Bear': 'very_likely', 'Gray Wolf': 'unlikely' },
   katmai:                { 'Brown Bear': 'guaranteed' },
   // Humpback Whale: anchor 0.80 very_likely on summer day-cruise tours (was 'unlikely', far too low).
   glacierbay:            { 'Humpback Whale': 'very_likely', 'Harbor Seal': 'guaranteed', 'Sea Otter': 'very_likely' },
@@ -360,8 +373,8 @@ const RARITY_OVERRIDES = {
   wrangell:              { 'Dall Sheep': 'very_likely', 'Moose': 'very_likely', 'Brown Bear': 'likely' },
   wrangellstelias:       { 'Dall Sheep': 'very_likely', 'Moose': 'very_likely', 'Brown Bear': 'likely' },
   // Brown Bear: Silver Salmon Creek / Chinitna Bay bear-viewing trips have ~85% sighting rate (anchor).
-  // Was 'unlikely' — long-standing under-correction; coastal viewing operations are the main visitor experience.
-  lakeclark:             { 'Brown Bear': 'very_likely', 'Sockeye Salmon': 'guaranteed' },
+  // Bald Eagle: anchor 0.85 very_likely (salmon-rich Cook Inlet / Tuxedni Bay).
+  lakeclark:             { 'Brown Bear': 'very_likely', 'Sockeye Salmon': 'guaranteed', 'Bald Eagle': 'very_likely' },
   // ── Hawaii ───────────────────────────────────────────────────────────────
   // Nene walk freely near Kilauea Caldera / Crater Rim Drive visitor areas
   // Common Myna: introduced and ubiquitous at lowland visitor areas (anchor 0.95).
@@ -371,8 +384,10 @@ const RARITY_OVERRIDES = {
   // ── Island / Tropical ────────────────────────────────────────────────────
   // Green Iguanas at every beach / parking lot in USVI (invasive, extremely common)
   // Green Sea Turtle: corrected to unlikely — present but not reliably seen on snorkel trips (was very_likely)
-  virginislands:         { 'Green Iguana': 'likely', 'Green Sea Turtle': 'unlikely', 'Hawksbill Sea Turtle': 'unlikely' },
-  americansamoa:         { 'Samoan Flying Fox': 'very_likely', 'Green Sea Turtle': 'likely' },
+  // Brown Pelican: anchor 0.85 very_likely (every snorkel beach).
+  virginislands:         { 'Green Iguana': 'likely', 'Green Sea Turtle': 'unlikely', 'Hawksbill Sea Turtle': 'unlikely', 'Brown Pelican': 'very_likely' },
+  // Pacific Reef-Heron: anchor 0.65 very_likely (coastal tide pools on Tutuila + Ofu).
+  americansamoa:         { 'Samoan Flying Fox': 'very_likely', 'Green Sea Turtle': 'likely', 'Pacific Reef-Heron': 'very_likely' },
 };
 
 export function applyRarityOverride(locationId, animalName, currentRarity) {
