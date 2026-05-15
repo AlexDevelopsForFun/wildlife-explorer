@@ -252,16 +252,57 @@ jobs:
           POST: ${{ steps.validate.outputs.post }}
           DROP: ${{ steps.validate.outputs.drop_pct }}
         run: |
+          set -euo pipefail
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add src/data
+
+          # Stage ONLY the auto-generated cache files. Staging all of
+          # src/data would also commit the runner's STALE copies of
+          # hand-curated files (zoneOverrides.js, missingSpeciesPatches.js,
+          # etc.) — the rebuild checked out an old commit and never pulled
+          # human commits made during its ~3h runtime. Restricting the add
+          # to generated files keeps the rebase below conflict-free.
+          git add src/data/wildlifeCache.js \
+                  src/data/wildlifeCachePrimary.js \
+                  src/data/wildlifeCacheTier2.js \
+                  src/data/wildlifeCacheTier3.js
           git commit -m "chore(data): weekly wildlife cache rebuild
 
           Automated weekly rebuild from eBird + iNaturalist + NPS.
           Pre-rebuild species: $PRE
           Post-rebuild species: $POST
           Net drop: ${DROP}% (sanity-check threshold 10%)"
-          git push origin main
+
+          # Rebase-and-retry: a full rebuild runs ~3h, during which humans
+          # may push to main. A blind `git push` is rejected ("fetch
+          # first") and silently discards the entire rebuild. Because the
+          # commit above touches ONLY generated cache files and human
+          # commits touch other files, `git rebase` applies cleanly.
+          # The loop absorbs the race window between fetch and push.
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            if ! git rebase origin/main; then
+              echo "::warning::Rebase hit conflicts on attempt $attempt — aborting and retrying"
+              git rebase --abort || true
+              # Re-stage generated files in case the abort reset them
+              git add src/data/wildlifeCache.js \
+                      src/data/wildlifeCachePrimary.js \
+                      src/data/wildlifeCacheTier2.js \
+                      src/data/wildlifeCacheTier3.js
+              sleep 5
+              continue
+            fi
+            if git push origin main; then
+              echo "Pushed rebuilt cache to main (attempt $attempt)."
+              exit 0
+            fi
+            echo "::warning::Push rejected on attempt $attempt (concurrent push) — retrying"
+            sleep 5
+          done
+          echo "::error::Failed to push rebuilt cache after 5 rebase/push attempts. \
+          Rebuild data is preserved in the cache-shard-* artifacts; \
+          re-run mergeShards locally or re-trigger the workflow."
+          exit 1
 
       # Open a PR when (a) explicitly requested via workflow_dispatch, or
       # (b) the species drop is in the soft-fail review band (10–25%).
