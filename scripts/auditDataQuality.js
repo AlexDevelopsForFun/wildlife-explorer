@@ -355,6 +355,41 @@ async function main() {
     }
   }
 
+  // ── Audit 7: detectability classifications target real species ─────
+  // Catches typos and stale entries in src/data/detectability.js — a
+  // species name in SPECIES_DETECTABILITY that exists nowhere in the
+  // cache is dead config (would never apply at runtime). Surfaces as a
+  // warning so we can either fix the spelling or remove the entry.
+  console.log(`\n📋 Audit 7: detectability classifications`);
+  const { SPECIES_DETECTABILITY } = await import('../src/data/detectability.js');
+  const allCacheNames = new Set();
+  const allCacheNamesLower = new Set();
+  for (const v of Object.values(WILDLIFE_CACHE)) {
+    for (const a of (v.animals ?? [])) {
+      if (a.name) {
+        allCacheNames.add(a.name);
+        allCacheNamesLower.add(a.name.toLowerCase().trim());
+      }
+    }
+  }
+  const orphanDetectability = [];
+  for (const name of Object.keys(SPECIES_DETECTABILITY)) {
+    const lower = name.toLowerCase().trim();
+    if (allCacheNames.has(name)) continue;
+    if (allCacheNamesLower.has(lower)) continue;
+    // Alias-aware: NAME_ALIASES[lower] returns an array of canonical names — match if any are in cache.
+    const aliases = NAME_ALIASES[lower] ?? [];
+    if (aliases.some(alt => allCacheNamesLower.has(alt.toLowerCase()))) continue;
+    orphanDetectability.push(name);
+  }
+  if (orphanDetectability.length === 0) {
+    pass(`All ${Object.keys(SPECIES_DETECTABILITY).length} detectability entries match cache species.`);
+  } else {
+    warn(`${orphanDetectability.length} detectability entries don't match any cache species (typos or stale entries):`);
+    for (const n of orphanDetectability.slice(0, 15)) console.log(`     • ${n}`);
+    if (orphanDetectability.length > 15) console.log(`     … and ${orphanDetectability.length - 15} more.`);
+  }
+
   // ── Summary ────────────────────────────────────────────────────────
   console.log(`\n📊 Summary`);
   console.log(`   Critical issues:  ${criticalCount}`);
