@@ -299,8 +299,8 @@ async function main() {
     yosemite:   { 'American Black Bear': 'unlikely' },
     americansamoa: { 'Pacific Flying-fox': 'very_likely' },
     biscayne:   {
-      'Common Bottlenose Dolphin': 'unlikely',
-      "Tamanend's Bottlenose Dolphin": 'unlikely',
+      'Common Bottlenose Dolphin': 'likely',
+      "Tamanend's Bottlenose Dolphin": 'likely',
     },
     newrivergorge: { 'American Black Bear': 'unlikely' },
   };

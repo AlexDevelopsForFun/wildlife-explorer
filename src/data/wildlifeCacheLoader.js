@@ -252,9 +252,10 @@ const RUNTIME_RARITY_PATCHES = {
   biscayne: {
     // Cache stores Bottlenose Dolphin under both Common and Tamanend's variants
     // (2024 taxonomic split). Override targets 'Bottlenose Dolphin' which doesn't
-    // exist; patch both child species.
-    'Common Bottlenose Dolphin':    'unlikely',
-    "Tamanend's Bottlenose Dolphin": 'unlikely',
+    // exist; patch both child species. Anchor 0.40 likely confirms — bumped from
+    // 'unlikely' to match override + anchor.
+    'Common Bottlenose Dolphin':    'likely',
+    "Tamanend's Bottlenose Dolphin": 'likely',
   },
   newrivergorge: {
     // Override said 'likely' but anchor (NPS bear sighting reports) shows ~20%
