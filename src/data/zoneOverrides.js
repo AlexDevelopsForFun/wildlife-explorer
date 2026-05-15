@@ -57,7 +57,8 @@ export const ZONE_OVERRIDES = {
       'newfound-gap': {
         rarity: 'rare',
         frequency: 0.05,
-        rationale: 'Park-wide elk are concentrated at Cataloochee; main road corridor sightings are uncommon.',
+        seasonFrequencies: { spring: 4, summer: 4, fall: 8, winter: 4 },
+        rationale: 'Park-wide elk are concentrated at Cataloochee; main road corridor sightings are uncommon. Slight fall rut bump.',
       },
     },
     'Black Bear': {
@@ -78,7 +79,8 @@ export const ZONE_OVERRIDES = {
       'cades-cove': {
         rarity: 'guaranteed',
         frequency: 0.92,
-        rationale: 'Wild Turkey flocks visible in Cades Cove fields year-round.',
+        seasonFrequencies: { spring: 90, summer: 88, fall: 95, winter: 90 },
+        rationale: 'Wild Turkey flocks visible in Cades Cove fields year-round; fall flock-aggregation peaks visibility.',
       },
     },
     'Synchronous Firefly': {
@@ -94,6 +96,7 @@ export const ZONE_OVERRIDES = {
       'cades-cove': {
         rarity: 'guaranteed',
         frequency: 0.97,
+        seasonFrequencies: { spring: 95, summer: 93, fall: 99, winter: 92 },
         peakWindow: { startMonthDay: '10-15', endMonthDay: '11-30', label: 'Peak rut: mid-Oct – Nov' },
         rationale: 'Cades Cove meadows host the densest deer population in the park; rut peaks Oct-Nov when bucks chase does in the open fields.',
       },
@@ -531,14 +534,14 @@ export const ZONE_OVERRIDES = {
   // ── Acadia ──────────────────────────────────────────────────────────
   acadia: {
     'Harbor Seal': {
-      'park-loop':   { rarity: 'likely',     frequency: 0.40, rationale: 'Sand Beach / Schoodic shorelines — seals haul out on rocks visible from Park Loop pull-offs.' },
-      'schoodic':    { rarity: 'very_likely', frequency: 0.65, peakWindow: { startMonthDay: '06-01', endMonthDay: '08-31', label: 'Peak haul-out + pupping: June – August' }, rationale: 'Schoodic Peninsula has the most reliable seal-watching at Acadia; June-August pupping pulls more seals to ledges.' },
+      'park-loop':   { rarity: 'likely',     frequency: 0.40, seasonFrequencies: { spring: 35, summer: 55, fall: 40, winter: 25 }, rationale: 'Sand Beach / Schoodic shorelines — seals haul out on rocks visible from Park Loop pull-offs; summer haul-out peaks.' },
+      'schoodic':    { rarity: 'very_likely', frequency: 0.65, seasonFrequencies: { spring: 55, summer: 85, fall: 65, winter: 35 }, peakWindow: { startMonthDay: '06-01', endMonthDay: '08-31', label: 'Peak haul-out + pupping: June – August' }, rationale: 'Schoodic Peninsula has the most reliable seal-watching at Acadia; June-August pupping pulls more seals to ledges.' },
     },
     'White-tailed Deer': {
-      'jordan-pond': { rarity: 'guaranteed', frequency: 0.92, peakWindow: { startMonthDay: '10-15', endMonthDay: '11-30', label: 'Peak rut: mid-Oct – Nov' }, rationale: 'Jordan Pond / Bubble Pond meadows have the highest-visibility deer at Acadia; rut peaks fall.' },
+      'jordan-pond': { rarity: 'guaranteed', frequency: 0.92, seasonFrequencies: { spring: 90, summer: 90, fall: 99, winter: 80 }, peakWindow: { startMonthDay: '10-15', endMonthDay: '11-30', label: 'Peak rut: mid-Oct – Nov' }, rationale: 'Jordan Pond / Bubble Pond meadows have the highest-visibility deer at Acadia; rut peaks fall.' },
     },
     'American Herring Gull': {
-      'park-loop':   { rarity: 'guaranteed', frequency: 0.99, peakWindow: { startMonthDay: '05-01', endMonthDay: '08-15', label: 'Peak breeding: May – mid-Aug' }, rationale: 'Gulls at every coastal overlook — Sand Beach, Thunder Hole, Otter Cliffs; breeding plumage + chicks May-Aug.' },
+      'park-loop':   { rarity: 'guaranteed', frequency: 0.99, seasonFrequencies: { spring: 99, summer: 99, fall: 95, winter: 85 }, peakWindow: { startMonthDay: '05-01', endMonthDay: '08-15', label: 'Peak breeding: May – mid-Aug' }, rationale: 'Gulls at every coastal overlook — Sand Beach, Thunder Hole, Otter Cliffs; breeding plumage + chicks May-Aug.' },
     },
     'Common Loon': {
       'jordan-pond': {
@@ -550,10 +553,10 @@ export const ZONE_OVERRIDES = {
       },
     },
     'Bald Eagle': {
-      'schoodic':    { rarity: 'likely',     frequency: 0.40, rationale: 'Schoodic Peninsula is the most reliable eagle-watching at Acadia.' },
+      'schoodic':    { rarity: 'likely',     frequency: 0.40, seasonFrequencies: { spring: 45, summer: 35, fall: 50, winter: 35 }, rationale: 'Schoodic Peninsula is the most reliable eagle-watching at Acadia; year-round residents with fall migration boost.' },
     },
     'Eastern Chipmunk': {
-      'jordan-pond': { rarity: 'guaranteed', frequency: 0.95, rationale: 'Habituated chipmunks at Jordan Pond House and trail edges throughout the carriage roads.' },
+      'jordan-pond': { rarity: 'guaranteed', frequency: 0.95, seasonFrequencies: { spring: 90, summer: 99, fall: 95, winter: 1 }, rationale: 'Habituated chipmunks at Jordan Pond House and trail edges throughout the carriage roads; hibernate winter.' },
     },
     'American Beaver': {
       'jordan-pond': {
@@ -564,7 +567,7 @@ export const ZONE_OVERRIDES = {
       },
     },
     'Coyote': {
-      'park-loop':   { rarity: 'unlikely', frequency: 0.15, rationale: 'Coyotes occasionally seen along the Park Loop Road at dawn/dusk.' },
+      'park-loop':   { rarity: 'unlikely', frequency: 0.15, seasonFrequencies: { spring: 18, summer: 12, fall: 18, winter: 18 }, rationale: 'Coyotes occasionally seen along the Park Loop Road at dawn/dusk; winter visibility boost (snow contrast).' },
     },
   },
 
@@ -1487,46 +1490,46 @@ export const ZONE_OVERRIDES = {
   // ── Yosemite (expanded) ─────────────────────────────────────────────
   yosemite: {
     'Mule Deer': {
-      'valley': { rarity: 'guaranteed', frequency: 0.95, peakWindow: { startMonthDay: '10-15', endMonthDay: '11-30', label: 'Peak rut: mid-Oct – Nov' }, rationale: 'Habituated deer in Cook\'s Meadow and Stoneman Meadow — essentially every Valley visitor sees them; rut peaks fall.' },
-      'tuolumne': { rarity: 'very_likely', frequency: 0.80, rationale: 'Deer in Tuolumne Meadows visible from any pullout.' },
+      'valley': { rarity: 'guaranteed', frequency: 0.95, seasonFrequencies: { spring: 92, summer: 95, fall: 99, winter: 85 }, peakWindow: { startMonthDay: '10-15', endMonthDay: '11-30', label: 'Peak rut: mid-Oct – Nov' }, rationale: 'Habituated deer in Cook\'s Meadow and Stoneman Meadow — essentially every Valley visitor sees them; rut peaks fall; year-round resident.' },
+      'tuolumne': { rarity: 'very_likely', frequency: 0.80, seasonFrequencies: { spring: 30, summer: 90, fall: 80, winter: 1 }, rationale: 'Deer in Tuolumne Meadows visible from any pullout in summer; Tioga Road closed Oct-May/June.' },
     },
     'American Black Bear': {
-      'valley':       { rarity: 'unlikely', frequency: 0.15, rationale: 'Despite bear-aware messaging, casual Valley visitors see bears on ~15% of summer trips.' },
-      'tuolumne':     { rarity: 'unlikely', frequency: 0.20, peakWindow: { startMonthDay: '08-01', endMonthDay: '09-30', label: 'Peak berry season: Aug – Sept' }, rationale: 'Tuolumne Meadows campers report regular bear activity at dusk; berry season Aug-Sept brings them to subalpine meadows.' },
-      'high-country': { rarity: 'unlikely', frequency: 0.20, peakWindow: { startMonthDay: '08-01', endMonthDay: '09-30', label: 'Peak berry season: Aug – Sept' }, rationale: 'Backcountry bear sightings are common but not guaranteed.' },
+      'valley':       { rarity: 'unlikely', frequency: 0.15, seasonFrequencies: { spring: 15, summer: 20, fall: 18, winter: 1 }, rationale: 'Despite bear-aware messaging, casual Valley visitors see bears on ~15% of summer trips; minimal winter (denning).' },
+      'tuolumne':     { rarity: 'unlikely', frequency: 0.20, seasonFrequencies: { spring: 1, summer: 25, fall: 30, winter: 1 }, peakWindow: { startMonthDay: '08-01', endMonthDay: '09-30', label: 'Peak berry season: Aug – Sept' }, rationale: 'Tuolumne Meadows campers report regular bear activity at dusk; berry season Aug-Sept; Tioga Road closed cold months.' },
+      'high-country': { rarity: 'unlikely', frequency: 0.20, seasonFrequencies: { spring: 1, summer: 25, fall: 28, winter: 1 }, peakWindow: { startMonthDay: '08-01', endMonthDay: '09-30', label: 'Peak berry season: Aug – Sept' }, rationale: 'Backcountry bear sightings are common but not guaranteed; high country inaccessible most of year.' },
     },
     "Steller's Jay": {
-      'valley':       { rarity: 'guaranteed', frequency: 0.95, rationale: 'Steller\'s Jays at every Valley campground and picnic area.' },
-      'tuolumne':     { rarity: 'guaranteed', frequency: 0.92, rationale: 'Steller\'s Jays at Tuolumne Meadows campground.' },
+      'valley':       { rarity: 'guaranteed', frequency: 0.95, seasonFrequencies: { spring: 95, summer: 95, fall: 95, winter: 90 }, rationale: 'Steller\'s Jays at every Valley campground and picnic area year-round.' },
+      'tuolumne':     { rarity: 'guaranteed', frequency: 0.92, seasonFrequencies: { spring: 30, summer: 95, fall: 88, winter: 1 }, rationale: 'Steller\'s Jays at Tuolumne Meadows campground; Tioga Road closed cold months.' },
     },
     'California Ground Squirrel': {
-      'valley':       { rarity: 'guaranteed', frequency: 0.95, rationale: 'Habituated ground squirrels at every Valley overlook.' },
+      'valley':       { rarity: 'guaranteed', frequency: 0.95, seasonFrequencies: { spring: 95, summer: 99, fall: 90, winter: 50 }, rationale: 'Habituated ground squirrels at every Valley overlook; less active in winter cold.' },
     },
     'Coyote': {
-      'valley':       { rarity: 'unlikely', frequency: 0.25, rationale: 'Coyotes in Valley meadows at dawn/dusk.' },
+      'valley':       { rarity: 'unlikely', frequency: 0.25, seasonFrequencies: { spring: 25, summer: 22, fall: 25, winter: 30 }, rationale: 'Coyotes in Valley meadows at dawn/dusk; winter visibility boost (snow contrast).' },
     },
   },
 
   // ── Grand Canyon (expanded) ─────────────────────────────────────────
   grandcanyon: {
     'California Condor': {
-      'south-rim':  { rarity: 'unlikely', frequency: 0.15, rationale: 'Condor releases at Vermilion Cliffs put them visible from South Rim more often than other locations.' },
-      'desert-view':{ rarity: 'unlikely', frequency: 0.20, rationale: 'Navajo Bridge / Desert View area is a documented condor flyway.' },
+      'south-rim':  { rarity: 'unlikely', frequency: 0.15, seasonFrequencies: { spring: 18, summer: 18, fall: 15, winter: 8 }, rationale: 'Condor releases at Vermilion Cliffs put them visible from South Rim more often than other locations; lower in winter cold.' },
+      'desert-view':{ rarity: 'unlikely', frequency: 0.20, seasonFrequencies: { spring: 22, summer: 25, fall: 18, winter: 10 }, rationale: 'Navajo Bridge / Desert View area is a documented condor flyway; thermal-soaring days in warm months are best.' },
     },
     'Common Raven': {
-      'south-rim': { rarity: 'guaranteed', frequency: 0.99, rationale: 'Ravens at every overlook — South Rim visitors see them on essentially every visit.' },
-      'desert-view': { rarity: 'guaranteed', frequency: 0.97, rationale: 'Ravens at Desert View Watchtower constantly.' },
-      'north-rim': { rarity: 'guaranteed', frequency: 0.95, rationale: 'Ravens common at all North Rim overlooks.' },
+      'south-rim': { rarity: 'guaranteed', frequency: 0.99, seasonFrequencies: { spring: 99, summer: 99, fall: 99, winter: 95 }, rationale: 'Ravens at every overlook — South Rim visitors see them on essentially every visit, year-round resident.' },
+      'desert-view': { rarity: 'guaranteed', frequency: 0.97, seasonFrequencies: { spring: 97, summer: 97, fall: 97, winter: 90 }, rationale: 'Ravens at Desert View Watchtower constantly.' },
+      'north-rim': { rarity: 'guaranteed', frequency: 0.95, seasonFrequencies: { spring: 90, summer: 97, fall: 95, winter: 5 }, rationale: 'Ravens common at all North Rim overlooks; North Rim closed winter (Oct-May).' },
     },
     'Rock Squirrel': {
-      'south-rim': { rarity: 'guaranteed', frequency: 0.95, rationale: 'Habituated rock squirrels begging at every South Rim overlook.' },
+      'south-rim': { rarity: 'guaranteed', frequency: 0.95, seasonFrequencies: { spring: 95, summer: 99, fall: 90, winter: 60 }, rationale: 'Habituated rock squirrels begging at every South Rim overlook; less active in winter cold.' },
     },
     'Mule Deer': {
-      'south-rim': { rarity: 'very_likely', frequency: 0.75, rationale: 'Habituated deer in Grand Canyon Village and along South Rim corridor.' },
-      'north-rim': { rarity: 'likely',      frequency: 0.55, rationale: 'Deer in meadow areas of North Rim.' },
+      'south-rim': { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 75, summer: 70, fall: 80, winter: 65 }, rationale: 'Habituated deer in Grand Canyon Village and along South Rim corridor; year-round resident.' },
+      'north-rim': { rarity: 'likely',      frequency: 0.55, seasonFrequencies: { spring: 50, summer: 75, fall: 60, winter: 1 }, rationale: 'Deer in meadow areas of North Rim; North Rim closed winter (Oct-May).' },
     },
     'Elk': {
-      'south-rim': { rarity: 'likely',      frequency: 0.40, rationale: 'Elk regularly visible in South Rim Village area at dawn/dusk.' },
+      'south-rim': { rarity: 'likely',      frequency: 0.40, seasonFrequencies: { spring: 40, summer: 35, fall: 50, winter: 35 }, rationale: 'Elk regularly visible in South Rim Village area at dawn/dusk; fall rut bump.' },
     },
   },
 };
