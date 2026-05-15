@@ -204,6 +204,7 @@ export const ZONE_OVERRIDES = {
         rarity: 'likely',
         frequency: 0.45,
         seasonFrequencies: { spring: 15, summer: 60, fall: 40, winter: 2 },
+        peakWindow: { startMonthDay: '07-01', endMonthDay: '08-31', label: 'Peak: July – August' },
         rationale: 'Marmots in talus around Many Glacier valley; hibernate winter.',
       },
     },
@@ -226,12 +227,13 @@ export const ZONE_OVERRIDES = {
         rarity: 'likely',
         frequency: 0.40,
         seasonFrequencies: { spring: 30, summer: 55, fall: 40, winter: 10 },
+        peakWindow: { startMonthDay: '07-01', endMonthDay: '08-31', label: 'Peak: July – August' },
         rationale: 'Goat-watching from Many Glacier hotel and trails; access limited in winter.',
       },
     },
     'Bighorn Sheep': {
       'many-glacier':   { rarity: 'likely', frequency: 0.45, seasonFrequencies: { spring: 35, summer: 45, fall: 50, winter: 55 }, peakWindow: { startMonthDay: '11-15', endMonthDay: '12-31', label: 'Peak rut: mid-Nov – Dec' }, rationale: 'Many Glacier slopes are reliable summer bighorn habitat; rut concentrates rams at lower elevations in late fall/winter.' },
-      'going-to-sun':   { rarity: 'likely', frequency: 0.35, seasonFrequencies: { spring: 25, summer: 50, fall: 35, winter: 5 }, rationale: 'Logan Pass area sightings common in summer; Going-to-Sun Road closed Oct-Jun.' },
+      'going-to-sun':   { rarity: 'likely', frequency: 0.35, seasonFrequencies: { spring: 25, summer: 50, fall: 35, winter: 5 }, peakWindow: { startMonthDay: '07-01', endMonthDay: '09-15', label: 'Peak (road open): July – mid-Sept' }, rationale: 'Logan Pass area sightings common in summer; Going-to-Sun Road closed Oct-Jun.' },
     },
     'Grizzly Bear': {
       'many-glacier':   {
@@ -354,6 +356,7 @@ export const ZONE_OVERRIDES = {
         rarity: 'guaranteed',
         frequency: 0.95,
         seasonFrequencies: { spring: 30, summer: 95, fall: 70, winter: 1 },
+        peakWindow: { startMonthDay: '07-01', endMonthDay: '08-05', label: 'Peak salmon run: July – early Aug' },
         rationale: 'Bears commonly visible from beach / lake shore around Brooks Camp during salmon season; closed/dormant winter.',
       },
     },
@@ -560,7 +563,7 @@ export const ZONE_OVERRIDES = {
       'schoodic':    { rarity: 'likely',     frequency: 0.40, seasonFrequencies: { spring: 45, summer: 35, fall: 50, winter: 35 }, rationale: 'Schoodic Peninsula is the most reliable eagle-watching at Acadia; year-round residents with fall migration boost.' },
     },
     'Eastern Chipmunk': {
-      'jordan-pond': { rarity: 'guaranteed', frequency: 0.95, seasonFrequencies: { spring: 90, summer: 99, fall: 95, winter: 1 }, rationale: 'Habituated chipmunks at Jordan Pond House and trail edges throughout the carriage roads; hibernate winter.' },
+      'jordan-pond': { rarity: 'guaranteed', frequency: 0.95, seasonFrequencies: { spring: 90, summer: 99, fall: 95, winter: 1 }, peakWindow: { startMonthDay: '04-15', endMonthDay: '10-15', label: 'Peak active season: mid-April – mid-Oct (hibernates winter)' }, rationale: 'Habituated chipmunks at Jordan Pond House and trail edges throughout the carriage roads; hibernate winter.' },
     },
     'American Beaver': {
       'jordan-pond': {
@@ -588,7 +591,7 @@ export const ZONE_OVERRIDES = {
       'west-tucson': { rarity: 'likely',     frequency: 0.40, seasonFrequencies: { spring: 50, summer: 30, fall: 40, winter: 45 }, peakWindow: { startMonthDay: '03-01', endMonthDay: '05-31', label: 'Peak: March – May' }, rationale: 'West District wash trails see regular javelina activity; summer heat reduces daytime sightings.' },
     },
     'Desert Spiny Lizard': {
-      'east-rincon': { rarity: 'very_likely', frequency: 0.70, seasonFrequencies: { spring: 80, summer: 90, fall: 70, winter: 10 }, rationale: 'Rincon foothills — lizards basking on exposed rocks; brumate (dormant) in cool winter months.' },
+      'east-rincon': { rarity: 'very_likely', frequency: 0.70, seasonFrequencies: { spring: 80, summer: 90, fall: 70, winter: 10 }, peakWindow: { startMonthDay: '03-15', endMonthDay: '10-15', label: 'Peak active season: mid-March – mid-Oct (brumates winter)' }, rationale: 'Rincon foothills — lizards basking on exposed rocks; brumate (dormant) in cool winter months.' },
     },
   },
 
@@ -648,7 +651,7 @@ export const ZONE_OVERRIDES = {
       'fairyland':   { rarity: 'guaranteed',  frequency: 0.95, seasonFrequencies: { spring: 90, summer: 99, fall: 60, winter: 1 }, peakWindow: { startMonthDay: '04-15', endMonthDay: '08-31', label: 'Peak active season: mid-April – August' }, rationale: 'Fairyland / Sunrise Point meadows host the largest Utah Prairie Dog colony in the park; true hibernator — dormant underground roughly Oct–Mar (winter ~0).' },
     },
     "Common Golden-mantled Ground Squirrel": {
-      'rim-trail':   { rarity: 'guaranteed',  frequency: 0.98, seasonFrequencies: { spring: 90, summer: 99, fall: 80, winter: 5 }, rationale: 'Beg at every overlook along the Rim Trail; hibernate in deep-snow winter at 8,000+ ft.' },
+      'rim-trail':   { rarity: 'guaranteed',  frequency: 0.98, seasonFrequencies: { spring: 90, summer: 99, fall: 80, winter: 5 }, peakWindow: { startMonthDay: '04-15', endMonthDay: '09-30', label: 'Peak active season: mid-April – Sept (hibernates winter)' }, rationale: 'Beg at every overlook along the Rim Trail; hibernate in deep-snow winter at 8,000+ ft.' },
     },
     'Mule Deer': {
       'rim-trail':   { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 75, summer: 80, fall: 85, winter: 40 }, rationale: 'Browse meadows along the Rim Trail at dawn/dusk; some descend to lower elevations in deep-snow winter.' },
@@ -844,8 +847,8 @@ export const ZONE_OVERRIDES = {
       'needles':    { rarity: 'guaranteed', frequency: 0.97, seasonFrequencies: { spring: 97, summer: 97, fall: 95, winter: 88 }, rationale: 'Ravens patrol the Needles district year-round.' },
     },
     'Common Side-blotched Lizard': {
-      'island-sky': { rarity: 'very_likely', frequency: 0.80, seasonFrequencies: { spring: 85, summer: 90, fall: 80, winter: 10 }, rationale: 'Side-blotched lizards everywhere on warm rocks at Island in the Sky; brumate (dormant) in cool winter.' },
-      'needles':    { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 80, summer: 88, fall: 75, winter: 10 }, rationale: 'Side-blotched lizards at every Needles trail; winter brumation.' },
+      'island-sky': { rarity: 'very_likely', frequency: 0.80, seasonFrequencies: { spring: 85, summer: 90, fall: 80, winter: 10 }, peakWindow: { startMonthDay: '04-01', endMonthDay: '09-30', label: 'Peak active season: April – Sept (brumates winter)' }, rationale: 'Side-blotched lizards everywhere on warm rocks at Island in the Sky; brumate (dormant) in cool winter.' },
+      'needles':    { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 80, summer: 88, fall: 75, winter: 10 }, peakWindow: { startMonthDay: '04-01', endMonthDay: '09-30', label: 'Peak active season: April – Sept (brumates winter)' }, rationale: 'Side-blotched lizards at every Needles trail; winter brumation.' },
     },
     'Mule Deer': {
       'needles':    { rarity: 'likely', frequency: 0.40, seasonFrequencies: { spring: 42, summer: 38, fall: 48, winter: 35 }, rationale: 'Mule Deer in canyon bottoms and at Squaw Flat campground; fall rut bump, year-round resident.' },
@@ -899,8 +902,8 @@ export const ZONE_OVERRIDES = {
   // ── Isle Royale (round 7) ───────────────────────────────────────────
   isleroyale: {
     'Common Loon': {
-      'rock-harbor': { rarity: 'guaranteed', frequency: 0.97, seasonFrequencies: { spring: 80, summer: 99, fall: 75, winter: 1 }, rationale: 'Loons calling from every Isle Royale lake in summer; Rock Harbor area particularly reliable. Park CLOSED Nov–mid-Apr (winter ~0).' },
-      'windigo':     { rarity: 'guaranteed', frequency: 0.95, seasonFrequencies: { spring: 75, summer: 99, fall: 70, winter: 1 }, rationale: 'Loons on west-side lakes around Windigo in summer; park closed in winter.' },
+      'rock-harbor': { rarity: 'guaranteed', frequency: 0.97, seasonFrequencies: { spring: 80, summer: 99, fall: 75, winter: 1 }, peakWindow: { startMonthDay: '06-01', endMonthDay: '08-31', label: 'Peak nesting: June – August' }, rationale: 'Loons calling from every Isle Royale lake in summer; Rock Harbor area particularly reliable. Park CLOSED Nov–mid-Apr (winter ~0).' },
+      'windigo':     { rarity: 'guaranteed', frequency: 0.95, seasonFrequencies: { spring: 75, summer: 99, fall: 70, winter: 1 }, peakWindow: { startMonthDay: '06-01', endMonthDay: '08-31', label: 'Peak nesting: June – August' }, rationale: 'Loons on west-side lakes around Windigo in summer; park closed in winter.' },
     },
     'Moose': {
       'greenstone':  { rarity: 'likely', frequency: 0.45, seasonFrequencies: { spring: 45, summer: 50, fall: 50, winter: 1 }, peakWindow: { startMonthDay: '09-15', endMonthDay: '10-31', label: 'Peak rut: mid-Sept – Oct' }, rationale: 'Moose in island interior — backpackers see them on roughly half of multi-day trips; rut concentrates them in willow flats. Park closed Nov–mid-Apr.' },
@@ -1153,8 +1156,8 @@ export const ZONE_OVERRIDES = {
   // ── Crater Lake (round 5) ───────────────────────────────────────────
   craterlake: {
     'Common Golden-mantled Ground Squirrel': {
-      'rim-village':  { rarity: 'guaranteed', frequency: 0.97, seasonFrequencies: { spring: 60, summer: 99, fall: 80, winter: 1 }, rationale: 'Habituated ground squirrels begging at every Rim Village overlook in summer; hibernate ~Oct–May under deep Cascade snowpack.' },
-      'rim-drive':    { rarity: 'guaranteed', frequency: 0.95, seasonFrequencies: { spring: 30, summer: 99, fall: 75, winter: 1 }, rationale: 'Ground squirrels at every Rim Drive overlook in summer; Rim Drive closed by snow Oct–Jun and squirrels hibernate.' },
+      'rim-village':  { rarity: 'guaranteed', frequency: 0.97, seasonFrequencies: { spring: 60, summer: 99, fall: 80, winter: 1 }, peakWindow: { startMonthDay: '06-01', endMonthDay: '09-30', label: 'Peak active season: June – Sept (hibernates winter)' }, rationale: 'Habituated ground squirrels begging at every Rim Village overlook in summer; hibernate ~Oct–May under deep Cascade snowpack.' },
+      'rim-drive':    { rarity: 'guaranteed', frequency: 0.95, seasonFrequencies: { spring: 30, summer: 99, fall: 75, winter: 1 }, peakWindow: { startMonthDay: '07-01', endMonthDay: '09-30', label: 'Peak (road open + active): July – Sept' }, rationale: 'Ground squirrels at every Rim Drive overlook in summer; Rim Drive closed by snow Oct–Jun and squirrels hibernate.' },
     },
     "Steller's Jay": {
       'rim-village':  { rarity: 'guaranteed', frequency: 0.92, seasonFrequencies: { spring: 88, summer: 95, fall: 90, winter: 75 }, rationale: "Steller's Jays at every Rim Village picnic area; non-migratory but lower winter access (only Rim Village plowed)." },
@@ -1176,7 +1179,7 @@ export const ZONE_OVERRIDES = {
       'manzanita-lake':  { rarity: 'guaranteed', frequency: 0.95, seasonFrequencies: { spring: 90, summer: 95, fall: 92, winter: 70 }, rationale: "Steller's Jays at Manzanita Lake campground and visitor center; non-migratory, Manzanita Lake area accessible year-round (lower elevation, NW entrance)." },
     },
     'Common Golden-mantled Ground Squirrel': {
-      'bumpass-hell':    { rarity: 'very_likely', frequency: 0.80, seasonFrequencies: { spring: 10, summer: 92, fall: 55, winter: 1 }, rationale: 'Ground squirrels at Bumpass Hell parking and trailhead; main park road + trail snow-bound ~Nov–Jul, and squirrels hibernate Sept–May.' },
+      'bumpass-hell':    { rarity: 'very_likely', frequency: 0.80, seasonFrequencies: { spring: 10, summer: 92, fall: 55, winter: 1 }, peakWindow: { startMonthDay: '07-01', endMonthDay: '09-15', label: 'Peak: July – mid-Sept (road open + active)' }, rationale: 'Ground squirrels at Bumpass Hell parking and trailhead; main park road + trail snow-bound ~Nov–Jul, and squirrels hibernate Sept–May.' },
     },
     'Mule Deer': {
       'manzanita-lake':  { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 70, summer: 85, fall: 80, winter: 35 }, rationale: 'Habituated deer in Manzanita Lake campground meadows; some descend below the park in deep-snow winter.' },
@@ -1212,7 +1215,7 @@ export const ZONE_OVERRIDES = {
       'sage-creek-rim':  { rarity: 'very_likely', frequency: 0.85, seasonFrequencies: { spring: 85, summer: 90, fall: 85, winter: 65 }, peakWindow: { startMonthDay: '07-15', endMonthDay: '08-15', label: 'Peak rut: mid-July – mid-Aug' }, rationale: 'Sage Creek Rim Road bison herd — visible to 85% of casual visitors who drive the loop; year-round residents (SD prairie winters cold).' },
     },
     'Pronghorn': {
-      'sage-creek-rim':  { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 75, summer: 85, fall: 75, winter: 30 }, rationale: 'Pronghorn herds across Sage Creek Wilderness mixed-grass prairie; reduced/dispersed in deep winter.' },
+      'sage-creek-rim':  { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 75, summer: 85, fall: 75, winter: 30 }, peakWindow: { startMonthDay: '05-15', endMonthDay: '06-30', label: 'Peak fawning: mid-May – June' }, rationale: 'Pronghorn herds across Sage Creek Wilderness mixed-grass prairie; reduced/dispersed in deep winter.' },
     },
     'Black-tailed Prairie Dog': {
       'roberts-prairie': { rarity: 'guaranteed', frequency: 0.99, seasonFrequencies: { spring: 95, summer: 99, fall: 80, winter: 15 }, peakWindow: { startMonthDay: '04-01', endMonthDay: '08-31', label: 'Peak active season: April – August' }, rationale: 'Roberts Prairie Dog Town hosts thousands of animals — guaranteed warm-season sighting; winter torpor sharply cuts surface activity.' },
@@ -1236,8 +1239,8 @@ export const ZONE_OVERRIDES = {
       'south-unit':  { rarity: 'very_likely', frequency: 0.70, seasonFrequencies: { spring: 70, summer: 75, fall: 70, winter: 55 }, peakWindow: { startMonthDay: '04-15', endMonthDay: '06-30', label: 'Peak foaling: mid-April – June' }, rationale: 'Feral horse bands visible from South Unit loop drive; foals visible spring-early summer; year-round residents.' },
     },
     'Pronghorn': {
-      'south-unit':  { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 75, summer: 85, fall: 75, winter: 25 }, rationale: 'Pronghorn across the badlands grasslands; some seasonal movement to lower ground in deep winter.' },
-      'north-unit':  { rarity: 'very_likely', frequency: 0.70, seasonFrequencies: { spring: 70, summer: 80, fall: 70, winter: 20 }, rationale: 'Pronghorn herds visible from North Unit road; reduced winter.' },
+      'south-unit':  { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 75, summer: 85, fall: 75, winter: 25 }, peakWindow: { startMonthDay: '05-15', endMonthDay: '06-30', label: 'Peak fawning: mid-May – June' }, rationale: 'Pronghorn across the badlands grasslands; some seasonal movement to lower ground in deep winter.' },
+      'north-unit':  { rarity: 'very_likely', frequency: 0.70, seasonFrequencies: { spring: 70, summer: 80, fall: 70, winter: 20 }, peakWindow: { startMonthDay: '05-15', endMonthDay: '06-30', label: 'Peak fawning: mid-May – June' }, rationale: 'Pronghorn herds visible from North Unit road; reduced winter.' },
     },
     'Black-tailed Prairie Dog': {
       'south-unit':  { rarity: 'very_likely', frequency: 0.85, seasonFrequencies: { spring: 85, summer: 90, fall: 70, winter: 10 }, peakWindow: { startMonthDay: '04-01', endMonthDay: '08-31', label: 'Peak active season: April – August' }, rationale: 'Multiple prairie dog towns along the South Unit scenic loop; winter torpor sharply reduces surface activity.' },
@@ -1318,7 +1321,7 @@ export const ZONE_OVERRIDES = {
       'prairie-loop':  { rarity: 'very_likely', frequency: 0.85, seasonFrequencies: { spring: 85, summer: 90, fall: 85, winter: 70 }, peakWindow: { startMonthDay: '07-15', endMonthDay: '08-15', label: 'Peak rut: mid-July – mid-Aug' }, rationale: 'Free-ranging bison herd of ~400 visible across the wildlife loop year-round (SD prairie winters cold but herd stays).' },
     },
     'Pronghorn': {
-      'prairie-loop':  { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 75, summer: 85, fall: 75, winter: 30 }, rationale: 'Pronghorn herds across the prairie zone; reduced/dispersed in deep winter.' },
+      'prairie-loop':  { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 75, summer: 85, fall: 75, winter: 30 }, peakWindow: { startMonthDay: '05-15', endMonthDay: '06-30', label: 'Peak fawning: mid-May – June' }, rationale: 'Pronghorn herds across the prairie zone; reduced/dispersed in deep winter.' },
     },
     'Black-tailed Prairie Dog': {
       'prairie-loop':  { rarity: 'guaranteed', frequency: 0.97, seasonFrequencies: { spring: 95, summer: 99, fall: 80, winter: 12 }, peakWindow: { startMonthDay: '04-01', endMonthDay: '08-31', label: 'Peak active season: April – August' }, rationale: 'Multiple prairie dog towns visible from the wildlife loop; winter torpor sharply reduces surface activity.' },
@@ -1345,6 +1348,7 @@ export const ZONE_OVERRIDES = {
         rarity: 'very_likely',
         frequency: 0.80,
         seasonFrequencies: { spring: 10, summer: 95, fall: 60, winter: 1 },
+        peakWindow: { startMonthDay: '07-01', endMonthDay: '09-15', label: 'Peak: July – mid-Sept (road open + active)' },
         rationale: 'Marmots in alpine meadows at Sunrise; lower density than Paradise but still routine. Sunrise Road closed by snow ~Oct–Jul; marmots also hibernate Sept–May.',
       },
     },
