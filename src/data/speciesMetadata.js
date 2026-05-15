@@ -110,9 +110,22 @@ export const ACTIVITY_PERIOD_EXACT = {
 // ~39% of the time; cathemeral is the honest fallback when literature
 // disagrees within the matched group.
 export const ACTIVITY_PERIOD_KEYWORDS = [
-  // Nocturnal — only for species where night-activity is genuinely consistent
+  // Nocturnal — only for species where night-activity is genuinely consistent.
+  // NOTE: order matters — classifyActivityPeriod returns on FIRST match. The
+  // 'flying squirrel' nocturnal rule below MUST precede the diurnal 'squirrel'
+  // rule so flying squirrels aren't mis-tagged diurnal.
   { match: /\b(owl|nightjar|nighthawk|whip-poor-will|poorwill|bat)\b/,     period: 'nocturnal' },
   { match: /\b(flying squirrel|ringtail|opossum|raccoon|skunk|armadillo)\b/, period: 'nocturnal' },
+  // Nocturnal small rodents/insectivores — mice, voles, shrews, woodrats and
+  // moles are night-active; the prior mammal default (crepuscular) over-promised
+  // their daytime visibility. (Muskrat → crepuscular handled by later rule.)
+  { match: /\b(mouse|mice|deermouse|vole|shrew|woodrat|packrat|pocket gopher|\bmole\b|kangaroo rat|harvest mouse|house rat|black rat|brown rat|norway rat)\b/, period: 'nocturnal' },
+  // Diurnal day-active small mammals — squirrels, chipmunks, ground squirrels,
+  // marmots, prairie dogs, pikas, woodchucks. These are the MOST-visible park
+  // mammals (guaranteed tier at most parks) and peak at MIDDAY — the previous
+  // crepuscular default applied a 0.50× midday penalty exactly when casual
+  // visitors actually see them. Highest-traffic time-of-day correction.
+  { match: /\b(squirrel|chipmunk|chickaree|marmot|woodchuck|groundhog|prairie dog|pika)\b/, period: 'diurnal' },
   // Cathemeral — large carnivores and ungulates in protected areas show wide
   // activity windows (was crepuscular; reclassified per Diel Activity Project
   // 2024 + Cox & Gaynor 2025 camera-trap meta-analyses)
