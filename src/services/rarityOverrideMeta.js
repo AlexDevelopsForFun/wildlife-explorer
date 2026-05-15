@@ -28,7 +28,7 @@
  */
 
 /** Date of the last full curation pass over RARITY_OVERRIDES (YYYY-MM-DD). */
-export const OVERRIDES_REVIEWED_AT = '2026-04-24';
+export const OVERRIDES_REVIEWED_AT = '2026-05-14';
 
 /** Maximum age before scripts/checkOverrideExpiry.js fails the build. */
 export const OVERRIDES_EXPIRY_MONTHS = 24;
@@ -72,15 +72,88 @@ export const OVERRIDES_REVIEWED_AT_BY_PARK = {
  *   3. OVERRIDES_REVIEWED_AT                              (global default)
  */
 export const OVERRIDES_REVIEWED_AT_BY_ENTRY = {
-  // Examples — uncomment and update when re-checking specific entries:
-  //
-  // yellowstone: {
-  //   'Gray Wolf': '2026-04-25',
-  //   'Grizzly Bear': '2026-04-25',
-  // },
-  // everglades: {
-  //   'American Crocodile': '2026-04-25',
-  // },
+  // 2026-05-14: per-entry review dates for entries verified against external
+  // anchors (NPS visitor reports, USFWS recovery program data, operational
+  // sighting logs). These have higher freshness confidence than the global
+  // baseline because each tier was checked individually against an
+  // externally-attested encounter probability.
+  yellowstone: {
+    'American Bison': '2026-05-14',
+    'American Elk': '2026-05-14',
+    'Elk': '2026-05-14',
+    'Gray Wolf': '2026-05-14',
+    'Grizzly Bear': '2026-05-14',
+    'Moose': '2026-05-14',
+  },
+  denali: {
+    'Brown Bear': '2026-05-14',
+    'Caribou': '2026-05-14',
+    'Dall Sheep': '2026-05-14',
+    'Gray Wolf': '2026-05-14',
+    'Moose': '2026-05-14',
+  },
+  greatsmokymountains: {
+    'Black Bear': '2026-05-14',
+    'American Black Bear': '2026-05-14',
+    'Elk': '2026-05-14',
+  },
+  shenandoah: {
+    'Black Bear': '2026-05-14',
+    'American Black Bear': '2026-05-14',
+  },
+  yosemite: {
+    'Mule Deer': '2026-05-14',
+    'American Black Bear': '2026-05-14',
+  },
+  rockymountain: {
+    'American Elk': '2026-05-14',
+    'Elk': '2026-05-14',
+    'Moose': '2026-05-14',
+  },
+  acadia: {
+    'Bald Eagle': '2026-05-14',
+    'White-tailed Deer': '2026-05-14',
+    'Common Loon': '2026-05-14',
+  },
+  channelislands: {
+    'Bald Eagle': '2026-05-14',
+  },
+  joshuatree: {
+    'Common Raven': '2026-05-14',
+    'Common Side-blotched Lizard': '2026-05-14',
+  },
+  zion: {
+    'Desert Bighorn Sheep': '2026-05-14',
+  },
+  everglades: {
+    'West Indian Manatee': '2026-05-14',
+    'Florida Manatee': '2026-05-14',
+    'American Alligator': '2026-05-14',
+    'Florida Panther': '2026-05-14',
+  },
+  kenaifjords: {
+    'Sea Otter': '2026-05-14',
+    'Humpback Whale': '2026-05-14',
+  },
+  glacierbay: {
+    'Humpback Whale': '2026-05-14',
+  },
+  lakeclark: {
+    'Brown Bear': '2026-05-14',
+    'Bald Eagle': '2026-05-14',
+  },
+  pinnacles: {
+    'California Condor': '2026-05-14',
+  },
+  hawaiivolcanoes: {
+    'Nene': '2026-05-14',
+    'Hawaiian Goose': '2026-05-14',
+    'Common Myna': '2026-05-14',
+  },
+  haleakala: {
+    'Nene': '2026-05-14',
+    'Hawaiian Goose': '2026-05-14',
+  },
 };
 
 /** Compute days between two YYYY-MM-DD dates. Negative if `b` is older. */
