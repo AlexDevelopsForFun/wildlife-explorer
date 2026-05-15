@@ -1304,22 +1304,42 @@ const NPS_WILDLIFE_TOPICS = {
 };
 
 // Per-park turtle species for the 'Tortoises and Turtles' NPS topic (mirrors apiService.js).
+// Per-park turtle/tortoise species — when NPS lists "Tortoises and Turtles"
+// as a park topic but the park is NOT in this map, the build falls back to
+// NPS_TURTLE_DEFAULT (Desert Tortoise), which is geographically wrong for
+// most parks (badlands, drytortugas, biscayne, etc.). Always extend this
+// map for new "Tortoises and Turtles" parks rather than relying on default.
 const NPS_TURTLE_BY_PARK = {
+  // ── Desert tortoise range (Mojave / Sonoran) ─────────────────────────
   zion:    { name: 'Desert Tortoise',      scientificName: 'Gopherus agassizii',  emoji: '🐢', animalType: 'reptile', rarity: 'unlikely' },
   grca:    { name: 'Desert Tortoise',      scientificName: 'Gopherus agassizii',  emoji: '🐢', animalType: 'reptile', rarity: 'unlikely' },
   jotr:    { name: 'Desert Tortoise',      scientificName: 'Gopherus agassizii',  emoji: '🐢', animalType: 'reptile', rarity: 'unlikely' },
   moja:    { name: 'Desert Tortoise',      scientificName: 'Gopherus agassizii',  emoji: '🐢', animalType: 'reptile', rarity: 'unlikely' },
   deva:    { name: 'Desert Tortoise',      scientificName: 'Gopherus agassizii',  emoji: '🐢', animalType: 'reptile', rarity: 'unlikely' },
+  // ── Eastern box turtle range (Appalachian / SE) ─────────────────────
   cong:    { name: 'Eastern Box Turtle',   scientificName: 'Terrapene carolina',  emoji: '🐢', animalType: 'reptile', rarity: 'unlikely' },
   shen:    { name: 'Eastern Box Turtle',   scientificName: 'Terrapene carolina',  emoji: '🐢', animalType: 'reptile', rarity: 'unlikely' },
   grsm:    { name: 'Eastern Box Turtle',   scientificName: 'Terrapene carolina',  emoji: '🐢', animalType: 'reptile', rarity: 'unlikely' },
+  neri:    { name: 'Eastern Box Turtle',   scientificName: 'Terrapene carolina',  emoji: '🐢', animalType: 'reptile', rarity: 'unlikely' },
+  // ── Sea turtle parks ────────────────────────────────────────────────
   ever:    { name: 'Green Sea Turtle',     scientificName: 'Chelonia mydas',      emoji: '🐢', animalType: 'reptile', rarity: 'rare'     },
   bith:    { name: 'Green Sea Turtle',     scientificName: 'Chelonia mydas',      emoji: '🐢', animalType: 'reptile', rarity: 'rare'     },
+  bisc:    { name: 'Green Sea Turtle',     scientificName: 'Chelonia mydas',      emoji: '🐢', animalType: 'reptile', rarity: 'rare'     },
+  drto:    { name: 'Loggerhead Sea Turtle',scientificName: 'Caretta caretta',     emoji: '🐢', animalType: 'reptile', rarity: 'rare'     },
   cuis:    { name: 'Loggerhead Sea Turtle',scientificName: 'Caretta caretta',     emoji: '🐢', animalType: 'reptile', rarity: 'rare'     },
   capehe:  { name: 'Loggerhead Sea Turtle',scientificName: 'Caretta caretta',     emoji: '🐢', animalType: 'reptile', rarity: 'rare'     },
+  viis:    { name: 'Hawksbill Sea Turtle', scientificName: 'Eretmochelys imbricata', emoji: '🐢', animalType: 'reptile', rarity: 'unlikely' },
+  // ── Painted / pond turtle range (NE / temperate) ────────────────────
   acad:    { name: 'Painted Turtle',       scientificName: 'Chrysemys picta',     emoji: '🐢', animalType: 'reptile', rarity: 'unlikely' },
   sara:    { name: 'Painted Turtle',       scientificName: 'Chrysemys picta',     emoji: '🐢', animalType: 'reptile', rarity: 'unlikely' },
+  badl:    { name: 'Western Painted Turtle', scientificName: 'Chrysemys picta bellii', emoji: '🐢', animalType: 'reptile', rarity: 'unlikely' },
+  pinn:    { name: 'Western Pond Turtle',  scientificName: 'Actinemys marmorata', emoji: '🐢', animalType: 'reptile', rarity: 'unlikely' },
+  // ── Karst / arid (no native turtle) — use ornata as nearest geographic ─
+  cave:    { name: 'Ornate Box Turtle',    scientificName: 'Terrapene ornata',    emoji: '🐢', animalType: 'reptile', rarity: 'rare'     },
 };
+// Default fallback ONLY for parks not in NPS_TURTLE_BY_PARK above. Keep
+// updated — if the build emits "Desert Tortoise" at a non-desert park, add
+// that park to the map with a geographically-appropriate species instead.
 const NPS_TURTLE_DEFAULT = { name: 'Desert Tortoise', scientificName: 'Gopherus agassizii', emoji: '🐢', animalType: 'reptile', rarity: 'unlikely' };
 
 async function getNpsTopics(parkCode) {
