@@ -578,24 +578,24 @@ export const ZONE_OVERRIDES = {
   // ── Saguaro ─────────────────────────────────────────────────────────
   saguaro: {
     "Gambel's Quail": {
-      'west-tucson': { rarity: 'guaranteed', frequency: 0.95, peakWindow: { startMonthDay: '03-01', endMonthDay: '05-31', label: 'Peak vocal breeding: March – May' }, rationale: 'Tucson Mountain District wash trails — quail coveys at every visit; males calling from prominent perches in spring.' },
+      'west-tucson': { rarity: 'guaranteed', frequency: 0.95, seasonFrequencies: { spring: 99, summer: 90, fall: 92, winter: 90 }, peakWindow: { startMonthDay: '03-01', endMonthDay: '05-31', label: 'Peak vocal breeding: March – May' }, rationale: 'Tucson Mountain District wash trails — quail coveys at every visit year-round; males calling from prominent perches in spring.' },
     },
     'Cactus Wren': {
-      'west-tucson': { rarity: 'very_likely', frequency: 0.85, peakWindow: { startMonthDay: '04-01', endMonthDay: '06-30', label: 'Peak breeding: April – June' }, rationale: 'Cactus wrens nesting in cholla and saguaro along West District trails.' },
+      'west-tucson': { rarity: 'very_likely', frequency: 0.85, seasonFrequencies: { spring: 92, summer: 80, fall: 82, winter: 80 }, peakWindow: { startMonthDay: '04-01', endMonthDay: '06-30', label: 'Peak breeding: April – June' }, rationale: 'Cactus wrens nesting in cholla and saguaro along West District trails; non-migratory desert resident.' },
     },
     'Javelina': {
-      'east-rincon': { rarity: 'likely',     frequency: 0.45, peakWindow: { startMonthDay: '03-01', endMonthDay: '05-31', label: 'Peak: March – May (cooler dawn/dusk)' }, rationale: 'Rincon Mountain District foothills + Cactus Forest Loop — javelina herds visible at dawn/dusk; cooler spring months draw them out longer.' },
-      'west-tucson': { rarity: 'likely',     frequency: 0.40, peakWindow: { startMonthDay: '03-01', endMonthDay: '05-31', label: 'Peak: March – May' }, rationale: 'West District wash trails see regular javelina activity.' },
+      'east-rincon': { rarity: 'likely',     frequency: 0.45, seasonFrequencies: { spring: 55, summer: 35, fall: 45, winter: 50 }, peakWindow: { startMonthDay: '03-01', endMonthDay: '05-31', label: 'Peak: March – May (cooler dawn/dusk)' }, rationale: 'Rincon Mountain District foothills + Cactus Forest Loop — javelina herds at dawn/dusk; summer heat drives them nocturnal (lower daytime visibility).' },
+      'west-tucson': { rarity: 'likely',     frequency: 0.40, seasonFrequencies: { spring: 50, summer: 30, fall: 40, winter: 45 }, peakWindow: { startMonthDay: '03-01', endMonthDay: '05-31', label: 'Peak: March – May' }, rationale: 'West District wash trails see regular javelina activity; summer heat reduces daytime sightings.' },
     },
     'Desert Spiny Lizard': {
-      'east-rincon': { rarity: 'very_likely', frequency: 0.70, rationale: 'Rincon foothills — lizards basking on exposed rocks throughout the day.' },
+      'east-rincon': { rarity: 'very_likely', frequency: 0.70, seasonFrequencies: { spring: 80, summer: 90, fall: 70, winter: 10 }, rationale: 'Rincon foothills — lizards basking on exposed rocks; brumate (dormant) in cool winter months.' },
     },
   },
 
   // ── Channel Islands ─────────────────────────────────────────────────
   channelislands: {
     'Common Dolphin': {
-      'boat-tour':   { rarity: 'very_likely', frequency: 0.85, rationale: 'Channel crossing puts dolphin pods alongside the boat on most trips.' },
+      'boat-tour':   { rarity: 'very_likely', frequency: 0.85, seasonFrequencies: { spring: 85, summer: 88, fall: 85, winter: 80 }, rationale: 'Channel crossing puts dolphin pods alongside the boat on most trips year-round (resident Southern California Bight population).' },
     },
     'Blue Whale': {
       'boat-tour':   { rarity: 'unlikely',    frequency: 0.20, seasonFrequencies: { spring: 10, summer: 35, fall: 25, winter: 5 }, peakWindow: { startMonthDay: '07-01', endMonthDay: '09-15', label: 'Peak feeding: July – mid-Sept' }, rationale: 'Summer-only — feeding aggregations off Santa Cruz Island.' },
@@ -604,33 +604,33 @@ export const ZONE_OVERRIDES = {
       'boat-tour':   { rarity: 'likely',      frequency: 0.40, seasonFrequencies: { spring: 30, summer: 50, fall: 45, winter: 10 }, peakWindow: { startMonthDay: '06-15', endMonthDay: '10-15', label: 'Peak feeding: mid-June – mid-Oct' }, rationale: 'Summer feeding migration — sightings on ~40% of crossings.' },
     },
     'California Sea Lion': {
-      'boat-tour':   { rarity: 'guaranteed',  frequency: 0.97, peakWindow: { startMonthDay: '06-01', endMonthDay: '08-15', label: 'Peak pupping: June – mid-Aug' }, rationale: 'Sea lion rookeries at Anacapa and Santa Barbara — visible from every boat trip; pups visible at rookeries June-Aug.' },
-      'anacapa':     { rarity: 'guaranteed',  frequency: 0.99, peakWindow: { startMonthDay: '06-01', endMonthDay: '08-15', label: 'Peak pupping: June – mid-Aug' }, rationale: 'Anacapa rookery — hundreds visible from the cliffs.' },
+      'boat-tour':   { rarity: 'guaranteed',  frequency: 0.97, seasonFrequencies: { spring: 95, summer: 99, fall: 97, winter: 92 }, peakWindow: { startMonthDay: '06-01', endMonthDay: '08-15', label: 'Peak pupping: June – mid-Aug' }, rationale: 'Sea lion rookeries at Anacapa and Santa Barbara — visible from every boat trip year-round; pups at rookeries June-Aug.' },
+      'anacapa':     { rarity: 'guaranteed',  frequency: 0.99, seasonFrequencies: { spring: 97, summer: 99, fall: 98, winter: 95 }, peakWindow: { startMonthDay: '06-01', endMonthDay: '08-15', label: 'Peak pupping: June – mid-Aug' }, rationale: 'Anacapa rookery — hundreds visible from the cliffs year-round.' },
     },
     'Brown Pelican': {
-      'anacapa':     { rarity: 'guaranteed',  frequency: 0.98, peakWindow: { startMonthDay: '04-01', endMonthDay: '07-31', label: 'Peak breeding: April – July' }, rationale: 'Anacapa is the only major Brown Pelican breeding colony in the western US — guaranteed nesting season.' },
+      'anacapa':     { rarity: 'guaranteed',  frequency: 0.98, seasonFrequencies: { spring: 99, summer: 99, fall: 90, winter: 70 }, peakWindow: { startMonthDay: '04-01', endMonthDay: '07-31', label: 'Peak breeding: April – July' }, rationale: 'Anacapa is the only major Brown Pelican breeding colony in the western US — peak breeding-season presence; some post-breeding winter dispersal.' },
     },
     'Island Fox': {
-      'santa-cruz':  { rarity: 'very_likely', frequency: 0.70, peakWindow: { startMonthDay: '03-01', endMonthDay: '06-30', label: 'Peak breeding + pupping: March – June' }, rationale: 'Endemic Santa Cruz Island fox — habituated, often seen at Scorpion campground; pupping period concentrates activity at den sites.' },
+      'santa-cruz':  { rarity: 'very_likely', frequency: 0.70, seasonFrequencies: { spring: 75, summer: 72, fall: 70, winter: 60 }, peakWindow: { startMonthDay: '03-01', endMonthDay: '06-30', label: 'Peak breeding + pupping: March – June' }, rationale: 'Endemic Santa Cruz Island fox — habituated, often seen at Scorpion campground year-round; pupping period concentrates activity at den sites.' },
     },
   },
 
   // ── Voyageurs ───────────────────────────────────────────────────────
   voyageurs: {
     'Common Loon': {
-      'lake':        { rarity: 'guaranteed',  frequency: 0.98, peakWindow: { startMonthDay: '06-01', endMonthDay: '08-31', label: 'Peak nesting: June – August' }, rationale: 'Loons on every visit — Voyageurs has one of the densest loon populations in the lower 48.' },
+      'lake':        { rarity: 'guaranteed',  frequency: 0.98, seasonFrequencies: { spring: 85, summer: 99, fall: 80, winter: 1 }, peakWindow: { startMonthDay: '06-01', endMonthDay: '08-31', label: 'Peak nesting: June – August' }, rationale: 'Loons on every summer visit — Voyageurs has one of the densest loon populations in the lower 48; lakes freeze and loons migrate Nov–Apr (winter ~0).' },
     },
     'Bald Eagle': {
-      'lake':        { rarity: 'very_likely', frequency: 0.85, peakWindow: { startMonthDay: '04-01', endMonthDay: '07-31', label: 'Peak nesting: April – July' }, rationale: 'Eagles regularly visible from boat trips and visitor center waterfront; nesting peak Apr-Jul makes them most predictable.' },
+      'lake':        { rarity: 'very_likely', frequency: 0.85, seasonFrequencies: { spring: 85, summer: 88, fall: 80, winter: 30 }, peakWindow: { startMonthDay: '04-01', endMonthDay: '07-31', label: 'Peak nesting: April – July' }, rationale: 'Eagles regularly visible from boat trips and visitor center waterfront; nesting peak Apr-Jul; some overwinter near open water below dams.' },
     },
     'Moose': {
       'kabetogama-pen': { rarity: 'likely',   frequency: 0.35, seasonFrequencies: { spring: 35, summer: 30, fall: 40, winter: 25 }, rationale: 'Kabetogama Peninsula trails are the most reliable moose habitat.' },
     },
     'River Otter': {
-      'lake':        { rarity: 'unlikely',    frequency: 0.20, rationale: 'Otters along rocky shorelines — reliable for boaters who scan ledges.' },
+      'lake':        { rarity: 'unlikely',    frequency: 0.20, seasonFrequencies: { spring: 25, summer: 22, fall: 22, winter: 8 }, rationale: 'Otters along rocky shorelines — reliable for boaters who scan ledges in open-water season; harder to see when lakes ice over.' },
     },
     'White-tailed Deer': {
-      'kabetogama-pen': { rarity: 'very_likely', frequency: 0.70, rationale: 'Deer reliably visible in Kabetogama Peninsula meadows year-round.' },
+      'kabetogama-pen': { rarity: 'very_likely', frequency: 0.70, seasonFrequencies: { spring: 70, summer: 70, fall: 78, winter: 55 }, rationale: 'Deer reliably visible in Kabetogama Peninsula meadows year-round; fall rut bump, winter yarding reduces road-visibility.' },
     },
     'American Beaver': {
       'lake':        {
@@ -645,19 +645,19 @@ export const ZONE_OVERRIDES = {
   // ── Bryce Canyon ────────────────────────────────────────────────────
   brycecanyon: {
     'Utah Prairie Dog': {
-      'fairyland':   { rarity: 'guaranteed',  frequency: 0.95, peakWindow: { startMonthDay: '04-15', endMonthDay: '08-31', label: 'Peak active season: mid-April – August' }, rationale: 'Fairyland / Sunrise Point meadows host the largest Utah Prairie Dog colony in the park.' },
+      'fairyland':   { rarity: 'guaranteed',  frequency: 0.95, seasonFrequencies: { spring: 90, summer: 99, fall: 60, winter: 1 }, peakWindow: { startMonthDay: '04-15', endMonthDay: '08-31', label: 'Peak active season: mid-April – August' }, rationale: 'Fairyland / Sunrise Point meadows host the largest Utah Prairie Dog colony in the park; true hibernator — dormant underground roughly Oct–Mar (winter ~0).' },
     },
     "Common Golden-mantled Ground Squirrel": {
-      'rim-trail':   { rarity: 'guaranteed',  frequency: 0.98, rationale: 'Beg at every overlook along the Rim Trail.' },
+      'rim-trail':   { rarity: 'guaranteed',  frequency: 0.98, seasonFrequencies: { spring: 90, summer: 99, fall: 80, winter: 5 }, rationale: 'Beg at every overlook along the Rim Trail; hibernate in deep-snow winter at 8,000+ ft.' },
     },
     'Mule Deer': {
-      'rim-trail':   { rarity: 'very_likely', frequency: 0.75, rationale: 'Browse meadows along the Rim Trail at dawn/dusk.' },
+      'rim-trail':   { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 75, summer: 80, fall: 85, winter: 40 }, rationale: 'Browse meadows along the Rim Trail at dawn/dusk; some descend to lower elevations in deep-snow winter.' },
     },
     "Steller's Jay": {
-      'rim-trail':   { rarity: 'guaranteed', frequency: 0.92, rationale: "Steller's Jays at every Rim Trail overlook and parking area." },
+      'rim-trail':   { rarity: 'guaranteed', frequency: 0.92, seasonFrequencies: { spring: 92, summer: 92, fall: 92, winter: 80 }, rationale: "Steller's Jays at every Rim Trail overlook and parking area; non-migratory year-round resident." },
     },
     'Common Raven': {
-      'rim-trail':   { rarity: 'guaranteed', frequency: 0.95, rationale: 'Ravens patrol the rim — visible from every viewpoint.' },
+      'rim-trail':   { rarity: 'guaranteed', frequency: 0.95, seasonFrequencies: { spring: 95, summer: 95, fall: 95, winter: 88 }, rationale: 'Ravens patrol the rim — visible from every viewpoint year-round.' },
     },
   },
 
@@ -840,18 +840,18 @@ export const ZONE_OVERRIDES = {
   // ── Canyonlands (round 7) ───────────────────────────────────────────
   canyonlands: {
     'Common Raven': {
-      'island-sky': { rarity: 'guaranteed', frequency: 0.99, rationale: 'Ravens at every Island in the Sky overlook — unavoidable.' },
-      'needles':    { rarity: 'guaranteed', frequency: 0.97, rationale: 'Ravens patrol the Needles district.' },
+      'island-sky': { rarity: 'guaranteed', frequency: 0.99, seasonFrequencies: { spring: 99, summer: 99, fall: 97, winter: 92 }, rationale: 'Ravens at every Island in the Sky overlook — unavoidable year-round.' },
+      'needles':    { rarity: 'guaranteed', frequency: 0.97, seasonFrequencies: { spring: 97, summer: 97, fall: 95, winter: 88 }, rationale: 'Ravens patrol the Needles district year-round.' },
     },
     'Common Side-blotched Lizard': {
-      'island-sky': { rarity: 'very_likely', frequency: 0.80, seasonFrequencies: { spring: 85, summer: 90, fall: 80, winter: 20 }, rationale: 'Side-blotched lizards everywhere on warm rocks at Island in the Sky.' },
-      'needles':    { rarity: 'very_likely', frequency: 0.75, rationale: 'Side-blotched lizards at every Needles trail.' },
+      'island-sky': { rarity: 'very_likely', frequency: 0.80, seasonFrequencies: { spring: 85, summer: 90, fall: 80, winter: 10 }, rationale: 'Side-blotched lizards everywhere on warm rocks at Island in the Sky; brumate (dormant) in cool winter.' },
+      'needles':    { rarity: 'very_likely', frequency: 0.75, seasonFrequencies: { spring: 80, summer: 88, fall: 75, winter: 10 }, rationale: 'Side-blotched lizards at every Needles trail; winter brumation.' },
     },
     'Mule Deer': {
-      'needles':    { rarity: 'likely', frequency: 0.40, rationale: 'Mule Deer in canyon bottoms and at Squaw Flat campground.' },
+      'needles':    { rarity: 'likely', frequency: 0.40, seasonFrequencies: { spring: 42, summer: 38, fall: 48, winter: 35 }, rationale: 'Mule Deer in canyon bottoms and at Squaw Flat campground; fall rut bump, year-round resident.' },
     },
     'Coyote': {
-      'island-sky': { rarity: 'unlikely', frequency: 0.25, rationale: 'Coyotes at dawn/dusk near Grand View Point and Mesa Arch.' },
+      'island-sky': { rarity: 'unlikely', frequency: 0.25, seasonFrequencies: { spring: 25, summer: 20, fall: 25, winter: 30 }, rationale: 'Coyotes at dawn/dusk near Grand View Point and Mesa Arch; winter activity boost.' },
     },
   },
 
@@ -1149,17 +1149,17 @@ export const ZONE_OVERRIDES = {
   // ── Crater Lake (round 5) ───────────────────────────────────────────
   craterlake: {
     'Common Golden-mantled Ground Squirrel': {
-      'rim-village':  { rarity: 'guaranteed', frequency: 0.97, rationale: 'Habituated ground squirrels begging at every Rim Village overlook.' },
-      'rim-drive':    { rarity: 'guaranteed', frequency: 0.95, rationale: 'Ground squirrels at every Rim Drive overlook and parking area.' },
+      'rim-village':  { rarity: 'guaranteed', frequency: 0.97, seasonFrequencies: { spring: 60, summer: 99, fall: 80, winter: 1 }, rationale: 'Habituated ground squirrels begging at every Rim Village overlook in summer; hibernate ~Oct–May under deep Cascade snowpack.' },
+      'rim-drive':    { rarity: 'guaranteed', frequency: 0.95, seasonFrequencies: { spring: 30, summer: 99, fall: 75, winter: 1 }, rationale: 'Ground squirrels at every Rim Drive overlook in summer; Rim Drive closed by snow Oct–Jun and squirrels hibernate.' },
     },
     "Steller's Jay": {
-      'rim-village':  { rarity: 'guaranteed', frequency: 0.92, rationale: "Steller's Jays at every Rim Village picnic area." },
+      'rim-village':  { rarity: 'guaranteed', frequency: 0.92, seasonFrequencies: { spring: 88, summer: 95, fall: 90, winter: 75 }, rationale: "Steller's Jays at every Rim Village picnic area; non-migratory but lower winter access (only Rim Village plowed)." },
     },
     "Clark's Nutcracker": {
-      'rim-drive':    { rarity: 'very_likely', frequency: 0.80, peakWindow: { startMonthDay: '08-01', endMonthDay: '10-15', label: 'Peak seed-caching: Aug – mid-Oct' }, rationale: "Clark's Nutcrackers cache whitebark pine seeds along Rim Drive; activity peaks in late summer when cones ripen." },
+      'rim-drive':    { rarity: 'very_likely', frequency: 0.80, seasonFrequencies: { spring: 50, summer: 85, fall: 95, winter: 30 }, peakWindow: { startMonthDay: '08-01', endMonthDay: '10-15', label: 'Peak seed-caching: Aug – mid-Oct' }, rationale: "Clark's Nutcrackers cache whitebark pine seeds along Rim Drive; activity peaks late summer/fall when cones ripen; year-round resident." },
     },
     'Mule Deer': {
-      'pinnacles':    { rarity: 'likely', frequency: 0.45, rationale: 'Deer in lower forests around Pinnacles / Plaikni Falls trail.' },
+      'pinnacles':    { rarity: 'likely', frequency: 0.45, seasonFrequencies: { spring: 40, summer: 60, fall: 55, winter: 5 }, rationale: 'Deer in lower forests around Pinnacles / Plaikni Falls trail; descend below the rim in deep-snow winter.' },
     },
     'American Black Bear': {
       'pinnacles':    { rarity: 'unlikely', frequency: 0.15, seasonFrequencies: { spring: 18, summer: 22, fall: 18, winter: 1 }, rationale: 'Black bears in lower forests; denning in winter.' },
