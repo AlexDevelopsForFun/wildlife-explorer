@@ -316,6 +316,33 @@ async function main() {
     }
   }
 
+  // Mirror the runtime applyRarityOverride() in src/services/apiService.js.
+  // Without this the calibration scored against raw cache rarity, ignoring
+  // the canonical hand-curated park-level override table — producing false
+  // mismatches at every park whose cache tier was overridden in production
+  // (e.g. Carlsbad Mexican Free-tailed Bat, Hot Springs deer, etc.).
+  // Regex extracts RARITY_OVERRIDES literal from apiService.js to avoid
+  // pulling the whole React-dependent module into the Node calibration.
+  const apiSrc = readFileSync(path.join(__dirname, '..', 'src', 'services', 'apiService.js'), 'utf8');
+  const overrideMatch = apiSrc.match(/const RARITY_OVERRIDES\s*=\s*(\{[\s\S]*?\n\});/);
+  if (overrideMatch) {
+    // eslint-disable-next-line no-eval
+    const RARITY_OVERRIDES = (0, eval)('(' + overrideMatch[1] + ')');
+    for (const [parkId, overrides] of Object.entries(RARITY_OVERRIDES)) {
+      const parkData = WILDLIFE_CACHE[parkId];
+      if (!parkData?.animals) continue;
+      for (const animal of parkData.animals) {
+        const newTier = overrides[animal.name];
+        if (newTier && animal.rarity !== newTier) {
+          animal.rarity = newTier;
+          animal.raritySource = 'override';
+        }
+      }
+    }
+  } else {
+    console.warn('  ⚠  Could not extract RARITY_OVERRIDES — calibration may report false mismatches.');
+  }
+
   for (const [parkId, parkData] of Object.entries(WILDLIFE_CACHE)) {
     const overrides = ZONE_OVERRIDES[parkId];
     if (!overrides || !Array.isArray(parkData?.animals)) continue;
