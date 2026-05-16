@@ -30,6 +30,7 @@ import {
 } from './data/speciesMetadata.js';
 import { getParkZones } from './data/parkZones.js';
 import { detectabilityCeiling, classifyDetectability, DETECTABILITY_LEVELS } from './data/detectability.js';
+import { recordSighting, clearSighting, getSightingVerdict, exportSightings, getAllSightings } from './data/sightingFeedback.js';
 
 // ── Park type colors & icons ──────────────────────────────────────────────────
 const PARK_COLORS = { nationalPark: '#7B5B2E' };
@@ -1504,7 +1505,7 @@ function composeFallbackTip(animal, period) {
 }
 
 // ── Animal card ───────────────────────────────────────────────────────────────
-function AnimalCard({ animal, debugMode, seasonalFreqs, parkEffort = null, location, openAbout, highlightSpecies, activeSeason, activeZone, parkZones = null, onSelectZone = null, effortRescaler = 1, visitTime = 'any' }) {
+function AnimalCard({ animal, debugMode, seasonalFreqs, parkEffort = null, location, openAbout, highlightSpecies, activeSeason, activeZone, parkZones = null, onSelectZone = null, effortRescaler = 1, visitTime = 'any', effortLabel = 'casual' }) {
   // Combined zone- + season- + effort- + time-of-day-aware rarity.
   //   1. Pick base frequency: zone freq > season freq > park freq.
   //   2. Rescale by effort multiplier (expert=1.54, casual=1.0, drive=0.54 —
@@ -1533,6 +1534,28 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, parkEffort = null, locat
   // Photo state: undefined = loading, null = not found, object = loaded
   const [photo,    setPhoto]    = useState(undefined);
   const [expanded, setExpanded] = useState(false);
+
+  // Ground-truth sighting feedback (see src/data/sightingFeedback.js).
+  // The context tuple is exactly what makes a verdict useful for
+  // calibration: which prediction, in which season/zone/effort/time.
+  const sightingCtx = useMemo(() => ({
+    parkId: location?.id ?? null,
+    species: animal.name,
+    scientificName: animal.scientificName ?? null,
+    predictedRarity: displayRarity,
+    season: activeSeason ?? 'any',
+    zone: activeZone ?? null,
+    effort: effortLabel,
+    visitTime,
+  }), [location?.id, animal.name, animal.scientificName, displayRarity, activeSeason, activeZone, effortLabel, visitTime]);
+  const [verdict, setVerdict] = useState(() => getSightingVerdict(sightingCtx));
+  // Re-sync the shown verdict when the context changes (season/zone/effort
+  // switch makes it a different ground-truth question).
+  useEffect(() => { setVerdict(getSightingVerdict(sightingCtx)); }, [sightingCtx]);
+  const submitVerdict = (v) => {
+    if (verdict === v) { clearSighting(sightingCtx); setVerdict(null); }      // toggle off
+    else { recordSighting(sightingCtx, v); setVerdict(v); }
+  };
 
   // Fetch photo lazily when the card mounts (i.e. when the popup opens)
   useEffect(() => {
@@ -1840,6 +1863,26 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, parkEffort = null, locat
           </div>
         );
       })()}
+      {/* Ground-truth feedback — anonymous, localStorage-only. Turns the
+          99.4% of unanchored predictions into a real visitor-encounter
+          signal the maintainer can fold back into calibration. */}
+      <div className="sighting-feedback" title="Anonymous, stored only in your browser. Helps calibrate sighting odds.">
+        <span className="sighting-feedback__q">Did you see this here?</span>
+        <button
+          type="button"
+          className={`sighting-feedback__btn${verdict === 'seen' ? ' is-active is-seen' : ''}`}
+          aria-pressed={verdict === 'seen'}
+          onClick={() => submitVerdict('seen')}
+        >👍 Saw it</button>
+        <button
+          type="button"
+          className={`sighting-feedback__btn${verdict === 'missed' ? ' is-active is-missed' : ''}`}
+          aria-pressed={verdict === 'missed'}
+          onClick={() => submitVerdict('missed')}
+        >👎 Didn’t</button>
+        {verdict && <span className="sighting-feedback__thanks">✓ thanks</span>}
+      </div>
+
       {(() => {
         const segments = [];
         const displaySeasons = animal.displaySeasons ?? [animal.bestSeason ?? 'spring'];
@@ -1885,6 +1928,18 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, parkEffort = null, locat
       {debugMode && (
         <div className="debug-panel">
           <div className="debug-panel__title">🐛 Debug Info</div>
+          <div className="debug-row">
+            <span className="debug-label">📥 Sightings</span>
+            <span className="debug-value">
+              {getAllSightings().length} logged{' '}
+              <button
+                type="button"
+                className="debug-export-btn"
+                onClick={(e) => { e.stopPropagation(); exportSightings(); }}
+                title="Download anonymous sighting-feedback JSON (raw + per-bucket empirical seen-rate) to refine calibration offline"
+              >export ⬇</button>
+            </span>
+          </div>
           <div className="debug-row">
             <span className="debug-label">🔗 Endpoint</span>
             <span className="debug-value debug-value--url">
@@ -3026,7 +3081,7 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
                 <div className="lp__showing-count">
                   Showing {Math.min(displayLimit, filtered.length)} of {filtered.length} {typeLabel}
                 </div>
-                {visibleList.map((a, i) => <AnimalCard key={`${a.name}-${i}`} animal={a} debugMode={debugMode} seasonalFreqs={seasonalFreqs} parkEffort={parkEffort} location={location} openAbout={openAbout} highlightSpecies={highlightSpecies} activeSeason={popupSeason !== 'all' ? popupSeason : null} activeZone={popupZone !== 'all' ? popupZone : null} parkZones={availableZones} onSelectZone={setPopupZone} effortRescaler={effortRescaler} visitTime={visitTime} />)}
+                {visibleList.map((a, i) => <AnimalCard key={`${a.name}-${i}`} animal={a} debugMode={debugMode} seasonalFreqs={seasonalFreqs} parkEffort={parkEffort} location={location} openAbout={openAbout} highlightSpecies={highlightSpecies} activeSeason={popupSeason !== 'all' ? popupSeason : null} activeZone={popupZone !== 'all' ? popupZone : null} parkZones={availableZones} onSelectZone={setPopupZone} effortRescaler={effortRescaler} visitTime={visitTime} effortLabel={effectiveEffort} />)}
                 {hasMore && (
                   <div className="lp__load-more-row">
                     <button className="lp__load-more-btn" onClick={() => setDisplayLimit(d => d + 50)}>

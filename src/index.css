@@ -1880,6 +1880,64 @@ body, #root {
   color: var(--text-tip, #2d6a4f);
 }
 
+/* Ground-truth sighting feedback — unobtrusive row; the data it collects
+   is the only accuracy signal that reaches the 99% of predictions no
+   hand-anchor covers. Kept visually quiet so it never competes with the
+   rarity pill, but tappable on mobile (36px hit targets). */
+.sighting-feedback {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 12px;
+}
+.sighting-feedback__q {
+  color: var(--text-muted, #6b7280);
+  margin-right: 2px;
+}
+.sighting-feedback__btn {
+  appearance: none;
+  border: 1px solid var(--border-tip, #d1eddb);
+  background: var(--bg-tip, #f3f6f4);
+  color: var(--text-tip, #2d6a4f);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 10px;
+  min-height: 32px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background .12s, border-color .12s, transform .08s;
+}
+.sighting-feedback__btn:hover { background: #e6f0ea; }
+.sighting-feedback__btn:active { transform: scale(0.96); }
+.sighting-feedback__btn.is-active.is-seen {
+  background: #2d6a4f;
+  border-color: #2d6a4f;
+  color: #fff;
+}
+.sighting-feedback__btn.is-active.is-missed {
+  background: #9a3412;
+  border-color: #9a3412;
+  color: #fff;
+}
+.sighting-feedback__thanks {
+  color: var(--text-tip-badge, #52796f);
+  font-weight: 600;
+}
+.debug-export-btn {
+  appearance: none;
+  border: 1px solid #4b5563;
+  background: #1f2937;
+  color: #e5e7eb;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 6px;
+}
+.debug-export-btn:hover { background: #374151; }
+
 /* Peak-window variant — concentration events (Cataloochee elk rut, Brooks
    Falls salmon run, Carlsbad bat flight, Sandhill Crane migration, etc.).
    Slightly warmer color than the default best-time chip so the curated
