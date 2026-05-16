@@ -89,6 +89,8 @@ hand-curated `RARITY_OVERRIDES` table (anchor-calibrated; wins on tier).
 
 ```
 node scripts/testRarityPipeline.js        # 48 regression assertions
+node scripts/testSpeciesMetadata.js       # 55 assertions (confidence, tier
+                                          #  thresholds, activity period)
 node scripts/auditDataQuality.js          # 8 audits (override/zone/anchor targets
                                           #  exist, freq-tier consistency, detectability
                                           #  orphans, case-only key mismatches…)

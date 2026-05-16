@@ -63,6 +63,12 @@ jobs:
       - name: Rarity-pipeline tests
         run: node scripts/testRarityPipeline.js
 
+      # Species-metadata regression tests — pins computeConfidence (was 100%
+      # dead before 8e9ad16), the calibrated RARITY_THRESHOLDS cut points,
+      # and the activity-period classification chain.
+      - name: Species-metadata tests
+        run: node scripts/testSpeciesMetadata.js
+
       # Data-quality audit — verifies that every overridden / patched /
       # zoned species actually exists in the cache (catches silent override
       # failures from naming mismatches or build-pipeline drops).
