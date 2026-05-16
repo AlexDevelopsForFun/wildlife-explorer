@@ -336,6 +336,16 @@ export const SPECIES_DETECTABILITY = {
   'Common Five-lined Skink':     'hard',
   'Southeastern Five-lined Skink':'hard',
   'Broad-headed Skink':          'hard',
+
+  // ── Round 5 (2026-05-15): precise cache-name fixes ─────────────────
+  // These are the genuine (non-defensive) orphans from the post-rebuild
+  // Audit 7 scan — real cryptic species present in the cache under a
+  // precise name the prior generic entry didn't match.
+  'American Goshawk':            'hard',     // 2021 split of Northern Goshawk; elusive forest raptor — sat at 'likely' in some parks (over-tiered)
+  'Eurasian Goshawk':            'hard',     // same guild; rare vagrant in cache
+  'Eastern Hellbender':          'cryptic',  // giant aquatic salamander, nocturnal under rocks — already exceptional; cap future-proofs rebuild drift
+  'Common Mudpuppy':             'cryptic',  // fully aquatic, nocturnal — defensive correctness
+  'Alleghanian Spotted Skunk':   'cryptic',  // nocturnal, secretive (cache's precise spotted-skunk name)
 };
 
 // Case-insensitive index of SPECIES_DETECTABILITY. The cache's
