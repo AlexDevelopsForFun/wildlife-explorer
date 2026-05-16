@@ -14,6 +14,21 @@
 import { WILDLIFE_CACHE_PRIMARY } from './wildlifeCachePrimary.js';
 import { ZONE_OVERRIDES } from './zoneOverrides.js';
 import { MISSING_SPECIES_PATCHES } from './missingSpeciesPatches.js';
+import { computeConfidence } from './speciesMetadata.js';
+
+// Derive a per-animal confidence tier from its (final) raritySource so the
+// confidence dot actually renders. slim() strips _debug/obsCount before
+// bundling, so the field was never set and the dot was dead UI. Runs LAST
+// in the pipeline (after zone overrides + runtime patches, which can change
+// raritySource) so the dot reflects the rating actually shown. Idempotent.
+function _applyConfidence(parks) {
+  for (const parkData of Object.values(parks)) {
+    if (!Array.isArray(parkData?.animals)) continue;
+    for (const a of parkData.animals) {
+      a.confidence = computeConfidence({ raritySource: a.raritySource });
+    }
+  }
+}
 
 // The merged cache starts with primary parks only and grows as tiers arrive.
 export const WILDLIFE_CACHE = { ...WILDLIFE_CACHE_PRIMARY };
@@ -312,6 +327,7 @@ _patchMissingFlagshipSpecies(WILDLIFE_CACHE);
 _applyZoneOverrides(WILDLIFE_CACHE);
 _autoDeriveZoneSeasonal(WILDLIFE_CACHE);
 _applyRuntimeRarityPatches(WILDLIFE_CACHE);
+_applyConfidence(WILDLIFE_CACHE);
 
 // Tracks tier load state
 let _tier2Loaded = false;
@@ -355,6 +371,7 @@ export function loadTier2() {
     _applyZoneOverrides(WILDLIFE_CACHE);
     _autoDeriveZoneSeasonal(WILDLIFE_CACHE);
     _applyRuntimeRarityPatches(WILDLIFE_CACHE);
+    _applyConfidence(WILDLIFE_CACHE);
     _tier2Loaded = true;
     _notify();
     return data;
@@ -377,6 +394,7 @@ export function loadTier3() {
     _applyZoneOverrides(WILDLIFE_CACHE);
     _autoDeriveZoneSeasonal(WILDLIFE_CACHE);
     _applyRuntimeRarityPatches(WILDLIFE_CACHE);
+    _applyConfidence(WILDLIFE_CACHE);
     _tier3Loaded = true;
     _notify();
     if (isSecondaryLoaded()) _listeners.clear();

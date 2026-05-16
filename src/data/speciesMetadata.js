@@ -415,12 +415,31 @@ export const PARK_EFFORT_BASELINES = {
 //  high   — strong signal (≥ 500 obs or gold-standard eBird S&T periods)
 //  medium — moderate signal (≥ 50 obs or county-level eBird frequency)
 //  low    — thin signal (< 50 obs or binary fallback — one-off records)
+// NOTE: obsCount is NOT present at runtime — slim() strips _debug before
+// bundling, so confidence must derive from raritySource alone. The cases
+// below cover the CURRENT pipeline taxonomy (inat_corrected, nps_floor/
+// ceiling:*, weighted:*, curated_patch, runtime_patch, nps_overridden);
+// the previous version predated the rebuild and silently dropped the
+// plurality source (inat_corrected, 14k entries) to 'low'.
 export function computeConfidence({ raritySource, obsCount }) {
-  if (raritySource === 'ebird_st')                       return 'high';
-  if (raritySource === 'override')                       return 'high';
-  if (raritySource === 'ebird_county_freq')              return 'medium';
-  if (raritySource?.startsWith('ebird_binary'))          return 'low';
-  // iNat paths — size-based
+  const rs = raritySource ?? '';
+  // HIGH — hand-verified, anchor-calibrated, or gold-standard eBird S&T.
+  if (rs === 'override' || rs === 'curated' || rs === 'curated_patch' ||
+      rs === 'runtime_patch' || rs === 'ebird_st') return 'high';
+  // Multi-source agreement (weighted:* merges ≥2 independent sources).
+  if (rs.startsWith('weighted:')) return 'high';
+  // MEDIUM — solid single-source signal: county-level eBird frequency,
+  // charisma-corrected research-grade iNat, NPSpecies park-ecologist
+  // categorical abundance (floor/ceiling), NPS topic tags.
+  if (rs === 'ebird_county_freq' || rs.startsWith('ebird_county_freq')) return 'medium';
+  if (rs === 'inat_corrected') return 'medium';
+  if (rs.startsWith('nps_floor:') || rs.startsWith('nps_ceiling:') || rs === 'nps') return 'medium';
+  // LOW — weak/inferred signal: binary presence only, floor heuristics,
+  // or a tier we deliberately kept against NPS's "not in park" verdict
+  // on thin iNat evidence (honestly the least-certain bucket).
+  if (rs.startsWith('ebird_binary') || rs === 'inat_floor' ||
+      rs.startsWith('nps_overridden')) return 'low';
+  // Legacy size-based path (only if a caller still supplies obsCount).
   if (obsCount != null) {
     if (obsCount >= 500) return 'high';
     if (obsCount >= 50)  return 'medium';
