@@ -372,13 +372,15 @@ const RARITY_OVERRIDES = {
   // Common Raven anchor 0.93 guaranteed (Chisos Basin parking + Santa Elena overlook).
   bigbend:               { 'Greater Roadrunner': 'guaranteed', 'Mexican Jay': 'very_likely', 'Cactus Wren': 'very_likely', 'Western Diamond-backed Rattlesnake': 'very_likely', 'Common Raven': 'guaranteed' },
   // ── Southwest caves ──────────────────────────────────────────────────────
-  carlsbadcaverns:       { 'Mexican Free-tailed Bat': 'guaranteed' },
+  // Ringtail: anchor 0.05 rare — emblematic nocturnal mammal, occasionally at the cave entrance after dark (cache had it exceptional, slightly over-pessimistic).
+  carlsbadcaverns:       { 'Mexican Free-tailed Bat': 'guaranteed', 'Ringtail': 'rare' },
   // ── Alaska ───────────────────────────────────────────────────────────────
   // Anchor calibration (NPS bus tour reports): Brown Bear 0.80 very_likely, Dall Sheep 0.85 very_likely, Moose 0.40 likely, Gray Wolf 0.18 unlikely.
   denali:                { 'Brown Bear': 'very_likely', 'Caribou': 'very_likely', 'Moose': 'likely', 'Dall Sheep': 'very_likely', 'Arctic Ground Squirrel': 'guaranteed', 'Grizzly Bear': 'very_likely', 'Gray Wolf': 'unlikely' },
   katmai:                { 'Brown Bear': 'guaranteed' },
   // Humpback Whale: anchor 0.80 very_likely on summer day-cruise tours (was 'unlikely', far too low).
-  glacierbay:            { 'Humpback Whale': 'very_likely', 'Harbor Seal': 'guaranteed', 'Sea Otter': 'very_likely' },
+  // Gray Wolf: anchor 0.05 rare — coastal wolves occasionally seen from day-boat shoreline.
+  glacierbay:            { 'Humpback Whale': 'very_likely', 'Harbor Seal': 'guaranteed', 'Sea Otter': 'very_likely', 'Gray Wolf': 'rare' },
   // Sea Otter: anchor 0.95 guaranteed (every summer boat tour reports otters).
   // Humpback Whale: anchor 0.85 very_likely on summer boat tours; non-boat visitors much lower.
   kenaifjords:           { 'Sea Otter': 'guaranteed', 'Harbor Seal': 'likely', 'Tufted Puffin': 'very_likely', 'Horned Puffin': 'very_likely', 'Orca': 'unlikely', 'California Sea Lion': 'likely', 'Humpback Whale': 'very_likely' },
