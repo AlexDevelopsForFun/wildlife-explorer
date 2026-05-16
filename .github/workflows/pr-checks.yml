@@ -51,6 +51,12 @@ jobs:
       - name: Cache freshness guard
         run: node scripts/checkCacheFreshness.js
 
+      # Proxy-wiring guard — every /api/*-proxy used by the client must be a
+      # flat function file + a matching vercel.json rewrite. Catch-all dirs
+      # silently 404 here; that mistake shipped to prod undetected once.
+      - name: Proxy wiring guard
+        run: node scripts/checkProxyWiring.js
+
       # Rarity-pipeline regression tests — pins invariants that have been
       # broken in production before (TIER_CEILING clamp, tier boundaries,
       # destination boost cap, effort-corrected histogram, NAME_ALIASES).

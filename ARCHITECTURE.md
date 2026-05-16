@@ -94,6 +94,7 @@ node scripts/auditDataQuality.js          # 8 audits (override/zone/anchor targe
                                           #  orphans, case-only key mismatches…)
 node scripts/calibrateAgainstAnchors.js   # mean tier distance vs 206 anchors (≤0.5 gate)
 node scripts/auditTopNDropouts.js         # silent build-pipeline dropouts (target: 0)
+node scripts/checkProxyWiring.js          # every /api/*-proxy has a flat fn + rewrite
 npm run build                             # production build must pass
 ```
 
@@ -120,6 +121,31 @@ to a PR if the race is lost. **Data loss is structurally impossible.**
 >
 > Recovery without a re-run: download the 4 `cache-shard-*` artifacts →
 > `shards/` → `node scripts/mergeShards.js shards/ && node scripts/splitCache.js`.
+
+---
+
+## 5b. Serverless API proxies (keys + CORS)
+
+`api/ebird-proxy.js`, `api/nps-proxy.js`, `api/inat-proxy.js` relay to their
+upstreams server-side. eBird/NPS hold their key in `process.env.*_API_KEY`
+(**never** `VITE_`-prefixed — Vite inlines `VITE_*` into the public bundle,
+which is exactly how the keys leaked originally). iNaturalist is keyless; its
+proxy exists only to dodge "CORS Missing Allow Origin" on rate-limited
+responses. All are GET-only with an upstream path allowlist; a missing env
+var returns `503 {code:"MISSING_SERVER_ENV"}` so a Vercel misconfig is
+obvious in the Network tab.
+
+> **Gotcha (shipped to prod undetected once):** these MUST be flat function
+> files + a `vercel.json` rewrite `/api/<name>-proxy/:path*` → `/api/<name>-proxy`.
+> The filesystem catch-all `api/<name>-proxy/[...path].js` convention is **not
+> applied for this Vite project** and silently 404s every request — nothing
+> fails the build. `scripts/checkProxyWiring.js` (in the safety net + PR-checks
+> CI) now hard-fails if a referenced proxy lacks its flat file or rewrite, or
+> if any catch-all `[...x].js` reappears under `api/`.
+
+> Set `EBIRD_API_KEY` / `NPS_API_KEY` in Vercel → Settings → Environment
+> Variables (all 3 environments), then redeploy — env changes only apply to
+> deployments created after they're set.
 
 ---
 
