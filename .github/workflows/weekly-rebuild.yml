@@ -139,7 +139,7 @@ jobs:
       - name: Snapshot pre-rebuild species count
         id: pre_count
         run: |
-          PRE=$(grep -h '"scientificName"' src/data/wildlifeCache*.js 2>/dev/null | wc -l)
+          PRE=$(grep -h '"scientificName"' src/data/wildlifeCacheTier*.js src/data/wildlifeCachePrimary.js 2>/dev/null | wc -l)
           echo "pre=$PRE" >> "$GITHUB_OUTPUT"
           echo "Pre-rebuild species entries: $PRE"
 
@@ -209,7 +209,7 @@ jobs:
       - name: Validate species count
         id: validate
         run: |
-          POST=$(grep -h '"scientificName"' src/data/wildlifeCache*.js 2>/dev/null | wc -l)
+          POST=$(grep -h '"scientificName"' src/data/wildlifeCacheTier*.js src/data/wildlifeCachePrimary.js 2>/dev/null | wc -l)
           PRE=${{ steps.pre_count.outputs.pre }}
           echo "Post-rebuild species entries: $POST"
           echo "post=$POST" >> "$GITHUB_OUTPUT"
@@ -257,14 +257,15 @@ jobs:
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          # Stage ONLY the auto-generated cache files. Staging all of
-          # src/data would also commit the runner's STALE copies of
-          # hand-curated files (zoneOverrides.js, missingSpeciesPatches.js,
-          # etc.) — the rebuild checked out an old commit and never pulled
-          # human commits made during its ~3h runtime. Restricting the add
-          # to generated files keeps the rebase below conflict-free.
-          git add src/data/wildlifeCache.js \
-                  src/data/wildlifeCachePrimary.js \
+          # Stage ONLY the 3 generated TIER files (what the app imports).
+          # The monolithic src/data/wildlifeCache.js is a git-ignored
+          # transient intermediate (mergeShards writes it → splitCache reads
+          # it within this job) — NOT committed, halving per-rebuild history
+          # churn. Staging all of src/data would also commit the runner's
+          # STALE hand-curated files (zoneOverrides.js, etc.) from the old
+          # checkout. Restricting to generated files keeps the rebase below
+          # conflict-free.
+          git add src/data/wildlifeCachePrimary.js \
                   src/data/wildlifeCacheTier2.js \
                   src/data/wildlifeCacheTier3.js
           git commit -m "chore(data): weekly wildlife cache rebuild

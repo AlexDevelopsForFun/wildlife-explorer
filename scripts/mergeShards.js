@@ -44,14 +44,35 @@ async function main() {
 
   console.log(`🧩 Merging shard caches from ${shardsDir}…\n`);
 
-  // Seed from the existing main-branch cache so unrebuilt parks aren't dropped.
+  // Seed from the existing main-branch cache so unrebuilt parks aren't dropped
+  // by a partial (PARKS=) rebuild. Seed from the committed TIER files
+  // (wildlifeCache{Primary,Tier2,Tier3}.js) — these are what the app imports
+  // and are always present on a fresh checkout. The monolithic
+  // wildlifeCache.js is now a transient build intermediate (git-ignored) and
+  // is NOT relied on here, so a fresh CI checkout still preserves every
+  // non-rebuilt park. Falls back to the monolith if a tier file is missing,
+  // then to empty as a last resort.
   let base = {};
   try {
-    const existing = await import('../src/data/wildlifeCache.js');
-    base = { ...(existing.WILDLIFE_CACHE ?? {}) };
-    console.log(`   Base cache: ${Object.keys(base).length} parks (from src/data/wildlifeCache.js)`);
+    const [p, t2, t3] = await Promise.all([
+      import('../src/data/wildlifeCachePrimary.js'),
+      import('../src/data/wildlifeCacheTier2.js'),
+      import('../src/data/wildlifeCacheTier3.js'),
+    ]);
+    base = {
+      ...(p.WILDLIFE_CACHE_PRIMARY ?? {}),
+      ...(t2.WILDLIFE_CACHE_TIER2 ?? {}),
+      ...(t3.WILDLIFE_CACHE_TIER3 ?? {}),
+    };
+    console.log(`   Base cache: ${Object.keys(base).length} parks (from committed tier files)`);
   } catch {
-    console.log('   Base cache: empty (no existing wildlifeCache.js)');
+    try {
+      const existing = await import('../src/data/wildlifeCache.js');
+      base = { ...(existing.WILDLIFE_CACHE ?? {}) };
+      console.log(`   Base cache: ${Object.keys(base).length} parks (fallback: monolithic wildlifeCache.js)`);
+    } catch {
+      console.log('   Base cache: empty (no tier files or monolith found)');
+    }
   }
 
   // Find shard files
