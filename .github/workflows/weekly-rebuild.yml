@@ -311,16 +311,42 @@ jobs:
           # continuously during the run). The validated rebuild is safe on
           # automated/cache-rebuild; surface it as a one-click PR instead of
           # failing the job and forcing a 3 h re-run.
-          git push --force origin "$REBUILD_SHA:refs/heads/automated/cache-rebuild"
-          if gh pr view automated/cache-rebuild --json state --jq .state 2>/dev/null | grep -q OPEN; then
+          #
+          # The branch force-push below is THE durability guarantee. The PR
+          # is convenience on top. So: (1) the branch push must succeed or
+          # we genuinely failed — let that propagate. (2) PR creation is
+          # best-effort — a `gh` hiccup or the repo's "Allow GitHub Actions
+          # to create PRs" setting being off must NOT turn a preserved
+          # rebuild into a red "failed" job that looks like total loss.
+          # Hence `set +e` around the gh calls and exit 0 as long as the
+          # branch is safe.
+          if ! git push --force origin "$REBUILD_SHA:refs/heads/automated/cache-rebuild"; then
+            echo "::error::Could not push rebuild to automated/cache-rebuild — \
+          this is a genuine failure (the durability checkpoint itself failed). \
+          Rebuild data is still in the cache-shard-* artifacts for manual mergeShards."
+            exit 1
+          fi
+          echo "✓ Rebuild durably preserved on automated/cache-rebuild ($REBUILD_SHA)."
+
+          set +e
+          PR_STATE="$(gh pr view automated/cache-rebuild --json state --jq .state 2>/dev/null)"
+          if [ "$PR_STATE" = "OPEN" ]; then
             echo "PR already open for automated/cache-rebuild — branch updated in place."
           else
             gh pr create --base main --head automated/cache-rebuild \
               --title "chore(data): weekly wildlife cache rebuild (auto-merge raced out)" \
               --body "Rebuild completed and passed all gates, but \`main\` advanced faster than the ~10 min auto-merge retry window (likely continuous human commits during the ~3 h run). The validated cache is preserved on \`automated/cache-rebuild\` — **merge this PR to ship it; no re-run needed.** Only the 4 generated cache files changed. Species: $PRE → $POST (drop ${DROP}%)." \
               --label automated --label data-refresh
+            if [ $? -ne 0 ]; then
+              echo "::warning::Rebuild is SAFE on automated/cache-rebuild but \
+          'gh pr create' failed — most likely the repo setting Settings → Actions \
+          → General → 'Allow GitHub Actions to create and approve pull requests' \
+          is OFF. Enable it, or open the PR manually from automated/cache-rebuild. \
+          NO data lost; NO re-run needed."
+            fi
           fi
-          echo "Rebuild safe on automated/cache-rebuild + PR open. Zero data loss."
+          set -e
+          echo "Rebuild safe on automated/cache-rebuild. Zero data loss."
           exit 0
 
       # Open a PR when (a) explicitly requested via workflow_dispatch, or
