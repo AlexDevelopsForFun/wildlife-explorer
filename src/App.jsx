@@ -672,9 +672,9 @@ function AboutModal({ onClose, scrollTo }) {
 
               <div className="about-rarity-grid">
                 <div className="about-rarity-item"><span className="about-badge" style={{color:'#15833f',background:'#15833f22',borderColor:'#15833f55'}}>Guaranteed</span> <span className="about-rarity-pct">90%+</span> Almost certain to see</div>
-                <div className="about-rarity-item"><span className="about-badge" style={{color:'#3e9e52',background:'#3e9e5222',borderColor:'#3e9e5255'}}>Very Likely</span> <span className="about-rarity-pct">60-90%</span> Probably will see</div>
-                <div className="about-rarity-item"><span className="about-badge" style={{color:'#c49420',background:'#c4942022',borderColor:'#c4942055'}}>Likely</span> <span className="about-rarity-pct">30-60%</span> Good chance</div>
-                <div className="about-rarity-item"><span className="about-badge" style={{color:'#d27a2e',background:'#d27a2e22',borderColor:'#d27a2e55'}}>Unlikely</span> <span className="about-rarity-pct">10-30%</span> Possible with luck</div>
+                <div className="about-rarity-item"><span className="about-badge" style={{color:'#2e7d32',background:'#3e9e5222',borderColor:'#3e9e5255'}}>Very Likely</span> <span className="about-rarity-pct">60-90%</span> Probably will see</div>
+                <div className="about-rarity-item"><span className="about-badge" style={{color:'#8a6914',background:'#c4942022',borderColor:'#c4942055'}}>Likely</span> <span className="about-rarity-pct">30-60%</span> Good chance</div>
+                <div className="about-rarity-item"><span className="about-badge" style={{color:'#a3550f',background:'#d27a2e22',borderColor:'#d27a2e55'}}>Unlikely</span> <span className="about-rarity-pct">10-30%</span> Possible with luck</div>
                 <div className="about-rarity-item"><span className="about-badge" style={{color:'#c24640',background:'#c2464022',borderColor:'#c2464055'}}>Rare</span> <span className="about-rarity-pct">2-10%</span> Lucky sighting</div>
                 <div className="about-rarity-item"><span className="about-badge" style={{color:'#9c4b8a',background:'#9c4b8a22',borderColor:'#9c4b8a55'}}>Exceptional</span> <span className="about-rarity-pct">&lt;2%</span> Once in a lifetime</div>
               </div>
@@ -1641,7 +1641,7 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, parkEffort = null, locat
               return (
                 <span
                   className={`rarity-badge${r.star ? ' rarity-badge--exceptional' : ''}`}
-                  style={{ color: r.color, background: r.color + '22', borderColor: r.color + '55' }}
+                  style={{ color: r.textColor || r.color, background: r.color + '22', borderColor: r.color + '55' }}
                   title={pill.title}
                 >
                   {r.emoji && <span className="rarity-badge__glyph" aria-hidden="true">{r.emoji}</span>}

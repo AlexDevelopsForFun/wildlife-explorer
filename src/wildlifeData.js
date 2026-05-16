@@ -12,9 +12,13 @@
 export const RARITY = {
   all:         { label: 'All',          emoji: '',    color: '#6b7280', subLabel: '',                     probability: '',       star: false },
   guaranteed:  { label: 'Guaranteed',   emoji: '🟢', color: '#15833f', subLabel: 'Almost certain to see', probability: '90%+',   star: false },
-  very_likely: { label: 'Very Likely',  emoji: '🟩', color: '#3e9e52', subLabel: 'Probably will see',     probability: '60-90%', star: false },
-  likely:      { label: 'Likely',       emoji: '🟡', color: '#c49420', subLabel: 'Good chance',           probability: '30-60%', star: false },
-  unlikely:    { label: 'Unlikely',     emoji: '🟠', color: '#d27a2e', subLabel: 'Possible with luck',    probability: '10-30%', star: false },
+  // `textColor` (when present) is a darkened variant used for the badge LABEL
+  // so it meets WCAG AA 4.5:1 on the pale badge tint; `color` still drives the
+  // background/border so the bright hue identity is unchanged. The base hues
+  // for very_likely/likely/unlikely fail AA as 10.5px text (≈3.4/2.8/3.2:1).
+  very_likely: { label: 'Very Likely',  emoji: '🟩', color: '#3e9e52', textColor: '#2e7d32', subLabel: 'Probably will see',     probability: '60-90%', star: false },
+  likely:      { label: 'Likely',       emoji: '🟡', color: '#c49420', textColor: '#8a6914', subLabel: 'Good chance',           probability: '30-60%', star: false },
+  unlikely:    { label: 'Unlikely',     emoji: '🟠', color: '#d27a2e', textColor: '#a3550f', subLabel: 'Possible with luck',    probability: '10-30%', star: false },
   rare:        { label: 'Rare',         emoji: '🔴', color: '#c24640', subLabel: 'Lucky sighting',        probability: '2-10%',  star: false },
   exceptional: { label: 'Exceptional',  emoji: '⭐', color: '#9c4b8a', subLabel: 'Once in a lifetime',    probability: '<2%',    star: true  },
 };
