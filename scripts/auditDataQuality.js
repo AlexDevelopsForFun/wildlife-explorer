@@ -417,6 +417,74 @@ async function main() {
     if (orphanDetectability.length > 15) console.log(`     … and ${orphanDetectability.length - 15} more.`);
   }
 
+  // ── Audit 8: case-only key mismatches (silent no-op guard) ─────────
+  // Exact-case lookups (RARITY_OVERRIDES[name], ZONE_OVERRIDES[park][sp],
+  // ACTIVITY_PERIOD_EXACT[name]) silently no-op when an entry's casing
+  // differs from the cache's iNat preferred_common_name — the config
+  // *looks* present but never applies (the "Pacific Chorus Frog" vs
+  // "Pacific chorus frog" class of invisible bug, fixed in detectability
+  // via a case-insensitive index). This audit makes any such mismatch a
+  // loud failure for the remaining exact-case tables. A CASE-ONLY
+  // mismatch (same name, different case, real species present) is a
+  // CRITICAL — it's a definite silent failure, distinct from a benign
+  // alias/absent miss.
+  console.log(`\n📋 Audit 8: case-only key mismatches (silent no-op guard)`);
+  const { ACTIVITY_PERIOD_EXACT } = await import('../src/data/speciesMetadata.js');
+  // Per-park lowercase → canonical maps + a global one.
+  const parkLc = {};
+  const globalLc = new Map();
+  for (const [pk, v] of Object.entries(WILDLIFE_CACHE)) {
+    const m = new Map();
+    for (const a of (v.animals ?? [])) {
+      if (!a.name) continue;
+      m.set(a.name.toLowerCase().trim(), a.name);
+      globalLc.set(a.name.toLowerCase().trim(), a.name);
+    }
+    parkLc[pk] = m;
+  }
+  const caseOnly = [];
+  // RARITY_OVERRIDES (build-time table, regex-extracted like elsewhere)
+  const apiSrcForCase = readFileSync(path.join(ROOT, 'src', 'services', 'apiService.js'), 'utf8');
+  const roMatch = apiSrcForCase.match(/const RARITY_OVERRIDES\s*=\s*(\{[\s\S]*?\n\});/);
+  if (roMatch) {
+    // eslint-disable-next-line no-eval
+    const RO = (0, eval)('(' + roMatch[1] + ')');
+    for (const [pk, ov] of Object.entries(RO)) {
+      const lc = parkLc[pk]; if (!lc) continue;
+      const exact = new Set((WILDLIFE_CACHE[pk]?.animals ?? []).map(a => a.name));
+      for (const sp of Object.keys(ov)) {
+        if (exact.has(sp)) continue;
+        const canon = lc.get(sp.toLowerCase().trim());
+        if (canon) caseOnly.push(`RARITY_OVERRIDES[${pk}] "${sp}" → cache has "${canon}"`);
+      }
+    }
+  }
+  // ZONE_OVERRIDES
+  for (const [pk, sm] of Object.entries(ZONE_OVERRIDES)) {
+    const lc = parkLc[pk]; if (!lc) continue;
+    const exact = new Set((WILDLIFE_CACHE[pk]?.animals ?? []).map(a => a.name));
+    for (const sp of Object.keys(sm)) {
+      if (exact.has(sp)) continue;
+      const canon = lc.get(sp.toLowerCase().trim());
+      if (canon) caseOnly.push(`ZONE_OVERRIDES[${pk}] "${sp}" → cache has "${canon}"`);
+    }
+  }
+  // ACTIVITY_PERIOD_EXACT (global)
+  const globalExact = new Set();
+  for (const v of Object.values(WILDLIFE_CACHE)) for (const a of (v.animals ?? [])) if (a.name) globalExact.add(a.name);
+  for (const sp of Object.keys(ACTIVITY_PERIOD_EXACT)) {
+    if (globalExact.has(sp)) continue;
+    const canon = globalLc.get(sp.toLowerCase().trim());
+    if (canon) caseOnly.push(`ACTIVITY_PERIOD_EXACT "${sp}" → cache has "${canon}"`);
+  }
+  if (caseOnly.length === 0) {
+    pass(`No case-only key mismatches in RARITY_OVERRIDES / ZONE_OVERRIDES / ACTIVITY_PERIOD_EXACT.`);
+  } else {
+    critical(`${caseOnly.length} case-only key mismatch(es) — these silently NEVER apply (fix the entry's casing to match the cache):`);
+    for (const c of caseOnly.slice(0, 20)) console.log(`     ✗ ${c}`);
+    if (caseOnly.length > 20) console.log(`     … and ${caseOnly.length - 20} more.`);
+  }
+
   // ── Summary ────────────────────────────────────────────────────────
   console.log(`\n📊 Summary`);
   console.log(`   Critical issues:  ${criticalCount}`);
