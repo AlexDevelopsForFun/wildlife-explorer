@@ -20,6 +20,11 @@ export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'method not allowed' });
   }
+  // Defense-in-depth: legit calls are short. Bound the URI so the
+  // allowlist can't be probed with huge inputs.
+  if (req.url.length > 1024) {
+    return res.status(414).json({ error: 'request URI too long' });
+  }
   const key = process.env.NPS_API_KEY;
   if (!key) {
     // Unambiguous, actionable signal in the Network tab if the Vercel env

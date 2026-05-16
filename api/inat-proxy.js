@@ -26,6 +26,11 @@ export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'method not allowed' });
   }
+  // Defense-in-depth: legit calls are short (species name + lat/lng).
+  // Bound the URI so the allowlist can't be probed with huge inputs.
+  if (req.url.length > 1024) {
+    return res.status(414).json({ error: 'request URI too long' });
+  }
   // req.url = /api/inat-proxy/observations/histogram?taxon_name=..&lat=..
   const suffix = req.url.replace(/^\/api\/inat-proxy\/?/, '');
   if (!ALLOW.some((re) => re.test(suffix))) {
