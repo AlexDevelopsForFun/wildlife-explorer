@@ -4047,3 +4047,19 @@ textarea:focus-visible,
   cursor: pointer;
 }
 .lifelist-bar__export:hover { background: #1d4ed814; }
+
+/* ── Always-visible rating key (replaces tooltip-only nuance) ───────────── */
+.lp__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin: 2px 0 8px;
+  padding: 0 2px;
+  font-size: 11px;
+  color: #6b7280;
+}
+.lp__legend-dot { font-size: 10px; vertical-align: middle; }
+.lp__legend-dot--high { color: #10b981; }
+.lp__legend-dot--med  { color: #f59e0b; }
+.lp__legend-dot--low  { color: #9ca3af; }
+.lp__legend-tilde { font-weight: 700; color: #6b7280; }

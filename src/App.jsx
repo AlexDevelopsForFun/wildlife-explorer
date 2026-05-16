@@ -3126,6 +3126,15 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
                   Showing {Math.min(displayLimit, filtered.length)} of {filtered.length} {typeLabel}
                 </div>
 
+                {/* Always-visible key — this nuance used to live only in
+                    hover tooltips, invisible on touch + to keyboard users. */}
+                <div className="lp__legend" aria-label="Rating key">
+                  <span><span className="lp__legend-dot lp__legend-dot--high">●</span> strong data</span>
+                  <span><span className="lp__legend-dot lp__legend-dot--med">◐</span> moderate</span>
+                  <span><span className="lp__legend-dot lp__legend-dot--low">○</span> thin — approximate</span>
+                  <span><span className="lp__legend-tilde">~</span> observability, not a per-visit %</span>
+                </div>
+
                 {/* ── Life-list bar: progress + what's-left filter + export ── */}
                 <div className="lifelist-bar">
                   <span
