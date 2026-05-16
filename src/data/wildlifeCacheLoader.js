@@ -11,7 +11,7 @@
  * BOTH tier-2 and tier-3 have finished.
  */
 
-import { WILDLIFE_CACHE_PRIMARY } from './wildlifeCachePrimary.js';
+import { WILDLIFE_CACHE_PRIMARY, WILDLIFE_CACHE_BUILT_AT } from './wildlifeCachePrimary.js';
 import { ZONE_OVERRIDES } from './zoneOverrides.js';
 import { MISSING_SPECIES_PATCHES } from './missingSpeciesPatches.js';
 import { computeConfidence } from './speciesMetadata.js';
@@ -33,7 +33,11 @@ function _applyConfidence(parks) {
 // The merged cache starts with primary parks only and grows as tiers arrive.
 export const WILDLIFE_CACHE = { ...WILDLIFE_CACHE_PRIMARY };
 
-export const WILDLIFE_CACHE_BUILT_AT = "2026-03-31T23:14:51.921Z";
+// Re-exported from the generated primary file (written by splitCache every
+// rebuild). Was a hardcoded constant frozen at 2026-03-31, which made
+// useLiveData perpetually treat the bundle as ~stale and over-trigger live
+// API fetches. Now always reflects the actual freshest park builtAt.
+export { WILDLIFE_CACHE_BUILT_AT };
 
 // ── Cross-park scientificName lookup ────────────────────────────────────────
 // Some iconic curated entries (e.g. American Bison at Yellowstone) are missing

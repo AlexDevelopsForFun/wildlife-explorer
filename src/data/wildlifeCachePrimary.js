@@ -1,6 +1,8 @@
 // Auto-generated — do not edit manually.
 // Parks: 15 | Species: 7949
 
+export const WILDLIFE_CACHE_BUILT_AT = "2026-05-15T18:31:34.717Z";
+
 export const WILDLIFE_CACHE_PRIMARY = {
   "yellowstone": {
     builtAt: "2026-05-15T18:31:32.071Z",

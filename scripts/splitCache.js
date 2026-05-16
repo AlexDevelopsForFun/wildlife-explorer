@@ -60,13 +60,28 @@ async function main() {
   const tier2Species     = countSpecies(tier2);
   const tier3Species     = countSpecies(tier3);
 
+  // Freshest per-park builtAt — single source of truth for cache age.
+  // Emitted into the generated primary file (below) and re-exported by the
+  // hand-curated loader, so the rebuild never has to touch (and risk
+  // reverting) wildlifeCacheLoader.js itself.
+  const newestBuiltAt = Object.values(cache)
+    .map(v => v.builtAt)
+    .filter(Boolean)
+    .sort()
+    .pop() ?? new Date().toISOString();
+
   function writeCache(filename, varName, data, parkCount, speciesCount) {
     const lines = [
       `// Auto-generated — do not edit manually.`,
       `// Parks: ${parkCount} | Species: ${speciesCount}`,
       ``,
-      `export const ${varName} = {`,
     ];
+    // Primary is the sync-loaded tier — carry the build timestamp here.
+    if (varName === 'WILDLIFE_CACHE_PRIMARY') {
+      lines.push(`export const WILDLIFE_CACHE_BUILT_AT = ${JSON.stringify(newestBuiltAt)};`);
+      lines.push(``);
+    }
+    lines.push(`export const ${varName} = {`);
     for (const [id, val] of Object.entries(data)) {
       lines.push(`  ${JSON.stringify(id)}: {`);
       lines.push(`    builtAt: ${JSON.stringify(val.builtAt)},`);
@@ -84,6 +99,7 @@ async function main() {
   writeCache('wildlifeCacheTier2.js',   'WILDLIFE_CACHE_TIER2',   tier2,   tier2Count,   tier2Species);
   writeCache('wildlifeCacheTier3.js',   'WILDLIFE_CACHE_TIER3',   tier3,   tier3Count,   tier3Species);
 
+  console.log(`  ✅ WILDLIFE_CACHE_BUILT_AT → ${newestBuiltAt} (in wildlifeCachePrimary.js)`);
   console.log(`\n  Total: ${allIds.length} parks split into ${primaryCount} primary + ${tier2Count} tier-2 + ${tier3Count} tier-3`);
 }
 

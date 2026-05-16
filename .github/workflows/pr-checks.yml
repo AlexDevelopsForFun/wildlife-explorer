@@ -45,6 +45,12 @@ jobs:
       - name: Override curation gate
         run: node scripts/checkOverrideExpiry.js
 
+      # Stale-cache guard — makes a silently-broken weekly rebuild visible
+      # (failed shards / unmerged PR fallback / disabled cron) instead of
+      # the data quietly rotting. Warn > 21d, fail > 45d.
+      - name: Cache freshness guard
+        run: node scripts/checkCacheFreshness.js
+
       # Rarity-pipeline regression tests — pins invariants that have been
       # broken in production before (TIER_CEILING clamp, tier boundaries,
       # destination boost cap, effort-corrected histogram, NAME_ALIASES).
