@@ -21,7 +21,13 @@ export default async function handler(req, res) {
   }
   const key = process.env.NPS_API_KEY;
   if (!key) {
-    return res.status(500).json({ error: 'NPS key not configured on server' });
+    // Unambiguous, actionable signal in the Network tab if the Vercel env
+    // var is missing/misnamed — instead of a vague 500.
+    return res.status(503).json({
+      error: 'NPS_API_KEY is not set on the server',
+      code: 'MISSING_SERVER_ENV',
+      fix: 'Add NPS_API_KEY (no VITE_ prefix) in Vercel → Settings → Environment Variables, then redeploy.',
+    });
   }
   const suffix = req.url.replace(/^\/api\/nps-proxy\//, '');
   if (!ALLOW.some((re) => re.test(suffix))) {

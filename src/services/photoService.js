@@ -65,7 +65,7 @@ function isAnimalTaxon(taxon) {
 async function tryInat(animalName) {
   try {
     const res = await fetch(
-      `https://api.inaturalist.org/v1/taxa/autocomplete?q=${encodeURIComponent(animalName)}&per_page=10&locale=en`
+      `/api/inat-proxy/taxa/autocomplete?q=${encodeURIComponent(animalName)}&per_page=10&locale=en`
     );
     if (!res.ok) return null;
     const { results } = await res.json();

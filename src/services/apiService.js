@@ -659,7 +659,7 @@ export async function fetchEbird(lat, lng, locId, hotspotCode = null) {
         `?lat=${lat}&lng=${lng}&dist=25&back=30&maxResults=500&includeProvisional=true`
       ),
       fetch(
-        `https://api.inaturalist.org/v1/observations/species_counts` +
+        `/api/inat-proxy/observations/species_counts` +
         `?lat=${lat}&lng=${lng}&radius=25&iconic_taxa[]=Aves` +
         `&quality_grade=research,needs_id&d1=${d1str}&d2=${d2str}&per_page=200`
       ).catch(() => null),
@@ -928,7 +928,7 @@ export async function fetchInatMonthlyHist(lat, lng, locId, scientificName) {
   } catch { /* ignore */ }
 
   try {
-    const url = `https://api.inaturalist.org/v1/observations/histogram` +
+    const url = `/api/inat-proxy/observations/histogram` +
       `?taxon_name=${encodeURIComponent(scientificName)}` +
       `&lat=${lat}&lng=${lng}&radius=20` +
       `&date_field=observed&interval=month_of_year&quality_grade=research`;
@@ -1023,7 +1023,7 @@ export async function fetchInatParkMonthlyEffort(lat, lng, locId) {
   try {
     // No taxon_name filter — counts ALL research-grade observations at this park.
     // 50km radius matches our species histogram radius for consistency.
-    const url = `https://api.inaturalist.org/v1/observations/histogram` +
+    const url = `/api/inat-proxy/observations/histogram` +
       `?lat=${lat}&lng=${lng}&radius=50` +
       `&date_field=observed&interval=month_of_year&quality_grade=research`;
     const res = await fetch(url);
@@ -1243,7 +1243,7 @@ async function lookupCommonName(sciName) {
   // ── 1. iNaturalist taxa/autocomplete ──────────────────────────────────────
   try {
     const res = await fetch(
-      `https://api.inaturalist.org/v1/taxa/autocomplete?q=${encodeURIComponent(sciName)}&per_page=5`
+      `/api/inat-proxy/taxa/autocomplete?q=${encodeURIComponent(sciName)}&per_page=5`
     );
     if (res.ok) {
       const { results } = await res.json();
