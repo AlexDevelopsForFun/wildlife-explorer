@@ -34,9 +34,31 @@ Good example (Common Loon, Acadia):
 
 Return only the fun fact text — no quotes, no labels, no extra commentary.`;
 
+// This endpoint spends real money (Anthropic API). It is build-time only
+// (scripts/enrichDescriptions.js, a Node caller — the UI path is dormant),
+// so it must not be a wildcard-CORS open proxy any browser on any site can
+// drive. Defenses here (no user config needed, can't break a running
+// rebuild): lock CORS to our own origin, and hard input validation so a
+// caller can't inflate token cost or inject a long adversarial prompt.
+// FOLLOW-UP (needs coordination): require a shared secret header that
+// enrichDescriptions.js + the GitHub Actions rebuild send — strongest
+// control, but a new env var in two places, so do it between rebuilds.
+const ALLOWED_ORIGIN = (origin) => {
+  if (!origin) return null;
+  try {
+    const h = new URL(origin).hostname;
+    return (h === 'wildlifeexplorer.us' || h.endsWith('.wildlifeexplorer.us')
+      || h.endsWith('.vercel.app')) ? origin : null;
+  } catch { return null; }
+};
+const isStr = (v, max) => typeof v === 'string' && v.trim().length > 0 && v.length <= max;
+
 export default async function handler(req, res) {
-  // CORS preflight
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  // CORS: reflect only our own origin (same-origin UI + Node build caller are
+  // unaffected; other sites can no longer invoke this from a visitor's browser).
+  const allowed = ALLOWED_ORIGIN(req.headers.origin);
+  if (allowed) res.setHeader('Access-Control-Allow-Origin', allowed);
+  res.setHeader('Vary', 'Origin');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
@@ -47,8 +69,16 @@ export default async function handler(req, res) {
   if (!apiKey) return res.status(500).json({ error: 'ANTHROPIC_API_KEY not configured' });
 
   const { animalName, parkName, parkState, animalType } = req.body ?? {};
-  if (!animalName || !parkName) {
-    return res.status(400).json({ error: 'animalName and parkName are required' });
+  // Tight caps: real animal/park names are short. This bounds per-request
+  // token spend and blocks oversized / adversarial prompt injection.
+  if (!isStr(animalName, 80) || !isStr(parkName, 80)) {
+    return res.status(400).json({ error: 'animalName and parkName must be non-empty strings ≤80 chars' });
+  }
+  if (parkState != null && !isStr(parkState, 40)) {
+    return res.status(400).json({ error: 'parkState must be a string ≤40 chars' });
+  }
+  if (animalType != null && !isStr(animalType, 30)) {
+    return res.status(400).json({ error: 'animalType must be a string ≤30 chars' });
   }
 
   const typeLabel = animalType ? ` (${animalType})` : '';
