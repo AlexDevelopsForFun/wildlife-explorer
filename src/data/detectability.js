@@ -326,6 +326,7 @@ export const SPECIES_DETECTABILITY = {
   'Southern Toad':               'hard',
   'Western Toad':                'hard',
   'Cuban Treefrog':              'hard',
+  'Cuban Tree Frog':             'hard',   // cache spelling variant (space)
 
   // Skinks & whiptails → hard (fast, brief glimpses; iNat-inflated by
   // dedicated reptile photographers)
@@ -337,14 +338,23 @@ export const SPECIES_DETECTABILITY = {
   'Broad-headed Skink':          'hard',
 };
 
+// Case-insensitive index of SPECIES_DETECTABILITY. The cache's
+// preferred_common_name casing varies by iNat taxonomy (e.g. "Pacific
+// chorus frog" vs "Pacific Chorus Frog", "Gray Treefrog" vs "Gray
+// treefrog"). An exact-case lookup silently no-ops on any mismatch —
+// a whole class of invisible-failure bugs (a classification that looks
+// present but never applies). Normalising both sides eliminates it.
+const _DETECTABILITY_LC = Object.fromEntries(
+  Object.entries(SPECIES_DETECTABILITY).map(([k, v]) => [k.toLowerCase().trim(), v]),
+);
+
 /**
  * Resolve detectability for an animal, falling back to 'moderate'.
- * Currently a simple name lookup; could later add keyword + animalType
- * heuristics if maintenance becomes burdensome.
+ * Case-insensitive name lookup (see _DETECTABILITY_LC rationale).
  */
 export function classifyDetectability(animal) {
   if (!animal?.name) return 'moderate';
-  return SPECIES_DETECTABILITY[animal.name] ?? 'moderate';
+  return _DETECTABILITY_LC[animal.name.toLowerCase().trim()] ?? 'moderate';
 }
 
 /**
