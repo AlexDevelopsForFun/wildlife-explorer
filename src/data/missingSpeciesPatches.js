@@ -41,7 +41,7 @@
  * Curation: bump MISSING_SPECIES_REVIEWED_AT when adding/changing entries.
  */
 
-export const MISSING_SPECIES_REVIEWED_AT = '2026-05-14';
+export const MISSING_SPECIES_REVIEWED_AT = '2026-05-15';
 
 export const MISSING_SPECIES_PATCHES = [
   // ── Redwood: Roosevelt Elk (Prairie Creek herd is the flagship) ────
@@ -71,19 +71,8 @@ export const MISSING_SPECIES_PATCHES = [
     activityPeriod: 'diurnal',
   },
 
-  // ── Carlsbad Caverns: Mexican Free-tailed Bat (the bat-flight program) ─
-  {
-    parkId: 'carlsbadcaverns',
-    name: 'Mexican Free-tailed Bat',
-    scientificName: 'Tadarida brasiliensis',
-    animalType: 'mammal',
-    rarity: 'guaranteed',
-    frequency: 0.97,
-    funFact: 'Hundreds of thousands of Mexican Free-tailed Bats emerge from the natural entrance nightly May-October. The evening Bat Flight Program is the headline visitor experience.',
-    seasons: ['spring', 'summer', 'fall'],
-    seasonFrequencies: { spring: 60, summer: 99, fall: 75, winter: 1 },
-    activityPeriod: 'nocturnal',
-  },
+  // (Carlsbad Caverns Mexican Free-tailed Bat patch removed 2026-05-15 —
+  //  the full 63-park rebuild now produces it naturally; patch was a no-op.)
 
   // ── Mammoth Cave: Little Brown Bat ─────────────────────────────────
   {
@@ -111,18 +100,8 @@ export const MISSING_SPECIES_PATCHES = [
     activityPeriod: 'crepuscular',
   },
 
-  // ── Voyageurs: River Otter ──────────────────────────────────────────
-  {
-    parkId: 'voyageurs',
-    name: 'North American River Otter',
-    scientificName: 'Lontra canadensis',
-    animalType: 'mammal',
-    rarity: 'unlikely',
-    frequency: 0.20,
-    funFact: 'River otters along Voyageurs lake shores — most reliable for boaters who scan rocky ledges.',
-    seasons: ['spring', 'summer', 'fall', 'winter'],
-    activityPeriod: 'crepuscular',
-  },
+  // (Voyageurs North American River Otter patch removed 2026-05-15 —
+  //  full rebuild now produces it naturally; patch was a no-op.)
 
   // ── Olympic: Black-tailed Deer (the Mule Deer subspecies on Olympic Pen.) ─
   {
@@ -163,18 +142,8 @@ export const MISSING_SPECIES_PATCHES = [
     activityPeriod: 'crepuscular',
   },
 
-  // ── Big Bend: Western Diamond-backed Rattlesnake ───────────────────
-  {
-    parkId: 'bigbend',
-    name: 'Western Diamond-backed Rattlesnake',
-    scientificName: 'Crotalus atrox',
-    animalType: 'reptile',
-    rarity: 'unlikely',
-    frequency: 0.20,
-    funFact: 'The most commonly encountered rattlesnake at Big Bend, particularly along desert flats at dawn/dusk in spring/summer.',
-    seasons: ['spring', 'summer', 'fall'],
-    activityPeriod: 'crepuscular',
-  },
+  // (Big Bend Western Diamond-backed Rattlesnake patch removed 2026-05-15 —
+  //  full rebuild now produces it naturally; patch was a no-op.)
 
   // ── Virgin Islands: Sea turtles ─────────────────────────────────────
   {
@@ -188,17 +157,8 @@ export const MISSING_SPECIES_PATCHES = [
     seasons: ['spring', 'summer', 'fall', 'winter'],
     activityPeriod: 'diurnal',
   },
-  {
-    parkId: 'virginislands',
-    name: 'Hawksbill Sea Turtle',
-    scientificName: 'Eretmochelys imbricata',
-    animalType: 'marine',
-    rarity: 'rare',
-    frequency: 0.08,
-    funFact: 'Hawksbill Sea Turtles around the coral reefs of Buck Island — less common than Green Sea Turtles but real.',
-    seasons: ['spring', 'summer', 'fall', 'winter'],
-    activityPeriod: 'diurnal',
-  },
+  // (Virgin Islands Hawksbill Sea Turtle patch removed 2026-05-15 —
+  //  full rebuild now produces it naturally; patch was a no-op.)
 
   // ── American Samoa: Green Sea Turtle ────────────────────────────────
   {
