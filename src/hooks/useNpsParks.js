@@ -71,11 +71,8 @@ export function useNpsParks(excludeNpsCodes = new Set()) {
       }
     } catch { /* corrupt cache — fall through to fetch */ }
 
-    // ── 2. Fetch from NPS API ─────────────────────────────────────────────────
-    const key = import.meta.env.VITE_NPS_API_KEY;
-    if (!key) { setLoading(false); return; }
-
-    fetch('/nps-api/parks?limit=500', { headers: { 'X-Api-Key': key } })
+    // ── 2. Fetch from NPS API (key injected server-side by /api/nps-proxy) ────
+    fetch('/api/nps-proxy/parks?limit=500')
       .then(r => r.ok ? r.json() : Promise.reject(`NPS parks ${r.status}`))
       .then(({ data }) => {
         if (!Array.isArray(data)) return;

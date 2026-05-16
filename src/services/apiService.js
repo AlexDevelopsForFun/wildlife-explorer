@@ -575,9 +575,10 @@ export async function fetchEbirdHotspot(lat, lng) {
   if (cached) return cached;
 
   try {
-    const key = import.meta.env.VITE_EBIRD_API_KEY;
-    const url = `https://api.ebird.org/v2/ref/hotspot/geo?lat=${lat}&lng=${lng}&dist=25&fmt=json`;
-    const res = await fetch(url, { headers: { 'X-eBirdApiToken': key } });
+    // Key held server-side by the eBird proxy (see api/ebird-proxy) — never
+    // shipped to the client. Path is allowlisted in the function.
+    const url = `/api/ebird-proxy/ref/hotspot/geo?lat=${lat}&lng=${lng}&dist=25&fmt=json`;
+    const res = await fetch(url);
     if (!res.ok) return null;
     const hotspots = await res.json();
     const locId = hotspots?.[0]?.locId ?? null;
@@ -630,7 +631,6 @@ export async function fetchEbird(lat, lng, locId, hotspotCode = null) {
   if (cached) return cached;
 
   try {
-    const key = import.meta.env.VITE_EBIRD_API_KEY;
     const fetchedAt = new Date().toISOString();
     let historicalSpeciesCount = null;
 
@@ -638,8 +638,7 @@ export async function fetchEbird(lat, lng, locId, hotspotCode = null) {
     if (hotspotCode) {
       try {
         const sppRes = await fetch(
-          `https://api.ebird.org/v2/product/spplist/${hotspotCode}`,
-          { headers: { 'X-eBirdApiToken': key } }
+          `/api/ebird-proxy/product/spplist/${hotspotCode}`
         );
         if (sppRes.ok) {
           const codes = await sppRes.json();
@@ -656,9 +655,8 @@ export async function fetchEbird(lat, lng, locId, hotspotCode = null) {
 
     const [geoRes, inatRes] = await Promise.all([
       fetch(
-        `https://api.ebird.org/v2/data/obs/geo/recent` +
-        `?lat=${lat}&lng=${lng}&dist=25&back=30&maxResults=500&includeProvisional=true`,
-        { headers: { 'X-eBirdApiToken': key } }
+        `/api/ebird-proxy/data/obs/geo/recent` +
+        `?lat=${lat}&lng=${lng}&dist=25&back=30&maxResults=500&includeProvisional=true`
       ),
       fetch(
         `https://api.inaturalist.org/v1/observations/species_counts` +
@@ -1136,10 +1134,11 @@ const NPS_TURTLE_BY_PARK = {
 };
 const NPS_TURTLE_DEFAULT = { name: 'Desert Tortoise', emoji: '🐢', animalType: 'reptile', rarity: 'unlikely' };
 
-async function fetchNpsTopics(parkCode, key, fetchedAt) {
+async function fetchNpsTopics(parkCode, fetchedAt) {
   await npsThrottle();
-  const url = `/nps-api/parks?parkCode=${parkCode}&fields=topics`;
-  const res = await fetchWithRetry(url, { headers: { 'X-Api-Key': key } });
+  // Key injected server-side by the NPS proxy (see api/nps-proxy).
+  const url = `/api/nps-proxy/parks?parkCode=${parkCode}&fields=topics`;
+  const res = await fetchWithRetry(url);
   if (!res.ok) throw new Error(`NPS topics ${res.status}`);
   const { data } = await res.json();
   const park = data?.[0];
@@ -1185,13 +1184,12 @@ export async function fetchNps(parkCode, locId) {
   const cached = cacheGet(cacheKey);
   if (cached) return cached;
 
-  const key = import.meta.env.VITE_NPS_API_KEY;
   const fetchedAt = new Date().toISOString();
 
   // NPS Developer API v1 has no species endpoint (/api/v1/species returns 404).
   // The only available wildlife data is the curated topic tags via /parks?fields=topics.
   try {
-    const result = await fetchNpsTopics(parkCode, key, fetchedAt);
+    const result = await fetchNpsTopics(parkCode, fetchedAt);
     if (result) {
       cacheSet(cacheKey, result);
       return result;
