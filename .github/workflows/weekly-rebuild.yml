@@ -159,6 +159,49 @@ jobs:
       - name: Split primary / secondary caches
         run: node scripts/splitCache.js
 
+      # ── DURABILITY CHECKPOINT (must be the FIRST thing after splitCache) ──
+      # Runs #10/#11/#12 each lost the entire ~3 h rebuild because the only
+      # branch push lived inside the final auto-merge step — AFTER build +
+      # validate, and skipped entirely when validate soft-flagged a drop.
+      # Any failure in enrich/build/validate therefore destroyed the run.
+      #
+      # This step force-pushes the freshly-merged RAW cache to a dedicated
+      # single-writer branch BEFORE any fragile step can fail. Enrichment +
+      # photos are cumulative across runs (they resume from caches), so a raw
+      # checkpoint is a fully acceptable durability floor: the ~3 h of shard
+      # work is never lost again — recovery is a one-click branch merge, no
+      # re-run. It is unconditional (no `if:` gate) and best-effort on the
+      # push so it can never itself fail the job.
+      - name: Durability checkpoint — preserve raw rebuild
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -uo pipefail
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f src/data/wildlifeCachePrimary.js \
+                     src/data/wildlifeCacheTier2.js \
+                     src/data/wildlifeCacheTier3.js
+          if git diff --cached --quiet; then
+            echo "No cache changes to checkpoint — skipping."
+            exit 0
+          fi
+          git commit -m "chore(data): weekly rebuild RAW checkpoint (pre-enrich/build)" || true
+          if git push --force origin "HEAD:refs/heads/automated/cache-rebuild"; then
+            echo "✓ Raw rebuild durably preserved on automated/cache-rebuild."
+            echo "  If a later step fails, merge that branch — NO re-run needed."
+          else
+            echo "::warning::Durability checkpoint push failed — rebuild still in"
+            echo "the cache-shard-* artifacts for manual mergeShards recovery."
+          fi
+          # Reset the working tree so downstream steps see the same state as
+          # before (the checkpoint commit is only for the remote branch).
+          git reset --soft HEAD~1 2>/dev/null || true
+          git reset HEAD src/data/wildlifeCachePrimary.js \
+                          src/data/wildlifeCacheTier2.js \
+                          src/data/wildlifeCacheTier3.js 2>/dev/null || true
+
       # Both enrichment + photo expansion are time-budget-aware: when the
       # MAX_MINUTES budget is exceeded they save progress (description cache,
       # photo cache, partial wildlifeCache.js) and exit gracefully. Subsequent
