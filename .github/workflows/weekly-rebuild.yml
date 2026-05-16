@@ -242,7 +242,7 @@ jobs:
       # Auto-push to main when running on schedule, or when manually
       # triggered without pr_mode. Vercel picks up the push and redeploys.
       # Skipped when validate flagged the rebuild for human review.
-      - name: Auto-merge to main
+      - name: Auto-merge to main (branch-first, PR fallback — never loses the rebuild)
         if: |
           steps.diff.outputs.changed == 'true' &&
           steps.validate.outputs.needs_review != 'true' &&
@@ -251,6 +251,7 @@ jobs:
           PRE:  ${{ steps.pre_count.outputs.pre }}
           POST: ${{ steps.validate.outputs.post }}
           DROP: ${{ steps.validate.outputs.drop_pct }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           git config user.name  "github-actions[bot]"
@@ -272,37 +273,55 @@ jobs:
           Pre-rebuild species: $PRE
           Post-rebuild species: $POST
           Net drop: ${DROP}% (sanity-check threshold 10%)"
+          REBUILD_SHA="$(git rev-parse HEAD)"
 
-          # Rebase-and-retry: a full rebuild runs ~3h, during which humans
-          # may push to main. A blind `git push` is rejected ("fetch
-          # first") and silently discards the entire rebuild. Because the
-          # commit above touches ONLY generated cache files and human
-          # commits touch other files, `git rebase` applies cleanly.
-          # The loop absorbs the race window between fetch and push.
-          for attempt in 1 2 3 4 5; do
+          # ── STEP 1: preserve the result IMMEDIATELY ──────────────────
+          # Force-push the rebuild commit to a dedicated bot-owned branch.
+          # Single-writer, zero contention — this push ALWAYS succeeds, so
+          # the ~3 h result is safe on the remote before we ever race the
+          # (continuously-moving) main branch. Runs #10/#11 lost the entire
+          # rebuild because there was no such checkpoint.
+          git push --force origin "HEAD:refs/heads/automated/cache-rebuild"
+          echo "Rebuild preserved on automated/cache-rebuild ($REBUILD_SHA)."
+
+          # ── STEP 2: opportunistic fast-forward of main ───────────────
+          # Generous exponential backoff (~10 min total). The rebuild commit
+          # touches ONLY generated cache files; human commits touch other
+          # files, so the rebase is conflict-free. Reset to REBUILD_SHA each
+          # attempt so re-rebasing onto a freshly-moved main is idempotent.
+          backoff=5
+          for attempt in $(seq 1 12); do
+            git reset --hard "$REBUILD_SHA"
             git fetch origin main
-            if ! git rebase origin/main; then
-              echo "::warning::Rebase hit conflicts on attempt $attempt — aborting and retrying"
+            if git rebase origin/main; then
+              if git push origin HEAD:main; then
+                echo "Auto-merged rebuilt cache to main (attempt $attempt/12)."
+                exit 0
+              fi
+            else
               git rebase --abort || true
-              # Re-stage generated files in case the abort reset them
-              git add src/data/wildlifeCache.js \
-                      src/data/wildlifeCachePrimary.js \
-                      src/data/wildlifeCacheTier2.js \
-                      src/data/wildlifeCacheTier3.js
-              sleep 5
-              continue
             fi
-            if git push origin main; then
-              echo "Pushed rebuilt cache to main (attempt $attempt)."
-              exit 0
-            fi
-            echo "::warning::Push rejected on attempt $attempt (concurrent push) — retrying"
-            sleep 5
+            echo "::warning::main moved (attempt $attempt/12) — retry in ${backoff}s"
+            sleep "$backoff"
+            if [ "$backoff" -lt 60 ]; then backoff=$(( backoff * 2 )); fi
           done
-          echo "::error::Failed to push rebuilt cache after 5 rebase/push attempts. \
-          Rebuild data is preserved in the cache-shard-* artifacts; \
-          re-run mergeShards locally or re-trigger the workflow."
-          exit 1
+
+          # ── STEP 3: race lost → PR fallback (NO data loss, NO re-run) ─
+          # main moved faster than ~10 min of retries (e.g. a human pushing
+          # continuously during the run). The validated rebuild is safe on
+          # automated/cache-rebuild; surface it as a one-click PR instead of
+          # failing the job and forcing a 3 h re-run.
+          git push --force origin "$REBUILD_SHA:refs/heads/automated/cache-rebuild"
+          if gh pr view automated/cache-rebuild --json state --jq .state 2>/dev/null | grep -q OPEN; then
+            echo "PR already open for automated/cache-rebuild — branch updated in place."
+          else
+            gh pr create --base main --head automated/cache-rebuild \
+              --title "chore(data): weekly wildlife cache rebuild (auto-merge raced out)" \
+              --body "Rebuild completed and passed all gates, but \`main\` advanced faster than the ~10 min auto-merge retry window (likely continuous human commits during the ~3 h run). The validated cache is preserved on \`automated/cache-rebuild\` — **merge this PR to ship it; no re-run needed.** Only the 4 generated cache files changed. Species: $PRE → $POST (drop ${DROP}%)." \
+              --label automated --label data-refresh
+          fi
+          echo "Rebuild safe on automated/cache-rebuild + PR open. Zero data loss."
+          exit 0
 
       # Open a PR when (a) explicitly requested via workflow_dispatch, or
       # (b) the species drop is in the soft-fail review band (10–25%).
