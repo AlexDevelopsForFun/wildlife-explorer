@@ -10,8 +10,12 @@
 // arbitrary requests is itself a vulnerability): GET-only, and an explicit
 // allowlist of the exact upstream path prefixes the app actually uses.
 //
-// Catch-all route: /api/ebird-proxy/<path...>?<query>  →
-//   https://api.ebird.org/v2/<path...>?<query>   (+ X-eBirdApiToken header)
+// Routing: a flat function file + a vercel.json rewrite
+//   /api/ebird-proxy/:path*  →  /api/ebird-proxy
+// (filesystem catch-all `[...path].js` is NOT applied for this Vite project,
+// so the rewrite is what carries the sub-path; req.url stays the original
+// source path, e.g. /api/ebird-proxy/ref/hotspot/geo?lat=..)
+//   →  https://api.ebird.org/v2/<path...>?<query>   (+ X-eBirdApiToken header)
 
 const ALLOW = [
   /^ref\/hotspot\/geo(\?|$)/,
@@ -34,7 +38,7 @@ export default async function handler(req, res) {
     });
   }
   // req.url = /api/ebird-proxy/ref/hotspot/geo?lat=..&lng=..
-  const suffix = req.url.replace(/^\/api\/ebird-proxy\//, '');
+  const suffix = req.url.replace(/^\/api\/ebird-proxy\/?/, '');
   if (!ALLOW.some((re) => re.test(suffix))) {
     return res.status(403).json({ error: 'path not allowed' });
   }

@@ -2,6 +2,11 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": "vite",
+  "rewrites": [
+    { "source": "/api/ebird-proxy/:path*", "destination": "/api/ebird-proxy" },
+    { "source": "/api/nps-proxy/:path*", "destination": "/api/nps-proxy" },
+    { "source": "/api/inat-proxy/:path*", "destination": "/api/inat-proxy" }
+  ],
   "headers": [
     {
       "source": "/assets/(.*)",

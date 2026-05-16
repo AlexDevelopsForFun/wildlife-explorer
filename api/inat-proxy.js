@@ -1,17 +1,20 @@
 // Serverless proxy for the iNaturalist API.
 //
 // Why: iNaturalist is keyless, so it was always called directly from the
-// browser. As of the failure observed in the field, those direct calls now
-// return "CORS Missing Allow Origin" (no Access-Control-Allow-Origin on
-// rate-limited / error responses), so the browser blocks them and seasonal
-// histogram + species-count data silently breaks for every user.
+// browser. As observed in the field, those direct calls return "CORS Missing
+// Allow Origin" (no Access-Control-Allow-Origin on rate-limited / error
+// responses), so the browser blocks them and seasonal histogram +
+// species-count data silently breaks for every user.
 //
 // Server-to-server requests are not subject to CORS, so routing through this
 // function fixes the outage. Same hardened shape as the eBird/NPS proxies:
 // GET-only + an explicit allowlist of the exact upstream paths the app uses.
 //
-// Catch-all route: /api/inat-proxy/<path...>?<query>  →
-//   https://api.inaturalist.org/v1/<path...>?<query>
+// Routing: a flat function file + a vercel.json rewrite
+//   /api/inat-proxy/:path*  →  /api/inat-proxy
+// (req.url stays the original source path, e.g.
+//  /api/inat-proxy/observations/histogram?taxon_name=..)
+//   →  https://api.inaturalist.org/v1/<path...>?<query>
 
 const ALLOW = [
   /^taxa\/autocomplete(\?|$)/,
@@ -24,7 +27,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'method not allowed' });
   }
   // req.url = /api/inat-proxy/observations/histogram?taxon_name=..&lat=..
-  const suffix = req.url.replace(/^\/api\/inat-proxy\//, '');
+  const suffix = req.url.replace(/^\/api\/inat-proxy\/?/, '');
   if (!ALLOW.some((re) => re.test(suffix))) {
     return res.status(403).json({ error: 'path not allowed' });
   }
