@@ -1653,8 +1653,11 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, parkEffort = null, locat
                       className={`confidence-dot confidence-dot--${animal.confidence}`}
                       style={{ color: CONFIDENCE_UI[animal.confidence].color }}
                       title={CONFIDENCE_UI[animal.confidence].tooltip}
+                      role="img"
                       aria-label={`${animal.confidence} confidence`}
-                    />
+                    >
+                      {CONFIDENCE_UI[animal.confidence].emoji}
+                    </span>
                   )}
                 </span>
               );

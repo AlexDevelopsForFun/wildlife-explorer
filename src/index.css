@@ -2019,21 +2019,18 @@ body, #root {
 .migration-badge:hover { opacity: 1; }
 
 /* ── Confidence dot — inline inside rarity badge ──────────────────────────── */
+/* The level is carried by the glyph SHAPE (● filled / ◐ half / ○ hollow),
+   so it stays distinguishable for colour-blind and low-vision users and
+   in greyscale. Colour is a secondary cue only — never the sole signal. */
 .confidence-dot {
   display: inline-block;
   margin-left: 6px;
-  width: 6px;
-  height: 6px;
-  border-radius: 999px;
-  background: currentColor;
+  font-size: 9px;
+  line-height: 1;
   vertical-align: middle;
   cursor: help;
-  opacity: 0.7;
 }
-.confidence-dot:hover { opacity: 1; }
-.confidence-dot--high   { opacity: 0.85; }
-.confidence-dot--medium { opacity: 0.55; }
-.confidence-dot--low    { opacity: 0.3; }
+.confidence-dot:hover { filter: brightness(1.15); }
 
 /* ── Activity-period badge ──────────────────────────────────────────────── */
 .activity-badge {
