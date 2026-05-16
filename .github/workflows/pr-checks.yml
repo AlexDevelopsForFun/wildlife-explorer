@@ -69,6 +69,11 @@ jobs:
       - name: Species-metadata tests
         run: node scripts/testSpeciesMetadata.js
 
+      # Life-list engine — localStorage persistence, identity keying,
+      # per-park progress de-dupe, and storage-failure resilience.
+      - name: Life-list tests
+        run: node scripts/testSeenList.js
+
       # Data-quality audit — verifies that every overridden / patched /
       # zoned species actually exists in the cache (catches silent override
       # failures from naming mismatches or build-pipeline drops).
