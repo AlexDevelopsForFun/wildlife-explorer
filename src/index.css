@@ -3945,3 +3945,33 @@ body, #root {
     gap: 8px;
   }
 }
+
+/* ── Accessibility: respect reduced-motion ──────────────────────────────────
+   The map pins (pinDrop), pills, splash, panels and shimmer all animate.
+   Users who set the OS "reduce motion" preference (vestibular disorders,
+   migraine triggers) get near-instant transitions instead. Only affects
+   users who explicitly opted in — zero change for everyone else. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ── Accessibility: always-visible keyboard focus ───────────────────────────
+   Several inputs/selects did `outline: none` on :focus, leaving keyboard
+   users with no visible focus indicator (WCAG 2.4.7 failure). :focus-visible
+   only triggers for keyboard/AT navigation, so mouse users see no change. */
+a:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:not([tabindex="-1"]):focus-visible {
+  outline: 3px solid #1d4ed8;
+  outline-offset: 2px;
+  border-radius: 3px;
+}
