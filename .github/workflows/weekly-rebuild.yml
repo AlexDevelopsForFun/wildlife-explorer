@@ -170,8 +170,19 @@ jobs:
       # photos are cumulative across runs (they resume from caches), so a raw
       # checkpoint is a fully acceptable durability floor: the ~3 h of shard
       # work is never lost again — recovery is a one-click branch merge, no
-      # re-run. It is unconditional (no `if:` gate) and best-effort on the
-      # push so it can never itself fail the job.
+      # re-run. It is unconditional (no `if:` gate) and continue-on-error so
+      # it can never itself fail the job.
+      #
+      # CRITICAL (this is what broke #12): the merge job checks out the OLD
+      # main from job start. If a human pushed commits touching
+      # .github/workflows/* during the ~3 h run, force-pushing this stale
+      # tree is rejected by GitHub ("refusing to allow a GitHub App to
+      # create or update workflow ... without workflows permission") — the
+      # GITHUB_TOKEN cannot be granted `workflows` scope. Fix: rebase the
+      # commit onto FRESH origin/main applying ONLY the 3 generated cache
+      # files, so the pushed branch differs from main by exactly those files
+      # and NEVER by a workflow file. Guard can't trigger regardless of what
+      # moved on main. Working tree is then restored for downstream steps.
       - name: Durability checkpoint — preserve raw rebuild
         continue-on-error: true
         env:
@@ -180,27 +191,44 @@ jobs:
           set -uo pipefail
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          ORIG_SHA="$(git rev-parse HEAD)"
+          CK=/tmp/cache-ckpt
+          mkdir -p "$CK"
+          cp src/data/wildlifeCachePrimary.js "$CK"/
+          cp src/data/wildlifeCacheTier2.js   "$CK"/
+          cp src/data/wildlifeCacheTier3.js   "$CK"/
+
+          git fetch origin main
+          git checkout -B _rebuild_ckpt origin/main
+          cp "$CK"/wildlifeCachePrimary.js src/data/wildlifeCachePrimary.js
+          cp "$CK"/wildlifeCacheTier2.js   src/data/wildlifeCacheTier2.js
+          cp "$CK"/wildlifeCacheTier3.js   src/data/wildlifeCacheTier3.js
           git add -f src/data/wildlifeCachePrimary.js \
                      src/data/wildlifeCacheTier2.js \
                      src/data/wildlifeCacheTier3.js
+
           if git diff --cached --quiet; then
-            echo "No cache changes to checkpoint — skipping."
-            exit 0
-          fi
-          git commit -m "chore(data): weekly rebuild RAW checkpoint (pre-enrich/build)" || true
-          if git push --force origin "HEAD:refs/heads/automated/cache-rebuild"; then
-            echo "✓ Raw rebuild durably preserved on automated/cache-rebuild."
-            echo "  If a later step fails, merge that branch — NO re-run needed."
+            echo "Rebuilt cache identical to origin/main — nothing to checkpoint."
           else
-            echo "::warning::Durability checkpoint push failed — rebuild still in"
-            echo "the cache-shard-* artifacts for manual mergeShards recovery."
+            git commit -m "chore(data): weekly rebuild RAW checkpoint (pre-enrich/build)"
+            # Diff vs main is now EXACTLY the 3 cache files — never a workflow
+            # file — so GitHub's workflow-permission guard cannot trigger.
+            if git push --force origin "HEAD:refs/heads/automated/cache-rebuild"; then
+              echo "✓ Raw rebuild durably preserved on automated/cache-rebuild"
+              echo "  (clean diff vs main: only the 3 generated cache files)."
+              echo "  If a later step fails, merge that branch — NO re-run needed."
+            else
+              echo "::warning::Checkpoint push failed — rebuild still recoverable"
+              echo "from the cache-shard-* artifacts via manual mergeShards."
+            fi
           fi
-          # Reset the working tree so downstream steps see the same state as
-          # before (the checkpoint commit is only for the remote branch).
-          git reset --soft HEAD~1 2>/dev/null || true
-          git reset HEAD src/data/wildlifeCachePrimary.js \
-                          src/data/wildlifeCacheTier2.js \
-                          src/data/wildlifeCacheTier3.js 2>/dev/null || true
+
+          # Restore the working tree for downstream steps: the original job
+          # checkout + the rebuilt cache files (state identical to pre-step).
+          git checkout -f "$ORIG_SHA"
+          cp "$CK"/wildlifeCachePrimary.js src/data/wildlifeCachePrimary.js
+          cp "$CK"/wildlifeCacheTier2.js   src/data/wildlifeCacheTier2.js
+          cp "$CK"/wildlifeCacheTier3.js   src/data/wildlifeCacheTier3.js
 
       # Both enrichment + photo expansion are time-budget-aware: when the
       # MAX_MINUTES budget is exceeded they save progress (description cache,
@@ -285,7 +313,15 @@ jobs:
       # Auto-push to main when running on schedule, or when manually
       # triggered without pr_mode. Vercel picks up the push and redeploys.
       # Skipped when validate flagged the rebuild for human review.
+      # continue-on-error: the Durability checkpoint above already preserved
+      # the rebuild on a clean automated/cache-rebuild branch. This step is
+      # the opportunistic auto-ship to main; if its (stale-checkout) push is
+      # rejected — e.g. by the same workflow-permission guard that broke #12
+      # — the data is NOT lost, so it must not paint the whole run red and
+      # look like total failure. A green run + a ready-to-merge branch is the
+      # correct outcome here.
       - name: Auto-merge to main (branch-first, PR fallback — never loses the rebuild)
+        continue-on-error: true
         if: |
           steps.diff.outputs.changed == 'true' &&
           steps.validate.outputs.needs_review != 'true' &&
