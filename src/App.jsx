@@ -24,6 +24,10 @@ import { fetchAnimalPhoto } from './services/photoService';
 import { BUNDLED_PHOTOS } from './data/photoCache.js';
 import { needsGeneratedDescription } from './services/descriptionService';
 import {
+  toggleSeen, getSeenKeySet, parkProgress, speciesKey,
+  getSeenCount, exportLifeList,
+} from './services/seenList';
+import {
   ACTIVITY_PERIOD_UI, CONFIDENCE_UI, rarityFromFrequency,
   VISITOR_EFFORT, PARK_EFFORT_BASELINES, DEFAULT_VISITOR_EFFORT,
   TIME_OF_DAY_MULTIPLIER, TIME_OF_DAY_UI, classifyActivityPeriod,
@@ -1505,7 +1509,7 @@ function composeFallbackTip(animal, period) {
 }
 
 // ── Animal card ───────────────────────────────────────────────────────────────
-function AnimalCard({ animal, debugMode, seasonalFreqs, parkEffort = null, location, openAbout, highlightSpecies, activeSeason, activeZone, parkZones = null, onSelectZone = null, effortRescaler = 1, visitTime = 'any', effortLabel = 'casual' }) {
+function AnimalCard({ animal, debugMode, seasonalFreqs, parkEffort = null, location, openAbout, highlightSpecies, activeSeason, activeZone, parkZones = null, onSelectZone = null, effortRescaler = 1, visitTime = 'any', effortLabel = 'casual', seen = false, onToggleSeen = null }) {
   // Combined zone- + season- + effort- + time-of-day-aware rarity.
   //   1. Pick base frequency: zone freq > season freq > park freq.
   //   2. Rescale by effort multiplier (expert=1.54, casual=1.0, drive=0.54 —
@@ -1629,6 +1633,18 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, parkEffort = null, locat
           {/* Scientific name subtitle — shown when available */}
           {animal.scientificName && (
             <div className="animal-card__scientific">{animal.scientificName}</div>
+          )}
+          {/* Personal life-list toggle — the return-visit hook. */}
+          {onToggleSeen && (
+            <button
+              type="button"
+              className={`seen-toggle${seen ? ' seen-toggle--on' : ''}`}
+              onClick={() => onToggleSeen(animal)}
+              aria-pressed={seen}
+              title={seen ? 'On your life list — tap to remove' : 'Mark as seen — add to your life list'}
+            >
+              {seen ? '✓ Seen' : '+ Mark seen'}
+            </button>
           )}
           <div className="animal-card__badges">
             {(() => {
@@ -2305,6 +2321,18 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
   const [popupZone, setPopupZone] = useState('all');
   useEffect(() => { setPopupZone('all'); }, [location.id]);
 
+  // Personal life list (localStorage, via services/seenList). seenVersion is
+  // bumped on every toggle so the progress chip + seen-filter + cards all
+  // re-derive from one localStorage read per render pass (seenKeys memo).
+  const [seenVersion, setSeenVersion] = useState(0);
+  const [seenFilter, setSeenFilter] = useState('all'); // 'all' | 'unseen' | 'seen'
+  useEffect(() => { setSeenFilter('all'); }, [location.id]);
+  const seenKeys = useMemo(() => getSeenKeySet(), [seenVersion]);
+  const markSeenToggle = useCallback((animal) => {
+    toggleSeen(animal, { parkId: location.id, parkName: location.name });
+    setSeenVersion(v => v + 1);
+  }, [location.id, location.name]);
+
   // Resolve the effective visitor effort for this park:
   //   • If user picked 'auto', use park baseline (or casual default).
   //   • Otherwise respect user choice.
@@ -2637,6 +2665,15 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
       );
     }
 
+    // Life-list filter — "what's left to find here" is the core return-visit
+    // view, so unseen/seen narrowing happens before sort.
+    if (seenFilter !== 'all') {
+      result = result.filter(a => {
+        const s = seenKeys.has(speciesKey(a));
+        return seenFilter === 'seen' ? s : !s;
+      });
+    }
+
     if (popupSort === 'iconic-first') {
       result = [...result].sort(iconicSortFn);
     } else if (popupSort === 'common-first' || popupSort === 'rarest-first') {
@@ -2677,10 +2714,14 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
 
     // A "filter" is any user-driven narrowing beyond the default full list view.
     const isFiltered = activeTypes.size < allTypeKeys.length || popupSubtype !== 'all'
-      || popupSeason !== 'all' || popupRarity !== 'all' || !!search.trim();
+      || popupSeason !== 'all' || popupRarity !== 'all' || !!search.trim()
+      || seenFilter !== 'all';
 
     return { display: result, isFiltered };
-  }, [enriched, activeTypes, popupSubtype, popupSeason, popupRarity, popupZone, search, popupSort, focusedType, seasonalFreqs, parkEffort, effortRescaler, visitTime, highlightSpecies]);
+  }, [enriched, activeTypes, popupSubtype, popupSeason, popupRarity, popupZone, search, popupSort, focusedType, seasonalFreqs, parkEffort, effortRescaler, visitTime, highlightSpecies, seenFilter, seenKeys]);
+
+  // Life-list progress for THIS park (de-duped; pct can't exceed 100).
+  const lifeProgress = useMemo(() => parkProgress(enriched), [enriched, seenVersion]);
 
   // Exceptional animals for the Rare Finds section — fully filter-aware.
   // Applies the same type / subtype / season / search filters as the main list
@@ -3084,7 +3125,42 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
                 <div className="lp__showing-count">
                   Showing {Math.min(displayLimit, filtered.length)} of {filtered.length} {typeLabel}
                 </div>
-                {visibleList.map((a, i) => <AnimalCard key={`${a.name}-${i}`} animal={a} debugMode={debugMode} seasonalFreqs={seasonalFreqs} parkEffort={parkEffort} location={location} openAbout={openAbout} highlightSpecies={highlightSpecies} activeSeason={popupSeason !== 'all' ? popupSeason : null} activeZone={popupZone !== 'all' ? popupZone : null} parkZones={availableZones} onSelectZone={setPopupZone} effortRescaler={effortRescaler} visitTime={visitTime} effortLabel={effectiveEffort} />)}
+
+                {/* ── Life-list bar: progress + what's-left filter + export ── */}
+                <div className="lifelist-bar">
+                  <span
+                    className="lifelist-bar__progress"
+                    title={`You've logged ${lifeProgress.seen} of ${lifeProgress.total} species recorded at ${location.name}`}
+                  >
+                    🏅 <strong>{lifeProgress.seen}</strong> / {lifeProgress.total} seen here
+                    {lifeProgress.total > 0 && <> · {lifeProgress.pct}%</>}
+                  </span>
+                  <span className="lifelist-bar__seg" role="group" aria-label="Filter by seen status">
+                    {[['all', 'All'], ['unseen', 'To find'], ['seen', 'Seen']].map(([v, lbl]) => (
+                      <button
+                        key={v}
+                        type="button"
+                        className={`lifelist-bar__seg-btn${seenFilter === v ? ' is-active' : ''}`}
+                        aria-pressed={seenFilter === v}
+                        onClick={() => { setSeenFilter(v); setDisplayLimit(50); }}
+                      >
+                        {lbl}
+                      </button>
+                    ))}
+                  </span>
+                  {getSeenCount() > 0 && (
+                    <button
+                      type="button"
+                      className="lifelist-bar__export"
+                      onClick={() => exportLifeList()}
+                      title="Download your full life list as JSON"
+                    >
+                      ↓ My list ({getSeenCount()})
+                    </button>
+                  )}
+                </div>
+
+                {visibleList.map((a, i) => <AnimalCard key={`${a.name}-${i}`} animal={a} debugMode={debugMode} seasonalFreqs={seasonalFreqs} parkEffort={parkEffort} location={location} openAbout={openAbout} highlightSpecies={highlightSpecies} activeSeason={popupSeason !== 'all' ? popupSeason : null} activeZone={popupZone !== 'all' ? popupZone : null} parkZones={availableZones} onSelectZone={setPopupZone} effortRescaler={effortRescaler} visitTime={visitTime} effortLabel={effectiveEffort} seen={seenKeys.has(speciesKey(a))} onToggleSeen={markSeenToggle} />)}
                 {hasMore && (
                   <div className="lp__load-more-row">
                     <button className="lp__load-more-btn" onClick={() => setDisplayLimit(d => d + 50)}>

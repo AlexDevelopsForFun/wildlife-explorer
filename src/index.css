@@ -3975,3 +3975,75 @@ textarea:focus-visible,
   outline-offset: 2px;
   border-radius: 3px;
 }
+
+/* ── Personal life list (seenList) ──────────────────────────────────────── */
+.seen-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: 4px 0 2px;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #4b5563;
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+}
+.seen-toggle:hover { background: #e5e7eb; }
+.seen-toggle--on {
+  color: #15833f;
+  background: #15833f1a;
+  border-color: #15833f80;
+}
+.seen-toggle--on:hover { background: #15833f29; }
+
+.lifelist-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin: 4px 0 10px;
+  padding: 7px 10px;
+  font-size: 12px;
+  color: #374151;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+.lifelist-bar__progress { white-space: nowrap; }
+.lifelist-bar__progress strong { color: #15833f; }
+.lifelist-bar__seg {
+  display: inline-flex;
+  border: 1px solid #d1d5db;
+  border-radius: 999px;
+  overflow: hidden;
+}
+.lifelist-bar__seg-btn {
+  padding: 3px 11px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #4b5563;
+  background: #fff;
+  border: 0;
+  border-right: 1px solid #d1d5db;
+  cursor: pointer;
+}
+.lifelist-bar__seg-btn:last-child { border-right: 0; }
+.lifelist-bar__seg-btn:hover { background: #f3f4f6; }
+.lifelist-bar__seg-btn.is-active { color: #fff; background: #15833f; }
+.lifelist-bar__export {
+  margin-left: auto;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #1d4ed8;
+  background: transparent;
+  border: 1px solid #1d4ed855;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.lifelist-bar__export:hover { background: #1d4ed814; }
