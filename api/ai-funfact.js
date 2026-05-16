@@ -60,10 +60,20 @@ export default async function handler(req, res) {
   if (allowed) res.setHeader('Access-Control-Allow-Origin', allowed);
   res.setHeader('Vary', 'Origin');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Funfact-Token');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST')   return res.status(405).json({ error: 'Method not allowed' });
+
+  // Shared-secret gate. ENFORCED ONLY when FUNFACT_TOKEN is configured
+  // server-side — so shipping this changes nothing until you set the env
+  // var, then the paid endpoint is locked to callers holding the token.
+  // Set FUNFACT_TOKEN in Vercel (any long random string); trusted server
+  // tooling sends it as the `x-funfact-token` header.
+  const secret = process.env.FUNFACT_TOKEN;
+  if (secret && req.headers['x-funfact-token'] !== secret) {
+    return res.status(401).json({ error: 'unauthorized' });
+  }
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) return res.status(500).json({ error: 'ANTHROPIC_API_KEY not configured' });
