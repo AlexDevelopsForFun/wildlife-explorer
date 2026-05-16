@@ -44,6 +44,34 @@
 export const MISSING_SPECIES_REVIEWED_AT = '2026-05-15';
 
 export const MISSING_SPECIES_PATCHES = [
+  // ── Long-tail audit closers (auditTopNDropouts MIN_OBS_FLAG=5) ──────
+  // Genuine park residents below the build pipeline's iNat-count
+  // inclusion threshold (5-8 research-grade obs). Post-rebuild these
+  // are the ONLY two silent dropouts remaining cache-wide; patched to
+  // close the audit to zero.
+  {
+    parkId: 'acadia',
+    name: 'Muskrat',
+    scientificName: 'Ondatra zibethicus',
+    animalType: 'mammal',
+    rarity: 'unlikely',
+    frequency: 0.18,
+    funFact: 'Muskrats are common in Acadia’s freshwater marshes and beaver flowages (e.g. Bass Harbor Marsh, Great Meadow) but cryptic — most active at dawn/dusk.',
+    seasons: ['spring', 'summer', 'fall', 'winter'],
+    activityPeriod: 'crepuscular',
+  },
+  {
+    parkId: 'kenaifjords',
+    name: 'Rhinoceros Auklet',
+    scientificName: 'Cerorhinca monocerata',
+    animalType: 'bird',
+    rarity: 'likely',
+    frequency: 0.45,
+    funFact: 'Rhinoceros Auklets breed on the Chiswell Islands and are routinely seen on Kenai Fjords boat tours through the outer bays in summer.',
+    seasons: ['spring', 'summer', 'fall'],
+    activityPeriod: 'diurnal',
+  },
+
   // ── Redwood: Roosevelt Elk (Prairie Creek herd is the flagship) ────
   {
     parkId: 'redwood',
