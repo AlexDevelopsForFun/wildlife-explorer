@@ -11,13 +11,33 @@ export default defineConfig(({ mode }) => {
 
     server: {
       port: 5173,
+      // Local-dev equivalents of the Vercel serverless proxies
+      // (api/ebird-proxy.js / nps-proxy.js / inat-proxy.js). `vite dev` has
+      // no serverless runtime, so without these the client's /api/*-proxy
+      // calls 404 and ALL live data is broken locally. Keys come from the
+      // same non-VITE server-side env names as production (.env / shell);
+      // iNaturalist is keyless. Mirrors the upstream paths 1:1.
       proxy: {
-        // NPS Developer API — no CORS headers on their server
-        '/nps-api': {
+        '/api/ebird-proxy': {
+          target:       'https://api.ebird.org',
+          changeOrigin: true,
+          secure:       true,
+          rewrite:      (p) => p.replace(/^\/api\/ebird-proxy/, '/v2'),
+          headers:      { 'X-eBirdApiToken': env.EBIRD_API_KEY || '' },
+        },
+        '/api/nps-proxy': {
           target:       'https://developer.nps.gov',
           changeOrigin: true,
           secure:       true,
-          rewrite:      (path) => path.replace(/^\/nps-api/, '/api/v1'),
+          rewrite:      (p) => p.replace(/^\/api\/nps-proxy/, '/api/v1'),
+          headers:      { 'X-Api-Key': env.NPS_API_KEY || '' },
+        },
+        '/api/inat-proxy': {
+          target:       'https://api.inaturalist.org',
+          changeOrigin: true,
+          secure:       true,
+          rewrite:      (p) => p.replace(/^\/api\/inat-proxy/, '/v1'),
+          headers:      { 'User-Agent': 'wildlife-explorer (+https://wildlifeexplorer.us)' },
         },
       },
     },
