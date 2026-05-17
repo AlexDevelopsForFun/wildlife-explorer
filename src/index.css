@@ -4134,3 +4134,15 @@ textarea:focus-visible,
 @media (max-width: 640px) {
   .lifelist-modal { margin: 0; border-radius: 0; max-height: 100vh; inset: 0; max-width: none; }
 }
+
+/* SEO prerender block — crawlable per-park content shown before React
+   hydrates (then replaced). Kept readable, not display:none (intentionally
+   indexable); only visible for a split second to JS users. */
+.seo-prerender {
+  max-width: 640px; margin: 12vh auto; padding: 0 24px;
+  font-family: system-ui, -apple-system, sans-serif; color: #cfe6d8;
+}
+.seo-prerender h1 { font-size: 24px; color: #fff; margin: 0 0 12px; }
+.seo-prerender h2 { font-size: 16px; color: #8fc7a6; margin: 20px 0 8px; }
+.seo-prerender p  { line-height: 1.6; margin: 0 0 12px; }
+.seo-prerender ul { line-height: 1.7; padding-left: 20px; }

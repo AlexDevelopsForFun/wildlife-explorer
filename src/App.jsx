@@ -3695,7 +3695,11 @@ function AppInner() {
     if (deepLinkDone.current) return;
     deepLinkDone.current = true;
     try {
-      const id = new URL(window.location.href).searchParams.get('park');
+      const u = new URL(window.location.href);
+      // Accept both the share form (?park=<id>) and the SEO-prerendered
+      // clean path (/park/<id>).
+      const pathMatch = u.pathname.match(/^\/park\/([^/]+)\/?$/);
+      const id = u.searchParams.get('park') || (pathMatch && decodeURIComponent(pathMatch[1]));
       if (!id) return;
       const loc = wildlifeLocations.find(l => l.id === id);
       if (loc) handlePopupOpen(loc);

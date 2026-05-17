@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node scripts/prerenderParks.js",
     "preview": "vite preview",
     "build:cache": "node scripts/buildWildlifeCache.js",
     "build:descriptions": "node scripts/enrichDescriptions.js",
