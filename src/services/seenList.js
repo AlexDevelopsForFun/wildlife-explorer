@@ -128,6 +128,38 @@ export function parkProgress(parkAnimals) {
   return { seen, total, pct: total ? Math.round((seen / total) * 100) : 0 };
 }
 
+// Milestone tiers — a counting-UP goal ladder. The old per-park "% of ~585"
+// framing made progress feel hopeless (1/585 ≈ 0%); milestones reward every
+// sighting and give a concrete next target → return visits.
+export const MILESTONES = [
+  { at: 1,   label: 'First Sighting' },
+  { at: 5,   label: 'Spotter' },
+  { at: 10,  label: 'Tracker' },
+  { at: 25,  label: 'Naturalist' },
+  { at: 50,  label: 'Park Ranger' },
+  { at: 100, label: 'Field Expert' },
+  { at: 200, label: 'Master Naturalist' },
+];
+
+/**
+ * Milestone status for a life-list count.
+ * → { count, current: {at,label}|null, next: {at,label}|null, toNext: number|null }
+ */
+export function getMilestone(count = getSeenCount()) {
+  let current = null;
+  let next = null;
+  for (const m of MILESTONES) {
+    if (count >= m.at) current = m;
+    else { next = m; break; }
+  }
+  return {
+    count,
+    current,
+    next,
+    toNext: next ? next.at - count : null,
+  };
+}
+
 /** Full life list (newest first) for a "my sightings" view / export. */
 export function getLifeList() {
   return Object.entries(_safeRead())

@@ -25,7 +25,7 @@ import { BUNDLED_PHOTOS } from './data/photoCache.js';
 import { needsGeneratedDescription } from './services/descriptionService';
 import {
   toggleSeen, getSeenKeySet, parkProgress, speciesKey,
-  getSeenCount, exportLifeList,
+  getSeenCount, exportLifeList, getMilestone,
 } from './services/seenList';
 import {
   ACTIVITY_PERIOD_UI, CONFIDENCE_UI, rarityFromFrequency,
@@ -2722,6 +2722,8 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
 
   // Life-list progress for THIS park (de-duped; pct can't exceed 100).
   const lifeProgress = useMemo(() => parkProgress(enriched), [enriched, seenVersion]);
+  // Global life-list milestone (counting-up goal ladder).
+  const milestone = useMemo(() => getMilestone(getSeenCount()), [seenVersion]);
 
   // Exceptional animals for the Rare Finds section — fully filter-aware.
   // Applies the same type / subtype / season / search filters as the main list
@@ -3139,11 +3141,18 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
                 <div className="lifelist-bar">
                   <span
                     className="lifelist-bar__progress"
-                    title={`You've logged ${lifeProgress.seen} of ${lifeProgress.total} species recorded at ${location.name}`}
+                    title={`${lifeProgress.seen} logged at ${location.name} · ${milestone.count} on your life list${milestone.current ? ` · rank: ${milestone.current.label}` : ''}`}
                   >
-                    🏅 <strong>{lifeProgress.seen}</strong> / {lifeProgress.total} seen here
-                    {lifeProgress.total > 0 && lifeProgress.seen > 0 && (
-                      <> · {lifeProgress.pct === 0 ? '<1' : lifeProgress.pct}%</>
+                    🏅 <strong>{lifeProgress.seen}</strong> seen here
+                    {milestone.count > 0 && (
+                      <> · <strong>{milestone.count}</strong> on your life list
+                        {milestone.current && (
+                          <span className="lifelist-bar__rank"> · {milestone.current.label}</span>
+                        )}
+                        {milestone.next && (
+                          <span className="lifelist-bar__next"> · {milestone.toNext} to {milestone.next.label}</span>
+                        )}
+                      </>
                     )}
                   </span>
                   <span className="lifelist-bar__seg" role="group" aria-label="Filter by seen status">

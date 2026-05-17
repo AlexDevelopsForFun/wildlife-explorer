@@ -104,6 +104,31 @@ try {
 } catch { threw = true; }
 assertEqual(threw, false, 'no function throws when storage is unavailable');
 
+// ── 8. getMilestone — counting-up goal ladder ────────────────────────────
+{
+  const m0 = m.getMilestone(0);
+  assertEqual(m0.current, null, 'milestone: 0 → no current tier');
+  assertEqual(m0.next?.at, 1, 'milestone: 0 → next is First Sighting (1)');
+  assertEqual(m0.toNext, 1, 'milestone: 0 → 1 to next');
+
+  const m1 = m.getMilestone(1);
+  assertEqual(m1.current?.label, 'First Sighting', 'milestone: 1 → First Sighting');
+  assertEqual(m1.next?.at, 5, 'milestone: 1 → next Spotter (5)');
+  assertEqual(m1.toNext, 4, 'milestone: 1 → 4 to Spotter');
+
+  const m12 = m.getMilestone(12);
+  assertEqual(m12.current?.label, 'Tracker', 'milestone: 12 → Tracker (10)');
+  assertEqual(m12.next?.at, 25, 'milestone: 12 → next Naturalist (25)');
+  assertEqual(m12.toNext, 13, 'milestone: 12 → 13 to Naturalist');
+
+  const mMax = m.getMilestone(500);
+  assertEqual(mMax.current?.label, 'Master Naturalist', 'milestone: 500 → top tier');
+  assertEqual(mMax.next, null, 'milestone: past top → no next');
+  assertEqual(mMax.toNext, null, 'milestone: past top → toNext null');
+
+  assertEqual(m.MILESTONES.length, 7, 'milestone: 7 tiers defined');
+}
+
 // ── Summary ───────────────────────────────────────────────────────────────
 console.log(`📊 Results`);
 console.log(`   Passed: ${passed}`);

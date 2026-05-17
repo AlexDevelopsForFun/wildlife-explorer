@@ -4064,3 +4064,6 @@ textarea:focus-visible,
 .lp__legend-dot--med  { color: #f59e0b; }
 .lp__legend-dot--low  { color: #9ca3af; }
 .lp__legend-tilde { font-weight: 700; color: #6b7280; }
+
+.lifelist-bar__rank { color: #15833f; font-weight: 700; }
+.lifelist-bar__next { color: #9ca3af; }
