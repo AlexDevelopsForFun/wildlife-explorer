@@ -25,7 +25,7 @@ import { BUNDLED_PHOTOS } from './data/photoCache.js';
 import { needsGeneratedDescription } from './services/descriptionService';
 import {
   toggleSeen, getSeenKeySet, parkProgress, speciesKey,
-  getSeenCount, exportLifeList, getMilestone,
+  getSeenCount, exportLifeList, getMilestone, getLifeList, clearAll,
 } from './services/seenList';
 import {
   ACTIVITY_PERIOD_UI, CONFIDENCE_UI, rarityFromFrequency,
@@ -751,6 +751,87 @@ function AboutModal({ onClose, scrollTo }) {
           <div className="about-modal__footer">
             <p>Built with care for the wildlife-watching community.</p>
           </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+// ── My Life List modal ─────────────────────────────────────────────────────
+// The keepsake view: everything the visitor has personally logged, grouped
+// by the park where they first saw it, with milestone rank + export/clear.
+function LifeListModal({ onClose }) {
+  const [confirmClear, setConfirmClear] = useState(false);
+  useEffect(() => {
+    const h = e => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, [onClose]);
+
+  const list = getLifeList();
+  const ms = getMilestone(getSeenCount());
+  const groups = {};
+  for (const s of list) { (groups[s.firstParkName || 'Other'] ||= []).push(s); }
+
+  return (
+    <>
+      <div className="about-overlay" onClick={onClose} />
+      <div className="lifelist-modal" role="dialog" aria-modal="true" aria-label="My wildlife life list">
+        <button className="about-modal__close" onClick={onClose} aria-label="Close">X</button>
+        <div className="lifelist-modal__body">
+          <div className="lifelist-modal__hero">
+            <span className="lifelist-modal__hero-icon" aria-hidden="true">🏅</span>
+            <h2 className="lifelist-modal__hero-title">My Life List</h2>
+            <p className="lifelist-modal__hero-sub">
+              {ms.count === 0
+                ? 'No sightings logged yet — tap “+ Mark seen” on any species to start your list.'
+                : <>
+                    <strong>{ms.count}</strong> species
+                    {ms.current && <> · <strong>{ms.current.label}</strong></>}
+                    {ms.next ? <> · {ms.toNext} to {ms.next.label}</> : <> · top rank reached 🎉</>}
+                  </>}
+            </p>
+          </div>
+
+          {list.length > 0 && (
+            <div className="lifelist-modal__list">
+              {Object.entries(groups).map(([park, items]) => (
+                <div key={park} className="lifelist-modal__group">
+                  <div className="lifelist-modal__group-title">{park} · {items.length}</div>
+                  {items.map(s => (
+                    <div key={s.key} className="lifelist-modal__item">
+                      <span className="lifelist-modal__item-name">{s.name}</span>
+                      {s.scientificName && (
+                        <span className="lifelist-modal__item-sci">{s.scientificName}</span>
+                      )}
+                      <span className="lifelist-modal__item-date">
+                        {(() => { try { return new Date(s.ts).toLocaleDateString(); } catch { return ''; } })()}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {list.length > 0 && (
+            <div className="lifelist-modal__footer">
+              <button className="lifelist-modal__export" onClick={() => exportLifeList()}>
+                ↓ Export JSON
+              </button>
+              {confirmClear ? (
+                <button className="lifelist-modal__clear is-confirm"
+                  onClick={() => { clearAll(); onClose(); }}>
+                  Tap again to erase all {ms.count}
+                </button>
+              ) : (
+                <button className="lifelist-modal__clear"
+                  onClick={() => setConfirmClear(true)}>
+                  Clear list
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </>
@@ -2302,7 +2383,7 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
   popupType, setPopupType, popupSort, setPopupSort,
   popupSeason, setPopupSeason, popupRarity, setPopupRarity,
   popupSubtype, setPopupSubtype,
-  activeTypes, focusedType, openAbout, highlightSpecies,
+  activeTypes, focusedType, openAbout, highlightSpecies, onOpenLifeList,
   visitorEffort, setVisitorEffort,
   visitTime, setVisitTime }) {
   const POPUP_PROGRESS_GROUPS = ['birds', 'mammals', 'reptiles', 'amphibians', 'insects', 'marine'];
@@ -3191,10 +3272,10 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
                     <button
                       type="button"
                       className="lifelist-bar__export"
-                      onClick={() => exportLifeList()}
-                      title="Download your full life list as JSON"
+                      onClick={() => onOpenLifeList?.()}
+                      title="View your full wildlife life list"
                     >
-                      ↓ My list ({getSeenCount()})
+                      📖 My list ({getSeenCount()})
                     </button>
                   )}
                 </div>
@@ -3489,6 +3570,7 @@ function AppInner() {
 
   // About modal
   const [showAbout, setShowAbout] = useState(false);
+  const [showLifeList, setShowLifeList] = useState(false);
   const [aboutScrollTo, setAboutScrollTo] = useState(null);
   const openAbout = useCallback((section = null) => { track('about_open'); setAboutScrollTo(section); setShowAbout(true); }, []);
   const closeAbout = useCallback(() => { setShowAbout(false); setAboutScrollTo(null); }, []);
@@ -4148,6 +4230,7 @@ function AppInner() {
                 popupSubtype={popupSubtype} setPopupSubtype={setPopupSubtype}
                 activeTypes={activeTypes}   focusedType={focusedType}
                 openAbout={openAbout}
+                onOpenLifeList={() => setShowLifeList(true)}
                 highlightSpecies={speciesFilter}
                 visitorEffort={visitorEffort}
                 setVisitorEffort={setVisitorEffort}
@@ -4205,6 +4288,7 @@ function AppInner() {
 
       {/* ── About modal ── */}
       {showAbout && <AboutModal onClose={closeAbout} scrollTo={aboutScrollTo} />}
+      {showLifeList && <LifeListModal onClose={() => setShowLifeList(false)} />}
 
       {/* ── Vercel Analytics & Speed Insights ── */}
       <Analytics />
