@@ -3995,11 +3995,12 @@ textarea:focus-visible,
 }
 .seen-toggle:hover { background: #e5e7eb; }
 .seen-toggle--on {
-  color: #15833f;
-  background: #15833f1a;
-  border-color: #15833f80;
+  color: #fff;
+  background: #15833f;
+  border-color: #15833f;
+  box-shadow: 0 1px 4px #15833f55;
 }
-.seen-toggle--on:hover { background: #15833f29; }
+.seen-toggle--on:hover { background: #126e35; border-color: #126e35; }
 
 .lifelist-bar {
   display: flex;

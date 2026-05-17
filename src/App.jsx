@@ -3142,7 +3142,9 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
                     title={`You've logged ${lifeProgress.seen} of ${lifeProgress.total} species recorded at ${location.name}`}
                   >
                     🏅 <strong>{lifeProgress.seen}</strong> / {lifeProgress.total} seen here
-                    {lifeProgress.total > 0 && <> · {lifeProgress.pct}%</>}
+                    {lifeProgress.total > 0 && lifeProgress.seen > 0 && (
+                      <> · {lifeProgress.pct === 0 ? '<1' : lifeProgress.pct}%</>
+                    )}
                   </span>
                   <span className="lifelist-bar__seg" role="group" aria-label="Filter by seen status">
                     {[['all', 'All'], ['unseen', 'To find'], ['seen', 'Seen']].map(([v, lbl]) => (
