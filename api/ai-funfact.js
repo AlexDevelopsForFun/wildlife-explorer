@@ -66,10 +66,12 @@ export default async function handler(req, res) {
   if (req.method !== 'POST')   return res.status(405).json({ error: 'Method not allowed' });
 
   // Shared-secret gate. ENFORCED ONLY when FUNFACT_TOKEN is configured
-  // server-side — so shipping this changes nothing until you set the env
-  // var, then the paid endpoint is locked to callers holding the token.
-  // Set FUNFACT_TOKEN in Vercel (any long random string); trusted server
-  // tooling sends it as the `x-funfact-token` header.
+  // server-side — so this is a no-op until the env var exists, then the
+  // paid endpoint is locked to callers holding the token. Set FUNFACT_TOKEN
+  // in Vercel (any long random string); trusted server tooling sends it as
+  // the `x-funfact-token` header. (Env vars are baked in at deploy time —
+  // a NEW deployment is required after adding the var, not just a re-run
+  // of an older build.)
   const secret = process.env.FUNFACT_TOKEN;
   if (secret && req.headers['x-funfact-token'] !== secret) {
     return res.status(401).json({ error: 'unauthorized' });
