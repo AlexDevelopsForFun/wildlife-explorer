@@ -843,6 +843,64 @@ function LifeListModal({ onClose }) {
   );
 }
 
+// ── Accessible park browser ────────────────────────────────────────────────
+// The map markers (Leaflet) are not keyboard-focusable, so without this a
+// keyboard / screen-reader user cannot open ANY park — the core function of
+// the site (WCAG 2.1.1). This dialog lists every park as a real button with
+// a type-ahead filter; picking one opens the same panel a marker click does.
+function ParkListModal({ parks, onPick, onClose }) {
+  const [q, setQ] = useState('');
+  const inputRef = useRef(null);
+  useEffect(() => {
+    inputRef.current?.focus();
+    const h = e => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, [onClose]);
+
+  const sorted = [...parks].sort((a, b) => a.name.localeCompare(b.name));
+  const needle = q.trim().toLowerCase();
+  const list = needle
+    ? sorted.filter(p =>
+        p.name.toLowerCase().includes(needle) ||
+        String(p.state ?? '').toLowerCase().includes(needle))
+    : sorted;
+
+  return (
+    <>
+      <div className="about-overlay" onClick={onClose} />
+      <div className="parklist-modal" role="dialog" aria-modal="true" aria-label="Browse national parks">
+        <button className="about-modal__close" onClick={onClose} aria-label="Close">X</button>
+        <div className="parklist-modal__head">
+          <h2 className="parklist-modal__title">Browse parks</h2>
+          <input
+            ref={inputRef}
+            type="search"
+            className="parklist-modal__search"
+            placeholder="Filter by park or state…"
+            value={q}
+            onChange={e => setQ(e.target.value)}
+            aria-label="Filter parks by name or state"
+          />
+        </div>
+        <ul className="parklist-modal__list" aria-label="National parks">
+          {list.map(p => (
+            <li key={p.id}>
+              <button className="parklist-modal__item" onClick={() => onPick(p)}>
+                <span className="parklist-modal__item-name">{p.name}</span>
+                {p.state && <span className="parklist-modal__item-state">{p.state}</span>}
+              </button>
+            </li>
+          ))}
+          {list.length === 0 && (
+            <li className="parklist-modal__empty">No parks match “{q}”.</li>
+          )}
+        </ul>
+      </div>
+    </>
+  );
+}
+
 // ── Welcome splash screen ──────────────────────────────────────────────────────
 // Shown only on the very first visit (localStorage key wm_visited).
 // Dismissed by clicking the button; never shown again.
@@ -3576,6 +3634,7 @@ function AppInner() {
   // About modal
   const [showAbout, setShowAbout] = useState(false);
   const [showLifeList, setShowLifeList] = useState(false);
+  const [showParkList, setShowParkList] = useState(false);
   const [aboutScrollTo, setAboutScrollTo] = useState(null);
   const openAbout = useCallback((section = null) => { track('about_open'); setAboutScrollTo(section); setShowAbout(true); }, []);
   const closeAbout = useCallback(() => { setShowAbout(false); setAboutScrollTo(null); }, []);
@@ -4029,6 +4088,9 @@ function AppInner() {
 
             {/* Right actions: About + theme toggle + mobile filter toggle */}
             <div className="hdr__actions">
+              <button className="hdr__about-btn" onClick={() => setShowParkList(true)} title="Browse all parks (keyboard accessible)" aria-label="Browse all parks">
+                <span className="hdr__about-icon" aria-hidden="true">⌖</span> Parks
+              </button>
               <button className="hdr__about-btn" onClick={() => openAbout()} title="About this project" aria-label="About">
                 <span className="hdr__about-icon">i</span> About
               </button>
@@ -4298,6 +4360,13 @@ function AppInner() {
       {/* ── About modal ── */}
       {showAbout && <AboutModal onClose={closeAbout} scrollTo={aboutScrollTo} />}
       {showLifeList && <LifeListModal onClose={() => setShowLifeList(false)} />}
+      {showParkList && (
+        <ParkListModal
+          parks={wildlifeLocations}
+          onPick={(loc) => { setShowParkList(false); handlePopupOpen(loc); }}
+          onClose={() => setShowParkList(false)}
+        />
+      )}
 
       {/* ── Vercel Analytics & Speed Insights ── */}
       <Analytics />
