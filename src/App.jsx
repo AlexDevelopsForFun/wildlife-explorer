@@ -2325,6 +2325,7 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
   // bumped on every toggle so the progress chip + seen-filter + cards all
   // re-derive from one localStorage read per render pass (seenKeys memo).
   const [seenVersion, setSeenVersion] = useState(0);
+  const [shareCopied, setShareCopied] = useState(false);
   const [seenFilter, setSeenFilter] = useState('all'); // 'all' | 'unseen' | 'seen'
   useEffect(() => { setSeenFilter('all'); }, [location.id]);
   const seenKeys = useMemo(() => getSeenKeySet(), [seenVersion]);
@@ -2855,6 +2856,24 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
           <button className="lp__refresh-btn" onClick={() => refreshLocation(location.id)}
             aria-label="Refresh wildlife data" title="Refresh live data">↻</button>
         )}
+        {/* Share this park — copies a deep link that reopens this view */}
+        <button
+          className="lp__share-btn"
+          aria-label={`Copy a shareable link to ${location.name}`}
+          title="Copy shareable link"
+          onClick={async () => {
+            const link = `${window.location.origin}/?park=${encodeURIComponent(location.id)}`;
+            try {
+              await navigator.clipboard.writeText(link);
+              setShareCopied(true);
+              setTimeout(() => setShareCopied(false), 2000);
+            } catch {
+              window.prompt('Copy this link:', link);
+            }
+          }}
+        >
+          {shareCopied ? '✓ Link copied' : '🔗 Share'}
+        </button>
         {/* Species type breakdown row */}
         {Object.keys(typeBreakdown).length > 0 && (
           <div className="lp__breakdown">
@@ -3546,6 +3565,13 @@ function AppInner() {
   const handlePopupOpen = useCallback((loc) => {
     track('park_click', { park: loc.name, state: loc.stateCodes?.[0] ?? 'unknown' });
     setOpenPopup({ loc });
+    // Shareable deep link: reflect the open park in the URL (replaceState —
+    // no history/back-button entanglement). Lets a view be shared/bookmarked.
+    try {
+      const u = new URL(window.location.href);
+      u.searchParams.set('park', loc.id);
+      window.history.replaceState(null, '', u);
+    } catch { /* non-browser / blocked — non-fatal */ }
 
     // Sync global toolbar filters → popup-local filters on every open.
     // When global is 'all', reset to popup defaults; when specific, inherit.
@@ -3572,7 +3598,27 @@ function AppInner() {
       refreshLocation(loc.id);
     }
   }, [refreshLocation]);
-  const handlePopupClose = useCallback(() => setOpenPopup(null), []);
+  const handlePopupClose = useCallback(() => {
+    setOpenPopup(null);
+    try {
+      const u = new URL(window.location.href);
+      u.searchParams.delete('park');
+      window.history.replaceState(null, '', u);
+    } catch { /* non-fatal */ }
+  }, []);
+
+  // Restore a shared deep link (?park=<id>) once on first mount.
+  const deepLinkDone = useRef(false);
+  useEffect(() => {
+    if (deepLinkDone.current) return;
+    deepLinkDone.current = true;
+    try {
+      const id = new URL(window.location.href).searchParams.get('park');
+      if (!id) return;
+      const loc = wildlifeLocations.find(l => l.id === id);
+      if (loc) handlePopupOpen(loc);
+    } catch { /* non-fatal */ }
+  }, [handlePopupOpen]);
 
   const handleSpeciesSelect = useCallback((s) => {
     setSpeciesFilter(s.name);
