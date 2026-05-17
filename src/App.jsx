@@ -3558,8 +3558,16 @@ function AppInner() {
   const [popupSort,    setPopupSort]    = useState('iconic-first');
   const [popupRarity,  setPopupRarity]  = useState('all');
   const [popupSubtype, setPopupSubtype] = useState('all');
-  // Reset subtype whenever the focused type changes
-  useEffect(() => { setPopupSubtype('all'); }, [focusedType]);
+  // When the focused type changes, drop the subtype only if it's no longer
+  // valid for the new type. Keeping a still-valid subtype lets handlePopupOpen
+  // pre-apply the map's category+subtype filter without this effect (which
+  // runs right after, since focusedType derives from activeTypes) wiping it.
+  useEffect(() => {
+    const valid = focusedType
+      ? new Set((getSubtypeDefs(focusedType) || []).map(d => d.key))
+      : null;
+    setPopupSubtype(prev => (prev === 'all' || (valid && valid.has(prev)) ? prev : 'all'));
+  }, [focusedType]);
   const [popupSeason, setPopupSeason] = useState(() => {
     const m = new Date().getMonth() + 1;
     if (m >= 3 && m <= 5) return 'spring';
@@ -3701,12 +3709,16 @@ function AppInner() {
 
   // Refs for global toolbar filters — lets handlePopupOpen read current values
   // without adding them to its dependency array (avoids MarkerLayer re-binds).
-  const rarityRef     = useRef(rarity);
-  const seasonRef     = useRef(season);
-  const animalTypeRef = useRef(animalType);
-  useEffect(() => { rarityRef.current     = rarity; },     [rarity]);
-  useEffect(() => { seasonRef.current     = season; },     [season]);
-  useEffect(() => { animalTypeRef.current = animalType; }, [animalType]);
+  const rarityRef         = useRef(rarity);
+  const seasonRef         = useRef(season);
+  const animalTypeRef     = useRef(animalType);
+  const categoryTypeRef   = useRef(categoryType);
+  const categorySubtypeRef = useRef(categorySubtype);
+  useEffect(() => { rarityRef.current      = rarity; },         [rarity]);
+  useEffect(() => { seasonRef.current      = season; },         [season]);
+  useEffect(() => { animalTypeRef.current  = animalType; },     [animalType]);
+  useEffect(() => { categoryTypeRef.current = categoryType; },  [categoryType]);
+  useEffect(() => { categorySubtypeRef.current = categorySubtype; }, [categorySubtype]);
 
   const handlePopupOpen = useCallback((loc) => {
     track('park_click', { park: loc.name, state: loc.stateCodes?.[0] ?? 'unknown' });
@@ -3731,13 +3743,26 @@ function AppInner() {
       setPopupSeason(m >= 3 && m <= 5 ? 'spring' : m >= 6 && m <= 8 ? 'summer' : m >= 9 && m <= 11 ? 'fall' : 'winter');
     }
 
-    if (animalTypeRef.current !== 'all') {
+    // Inherit the active map filters so the park opens pre-filtered to what
+    // the user was browsing. Precedence: the category dropdowns (type +
+    // subtype, e.g. Birds → Birds of Prey) win, since they're the most
+    // specific; else the legacy single-type toolbar; else sensible defaults.
+    if (categoryTypeRef.current && categoryTypeRef.current !== 'all') {
+      setActiveTypes(new Set([categoryTypeRef.current]));
+      setPopupSubtype(
+        categorySubtypeRef.current && categorySubtypeRef.current !== 'all'
+          ? categorySubtypeRef.current
+          : 'all'
+      );
+    } else if (animalTypeRef.current !== 'all') {
       setActiveTypes(new Set([animalTypeRef.current]));
+      setPopupSubtype('all');
     } else {
       // Match DEFAULT_ACTIVE_TYPES: include reptiles, amphibians, marine life
       // by default so iconic non-bird/mammal species (alligators, manatees,
       // sea turtles) aren't hidden when a park is first opened.
       setActiveTypes(new Set(DEFAULT_ACTIVE_TYPES));
+      setPopupSubtype('all');
     }
 
     // Bypass the stagger queue if this location has no data yet
