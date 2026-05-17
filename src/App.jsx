@@ -248,7 +248,12 @@ function MarkerLayer({ locations, icons, onPopupOpen, onPopupClose }) {
     markersRef.current = newMarkers;
 
     return () => {
-      onCloseRef.current();
+      // NOTE: deliberately does NOT close the open popup. The popup is a
+      // React panel keyed by openPopup.loc — independent of Leaflet markers —
+      // so rebuilding markers (locations changing as NPS parks load async, or
+      // filters change) can't orphan it. Calling onClose here previously
+      // (a) closed the user's panel whenever park data updated, and
+      // (b) raced the deep-link restore (/park/<id> & ?park=) closed instantly.
       Object.values(newMarkers).forEach(m => map.removeLayer(m));
       markersRef.current = {};
     };
