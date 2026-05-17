@@ -26,6 +26,7 @@ import { needsGeneratedDescription } from './services/descriptionService';
 import {
   toggleSeen, getSeenKeySet, parkProgress, speciesKey,
   getSeenCount, exportLifeList, getMilestone, getLifeList, clearAll,
+  importLifeList, encodeShareToken, applyShareTokenFromUrl,
 } from './services/seenList';
 import {
   ACTIVITY_PERIOD_UI, CONFIDENCE_UI, rarityFromFrequency,
@@ -767,11 +768,42 @@ function AboutModal({ onClose, scrollTo }) {
 // by the park where they first saw it, with milestone rank + export/clear.
 function LifeListModal({ onClose }) {
   const [confirmClear, setConfirmClear] = useState(false);
+  const [, setTick] = useState(0);          // force re-read after import
+  const [linkCopied, setLinkCopied] = useState(false);
+  const [restoreMsg, setRestoreMsg] = useState(null);
+  const fileRef = useRef(null);
   useEffect(() => {
     const h = e => { if (e.key === 'Escape') onClose(); };
     window.addEventListener('keydown', h);
     return () => window.removeEventListener('keydown', h);
   }, [onClose]);
+
+  const onRestoreFile = async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    try {
+      const data = JSON.parse(await file.text());
+      const r = importLifeList(data);
+      if (r) {
+        track('lifelist_import', { via: 'file', added: r.imported });
+        setRestoreMsg(`Restored — ${r.imported} new, ${r.total} total.`);
+        setTick(t => t + 1);
+      } else setRestoreMsg('Could not read that file.');
+    } catch { setRestoreMsg('That file isn’t a valid life-list export.'); }
+  };
+
+  const onCopyLink = async () => {
+    const tok = encodeShareToken();
+    if (!tok) return;
+    const link = `${window.location.origin}/#list=${encodeURIComponent(tok)}`;
+    try {
+      await navigator.clipboard.writeText(link);
+      track('lifelist_share_link');
+      setLinkCopied(true);
+      setTimeout(() => setLinkCopied(false), 2200);
+    } catch { window.prompt('Copy your restore link:', link); }
+  };
 
   const list = getLifeList();
   const ms = getMilestone(getSeenCount());
@@ -819,23 +851,43 @@ function LifeListModal({ onClose }) {
             </div>
           )}
 
+          {restoreMsg && <p className="lifelist-modal__restoremsg">{restoreMsg}</p>}
+
+          <div className="lifelist-modal__footer">
+            <input ref={fileRef} type="file" accept="application/json,.json"
+              style={{ display: 'none' }} onChange={onRestoreFile} />
+            <button className="lifelist-modal__export"
+              onClick={() => fileRef.current?.click()}>
+              ↥ Restore from file
+            </button>
+            {list.length > 0 && (
+              <>
+                <button className="lifelist-modal__export"
+                  onClick={() => { track('lifelist_export'); exportLifeList(); }}>
+                  ↓ Export JSON
+                </button>
+                <button className="lifelist-modal__export" onClick={onCopyLink}>
+                  {linkCopied ? '✓ Link copied' : '🔗 Copy restore link'}
+                </button>
+                {confirmClear ? (
+                  <button className="lifelist-modal__clear is-confirm"
+                    onClick={() => { clearAll(); onClose(); }}>
+                    Tap again to erase all {ms.count}
+                  </button>
+                ) : (
+                  <button className="lifelist-modal__clear"
+                    onClick={() => setConfirmClear(true)}>
+                    Clear list
+                  </button>
+                )}
+              </>
+            )}
+          </div>
           {list.length > 0 && (
-            <div className="lifelist-modal__footer">
-              <button className="lifelist-modal__export" onClick={() => { track('lifelist_export'); exportLifeList(); }}>
-                ↓ Export JSON
-              </button>
-              {confirmClear ? (
-                <button className="lifelist-modal__clear is-confirm"
-                  onClick={() => { clearAll(); onClose(); }}>
-                  Tap again to erase all {ms.count}
-                </button>
-              ) : (
-                <button className="lifelist-modal__clear"
-                  onClick={() => setConfirmClear(true)}>
-                  Clear list
-                </button>
-              )}
-            </div>
+            <p className="lifelist-modal__hint">
+              Your list lives only on this device. Export a file or copy a
+              restore link to back it up or move it to another device.
+            </p>
           )}
         </div>
       </div>
@@ -3786,6 +3838,8 @@ function AppInner() {
   useEffect(() => {
     if (deepLinkDone.current) return;
     deepLinkDone.current = true;
+    // Restore a shared life-list (#list=<token>) if present, then strip it.
+    try { applyShareTokenFromUrl(); } catch { /* non-fatal */ }
     try {
       const u = new URL(window.location.href);
       // Accept both the share form (?park=<id>) and the SEO-prerendered

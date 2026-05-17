@@ -2,6 +2,11 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
+import { requestPersistentStorage } from './services/seenList'
+
+// Ask the browser not to silently evict our storage (the life list) under
+// disk pressure. Silent on installed PWAs / engaged sites; no-op elsewhere.
+requestPersistentStorage()
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

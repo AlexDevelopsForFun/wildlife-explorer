@@ -129,6 +129,43 @@ assertEqual(threw, false, 'no function throws when storage is unavailable');
   assertEqual(m.MILESTONES.length, 7, 'milestone: 7 tiers defined');
 }
 
+// ── 9. import + share-token round-trip (no-backend portability) ──────────
+{
+  reset();
+  m.markSeen({ name: 'Bison', scientificName: 'Bison bison' }, { parkId: 'yellowstone', parkName: 'Yellowstone' });
+  m.markSeen({ name: 'Elk', scientificName: 'Cervus canadensis' }, { parkId: 'rmnp', parkName: 'Rocky Mountain' });
+  const tok = m.encodeShareToken();
+  assertEqual(typeof tok === 'string' && tok.length > 0 && tok[0] === '1', true,
+    'share token: non-empty, versioned');
+
+  // Decode → entries; wipe; re-import → identical set restored.
+  const entries = m.decodeShareToken(tok);
+  assertEqual(Array.isArray(entries) && entries.length === 2, true,
+    'decodeShareToken: 2 entries');
+  reset();
+  assertEqual(m.getSeenCount(), 0, 'pre-restore empty');
+  const r = m.importLifeList(entries);
+  assertEqual(r && r.imported, 2, 'importLifeList: 2 restored');
+  assertEqual(m.isSeen({ scientificName: 'Bison bison' }), true, 'restored: Bison seen');
+  assertEqual(m.isSeen({ scientificName: 'Cervus canadensis' }), true, 'restored: Elk seen');
+
+  // Import accepts the export payload shape too.
+  reset();
+  const r2 = m.importLifeList({ schema: 'wm_seen_v1', species: entries });
+  assertEqual(r2 && r2.imported, 2, 'importLifeList: accepts {species:[…]} payload');
+
+  // First-sighting wins: a later-ts import must not overwrite an earlier ts.
+  reset();
+  m.markSeen({ name: 'Moose', scientificName: 'Alces alces' }, { parkId: 'isleroyale', parkName: 'Isle Royale' });
+  const early = m.getLifeList()[0].ts;
+  m.importLifeList([{ key: 'alces alces', name: 'Moose', firstParkName: 'Wrong', ts: '2099-01-01T00:00:00Z' }]);
+  assertEqual(m.getLifeList()[0].ts, early, 'import: later ts does not clobber earlier sighting');
+
+  assertEqual(m.decodeShareToken('garbage'), null, 'decodeShareToken: malformed → null');
+  reset();
+  assertEqual(m.encodeShareToken(), '', 'encodeShareToken: empty list → empty string');
+}
+
 // ── Summary ───────────────────────────────────────────────────────────────
 console.log(`📊 Results`);
 console.log(`   Passed: ${passed}`);
