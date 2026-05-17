@@ -2948,7 +2948,7 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
           aria-label={`Copy a shareable link to ${location.name}`}
           title="Copy shareable link"
           onClick={async () => {
-            const link = `${window.location.origin}/?park=${encodeURIComponent(location.id)}`;
+            const link = `${window.location.origin}/park/${encodeURIComponent(location.id)}`;
             try {
               await navigator.clipboard.writeText(link);
               setShareCopied(true);
@@ -3652,12 +3652,13 @@ function AppInner() {
   const handlePopupOpen = useCallback((loc) => {
     track('park_click', { park: loc.name, state: loc.stateCodes?.[0] ?? 'unknown' });
     setOpenPopup({ loc });
-    // Shareable deep link: reflect the open park in the URL (replaceState —
-    // no history/back-button entanglement). Lets a view be shared/bookmarked.
+    // Shareable deep link: reflect the open park as the clean prerendered
+    // path /park/<id> (replaceState — no history/back entanglement). Shared
+    // links then land on the static SEO page with correct OG tags, and
+    // reopen the park on load. Old ?park=<id> links still work (the restore
+    // effect accepts both).
     try {
-      const u = new URL(window.location.href);
-      u.searchParams.set('park', loc.id);
-      window.history.replaceState(null, '', u);
+      window.history.replaceState(null, '', `/park/${encodeURIComponent(loc.id)}`);
     } catch { /* non-browser / blocked — non-fatal */ }
 
     // Sync global toolbar filters → popup-local filters on every open.
@@ -3688,9 +3689,8 @@ function AppInner() {
   const handlePopupClose = useCallback(() => {
     setOpenPopup(null);
     try {
-      const u = new URL(window.location.href);
-      u.searchParams.delete('park');
-      window.history.replaceState(null, '', u);
+      // Return to the homepage URL (clears /park/<id> or a legacy ?park=).
+      window.history.replaceState(null, '', '/');
     } catch { /* non-fatal */ }
   }, []);
 

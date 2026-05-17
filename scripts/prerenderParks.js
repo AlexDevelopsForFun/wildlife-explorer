@@ -45,6 +45,16 @@ function main() {
   const baseHtml = readFileSync(indexPath, 'utf8');
   let written = 0;
 
+  // Crawlable internal link graph: every page links to every park, so
+  // search engines can discover & rank all 63 (sitemap helps, internal
+  // links matter more — without these the prerendered pages are orphans).
+  const parkLinks = wildlifeLocations
+    .map(p => `<li><a href="/park/${encodeURIComponent(p.id)}">Wildlife at ${esc(p.name)}</a></li>`)
+    .join('');
+  const parkNav =
+    `<nav class="seo-parklinks" aria-label="All national parks">` +
+    `<h2>Explore wildlife by national park</h2><ul>${parkLinks}</ul></nav>`;
+
   for (const park of wildlifeLocations) {
     try {
       const url = `${ORIGIN}/park/${park.id}`;
@@ -68,6 +78,7 @@ function main() {
         + `eBird, iNaturalist and the National Park Service.</p>` +
         (speciesLi ? `<h2>Notable species</h2><ul>${speciesLi}</ul>` : '') +
         `<p>Loading the interactive map…</p>` +
+        parkNav +
         `</article>`;
 
       const jsonLd = {
@@ -105,6 +116,25 @@ function main() {
     } catch (e) {
       console.warn(`⚠  prerender skipped ${park.id}: ${e.message}`);
     }
+  }
+
+  // Homepage: inject a crawlable park index into #root (React replaces it
+  // on mount). This makes the homepage the hub that links to all 63 park
+  // pages — the primary crawl entry point. Keeps the original generic
+  // homepage <title>/meta.
+  try {
+    const homeBlock =
+      `<article class="seo-prerender">` +
+      `<h1>US Wildlife Explorer — wildlife in America's national parks</h1>` +
+      `<p>Discover which animals you can see at 63 US national parks, how ` +
+      `likely each sighting is, and the best time to visit — with live data ` +
+      `from eBird, iNaturalist and the National Park Service.</p>` +
+      parkNav +
+      `<p>Loading the interactive map…</p></article>`;
+    const homeHtml = baseHtml.replace(/(<div id="root">)(<\/div>)/, `$1${homeBlock}$2`);
+    writeFileSync(indexPath, homeHtml, 'utf8');
+  } catch (e) {
+    console.warn(`⚠  homepage prerender skipped: ${e.message}`);
   }
 
   // Sitemap — homepage + every park.

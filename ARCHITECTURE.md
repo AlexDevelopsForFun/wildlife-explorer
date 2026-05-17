@@ -98,7 +98,9 @@ node scripts/auditDataQuality.js          # 8 audits (override/zone/anchor targe
 node scripts/calibrateAgainstAnchors.js   # mean tier distance vs 206 anchors (≤0.5 gate)
 node scripts/auditTopNDropouts.js         # silent build-pipeline dropouts (target: 0)
 node scripts/checkProxyWiring.js          # every /api/*-proxy has a flat fn + rewrite
-npm run build                             # production build must pass
+npm run build                             # production build (incl. SEO prerender)
+node scripts/checkPrerender.js            # 63 park pages: title/canonical/JSON-LD
+                                          #  + crawlable links + sitemap (post-build)
 ```
 
 Current healthy baseline: **48/48 tests, 0 audit critical, calibration ≈0.02,

@@ -39,6 +39,12 @@ jobs:
       - name: Production build
         run: npm run build
 
+      # SEO prerender guard — every park page must ship with a unique
+      # title/canonical/JSON-LD + crawlable internal links (a refactor of
+      # index.html can silently no-op the prerender regexes).
+      - name: Prerender guard
+        run: node scripts/checkPrerender.js
+
       # Override-curation freshness — fails fast if the curated rarity
       # overrides haven't been reviewed within the expiry window. Currently
       # 24 months (see src/services/rarityOverrideMeta.js).
