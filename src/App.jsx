@@ -821,7 +821,7 @@ function LifeListModal({ onClose }) {
 
           {list.length > 0 && (
             <div className="lifelist-modal__footer">
-              <button className="lifelist-modal__export" onClick={() => exportLifeList()}>
+              <button className="lifelist-modal__export" onClick={() => { track('lifelist_export'); exportLifeList(); }}>
                 ↓ Export JSON
               </button>
               {confirmClear ? (
@@ -2474,8 +2474,11 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
   useEffect(() => { setSeenFilter('all'); }, [location.id]);
   const seenKeys = useMemo(() => getSeenKeySet(), [seenVersion]);
   const markSeenToggle = useCallback((animal) => {
-    toggleSeen(animal, { parkId: location.id, parkName: location.name });
+    const nowSeen = toggleSeen(animal, { parkId: location.id, parkName: location.name });
     setSeenVersion(v => v + 1);
+    // Usage signal for the keep/cut decision (no PII; species name only,
+    // same as the existing animal_view / report_sighting events).
+    track('seen_toggle', { added: !!nowSeen, animal: animal?.name, park: location.name });
   }, [location.id, location.name]);
 
   // Resolve the effective visitor effort for this park:
@@ -3325,7 +3328,7 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
                         type="button"
                         className={`lifelist-bar__seg-btn${seenFilter === v ? ' is-active' : ''}`}
                         aria-pressed={seenFilter === v}
-                        onClick={() => { setSeenFilter(v); setDisplayLimit(50); }}
+                        onClick={() => { setSeenFilter(v); setDisplayLimit(50); track('lifelist_filter', { filter: v }); }}
                       >
                         {lbl}
                       </button>
@@ -3335,7 +3338,7 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
                     <button
                       type="button"
                       className="lifelist-bar__export"
-                      onClick={() => onOpenLifeList?.()}
+                      onClick={() => { track('lifelist_open'); onOpenLifeList?.(); }}
                       title="View your full wildlife life list"
                     >
                       📖 My list ({getSeenCount()})
