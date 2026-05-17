@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect width="512" height="512" fill="#0c3823"/>
+  <g transform="translate(256 256)">
+    <!-- leaf body (kept within the maskable safe zone) -->
+    <path d="M0 -118 C 80 -70 96 70 0 124 C -96 70 -80 -70 0 -118 Z"
+          fill="#4caf50" stroke="#2e7d32" stroke-width="6"/>
+    <!-- midrib + veins -->
+    <path d="M0 -106 L0 116 M0 -56 L52 -86 M0 -56 L-52 -86 M0 6 L60 -18 M0 6 L-60 -18 M0 64 L52 48 M0 64 L-52 48"
+          fill="none" stroke="#bfe6b0" stroke-width="7" stroke-linecap="round" opacity="0.85"/>
+  </g>
+</svg>

@@ -1,0 +1,16 @@
+{
+  "name": "US Wildlife Explorer",
+  "short_name": "Wildlife",
+  "description": "Find wildlife in America's 63 national parks — rarity, best timing, and your personal life list. Works offline.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0c3823",
+  "theme_color": "#0c3823",
+  "categories": ["travel", "education", "lifestyle"],
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}
