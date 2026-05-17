@@ -20,6 +20,7 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs';
 import { fileURLToPath } from 'url';
 import path from 'path';
+import sharp from 'sharp';
 import { wildlifeLocations } from '../src/wildlifeData.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -36,7 +37,40 @@ const RARITY_WORD = {
   unlikely: 'unlikely', rare: 'rare', exceptional: 'exceptional',
 };
 
-function main() {
+// Per-park social card (1200×630). Mirrors public/og-image.svg branding but
+// NO emoji — sharp/resvg has no colour-emoji font on the build host, so
+// emoji would rasterise as tofu. Title font scales down for long park names.
+function ogSvg(park) {
+  const name = esc(park.name);
+  const sub = esc([park.state, 'wildlife guide · sighting odds · best time to visit']
+    .filter(Boolean).join(' · '));
+  const len = park.name.length;
+  const size = len > 38 ? 52 : len > 28 ? 64 : len > 20 ? 76 : 88;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#0c3823"/><stop offset="100%" stop-color="#1a5c38"/>
+  </linearGradient></defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <g stroke="#ffffff" stroke-opacity="0.06" fill="none" stroke-width="1.5">
+    <path d="M-20 480 C 200 440, 400 520, 620 460 S 1000 420, 1220 480"/>
+    <path d="M-20 540 C 240 500, 440 580, 660 520 S 1040 480, 1220 540"/>
+    <path d="M-20 600 C 260 560, 460 640, 680 580 S 1060 540, 1220 600"/>
+  </g>
+  <text x="90" y="120" font-family="'Segoe UI',system-ui,sans-serif" font-size="30"
+        font-weight="700" fill="#9ee6a9" letter-spacing="2">US WILDLIFE EXPLORER</text>
+  <text x="90" y="320" font-family="'Segoe UI','SF Pro Display',system-ui,sans-serif"
+        font-size="${size}" font-weight="800" fill="#ffffff" letter-spacing="-1">${name}</text>
+  <text x="90" y="385" font-family="'Segoe UI',system-ui,sans-serif" font-size="30"
+        font-weight="500" fill="#d8efd8">${sub}</text>
+  <g transform="translate(90 520)">
+    <rect x="0" y="-34" rx="30" ry="30" width="330" height="60" fill="#ffffff"/>
+    <text x="165" y="6" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif"
+          font-size="26" font-weight="700" fill="#0c3823">wildlifeexplorer.us</text>
+  </g>
+</svg>`;
+}
+
+async function main() {
   const indexPath = path.join(DIST, 'index.html');
   if (!existsSync(indexPath)) {
     console.error('❌ dist/index.html not found — run `vite build` first.');
@@ -94,6 +128,19 @@ function main() {
         touristType: 'Wildlife watching',
       };
 
+      // Per-park social card. If rasterisation fails, fall back to the
+      // generic og-image.png so the tag never points at a missing file.
+      let ogImg = `${ORIGIN}/og-image.png`;
+      try {
+        const ogDir = path.join(DIST, 'og');
+        mkdirSync(ogDir, { recursive: true });
+        await sharp(Buffer.from(ogSvg(park)))
+          .png().toFile(path.join(ogDir, `${park.id}.png`));
+        ogImg = `${ORIGIN}/og/${park.id}.png`;
+      } catch (e) {
+        console.warn(`⚠  og image fell back for ${park.id}: ${e.message}`);
+      }
+
       let html = baseHtml
         .replace(/<title>[\s\S]*?<\/title>/, `<title>${esc(title)}</title>`)
         .replace(/(<meta name="description" content=")[^"]*(")/, `$1${esc(descClamped)}$2`)
@@ -101,8 +148,10 @@ function main() {
         .replace(/(<meta property="og:url" content=")[^"]*(")/, `$1${url}$2`)
         .replace(/(<meta property="og:title" content=")[^"]*(")/, `$1${esc(title)}$2`)
         .replace(/(<meta property="og:description" content=")[^"]*(")/, `$1${esc(descClamped)}$2`)
+        .replace(/(<meta property="og:image" content=")[^"]*(")/, `$1${ogImg}$2`)
         .replace(/(<meta name="twitter:title" content=")[^"]*(")/, `$1${esc(title)}$2`)
         .replace(/(<meta name="twitter:description" content=")[^"]*(")/, `$1${esc(descClamped)}$2`)
+        .replace(/(<meta name="twitter:image" content=")[^"]*(")/, `$1${ogImg}$2`)
         .replace(/(<div id="root">)(<\/div>)/, `$1${seoBlock}$2`);
 
       // JSON-LD before </head>
@@ -146,7 +195,8 @@ function main() {
     + `\n</urlset>\n`;
   writeFileSync(path.join(DIST, 'sitemap.xml'), sitemap, 'utf8');
 
-  console.log(`✅ Prerendered ${written}/${wildlifeLocations.length} park pages + sitemap (${urls.length} URLs).`);
+  console.log(`✅ Prerendered ${written}/${wildlifeLocations.length} park pages `
+    + `+ per-park OG images + sitemap (${urls.length} URLs).`);
 }
 
-main();
+main().catch(err => { console.error(err); process.exit(1); });

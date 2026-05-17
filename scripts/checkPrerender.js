@@ -52,6 +52,11 @@ for (const park of wildlifeLocations) {
   if (!html.includes('application/ld+json')) {
     errors.push(`park/${park.id}: JSON-LD structured data missing`);
   }
+  if (!html.includes(`/og/${park.id}.png`)) {
+    errors.push(`park/${park.id}: og:image not the per-park card`);
+  } else if (!existsSync(path.join(DIST, 'og', `${park.id}.png`))) {
+    errors.push(`park/${park.id}: og:image references missing /og/${park.id}.png`);
+  }
   if (!html.includes('class="seo-parklinks"')) {
     errors.push(`park/${park.id}: crawlable internal park links missing (orphan page)`);
   }
