@@ -1141,29 +1141,33 @@ function StateParkMap({ state, parks, onPickPark, onClose }) {
     return () => window.removeEventListener('keydown', h);
   }, [onClose]);
 
-  // Category-aware pins — colour + shape together (so it's distinguishable
-  // for colour-blind users too). Categories mirror stateParksNJ.js:
-  //   state-park       → green circle
-  //   state-forest     → dark-green rounded square
-  //   recreation-area  → blue diamond
-  //   state-preserve   → purple star
+  // Category-aware pins — circular emoji badge mirroring the national-park
+  // pin style. Distinct emoji is itself a colour-independent cue, so this
+  // remains accessible without the earlier shape variants.
+  const CAT_EMOJI = {
+    'state-park':       '🏞️',
+    'state-forest':     '🌲',
+    'recreation-area':  '🛶',
+    'state-preserve':   '🌿',
+  };
+  const CAT_LABEL = {
+    'state-park':       'Park',
+    'state-forest':     'Forest',
+    'recreation-area':  'Recreation',
+    'state-preserve':   'Preserve',
+  };
   const pinFor = (park) => {
-    const cat = (park.category || 'state-park').replace(/^state-/, '');
+    const cat = park.category || 'state-park';
+    const emoji = CAT_EMOJI[cat] || '🏞️';
     return L.divIcon({
-      className: `state-park-pin state-park-pin--${cat}`,
-      html: '<div class="state-park-pin__dot"></div>',
-      iconSize: [18, 18], iconAnchor: [9, 9],
+      className: 'state-park-pin',
+      html: `<div class="state-park-pin__badge" aria-hidden="true">${emoji}</div>`,
+      iconSize: [28, 28], iconAnchor: [14, 14],
     });
   };
 
   // Distinct categories present in this state's park list — drives legend.
   const legendCats = [...new Set(parks.map(p => p.category || 'state-park'))];
-  const CAT_LABEL = {
-    'state-park': 'Park',
-    'state-forest': 'Forest',
-    'recreation-area': 'Recreation',
-    'state-preserve': 'Preserve',
-  };
 
   // After mount, fit the map to the state's bounds with padding.
   function FitToState({ bounds }) {
@@ -1200,9 +1204,7 @@ function StateParkMap({ state, parks, onPickPark, onClose }) {
         <div className="statemap-overlay__legend" aria-label="Map legend">
           {legendCats.map(c => (
             <span key={c} className="statemap-overlay__legend-item">
-              <span className={`legend-swatch state-park-pin--${c.replace(/^state-/, '')}`}>
-                <span className="legend-swatch__dot state-park-pin__dot" />
-              </span>
+              <span aria-hidden="true">{CAT_EMOJI[c] ?? '🏞️'}</span>
               {CAT_LABEL[c] ?? c}
             </span>
           ))}
