@@ -9,7 +9,13 @@ import { SpeedInsights } from '@vercel/speed-insights/react';
 import { track } from '@vercel/analytics';
 
 import { wildlifeLocations, SEASONS, RARITY, ANIMAL_TYPES, STATE_NAMES } from './wildlifeData';
-import { STATE_PARKS_NJ, findStatePark } from './data/stateParksNJ';
+import { STATE_PARKS_NJ, STATE_PARKS_BY_STATE, findStatePark } from './data/stateParksNJ';
+
+// States we have curated park data for. Add a new state's entry here +
+// extend STATE_PARKS_BY_STATE — the selector + map handle it automatically.
+const STATE_PARK_STATES = [
+  { code: 'NJ', name: 'New Jersey', bounds: [[38.93, -75.60], [41.40, -73.89]] },
+];
 import { classifyAnimalSubtype, getSubtypeDefs } from './utils/subcategories';
 import {
   mergeAnimals, balanceAnimals, filterGeographicOutliers, NEVER_EXCEPTIONAL_BIRDS,
@@ -1085,6 +1091,119 @@ function StateParkPanel({ park, onClose }) {
 }
 // noop helper kept for forward-compat (focus on open if we add a search input later)
 function inputFocusKick() { /* placeholder */ }
+
+// ── State selector ─────────────────────────────────────────────────────────
+// "🗺️ State Parks" header button opens this. v1 has NJ only, but the
+// architecture is plural — add a state to STATE_PARK_STATES + provide its
+// park list in STATE_PARKS_BY_STATE and it shows up here automatically.
+function StateSelectorModal({ states, onPick, onClose }) {
+  useEffect(() => {
+    const h = e => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, [onClose]);
+  return (
+    <>
+      <div className="about-overlay" onClick={onClose} />
+      <div className="stateselect-modal" role="dialog" aria-modal="true" aria-label="Choose a state">
+        <button className="about-modal__close" onClick={onClose} aria-label="Close">X</button>
+        <div className="stateselect-modal__head">
+          <h2 className="stateselect-modal__title">State Parks</h2>
+          <p className="stateselect-modal__sub">Choose a state. More states coming soon.</p>
+        </div>
+        <ul className="stateselect-modal__list" aria-label="Available states">
+          {states.map(s => {
+            const count = (STATE_PARKS_BY_STATE[s.code] || []).length;
+            return (
+              <li key={s.code}>
+                <button className="stateselect-modal__item" onClick={() => onPick(s)}>
+                  <span className="stateselect-modal__item-name">{s.name}</span>
+                  <span className="stateselect-modal__item-count">{count} parks</span>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </>
+  );
+}
+
+// ── State-park interactive map ─────────────────────────────────────────────
+// Full-screen overlay containing a Leaflet map zoomed to the selected
+// state's bounds with a pin per park. Mirrors the national-park flow:
+// pin → click → opens StateParkPanel (which stacks above this overlay).
+// Renders its own MapContainer so the main national-park map is untouched.
+function StateParkMap({ state, parks, onPickPark, onClose }) {
+  useEffect(() => {
+    const h = e => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, [onClose]);
+
+  // Simple branded pin (no zoom tiers — state-park v1 keeps it flat).
+  const pinIcon = useMemo(() => L.divIcon({
+    className: 'state-park-pin',
+    html: '<div class="state-park-pin__dot"></div>',
+    iconSize: [16, 16], iconAnchor: [8, 8],
+  }), []);
+
+  // After mount, fit the map to the state's bounds with padding.
+  function FitToState({ bounds }) {
+    const map = useMap();
+    useEffect(() => { map.fitBounds(bounds, { padding: [40, 40] }); }, [map, bounds]);
+    return null;
+  }
+
+  // Bind markers imperatively — same pattern as the national MarkerLayer
+  // (a Leaflet primitive layer avoids per-marker React reconciliation).
+  function StateMarkers({ parks, onPick }) {
+    const map = useMap();
+    useEffect(() => {
+      const group = L.layerGroup();
+      parks.forEach(p => {
+        const m = L.marker([p.lat, p.lng], { icon: pinIcon });
+        m.bindTooltip(p.name, { direction: 'top', opacity: 0.95, className: 'park-tooltip' });
+        m.on('click', () => onPick(p));
+        group.addLayer(m);
+      });
+      group.addTo(map);
+      return () => { map.removeLayer(group); };
+    }, [map, parks, onPick]);
+    return null;
+  }
+
+  return (
+    <div className="statemap-overlay" role="dialog" aria-modal="true" aria-label={`${state.name} state parks map`}>
+      <div className="statemap-overlay__bar">
+        <div className="statemap-overlay__title">
+          🗺️ {state.name} State Parks
+          <span className="statemap-overlay__count">· {parks.length} parks</span>
+        </div>
+        <button className="statemap-overlay__close" onClick={onClose} aria-label="Back to main map">
+          ← Back to national map
+        </button>
+      </div>
+      <div className="statemap-overlay__map">
+        <MapContainer
+          bounds={state.bounds}
+          scrollWheelZoom
+          style={{ width: '100%', height: '100%' }}
+          attributionControl={false}
+        >
+          <TileLayer
+            url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+          />
+          <FitToState bounds={state.bounds} />
+          <StateMarkers parks={parks} onPick={onPickPark} />
+        </MapContainer>
+      </div>
+      <p className="statemap-overlay__hint">
+        Tap any pin to see the wildlife at that park. Data is community-observed via iNaturalist.
+      </p>
+    </div>
+  );
+}
 
 // ── Welcome splash screen ──────────────────────────────────────────────────────
 // Shown only on the very first visit (localStorage key wm_visited).
@@ -3831,8 +3950,10 @@ function AppInner() {
   const [showAbout, setShowAbout] = useState(false);
   const [showLifeList, setShowLifeList] = useState(false);
   const [showParkList, setShowParkList] = useState(false);
-  const [showStateParks, setShowStateParks] = useState(false);
-  const [activeStatePark, setActiveStatePark] = useState(null); // entry from STATE_PARKS_NJ
+  // State Parks: state selector → state-zoomed map → click pin → park panel.
+  const [showStateSelector, setShowStateSelector] = useState(false);
+  const [selectedStateForMap, setSelectedStateForMap] = useState(null); // state code, e.g. 'NJ'
+  const [activeStatePark, setActiveStatePark] = useState(null);         // park entry
   const [aboutScrollTo, setAboutScrollTo] = useState(null);
   const openAbout = useCallback((section = null) => { track('about_open'); setAboutScrollTo(section); setShowAbout(true); }, []);
   const closeAbout = useCallback(() => { setShowAbout(false); setAboutScrollTo(null); }, []);
@@ -3982,10 +4103,18 @@ function AppInner() {
       const stMatch  = u.pathname.match(/^\/state\/([a-z]{2})\/?$/i);
       if (spMatch) {
         const sp = findStatePark(spMatch[1], decodeURIComponent(spMatch[2]));
-        if (sp) { setActiveStatePark(sp); return; }
+        if (sp) {
+          // Open the map underneath so closing the panel returns there.
+          setSelectedStateForMap(spMatch[1].toUpperCase());
+          setActiveStatePark(sp);
+          return;
+        }
       }
-      if (stMatch && stMatch[1].toUpperCase() === 'NJ') {
-        setShowStateParks(true); return;
+      if (stMatch) {
+        const code = stMatch[1].toUpperCase();
+        if (STATE_PARK_STATES.some(s => s.code === code)) {
+          setSelectedStateForMap(code); return;
+        }
       }
       // National-park deep links (existing): ?park=<id> or /park/<id>.
       const pathMatch = u.pathname.match(/^\/park\/([^/]+)\/?$/);
@@ -4317,7 +4446,7 @@ function AppInner() {
               <button className="hdr__about-btn" onClick={() => setShowParkList(true)} title="Browse all national parks (keyboard accessible)" aria-label="Browse all parks">
                 <span className="hdr__about-icon" aria-hidden="true">⌖</span> Parks
               </button>
-              <button className="hdr__about-btn" onClick={() => setShowStateParks(true)} title="Browse state parks (NJ available, more states coming)" aria-label="Browse state parks">
+              <button className="hdr__about-btn" onClick={() => setShowStateSelector(true)} title="Browse state parks by state" aria-label="Browse state parks">
                 <span className="hdr__about-icon" aria-hidden="true">🗺️</span> State Parks
               </button>
               <button className="hdr__about-btn" onClick={() => openAbout()} title="About this project" aria-label="About">
@@ -4596,29 +4725,49 @@ function AppInner() {
           onClose={() => setShowParkList(false)}
         />
       )}
-      {showStateParks && (
-        <ParkListModal
-          parks={STATE_PARKS_NJ}
-          title="Browse state parks"
-          subtitle="New Jersey — more states coming. Wildlife data is community-observed."
-          ariaLabel="Browse New Jersey state parks"
-          onPick={(p) => {
-            setShowStateParks(false);
-            setActiveStatePark(p);
-            track('state_park_open', { park: p.name, state: 'NJ' });
-            try {
-              window.history.replaceState(null, '', `/state-park/nj/${encodeURIComponent(p.id)}`);
-            } catch { /* non-fatal */ }
+      {showStateSelector && (
+        <StateSelectorModal
+          states={STATE_PARK_STATES}
+          onPick={(s) => {
+            setShowStateSelector(false);
+            setSelectedStateForMap(s.code);
+            track('state_select', { state: s.code });
+            try { window.history.replaceState(null, '', `/state/${s.code.toLowerCase()}`); } catch {}
           }}
-          onClose={() => setShowStateParks(false)}
+          onClose={() => setShowStateSelector(false)}
         />
       )}
+      {selectedStateForMap && (() => {
+        const s = STATE_PARK_STATES.find(x => x.code === selectedStateForMap);
+        if (!s) return null;
+        return (
+          <StateParkMap
+            state={s}
+            parks={STATE_PARKS_BY_STATE[s.code] || []}
+            onPickPark={(p) => {
+              setActiveStatePark(p);
+              track('state_park_open', { park: p.name, state: s.code });
+              try { window.history.replaceState(null, '', `/state-park/${s.code.toLowerCase()}/${encodeURIComponent(p.id)}`); } catch {}
+            }}
+            onClose={() => {
+              setSelectedStateForMap(null);
+              setActiveStatePark(null);
+              try { window.history.replaceState(null, '', '/'); } catch {}
+            }}
+          />
+        );
+      })()}
       {activeStatePark && (
         <StateParkPanel
           park={activeStatePark}
           onClose={() => {
             setActiveStatePark(null);
-            try { window.history.replaceState(null, '', '/'); } catch { /* non-fatal */ }
+            // Don't drop the state map underneath — close panel returns to the map.
+            try {
+              const s = STATE_PARK_STATES.find(x => x.code === selectedStateForMap);
+              if (s) window.history.replaceState(null, '', `/state/${s.code.toLowerCase()}`);
+              else   window.history.replaceState(null, '', '/');
+            } catch {}
           }}
         />
       )}
