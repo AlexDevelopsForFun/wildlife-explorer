@@ -9,6 +9,7 @@ import { SpeedInsights } from '@vercel/speed-insights/react';
 import { track } from '@vercel/analytics';
 
 import { wildlifeLocations, SEASONS, RARITY, ANIMAL_TYPES, STATE_NAMES } from './wildlifeData';
+import { STATE_PARKS_NJ, findStatePark } from './data/stateParksNJ';
 import { classifyAnimalSubtype, getSubtypeDefs } from './utils/subcategories';
 import {
   mergeAnimals, balanceAnimals, filterGeographicOutliers, NEVER_EXCEPTIONAL_BIRDS,
@@ -900,7 +901,7 @@ function LifeListModal({ onClose }) {
 // keyboard / screen-reader user cannot open ANY park — the core function of
 // the site (WCAG 2.1.1). This dialog lists every park as a real button with
 // a type-ahead filter; picking one opens the same panel a marker click does.
-function ParkListModal({ parks, onPick, onClose }) {
+function ParkListModal({ parks, onPick, onClose, title = 'Browse parks', subtitle = null, ariaLabel = 'Browse national parks' }) {
   const [q, setQ] = useState('');
   const inputRef = useRef(null);
   useEffect(() => {
@@ -921,10 +922,11 @@ function ParkListModal({ parks, onPick, onClose }) {
   return (
     <>
       <div className="about-overlay" onClick={onClose} />
-      <div className="parklist-modal" role="dialog" aria-modal="true" aria-label="Browse national parks">
+      <div className="parklist-modal" role="dialog" aria-modal="true" aria-label={ariaLabel}>
         <button className="about-modal__close" onClick={onClose} aria-label="Close">X</button>
         <div className="parklist-modal__head">
-          <h2 className="parklist-modal__title">Browse parks</h2>
+          <h2 className="parklist-modal__title">{title}</h2>
+          {subtitle && <p className="parklist-modal__subtitle">{subtitle}</p>}
           <input
             ref={inputRef}
             type="search"
@@ -952,6 +954,137 @@ function ParkListModal({ parks, onPick, onClose }) {
     </>
   );
 }
+
+// ── State-park panel ───────────────────────────────────────────────────────
+// State parks have NO bundled species cache and NO NPS Species API. This
+// panel fetches species LIVE from iNaturalist (community observations) for
+// the park's lat/lng/radius via the existing /api/inat-proxy. Rough rarity
+// tier is derived from observation count within the radius (less precise
+// than the calibrated national-park model — banner makes that explicit).
+//
+// Reuses the seenList engine so the user's life list spans both park
+// types automatically.
+function StateParkPanel({ park, onClose }) {
+  const [state, setState] = useState({ status: 'loading', species: [], total: 0 });
+  const [seenVersion, setSeenVersion] = useState(0);
+  useEffect(() => {
+    inputFocusKick();
+    const h = e => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, [onClose]);
+
+  useEffect(() => {
+    let alive = true;
+    setState({ status: 'loading', species: [], total: 0 });
+    const r = Math.min(park.radiusKm ?? 5, 50);
+    const url = `/api/inat-proxy/observations/species_counts`
+      + `?lat=${park.lat}&lng=${park.lng}&radius=${r}&per_page=200`
+      + `&quality_grade=research,needs_id&verifiable=true`;
+    fetch(url)
+      .then(r => r.ok ? r.json() : Promise.reject(new Error('fetch failed')))
+      .then(j => {
+        if (!alive) return;
+        const results = Array.isArray(j?.results) ? j.results : [];
+        // Map to species cards. Rough rarity bucket via proportional rank.
+        const ranked = results.map(r => ({
+          name: r.taxon?.preferred_common_name || r.taxon?.name || '(unknown)',
+          scientificName: r.taxon?.name || null,
+          count: r.count || 0,
+          iconicType: r.taxon?.iconic_taxon_name || null,
+        })).sort((a, b) => b.count - a.count);
+        const n = ranked.length;
+        ranked.forEach((s, i) => {
+          // Simple 5-bin rank: top 10% guaranteed → bottom 35% rare/exceptional.
+          const pct = (i + 1) / n;
+          s.rarity = pct <= 0.10 ? 'guaranteed'
+                  : pct <= 0.30 ? 'very_likely'
+                  : pct <= 0.55 ? 'likely'
+                  : pct <= 0.80 ? 'unlikely'
+                  : 'rare';
+        });
+        setState({ status: 'ok', species: ranked, total: ranked.length });
+      })
+      .catch(() => alive && setState({ status: 'error', species: [], total: 0 }));
+    return () => { alive = false; };
+  }, [park.id, park.lat, park.lng, park.radiusKm]);
+
+  const seenKeys = useMemo(() => getSeenKeySet(), [seenVersion]);
+  const onToggleSeen = (s) => {
+    toggleSeen(s, { parkId: park.id, parkName: park.name });
+    setSeenVersion(v => v + 1);
+    track('seen_toggle', { added: !seenKeys.has(speciesKey(s)), animal: s.name, park: park.name });
+  };
+
+  return (
+    <>
+      <div className="about-overlay" onClick={onClose} />
+      <div className="statepark-modal" role="dialog" aria-modal="true" aria-label={`Wildlife at ${park.name}`}>
+        <button className="about-modal__close" onClick={onClose} aria-label="Close">X</button>
+        <div className="statepark-modal__head">
+          <h2 className="statepark-modal__title">{park.name}</h2>
+          <p className="statepark-modal__sub">
+            New Jersey · {park.category?.replace('-', ' ') ?? 'state park'} · search radius {park.radiusKm ?? 5} km
+          </p>
+          <div className="statepark-modal__banner" role="note">
+            <strong>Observation-derived data.</strong> This state park has no
+            curated species inventory, so species + rough rarity come from
+            recent community-verified iNaturalist observations within the
+            search radius — less precise than national-park ratings.
+          </div>
+        </div>
+        <div className="statepark-modal__body">
+          {state.status === 'loading' && (
+            <p className="statepark-modal__empty">Loading wildlife…</p>
+          )}
+          {state.status === 'error' && (
+            <p className="statepark-modal__empty">Could not load live data right now. Try again in a moment.</p>
+          )}
+          {state.status === 'ok' && state.species.length === 0 && (
+            <p className="statepark-modal__empty">No recent verified observations found within {park.radiusKm} km.</p>
+          )}
+          {state.status === 'ok' && state.species.length > 0 && (
+            <>
+              <p className="statepark-modal__count">{state.total} species observed nearby (top 200)</p>
+              <ul className="statepark-modal__list">
+                {state.species.map(s => {
+                  const r = RARITY[s.rarity] ?? RARITY.likely;
+                  const seen = seenKeys.has(speciesKey(s));
+                  return (
+                    <li key={(s.scientificName || s.name) + '-' + s.count}
+                        className="statepark-modal__item">
+                      <span className="statepark-modal__item-name">{s.name}</span>
+                      {s.scientificName && s.scientificName !== s.name && (
+                        <span className="statepark-modal__item-sci">{s.scientificName}</span>
+                      )}
+                      <span
+                        className="rarity-badge"
+                        style={{ color: r.textColor || r.color, background: r.color + '22', borderColor: r.color + '55' }}
+                        title={`${r.label} · ${s.count} obs in radius`}
+                      >
+                        {r.label}
+                      </span>
+                      <button
+                        type="button"
+                        className={`seen-toggle${seen ? ' seen-toggle--on' : ''}`}
+                        aria-pressed={seen}
+                        onClick={() => onToggleSeen(s)}
+                      >
+                        {seen ? '✓ Seen' : '+ Mark seen'}
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </>
+          )}
+        </div>
+      </div>
+    </>
+  );
+}
+// noop helper kept for forward-compat (focus on open if we add a search input later)
+function inputFocusKick() { /* placeholder */ }
 
 // ── Welcome splash screen ──────────────────────────────────────────────────────
 // Shown only on the very first visit (localStorage key wm_visited).
@@ -3698,6 +3831,8 @@ function AppInner() {
   const [showAbout, setShowAbout] = useState(false);
   const [showLifeList, setShowLifeList] = useState(false);
   const [showParkList, setShowParkList] = useState(false);
+  const [showStateParks, setShowStateParks] = useState(false);
+  const [activeStatePark, setActiveStatePark] = useState(null); // entry from STATE_PARKS_NJ
   const [aboutScrollTo, setAboutScrollTo] = useState(null);
   const openAbout = useCallback((section = null) => { track('about_open'); setAboutScrollTo(section); setShowAbout(true); }, []);
   const closeAbout = useCallback(() => { setShowAbout(false); setAboutScrollTo(null); }, []);
@@ -3842,8 +3977,17 @@ function AppInner() {
     try { applyShareTokenFromUrl(); } catch { /* non-fatal */ }
     try {
       const u = new URL(window.location.href);
-      // Accept both the share form (?park=<id>) and the SEO-prerendered
-      // clean path (/park/<id>).
+      // State-park deep links: /state-park/<state>/<id>  or  /state/<state>
+      const spMatch  = u.pathname.match(/^\/state-park\/([a-z]{2})\/([^/]+)\/?$/i);
+      const stMatch  = u.pathname.match(/^\/state\/([a-z]{2})\/?$/i);
+      if (spMatch) {
+        const sp = findStatePark(spMatch[1], decodeURIComponent(spMatch[2]));
+        if (sp) { setActiveStatePark(sp); return; }
+      }
+      if (stMatch && stMatch[1].toUpperCase() === 'NJ') {
+        setShowStateParks(true); return;
+      }
+      // National-park deep links (existing): ?park=<id> or /park/<id>.
       const pathMatch = u.pathname.match(/^\/park\/([^/]+)\/?$/);
       const id = u.searchParams.get('park') || (pathMatch && decodeURIComponent(pathMatch[1]));
       if (!id) return;
@@ -4170,8 +4314,11 @@ function AppInner() {
 
             {/* Right actions: About + theme toggle + mobile filter toggle */}
             <div className="hdr__actions">
-              <button className="hdr__about-btn" onClick={() => setShowParkList(true)} title="Browse all parks (keyboard accessible)" aria-label="Browse all parks">
+              <button className="hdr__about-btn" onClick={() => setShowParkList(true)} title="Browse all national parks (keyboard accessible)" aria-label="Browse all parks">
                 <span className="hdr__about-icon" aria-hidden="true">⌖</span> Parks
+              </button>
+              <button className="hdr__about-btn" onClick={() => setShowStateParks(true)} title="Browse state parks (NJ available, more states coming)" aria-label="Browse state parks">
+                <span className="hdr__about-icon" aria-hidden="true">🗺️</span> State Parks
               </button>
               <button className="hdr__about-btn" onClick={() => openAbout()} title="About this project" aria-label="About">
                 <span className="hdr__about-icon">i</span> About
@@ -4447,6 +4594,32 @@ function AppInner() {
           parks={wildlifeLocations}
           onPick={(loc) => { setShowParkList(false); handlePopupOpen(loc); }}
           onClose={() => setShowParkList(false)}
+        />
+      )}
+      {showStateParks && (
+        <ParkListModal
+          parks={STATE_PARKS_NJ}
+          title="Browse state parks"
+          subtitle="New Jersey — more states coming. Wildlife data is community-observed."
+          ariaLabel="Browse New Jersey state parks"
+          onPick={(p) => {
+            setShowStateParks(false);
+            setActiveStatePark(p);
+            track('state_park_open', { park: p.name, state: 'NJ' });
+            try {
+              window.history.replaceState(null, '', `/state-park/nj/${encodeURIComponent(p.id)}`);
+            } catch { /* non-fatal */ }
+          }}
+          onClose={() => setShowStateParks(false)}
+        />
+      )}
+      {activeStatePark && (
+        <StateParkPanel
+          park={activeStatePark}
+          onClose={() => {
+            setActiveStatePark(null);
+            try { window.history.replaceState(null, '', '/'); } catch { /* non-fatal */ }
+          }}
         />
       )}
 
