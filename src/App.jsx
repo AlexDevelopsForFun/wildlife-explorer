@@ -1141,12 +1141,29 @@ function StateParkMap({ state, parks, onPickPark, onClose }) {
     return () => window.removeEventListener('keydown', h);
   }, [onClose]);
 
-  // Simple branded pin (no zoom tiers — state-park v1 keeps it flat).
-  const pinIcon = useMemo(() => L.divIcon({
-    className: 'state-park-pin',
-    html: '<div class="state-park-pin__dot"></div>',
-    iconSize: [16, 16], iconAnchor: [8, 8],
-  }), []);
+  // Category-aware pins — colour + shape together (so it's distinguishable
+  // for colour-blind users too). Categories mirror stateParksNJ.js:
+  //   state-park       → green circle
+  //   state-forest     → dark-green rounded square
+  //   recreation-area  → blue diamond
+  //   state-preserve   → purple star
+  const pinFor = (park) => {
+    const cat = (park.category || 'state-park').replace(/^state-/, '');
+    return L.divIcon({
+      className: `state-park-pin state-park-pin--${cat}`,
+      html: '<div class="state-park-pin__dot"></div>',
+      iconSize: [18, 18], iconAnchor: [9, 9],
+    });
+  };
+
+  // Distinct categories present in this state's park list — drives legend.
+  const legendCats = [...new Set(parks.map(p => p.category || 'state-park'))];
+  const CAT_LABEL = {
+    'state-park': 'Park',
+    'state-forest': 'Forest',
+    'recreation-area': 'Recreation',
+    'state-preserve': 'Preserve',
+  };
 
   // After mount, fit the map to the state's bounds with padding.
   function FitToState({ bounds }) {
@@ -1162,7 +1179,7 @@ function StateParkMap({ state, parks, onPickPark, onClose }) {
     useEffect(() => {
       const group = L.layerGroup();
       parks.forEach(p => {
-        const m = L.marker([p.lat, p.lng], { icon: pinIcon });
+        const m = L.marker([p.lat, p.lng], { icon: pinFor(p) });
         m.bindTooltip(p.name, { direction: 'top', opacity: 0.95, className: 'park-tooltip' });
         m.on('click', () => onPick(p));
         group.addLayer(m);
@@ -1179,6 +1196,16 @@ function StateParkMap({ state, parks, onPickPark, onClose }) {
         <div className="statemap-overlay__title">
           🗺️ {state.name} State Parks
           <span className="statemap-overlay__count">· {parks.length} parks</span>
+        </div>
+        <div className="statemap-overlay__legend" aria-label="Map legend">
+          {legendCats.map(c => (
+            <span key={c} className="statemap-overlay__legend-item">
+              <span className={`legend-swatch state-park-pin--${c.replace(/^state-/, '')}`}>
+                <span className="legend-swatch__dot state-park-pin__dot" />
+              </span>
+              {CAT_LABEL[c] ?? c}
+            </span>
+          ))}
         </div>
         <button className="statemap-overlay__close" onClick={onClose} aria-label="Back to main map">
           ← Back to national map
