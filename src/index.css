@@ -4273,14 +4273,14 @@ textarea:focus-visible,
   background: rgba(7,26,13,0.95);
   flex-shrink: 0;
 }
-.statemap-overlay__title { font-size: 16px; font-weight: 700; color: #fff; }
-.statemap-overlay__count { margin-left: 8px; font-size: 13px; color: #9bbcab; font-weight: 500; }
+.statemap-overlay__title { font-size: 18px; font-weight: 700; color: #fff; }
+.statemap-overlay__count { margin-left: 8px; font-size: 14px; color: #9bbcab; font-weight: 500; }
 .statemap-overlay__close {
-  margin-left: auto; padding: 8px 14px; font-size: 13px; font-weight: 600;
-  background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.22);
+  margin-left: auto; padding: 11px 18px; font-size: 15px; font-weight: 600;
+  background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.28);
   color: #eaf4ee; border-radius: 999px; cursor: pointer;
 }
-.statemap-overlay__close:hover { background: rgba(255,255,255,0.25); }
+.statemap-overlay__close:hover { background: rgba(255,255,255,0.28); }
 .statemap-overlay__map { flex: 1; position: relative; }
 .statemap-overlay__hint {
   position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%);
@@ -4307,13 +4307,13 @@ textarea:focus-visible,
 
 /* Legend in the state-map top bar */
 .statemap-overlay__legend {
-  display: flex; flex-wrap: wrap; gap: 4px 14px;
-  margin-left: 16px; font-size: 12px; color: #cfe6d8;
+  display: flex; flex-wrap: wrap; gap: 6px 18px;
+  margin-left: 22px; font-size: 14px; color: #eaf4ee; font-weight: 500;
 }
 .statemap-overlay__legend-item {
-  display: inline-flex; align-items: center; gap: 5px; white-space: nowrap;
+  display: inline-flex; align-items: center; gap: 7px; white-space: nowrap;
 }
-.statemap-overlay__legend-item > span[aria-hidden] { font-size: 14px; }
+.statemap-overlay__legend-item > span[aria-hidden] { font-size: 18px; line-height: 1; }
 @media (max-width: 720px) {
   .statemap-overlay__legend { width: 100%; margin-left: 0; order: 3; }
 }

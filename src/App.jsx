@@ -13,8 +13,15 @@ import { STATE_PARKS_NJ, STATE_PARKS_BY_STATE, findStatePark } from './data/stat
 
 // States we have curated park data for. Add a new state's entry here +
 // extend STATE_PARKS_BY_STATE — the selector + map handle it automatically.
+// `view` (center + zoom) gives a tight, hand-tuned framing per state;
+// `bounds` is the maxBounds (panning fence) so the user can't drift far.
 const STATE_PARK_STATES = [
-  { code: 'NJ', name: 'New Jersey', bounds: [[38.93, -75.60], [41.40, -73.89]] },
+  {
+    code: 'NJ',
+    name: 'New Jersey',
+    view: { center: [40.18, -74.55], zoom: 8 },
+    bounds: [[38.60, -75.90], [41.70, -73.60]],
+  },
 ];
 import { classifyAnimalSubtype, getSubtypeDefs } from './utils/subcategories';
 import {
@@ -1169,10 +1176,14 @@ function StateParkMap({ state, parks, onPickPark, onClose }) {
   // Distinct categories present in this state's park list — drives legend.
   const legendCats = [...new Set(parks.map(p => p.category || 'state-park'))];
 
-  // After mount, fit the map to the state's bounds with padding.
-  function FitToState({ bounds }) {
+  // Frame the state tightly — uses hand-tuned center+zoom when provided
+  // (NJ does), else falls back to fitBounds with snug padding.
+  function FrameState({ state }) {
     const map = useMap();
-    useEffect(() => { map.fitBounds(bounds, { padding: [40, 40] }); }, [map, bounds]);
+    useEffect(() => {
+      if (state.view) map.setView(state.view.center, state.view.zoom);
+      else if (state.bounds) map.fitBounds(state.bounds, { padding: [12, 12] });
+    }, [map, state]);
     return null;
   }
 
@@ -1215,7 +1226,11 @@ function StateParkMap({ state, parks, onPickPark, onClose }) {
       </div>
       <div className="statemap-overlay__map">
         <MapContainer
-          bounds={state.bounds}
+          center={state.view?.center || [40, -74]}
+          zoom={state.view?.zoom || 7}
+          minZoom={6}
+          maxBounds={state.bounds}
+          maxBoundsViscosity={0.85}
           scrollWheelZoom
           style={{ width: '100%', height: '100%' }}
           attributionControl={false}
@@ -1223,7 +1238,7 @@ function StateParkMap({ state, parks, onPickPark, onClose }) {
           <TileLayer
             url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
           />
-          <FitToState bounds={state.bounds} />
+          <FrameState state={state} />
           <StateMarkers parks={parks} onPick={onPickPark} />
         </MapContainer>
       </div>
