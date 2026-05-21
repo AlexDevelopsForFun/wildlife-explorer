@@ -977,9 +977,18 @@ function ParkListModal({ parks, onPick, onClose, title = 'Browse parks', subtitl
 //
 // Reuses the seenList engine so the user's life list spans both park
 // types automatically.
+// Fallback emoji (no photo) keyed by iNaturalist iconic taxon.
+const STATE_ICONIC_EMOJI = {
+  Aves: '🐦', Mammalia: '🦌', Reptilia: '🦎', Amphibia: '🐸',
+  Actinopterygii: '🐟', Insecta: '🦋', Arachnida: '🕷️', Mollusca: '🐌',
+  Animalia: '🐾',
+};
+
 function StateParkPanel({ park, onClose }) {
   const [state, setState] = useState({ status: 'loading', species: [], total: 0 });
   const [seenVersion, setSeenVersion] = useState(0);
+  const [displayLimit, setDisplayLimit] = useState(40);
+  useEffect(() => { setDisplayLimit(40); }, [park.id]);
   useEffect(() => {
     inputFocusKick();
     const h = e => { if (e.key === 'Escape') onClose(); };
@@ -999,13 +1008,20 @@ function StateParkPanel({ park, onClose }) {
       .then(j => {
         if (!alive) return;
         const results = Array.isArray(j?.results) ? j.results : [];
-        // Map to species cards. Rough rarity bucket via proportional rank.
-        const ranked = results.map(r => ({
-          name: r.taxon?.preferred_common_name || r.taxon?.name || '(unknown)',
-          scientificName: r.taxon?.name || null,
-          count: r.count || 0,
-          iconicType: r.taxon?.iconic_taxon_name || null,
-        })).sort((a, b) => b.count - a.count);
+        // Keep ANIMALS only (this is a wildlife app — drop plants/fungi etc.).
+        const NON_ANIMAL = new Set(['Plantae', 'Fungi', 'Chromista', 'Protozoa']);
+        // iNat's species_counts embeds taxon.default_photo, so photos come
+        // inline — no per-species fetch, no rate-limit risk.
+        const ranked = results
+          .filter(r => !NON_ANIMAL.has(r.taxon?.iconic_taxon_name))
+          .map(r => ({
+            name: r.taxon?.preferred_common_name || r.taxon?.name || '(unknown)',
+            scientificName: r.taxon?.name || null,
+            count: r.count || 0,
+            iconicType: r.taxon?.iconic_taxon_name || null,
+            photo: r.taxon?.default_photo?.medium_url || r.taxon?.default_photo?.square_url || null,
+          }))
+          .sort((a, b) => b.count - a.count);
         const n = ranked.length;
         ranked.forEach((s, i) => {
           // Simple 5-bin rank: top 10% guaranteed → bottom 35% rare/exceptional.
@@ -1058,25 +1074,33 @@ function StateParkPanel({ park, onClose }) {
           )}
           {state.status === 'ok' && state.species.length > 0 && (
             <>
-              <p className="statepark-modal__count">{state.total} species observed nearby (top 200)</p>
+              <p className="statepark-modal__count">{state.total} animal species observed nearby</p>
               <ul className="statepark-modal__list">
-                {state.species.map(s => {
+                {state.species.slice(0, displayLimit).map(s => {
                   const r = RARITY[s.rarity] ?? RARITY.likely;
                   const seen = seenKeys.has(speciesKey(s));
+                  const ph = STATE_ICONIC_EMOJI[s.iconicType] || '🐾';
                   return (
                     <li key={(s.scientificName || s.name) + '-' + s.count}
-                        className="statepark-modal__item">
-                      <span className="statepark-modal__item-name">{s.name}</span>
-                      {s.scientificName && s.scientificName !== s.name && (
-                        <span className="statepark-modal__item-sci">{s.scientificName}</span>
-                      )}
-                      <span
-                        className="rarity-badge"
-                        style={{ color: r.textColor || r.color, background: r.color + '22', borderColor: r.color + '55' }}
-                        title={`${r.label} · ${s.count} obs in radius`}
-                      >
-                        {r.label}
-                      </span>
+                        className="statepark-card">
+                      <div className="statepark-card__photo">
+                        {s.photo
+                          ? <img src={s.photo} alt={s.name} loading="lazy" decoding="async" />
+                          : <span className="statepark-card__ph" aria-hidden="true">{ph}</span>}
+                      </div>
+                      <div className="statepark-card__meta">
+                        <div className="statepark-card__name">{s.name}</div>
+                        {s.scientificName && s.scientificName !== s.name && (
+                          <div className="statepark-card__sci">{s.scientificName}</div>
+                        )}
+                        <span
+                          className="rarity-badge"
+                          style={{ color: r.textColor || r.color, background: r.color + '22', borderColor: r.color + '55' }}
+                          title={`${r.label} · ${s.count} recent observations within ${park.radiusKm} km`}
+                        >
+                          {r.label}
+                        </span>
+                      </div>
                       <button
                         type="button"
                         className={`seen-toggle${seen ? ' seen-toggle--on' : ''}`}
@@ -1089,6 +1113,12 @@ function StateParkPanel({ park, onClose }) {
                   );
                 })}
               </ul>
+              {state.species.length > displayLimit && (
+                <button className="statepark-modal__more"
+                  onClick={() => setDisplayLimit(d => d + 40)}>
+                  Show more ({state.species.length - displayLimit} remaining)
+                </button>
+              )}
             </>
           )}
         </div>
