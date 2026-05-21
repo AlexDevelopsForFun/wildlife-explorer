@@ -996,18 +996,27 @@ const STATE_GROUP_META = {
   other: { label: 'Other', emoji: '🐾' },
 };
 const STATE_GROUP_ORDER = ['birds', 'mammals', 'reptiles', 'amphibians', 'fish', 'insects', 'other'];
+// Map our category group → the app's animalType, so the SAME name-based
+// subtype classifier the national parks use (raptor / songbird / …) works
+// on state-park species too.
+const STATE_GROUP_TO_TYPE = {
+  birds: 'bird', mammals: 'mammal', reptiles: 'reptile',
+  amphibians: 'amphibian', fish: 'fish', insects: 'insect', other: null,
+};
 
 function StateParkPanel({ park, onClose }) {
   const [state, setState] = useState({ status: 'loading', species: [], total: 0 });
   const [seenVersion, setSeenVersion] = useState(0);
   const [displayLimit, setDisplayLimit] = useState(40);
   const [catFilter, setCatFilter]   = useState('all');
+  const [subtypeFilter, setSubtypeFilter] = useState('all'); // e.g. raptor (Birds of Prey)
   const [sortBy, setSortBy]         = useState('observed'); // observed | common | rare
   const [query, setQuery]           = useState('');
   const [seenFilter, setSeenFilter] = useState('all');      // all | unseen | seen
   useEffect(() => {
-    setDisplayLimit(40); setCatFilter('all'); setQuery(''); setSeenFilter('all'); setSortBy('observed');
+    setDisplayLimit(40); setCatFilter('all'); setSubtypeFilter('all'); setQuery(''); setSeenFilter('all'); setSortBy('observed');
   }, [park.id]);
+  useEffect(() => { setSubtypeFilter('all'); }, [catFilter]); // reset subtype when category changes
   useEffect(() => {
     const h = e => { if (e.key === 'Escape') onClose(); };
     window.addEventListener('keydown', h);
@@ -1035,6 +1044,7 @@ function StateParkPanel({ park, onClose }) {
             count: r.count || 0,
             iconicType: r.taxon?.iconic_taxon_name || null,
             group: STATE_GROUP_OF(r.taxon?.iconic_taxon_name),
+            animalType: STATE_GROUP_TO_TYPE[STATE_GROUP_OF(r.taxon?.iconic_taxon_name)] || null,
             photo: r.taxon?.default_photo?.medium_url || r.taxon?.default_photo?.square_url || null,
           }))
           .sort((a, b) => b.count - a.count);
@@ -1070,11 +1080,19 @@ function StateParkPanel({ park, onClose }) {
     return m;
   }, [state.species]);
 
-  // Species after the category tab — drives both the spectrum + the list.
-  const inCategory = useMemo(
-    () => catFilter === 'all' ? state.species : state.species.filter(s => s.group === catFilter),
-    [state.species, catFilter],
-  );
+  // Subtype tabs (Birds of Prey, Songbirds, …) — only when the active
+  // category maps to a type the name-based classifier knows subtypes for.
+  const activeType = catFilter === 'all' ? null : STATE_GROUP_TO_TYPE[catFilter];
+  const subtypeDefs = activeType ? getSubtypeDefs(activeType) : null;
+
+  // Species after category + subtype tabs — drives both the spectrum + list.
+  const inCategory = useMemo(() => {
+    let list = catFilter === 'all' ? state.species : state.species.filter(s => s.group === catFilter);
+    if (subtypeFilter !== 'all' && subtypeDefs) {
+      list = list.filter(s => classifyAnimalSubtype(s) === subtypeFilter);
+    }
+    return list;
+  }, [state.species, catFilter, subtypeFilter, subtypeDefs]);
 
   const tierCounts = useMemo(() => {
     const m = { guaranteed: 0, very_likely: 0, likely: 0, unlikely: 0, rare: 0 };
@@ -1151,6 +1169,22 @@ function StateParkPanel({ park, onClose }) {
                 ))}
               </div>
 
+              {/* Subtype tabs (e.g. Birds → Birds of Prey / Songbirds / …) */}
+              {subtypeDefs && (
+                <div className="sp-tabs sp-tabs--sub" role="group" aria-label="Filter by sub-type">
+                  <button className={`sp-tab sp-tab--sub${subtypeFilter === 'all' ? ' is-active' : ''}`}
+                    onClick={() => { setSubtypeFilter('all'); setDisplayLimit(40); }}>
+                    All {STATE_GROUP_META[catFilter]?.label}
+                  </button>
+                  {subtypeDefs.map(({ key, emoji, label }) => (
+                    <button key={key} className={`sp-tab sp-tab--sub${subtypeFilter === key ? ' is-active' : ''}`}
+                      onClick={() => { setSubtypeFilter(key); setDisplayLimit(40); track('state_park_subtype', { type: activeType, subtype: key }); }}>
+                      {emoji} {label}
+                    </button>
+                  ))}
+                </div>
+              )}
+
               {/* Controls: sort + search + seen filter */}
               <div className="sp-controls">
                 <select className="sp-control-select" value={sortBy} onChange={e => setSortBy(e.target.value)}
@@ -1222,8 +1256,8 @@ function StateParkPanel({ park, onClose }) {
                           <div className="animal-card__badges">
                             <span className="rarity-badge"
                               style={{ color: r.textColor || r.color, background: r.color + '22', borderColor: r.color + '55' }}
-                              title={`${r.label} · ${s.count} recent observations within ${park.radiusKm} km`}>
-                              {r.label}
+                              title={`${r.label}${r.probability ? ` · ${r.probability}` : ''} · ${s.count} recent observations within ${park.radiusKm} km`}>
+                              {r.label}{r.probability ? ` · ${r.probability}` : ''}
                             </span>
                           </div>
                           <p className="animal-card__fact">
