@@ -1184,38 +1184,57 @@ function StateParkPanel({ park, onClose }) {
             <>
               <p className="statepark-modal__count">Showing {Math.min(displayLimit, visible.length)} of {visible.length} species</p>
               {visible.length === 0 && <p className="statepark-modal__empty">No species match the current filters.</p>}
-              <ul className="statepark-modal__list">
+              {/* Reuses the national-park card classes (.animal-card, .photo-thumb,
+                  .animal-card__*) in a 2-col grid so it looks identical. */}
+              <div className="statepark-grid">
                 {visible.slice(0, displayLimit).map(s => {
                   const r = RARITY[s.rarity] ?? RARITY.likely;
                   const seen = seenKeys.has(speciesKey(s));
                   const ph = STATE_ICONIC_EMOJI[s.iconicType] || '🐾';
+                  const groupLabel = STATE_GROUP_META[s.group]?.label;
                   return (
-                    <li key={(s.scientificName || s.name) + '-' + s.count} className="statepark-card">
-                      <div className="statepark-card__photo">
-                        {s.photo
-                          ? <img src={s.photo} alt={s.name} loading="lazy" decoding="async" />
-                          : <span className="statepark-card__ph" aria-hidden="true">{ph}</span>}
+                    <div key={(s.scientificName || s.name) + '-' + s.count} className="animal-card">
+                      <div className="animal-card__top">
+                        <div className="photo-col">
+                          {s.photo ? (
+                            <div className="photo-thumb photo-thumb--img">
+                              <img src={s.photo} alt={s.name} loading="lazy" decoding="async" />
+                            </div>
+                          ) : (
+                            <div className="photo-thumb photo-thumb--none">
+                              <span aria-hidden="true">{ph}</span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="animal-card__meta">
+                          <div className="animal-card__name">
+                            {s.name}
+                            {groupLabel && <span className="type-label">{groupLabel}</span>}
+                          </div>
+                          {s.scientificName && s.scientificName !== s.name && (
+                            <div className="animal-card__scientific">{s.scientificName}</div>
+                          )}
+                          <button type="button"
+                            className={`seen-toggle${seen ? ' seen-toggle--on' : ''}`}
+                            aria-pressed={seen} onClick={() => onToggleSeen(s)}>
+                            {seen ? '✓ Seen' : '+ Mark seen'}
+                          </button>
+                          <div className="animal-card__badges">
+                            <span className="rarity-badge"
+                              style={{ color: r.textColor || r.color, background: r.color + '22', borderColor: r.color + '55' }}
+                              title={`${r.label} · ${s.count} recent observations within ${park.radiusKm} km`}>
+                              {r.label}
+                            </span>
+                          </div>
+                          <p className="animal-card__fact">
+                            {s.count} recent observation{s.count === 1 ? '' : 's'} within {park.radiusKm} km.
+                          </p>
+                        </div>
                       </div>
-                      <div className="statepark-card__meta">
-                        <div className="statepark-card__name">{s.name}</div>
-                        {s.scientificName && s.scientificName !== s.name && (
-                          <div className="statepark-card__sci">{s.scientificName}</div>
-                        )}
-                        <span className="rarity-badge"
-                          style={{ color: r.textColor || r.color, background: r.color + '22', borderColor: r.color + '55' }}
-                          title={`${r.label} · ${s.count} recent observations within ${park.radiusKm} km`}>
-                          {r.label}
-                        </span>
-                      </div>
-                      <button type="button"
-                        className={`seen-toggle${seen ? ' seen-toggle--on' : ''}`}
-                        aria-pressed={seen} onClick={() => onToggleSeen(s)}>
-                        {seen ? '✓ Seen' : '+ Mark seen'}
-                      </button>
-                    </li>
+                    </div>
                   );
                 })}
-              </ul>
+              </div>
               {visible.length > displayLimit && (
                 <button className="statepark-modal__more" onClick={() => setDisplayLimit(d => d + 40)}>
                   Show more ({visible.length - displayLimit} remaining)
