@@ -984,13 +984,31 @@ const STATE_ICONIC_EMOJI = {
   Animalia: '🐾',
 };
 
+// iNat iconic taxon → UI category group.
+const STATE_GROUP_OF = (ic) => ({
+  Aves: 'birds', Mammalia: 'mammals', Reptilia: 'reptiles', Amphibia: 'amphibians',
+  Actinopterygii: 'fish', Insecta: 'insects', Arachnida: 'insects', Mollusca: 'other',
+}[ic] || 'other');
+const STATE_GROUP_META = {
+  birds: { label: 'Birds', emoji: '🐦' }, mammals: { label: 'Mammals', emoji: '🦌' },
+  reptiles: { label: 'Reptiles', emoji: '🦎' }, amphibians: { label: 'Amphibians', emoji: '🐸' },
+  fish: { label: 'Fish', emoji: '🐟' }, insects: { label: 'Insects', emoji: '🦋' },
+  other: { label: 'Other', emoji: '🐾' },
+};
+const STATE_GROUP_ORDER = ['birds', 'mammals', 'reptiles', 'amphibians', 'fish', 'insects', 'other'];
+
 function StateParkPanel({ park, onClose }) {
   const [state, setState] = useState({ status: 'loading', species: [], total: 0 });
   const [seenVersion, setSeenVersion] = useState(0);
   const [displayLimit, setDisplayLimit] = useState(40);
-  useEffect(() => { setDisplayLimit(40); }, [park.id]);
+  const [catFilter, setCatFilter]   = useState('all');
+  const [sortBy, setSortBy]         = useState('observed'); // observed | common | rare
+  const [query, setQuery]           = useState('');
+  const [seenFilter, setSeenFilter] = useState('all');      // all | unseen | seen
   useEffect(() => {
-    inputFocusKick();
+    setDisplayLimit(40); setCatFilter('all'); setQuery(''); setSeenFilter('all'); setSortBy('observed');
+  }, [park.id]);
+  useEffect(() => {
     const h = e => { if (e.key === 'Escape') onClose(); };
     window.addEventListener('keydown', h);
     return () => window.removeEventListener('keydown', h);
@@ -1008,10 +1026,7 @@ function StateParkPanel({ park, onClose }) {
       .then(j => {
         if (!alive) return;
         const results = Array.isArray(j?.results) ? j.results : [];
-        // Keep ANIMALS only (this is a wildlife app — drop plants/fungi etc.).
         const NON_ANIMAL = new Set(['Plantae', 'Fungi', 'Chromista', 'Protozoa']);
-        // iNat's species_counts embeds taxon.default_photo, so photos come
-        // inline — no per-species fetch, no rate-limit risk.
         const ranked = results
           .filter(r => !NON_ANIMAL.has(r.taxon?.iconic_taxon_name))
           .map(r => ({
@@ -1019,17 +1034,19 @@ function StateParkPanel({ park, onClose }) {
             scientificName: r.taxon?.name || null,
             count: r.count || 0,
             iconicType: r.taxon?.iconic_taxon_name || null,
+            group: STATE_GROUP_OF(r.taxon?.iconic_taxon_name),
             photo: r.taxon?.default_photo?.medium_url || r.taxon?.default_photo?.square_url || null,
           }))
           .sort((a, b) => b.count - a.count);
-        const n = ranked.length;
+        // Rarity by observation-rank percentile, tuned to a realistic spread
+        // (few "guaranteed", most likely/unlikely/rare — mirrors NPS feel).
+        const n = ranked.length || 1;
         ranked.forEach((s, i) => {
-          // Simple 5-bin rank: top 10% guaranteed → bottom 35% rare/exceptional.
           const pct = (i + 1) / n;
-          s.rarity = pct <= 0.10 ? 'guaranteed'
-                  : pct <= 0.30 ? 'very_likely'
-                  : pct <= 0.55 ? 'likely'
-                  : pct <= 0.80 ? 'unlikely'
+          s.rarity = pct <= 0.01 ? 'guaranteed'
+                  : pct <= 0.06 ? 'very_likely'
+                  : pct <= 0.30 ? 'likely'
+                  : pct <= 0.75 ? 'unlikely'
                   : 'rare';
         });
         setState({ status: 'ok', species: ranked, total: ranked.length });
@@ -1040,10 +1057,50 @@ function StateParkPanel({ park, onClose }) {
 
   const seenKeys = useMemo(() => getSeenKeySet(), [seenVersion]);
   const onToggleSeen = (s) => {
+    const added = !seenKeys.has(speciesKey(s));
     toggleSeen(s, { parkId: park.id, parkName: park.name });
     setSeenVersion(v => v + 1);
-    track('seen_toggle', { added: !seenKeys.has(speciesKey(s)), animal: s.name, park: park.name });
+    track('seen_toggle', { added, animal: s.name, park: park.name });
   };
+
+  // Category tab counts (full list).
+  const groupCounts = useMemo(() => {
+    const m = {};
+    for (const s of state.species) m[s.group] = (m[s.group] || 0) + 1;
+    return m;
+  }, [state.species]);
+
+  // Species after the category tab — drives both the spectrum + the list.
+  const inCategory = useMemo(
+    () => catFilter === 'all' ? state.species : state.species.filter(s => s.group === catFilter),
+    [state.species, catFilter],
+  );
+
+  const tierCounts = useMemo(() => {
+    const m = { guaranteed: 0, very_likely: 0, likely: 0, unlikely: 0, rare: 0 };
+    for (const s of inCategory) m[s.rarity] = (m[s.rarity] || 0) + 1;
+    return m;
+  }, [inCategory]);
+
+  const visible = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    let list = inCategory.filter(s => {
+      if (q && !(s.name.toLowerCase().includes(q) || (s.scientificName || '').toLowerCase().includes(q))) return false;
+      if (seenFilter !== 'all') {
+        const seen = seenKeys.has(speciesKey(s));
+        if (seenFilter === 'seen' ? !seen : seen) return false;
+      }
+      return true;
+    });
+    if (sortBy === 'common' || sortBy === 'rare') {
+      const dir = sortBy === 'common' ? 1 : -1;
+      list = [...list].sort((a, b) =>
+        ((_RARITY_ORDER[a.rarity] ?? 5) - (_RARITY_ORDER[b.rarity] ?? 5)) * dir || b.count - a.count);
+    } // else 'observed' = already count-desc
+    return list;
+  }, [inCategory, query, seenFilter, seenKeys, sortBy]);
+
+  const TIERS = ['guaranteed', 'very_likely', 'likely', 'unlikely', 'rare'];
 
   return (
     <>
@@ -1056,33 +1113,84 @@ function StateParkPanel({ park, onClose }) {
             New Jersey · {park.category?.replace('-', ' ') ?? 'state park'} · search radius {park.radiusKm ?? 5} km
           </p>
           <div className="statepark-modal__banner" role="note">
-            <strong>Observation-derived data.</strong> This state park has no
-            curated species inventory, so species + rough rarity come from
-            recent community-verified iNaturalist observations within the
-            search radius — less precise than national-park ratings.
+            <strong>Observation-derived data.</strong> Species + rough rarity come from
+            recent community-verified iNaturalist observations within the radius —
+            less precise than national-park ratings.
           </div>
+
+          {state.status === 'ok' && state.species.length > 0 && (
+            <>
+              {/* Rarity spectrum */}
+              <div className="sp-spectrum">
+                <div className="sp-spectrum__bar" aria-hidden="true">
+                  {TIERS.map(t => {
+                    const c = tierCounts[t]; if (!c) return null;
+                    return <span key={t} style={{ flexGrow: c, background: (RARITY[t]?.color || '#888') }} />;
+                  })}
+                </div>
+                <div className="sp-spectrum__labels">
+                  {TIERS.map(t => tierCounts[t] ? (
+                    <span key={t} style={{ color: RARITY[t]?.textColor || RARITY[t]?.color }}>
+                      {RARITY[t]?.label} · {tierCounts[t]}
+                    </span>
+                  ) : null)}
+                </div>
+              </div>
+
+              {/* Category tabs */}
+              <div className="sp-tabs" role="group" aria-label="Filter by animal group">
+                <button className={`sp-tab${catFilter === 'all' ? ' is-active' : ''}`}
+                  onClick={() => { setCatFilter('all'); setDisplayLimit(40); }}>
+                  All · {state.species.length}
+                </button>
+                {STATE_GROUP_ORDER.filter(g => groupCounts[g]).map(g => (
+                  <button key={g} className={`sp-tab${catFilter === g ? ' is-active' : ''}`}
+                    onClick={() => { setCatFilter(g); setDisplayLimit(40); track('state_park_filter', { group: g }); }}>
+                    {STATE_GROUP_META[g].emoji} {STATE_GROUP_META[g].label} · {groupCounts[g]}
+                  </button>
+                ))}
+              </div>
+
+              {/* Controls: sort + search + seen filter */}
+              <div className="sp-controls">
+                <select className="sp-control-select" value={sortBy} onChange={e => setSortBy(e.target.value)}
+                  aria-label="Sort species">
+                  <option value="observed">Most observed</option>
+                  <option value="common">Most likely first</option>
+                  <option value="rare">Rarest first</option>
+                </select>
+                <input className="sp-control-search" type="search" placeholder="Search species…"
+                  value={query} onChange={e => { setQuery(e.target.value); setDisplayLimit(40); }}
+                  aria-label="Search species" />
+                <span className="sp-seen-seg" role="group" aria-label="Filter by seen status">
+                  {[['all', 'All'], ['unseen', 'To find'], ['seen', 'Seen']].map(([v, lbl]) => (
+                    <button key={v} className={`sp-seen-btn${seenFilter === v ? ' is-active' : ''}`}
+                      aria-pressed={seenFilter === v}
+                      onClick={() => { setSeenFilter(v); setDisplayLimit(40); }}>{lbl}</button>
+                  ))}
+                </span>
+              </div>
+            </>
+          )}
         </div>
+
         <div className="statepark-modal__body">
-          {state.status === 'loading' && (
-            <p className="statepark-modal__empty">Loading wildlife…</p>
-          )}
-          {state.status === 'error' && (
-            <p className="statepark-modal__empty">Could not load live data right now. Try again in a moment.</p>
-          )}
+          {state.status === 'loading' && <p className="statepark-modal__empty">Loading wildlife…</p>}
+          {state.status === 'error' && <p className="statepark-modal__empty">Could not load live data right now. Try again in a moment.</p>}
           {state.status === 'ok' && state.species.length === 0 && (
             <p className="statepark-modal__empty">No recent verified observations found within {park.radiusKm} km.</p>
           )}
           {state.status === 'ok' && state.species.length > 0 && (
             <>
-              <p className="statepark-modal__count">{state.total} animal species observed nearby</p>
+              <p className="statepark-modal__count">Showing {Math.min(displayLimit, visible.length)} of {visible.length} species</p>
+              {visible.length === 0 && <p className="statepark-modal__empty">No species match the current filters.</p>}
               <ul className="statepark-modal__list">
-                {state.species.slice(0, displayLimit).map(s => {
+                {visible.slice(0, displayLimit).map(s => {
                   const r = RARITY[s.rarity] ?? RARITY.likely;
                   const seen = seenKeys.has(speciesKey(s));
                   const ph = STATE_ICONIC_EMOJI[s.iconicType] || '🐾';
                   return (
-                    <li key={(s.scientificName || s.name) + '-' + s.count}
-                        className="statepark-card">
+                    <li key={(s.scientificName || s.name) + '-' + s.count} className="statepark-card">
                       <div className="statepark-card__photo">
                         {s.photo
                           ? <img src={s.photo} alt={s.name} loading="lazy" decoding="async" />
@@ -1093,30 +1201,24 @@ function StateParkPanel({ park, onClose }) {
                         {s.scientificName && s.scientificName !== s.name && (
                           <div className="statepark-card__sci">{s.scientificName}</div>
                         )}
-                        <span
-                          className="rarity-badge"
+                        <span className="rarity-badge"
                           style={{ color: r.textColor || r.color, background: r.color + '22', borderColor: r.color + '55' }}
-                          title={`${r.label} · ${s.count} recent observations within ${park.radiusKm} km`}
-                        >
+                          title={`${r.label} · ${s.count} recent observations within ${park.radiusKm} km`}>
                           {r.label}
                         </span>
                       </div>
-                      <button
-                        type="button"
+                      <button type="button"
                         className={`seen-toggle${seen ? ' seen-toggle--on' : ''}`}
-                        aria-pressed={seen}
-                        onClick={() => onToggleSeen(s)}
-                      >
+                        aria-pressed={seen} onClick={() => onToggleSeen(s)}>
                         {seen ? '✓ Seen' : '+ Mark seen'}
                       </button>
                     </li>
                   );
                 })}
               </ul>
-              {state.species.length > displayLimit && (
-                <button className="statepark-modal__more"
-                  onClick={() => setDisplayLimit(d => d + 40)}>
-                  Show more ({state.species.length - displayLimit} remaining)
+              {visible.length > displayLimit && (
+                <button className="statepark-modal__more" onClick={() => setDisplayLimit(d => d + 40)}>
+                  Show more ({visible.length - displayLimit} remaining)
                 </button>
               )}
             </>
@@ -1126,8 +1228,6 @@ function StateParkPanel({ park, onClose }) {
     </>
   );
 }
-// noop helper kept for forward-compat (focus on open if we add a search input later)
-function inputFocusKick() { /* placeholder */ }
 
 // ── State selector ─────────────────────────────────────────────────────────
 // "🗺️ State Parks" header button opens this. v1 has NJ only, but the
