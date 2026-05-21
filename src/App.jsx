@@ -1141,12 +1141,20 @@ function StateSelectorModal({ states, onPick, onClose }) {
 // state's bounds with a pin per park. Mirrors the national-park flow:
 // pin → click → opens StateParkPanel (which stacks above this overlay).
 // Renders its own MapContainer so the main national-park map is untouched.
-function StateParkMap({ state, parks, onPickPark, onClose }) {
+function StateParkMap({ state, parks, stateGeo, onPickPark, onClose }) {
   useEffect(() => {
     const h = e => { if (e.key === 'Escape') onClose(); };
     window.addEventListener('keydown', h);
     return () => window.removeEventListener('keydown', h);
   }, [onClose]);
+
+  // The selected state's boundary polygon (from the shared US-states
+  // GeoJSON the national map already loads) — highlighted so the state
+  // stands out from its dark neighbours, and used to frame the map tightly.
+  const stateFeature = useMemo(
+    () => stateGeo?.features?.find(f => f.properties?.name === state.name) || null,
+    [stateGeo, state.name],
+  );
 
   // Category-aware pins — circular emoji badge mirroring the national-park
   // pin style. Distinct emoji is itself a colour-independent cue, so this
@@ -1176,14 +1184,19 @@ function StateParkMap({ state, parks, onPickPark, onClose }) {
   // Distinct categories present in this state's park list — drives legend.
   const legendCats = [...new Set(parks.map(p => p.category || 'state-park'))];
 
-  // Frame the state tightly — uses hand-tuned center+zoom when provided
-  // (NJ does), else falls back to fitBounds with snug padding.
-  function FrameState({ state }) {
+  // Frame the state tightly: fit to the actual boundary polygon when we
+  // have it (snug, regardless of viewport), else the hand-tuned view, else
+  // the bounds fence.
+  function FrameState({ state, feature }) {
     const map = useMap();
     useEffect(() => {
+      if (feature) {
+        try { map.fitBounds(L.geoJSON(feature).getBounds(), { padding: [18, 18] }); return; }
+        catch { /* fall through */ }
+      }
       if (state.view) map.setView(state.view.center, state.view.zoom);
       else if (state.bounds) map.fitBounds(state.bounds, { padding: [12, 12] });
-    }, [map, state]);
+    }, [map, state, feature]);
     return null;
   }
 
@@ -1238,7 +1251,15 @@ function StateParkMap({ state, parks, onPickPark, onClose }) {
           <TileLayer
             url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
           />
-          <FrameState state={state} />
+          {stateFeature && (
+            <GeoJSON
+              key={state.code}
+              data={stateFeature}
+              interactive={false}
+              style={{ color: '#5fd38a', weight: 3, opacity: 0.95, fillColor: '#4caf50', fillOpacity: 0.12 }}
+            />
+          )}
+          <FrameState state={state} feature={stateFeature} />
           <StateMarkers parks={parks} onPick={onPickPark} />
         </MapContainer>
       </div>
@@ -4788,6 +4809,7 @@ function AppInner() {
           <StateParkMap
             state={s}
             parks={STATE_PARKS_BY_STATE[s.code] || []}
+            stateGeo={stateGeoData}
             onPickPark={(p) => {
               setActiveStatePark(p);
               track('state_park_open', { park: p.name, state: s.code });
