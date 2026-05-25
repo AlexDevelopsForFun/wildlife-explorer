@@ -1024,9 +1024,25 @@ function StateParkPanel({ park, onClose, openAbout }) {
   // 5 km so eBird/iNat return enough recent obs, capped at 20 km. Drives both
   // the eBird and iNaturalist queries so the species list reflects the PARK.
   const searchRadiusKm = Math.min(Math.max(park.radiusKm ?? 5, 5), 20);
+  // Per-species iNat seasonal histograms + park-wide observer-effort baseline —
+  // the SAME ancillary inputs national parks fetch (fetchInatMonthlyHist /
+  // fetchInatParkMonthlyEffort). Feeding these into the identical
+  // computeEffectiveRarity / AnimalCard turns the flat season chips into real
+  // per-season encounter probabilities and makes rarity season-aware — without
+  // touching any national-park code (purely additive, location-based).
+  const [seasonalFreqs, setSeasonalFreqs] = useState({});
+  const [parkEffort, setParkEffort] = useState(null);
+  const freqFetchedRef = useRef(new Set());
   useEffect(() => {
     setDisplayLimit(24); setActiveTypes(new Set(DEFAULT_ACTIVE_TYPES)); setSubtypeFilter('all'); setQuery(''); setSeenFilter('all'); setSortBy('iconic-first'); setSeason(currentSeasonKey()); setRarityFilter('all');
+    freqFetchedRef.current = new Set(); setSeasonalFreqs({}); setParkEffort(null);
   }, [park.id]);
+  // Fire-and-forget park-wide effort baseline (90-day cached, once per park).
+  useEffect(() => {
+    let alive = true;
+    fetchInatParkMonthlyEffort(park.lat, park.lng, park.id).then(eff => { if (alive) setParkEffort(eff); });
+    return () => { alive = false; };
+  }, [park.id, park.lat, park.lng]);
   // focusedType = the single selected type (drives the subtype bar); null when
   // multiple types are active.
   const focusedType = activeTypes.size === 1 ? [...activeTypes][0] : null;
@@ -1122,18 +1138,52 @@ function StateParkPanel({ park, onClose, openAbout }) {
     });
   }, [state.species, park.id]);
 
-  // Effective rarity per (enriched) animal — the SAME function AnimalCard and
-  // national parks use (year-round baseline; no season/zone context).
+  // Active season for rarity (null when "All Seasons" selected).
+  const activeSeasonForRarity = season === 'all' ? null : season;
+
+  // Effective rarity per (enriched) animal — the SAME function + inputs national
+  // parks use: season-aware, using the live iNat seasonal histograms
+  // (seasonalFreqs) effort-corrected by parkEffort. Drives the spectrum, sort,
+  // and rarity-dropdown filter so they all agree with the card pills.
   const effRarity = useMemo(() => {
     const m = new Map();
     for (const a of enrichedSpecies) {
       m.set(a, computeEffectiveRarity(a, {
-        activeSeason: null, activeZone: null, seasonalFreqs: null,
-        parkEffort: null, parkZones: null, effortRescaler: 1, visitTime: 'any',
+        activeSeason: activeSeasonForRarity, activeZone: null, seasonalFreqs,
+        parkEffort, parkZones: null, effortRescaler: 1, visitTime: 'any',
       }));
     }
     return m;
-  }, [enrichedSpecies]);
+  }, [enrichedSpecies, activeSeasonForRarity, seasonalFreqs, parkEffort]);
+
+  // Lazy-fetch iNat seasonal histograms for the most-likely species first
+  // (same throttle/ordering as national parks). Each result streams into
+  // seasonalFreqs, which re-derives rarity + season chips for that species.
+  useEffect(() => {
+    if (!enrichedSpecies?.length) return;
+    const withSci = enrichedSpecies.filter(a => a.scientificName);
+    const sorted = [...withSci].sort((a, b) =>
+      (Math.max(b.frequency ?? 0, RARITY_FREQ_FALLBACK[b.rarity] ?? 0)) -
+      (Math.max(a.frequency ?? 0, RARITY_FREQ_FALLBACK[a.rarity] ?? 0)));
+    const queue = sorted.slice(0, 300).filter(b => !freqFetchedRef.current.has(b.scientificName.toLowerCase()));
+    if (!queue.length) return;
+    let alive = true, cursor = 0;
+    const worker = async () => {
+      while (alive) {
+        const idx = cursor++;
+        if (idx >= queue.length) return;
+        const sp = queue[idx];
+        const key = sp.scientificName.toLowerCase();
+        if (freqFetchedRef.current.has(key)) continue;
+        freqFetchedRef.current.add(key);
+        const result = await fetchInatMonthlyHist(park.lat, park.lng, park.id, sp.scientificName);
+        if (!alive) return;
+        setSeasonalFreqs(prev => ({ ...prev, [key]: result }));
+      }
+    };
+    Promise.all(Array.from({ length: 6 }, worker));
+    return () => { alive = false; };
+  }, [enrichedSpecies, park.id, park.lat, park.lng]);
 
   const seenKeys = useMemo(() => getSeenKeySet(), [seenVersion]);
   const spProgress = useMemo(() => parkProgress(enrichedSpecies), [enrichedSpecies, seenVersion]);
@@ -1450,8 +1500,9 @@ function StateParkPanel({ park, onClose, openAbout }) {
 
               {visible.length === 0 && <p className="statepark-modal__empty">No species match the current filters.</p>}
               {/* The REAL national-park AnimalCard — same component, same
-                  rarity model, photos, badges. Fed state-park context
-                  (no zones / season / curated descriptions). */}
+                  rarity model + ancillary inputs (live iNat seasonal
+                  histograms + park effort), photos, badges. State parks just
+                  lack zones + NPS curated descriptions. */}
               <div className="statepark-grid">
                 {visible.slice(0, displayLimit).map(a => (
                   <AnimalCard
@@ -1459,9 +1510,9 @@ function StateParkPanel({ park, onClose, openAbout }) {
                     animal={a}
                     location={spLocation}
                     debugMode={false}
-                    seasonalFreqs={null}
-                    parkEffort={null}
-                    activeSeason={null}
+                    seasonalFreqs={seasonalFreqs}
+                    parkEffort={parkEffort}
+                    activeSeason={activeSeasonForRarity}
                     activeZone={null}
                     parkZones={null}
                     onSelectZone={null}
