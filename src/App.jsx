@@ -1014,10 +1014,11 @@ function StateParkPanel({ park, onClose, openAbout }) {
   const [sortBy, setSortBy]         = useState('common'); // common | rare
   const [query, setQuery]           = useState('');
   const [seenFilter, setSeenFilter] = useState('all');      // all | unseen | seen
+  const [rarityFilter, setRarityFilter] = useState('all');  // spectrum-bar click filter
   useEffect(() => {
-    setDisplayLimit(24); setCatFilter('all'); setSubtypeFilter('all'); setQuery(''); setSeenFilter('all'); setSortBy('common');
+    setDisplayLimit(24); setCatFilter('all'); setSubtypeFilter('all'); setQuery(''); setSeenFilter('all'); setSortBy('common'); setRarityFilter('all');
   }, [park.id]);
-  useEffect(() => { setSubtypeFilter('all'); }, [catFilter]); // reset subtype when category changes
+  useEffect(() => { setSubtypeFilter('all'); setRarityFilter('all'); }, [catFilter]); // reset subtype + rarity when category changes
   useEffect(() => {
     const h = e => { if (e.key === 'Escape') onClose(); };
     window.addEventListener('keydown', h);
@@ -1081,6 +1082,7 @@ function StateParkPanel({ park, onClose, openAbout }) {
   }, [state.species]);
 
   const seenKeys = useMemo(() => getSeenKeySet(), [seenVersion]);
+  const spProgress = useMemo(() => parkProgress(state.species), [state.species, seenVersion]);
   const onToggleSeen = (s) => {
     const added = !seenKeys.has(speciesKey(s));
     toggleSeen(s, { parkId: park.id, parkName: park.name });
@@ -1109,16 +1111,19 @@ function StateParkPanel({ park, onClose, openAbout }) {
     return list;
   }, [state.species, catFilter, subtypeFilter, subtypeDefs]);
 
-  const tierCounts = useMemo(() => {
-    const m = { guaranteed: 0, very_likely: 0, likely: 0, unlikely: 0, rare: 0, exceptional: 0 };
-    for (const s of inCategory) { const r = effRarity.get(s); if (r) m[r] = (m[r] || 0) + 1; }
-    return m;
-  }, [inCategory, effRarity]);
+  // Copies with `.rarity` set to the calibrated effective tier, so the SAME
+  // RaritySpectrumBar national parks use renders the correct composition,
+  // and so the spectrum click-to-filter highlights the right segment.
+  const spectrumAnimals = useMemo(
+    () => inCategory.map(s => ({ ...s, rarity: effRarity.get(s) || s.rarity })),
+    [inCategory, effRarity],
+  );
 
   const visible = useMemo(() => {
     const q = query.trim().toLowerCase();
     let list = inCategory.filter(s => {
       if (q && !((s.name || '').toLowerCase().includes(q) || (s.scientificName || '').toLowerCase().includes(q))) return false;
+      if (rarityFilter !== 'all' && effRarity.get(s) !== rarityFilter) return false;
       if (seenFilter !== 'all') {
         const seen = seenKeys.has(speciesKey(s));
         if (seenFilter === 'seen' ? !seen : seen) return false;
@@ -1130,9 +1135,7 @@ function StateParkPanel({ park, onClose, openAbout }) {
       ((_RARITY_ORDER[effRarity.get(a)] ?? 5) - (_RARITY_ORDER[effRarity.get(b)] ?? 5)) * dir
       || (b.frequency ?? 0) - (a.frequency ?? 0));
     return list;
-  }, [inCategory, query, seenFilter, seenKeys, sortBy, effRarity]);
-
-  const TIERS = ['guaranteed', 'very_likely', 'likely', 'unlikely', 'rare', 'exceptional'];
+  }, [inCategory, query, seenFilter, seenKeys, sortBy, effRarity, rarityFilter]);
 
   return (
     <>
@@ -1153,71 +1156,97 @@ function StateParkPanel({ park, onClose, openAbout }) {
 
           {state.status === 'ok' && state.species.length > 0 && (
             <>
-              {/* Rarity spectrum */}
-              <div className="sp-spectrum">
-                <div className="sp-spectrum__bar" aria-hidden="true">
-                  {TIERS.map(t => {
-                    const c = tierCounts[t]; if (!c) return null;
-                    return <span key={t} style={{ flexGrow: c, background: (RARITY[t]?.color || '#888') }} />;
+              {/* Rarity spectrum — the SAME component national parks use. */}
+              <RaritySpectrumBar
+                animals={spectrumAnimals}
+                activeRarity={rarityFilter}
+                onSelectRarity={setRarityFilter}
+              />
+
+              {/* Category tabs — national-park pill styling (.lp__tab*). */}
+              <div className="lp__tabs-wrapper">
+                <div className="lp__tabs" role="tablist">
+                  <button
+                    role="tab"
+                    aria-selected={catFilter === 'all'}
+                    className={`lp__tab${catFilter === 'all' ? ' lp__tab--active' : ''}`}
+                    onClick={() => { setCatFilter('all'); setDisplayLimit(24); }}
+                  >
+                    <span className="lp__tab-label">All</span>
+                    <span className="lp__tab-count">{state.species.length}</span>
+                  </button>
+                  {['bird', 'mammal', 'reptile', 'amphibian', 'insect', 'marine', 'fish', 'other']
+                    .filter(t => typeCounts[t]).map(t => {
+                    const isActive = catFilter === t;
+                    return (
+                      <button
+                        key={t}
+                        role="tab"
+                        aria-selected={isActive}
+                        className={`lp__tab${isActive ? ' lp__tab--active' : ''}`}
+                        onClick={() => { setCatFilter(t); setDisplayLimit(24); track('state_park_filter', { group: t }); }}
+                        title={`Show ${ANIMAL_TYPES[t]?.label ?? t}`}
+                      >
+                        <span aria-hidden="true">{ANIMAL_TYPES[t]?.emoji ?? '🐾'}</span>
+                        <span className="lp__tab-label">{ANIMAL_TYPES[t]?.label ?? t}</span>
+                        <span className="lp__tab-count">{typeCounts[t]}</span>
+                      </button>
+                    );
                   })}
                 </div>
-                <div className="sp-spectrum__labels">
-                  {TIERS.map(t => tierCounts[t] ? (
-                    <span key={t} style={{ color: RARITY[t]?.textColor || RARITY[t]?.color }}>
-                      {RARITY[t]?.label} · {tierCounts[t]}
-                    </span>
-                  ) : null)}
-                </div>
               </div>
 
-              {/* Category tabs (native animalType, same as national parks) */}
-              <div className="sp-tabs" role="group" aria-label="Filter by animal group">
-                <button className={`sp-tab${catFilter === 'all' ? ' is-active' : ''}`}
-                  onClick={() => { setCatFilter('all'); setDisplayLimit(24); }}>
-                  All · {state.species.length}
-                </button>
-                {['bird', 'mammal', 'reptile', 'amphibian', 'insect', 'marine', 'fish', 'other']
-                  .filter(t => typeCounts[t]).map(t => (
-                  <button key={t} className={`sp-tab${catFilter === t ? ' is-active' : ''}`}
-                    onClick={() => { setCatFilter(t); setDisplayLimit(24); track('state_park_filter', { group: t }); }}>
-                    {ANIMAL_TYPES[t]?.emoji ?? '🐾'} {ANIMAL_TYPES[t]?.label ?? t} · {typeCounts[t]}
-                  </button>
-                ))}
-              </div>
-
-              {/* Subtype tabs (e.g. Birds → Birds of Prey / Songbirds / …) */}
+              {/* Subtype filter bar — national-park styling (.lp__subtype*). */}
               {subtypeDefs && (
-                <div className="sp-tabs sp-tabs--sub" role="group" aria-label="Filter by sub-type">
-                  <button className={`sp-tab sp-tab--sub${subtypeFilter === 'all' ? ' is-active' : ''}`}
-                    onClick={() => { setSubtypeFilter('all'); setDisplayLimit(24); }}>
-                    All {ANIMAL_TYPES[catFilter]?.label ?? ''}
-                  </button>
-                  {subtypeDefs.map(({ key, emoji, label }) => (
-                    <button key={key} className={`sp-tab sp-tab--sub${subtypeFilter === key ? ' is-active' : ''}`}
-                      onClick={() => { setSubtypeFilter(key); setDisplayLimit(24); track('state_park_subtype', { type: activeType, subtype: key }); }}>
-                      {emoji} {label}
+                <div className="lp__subtypes-wrapper">
+                  <div className="lp__subtypes" role="group" aria-label="Animal subcategory">
+                    <button
+                      className={`lp__subtype-btn${subtypeFilter === 'all' ? ' lp__subtype-btn--active' : ''}`}
+                      onClick={() => { setSubtypeFilter('all'); setDisplayLimit(24); }}
+                      aria-pressed={subtypeFilter === 'all'}
+                    >
+                      <span className="lp__subtype-label">All {ANIMAL_TYPES[catFilter]?.label ?? ''}</span>
                     </button>
-                  ))}
+                    {subtypeDefs.map(({ key, emoji, label }) => {
+                      const count = inCategory.filter(s => classifyAnimalSubtype(s) === key).length;
+                      const isEmpty = count === 0;
+                      return (
+                        <button
+                          key={key}
+                          className={`lp__subtype-btn${subtypeFilter === key ? ' lp__subtype-btn--active' : ''}${isEmpty ? ' lp__subtype-btn--empty' : ''}`}
+                          onClick={() => { if (!isEmpty) { setSubtypeFilter(key); setDisplayLimit(24); track('state_park_subtype', { type: activeType, subtype: key }); } }}
+                          disabled={isEmpty}
+                          aria-pressed={subtypeFilter === key}
+                          title={label}
+                        >
+                          <span aria-hidden="true">{emoji}</span>
+                          <span className="lp__subtype-label">{label}</span>
+                          {count > 0 && <span className="lp__subtype-count">{count}</span>}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               )}
 
-              {/* Controls: sort + search + seen filter */}
-              <div className="sp-controls">
-                <select className="sp-control-select" value={sortBy} onChange={e => setSortBy(e.target.value)}
-                  aria-label="Sort species">
-                  <option value="common">Most likely first</option>
-                  <option value="rare">Rarest first</option>
-                </select>
-                <input className="sp-control-search" type="search" placeholder="Search species…"
-                  value={query} onChange={e => { setQuery(e.target.value); setDisplayLimit(24); }}
-                  aria-label="Search species" />
-                <span className="sp-seen-seg" role="group" aria-label="Filter by seen status">
-                  {[['all', 'All'], ['unseen', 'To find'], ['seen', 'Seen']].map(([v, lbl]) => (
-                    <button key={v} className={`sp-seen-btn${seenFilter === v ? ' is-active' : ''}`}
-                      aria-pressed={seenFilter === v}
-                      onClick={() => { setSeenFilter(v); setDisplayLimit(24); }}>{lbl}</button>
-                  ))}
-                </span>
+              {/* Controls — national-park styling (.lp__controls / .lp__select / .lp__search). */}
+              <div className="lp__controls">
+                <div className="lp__controls-row">
+                  <select className="lp__select" value={sortBy} onChange={e => setSortBy(e.target.value)}
+                    aria-label="Sort order">
+                    <option value="common">Most likely first</option>
+                    <option value="rare">Rarest first</option>
+                  </select>
+                </div>
+                <div className="lp__search">
+                  <span className="lp__search-icon" aria-hidden="true">🔍</span>
+                  <input className="lp__search-input" type="search" placeholder="Search species…"
+                    value={query} onChange={e => { setQuery(e.target.value); setDisplayLimit(24); }}
+                    aria-label="Search species" />
+                  {query && (
+                    <button className="lp__search-clear" onClick={() => { setQuery(''); setDisplayLimit(24); }} aria-label="Clear search">✕</button>
+                  )}
+                </div>
               </div>
             </>
           )}
@@ -1231,7 +1260,37 @@ function StateParkPanel({ park, onClose, openAbout }) {
           )}
           {state.status === 'ok' && state.species.length > 0 && (
             <>
-              <p className="statepark-modal__count">Showing {Math.min(displayLimit, visible.length)} of {visible.length} species</p>
+              <div className="lp__showing-count">
+                Showing {Math.min(displayLimit, visible.length)} of {visible.length} species
+              </div>
+
+              {/* Same rating key + seen-filter bar as national parks. */}
+              <div className="lp__legend" aria-label="Rating key">
+                <span><span className="lp__legend-dot lp__legend-dot--high">●</span> strong data</span>
+                <span><span className="lp__legend-dot lp__legend-dot--med">◐</span> moderate</span>
+                <span><span className="lp__legend-dot lp__legend-dot--low">○</span> thin — approximate</span>
+                <span><span className="lp__legend-tilde">~</span> observability, not a per-visit %</span>
+              </div>
+
+              <div className="lifelist-bar">
+                <span className="lifelist-bar__progress" title={`${spProgress.seen} seen at ${park.name}`}>
+                  🏅 <strong>{spProgress.seen}</strong> seen here
+                </span>
+                <span className="lifelist-bar__seg" role="group" aria-label="Filter by seen status">
+                  {[['all', 'All'], ['unseen', 'To find'], ['seen', 'Seen']].map(([v, lbl]) => (
+                    <button
+                      key={v}
+                      type="button"
+                      className={`lifelist-bar__seg-btn${seenFilter === v ? ' is-active' : ''}`}
+                      aria-pressed={seenFilter === v}
+                      onClick={() => { setSeenFilter(v); setDisplayLimit(24); }}
+                    >
+                      {lbl}
+                    </button>
+                  ))}
+                </span>
+              </div>
+
               {visible.length === 0 && <p className="statepark-modal__empty">No species match the current filters.</p>}
               {/* The REAL national-park AnimalCard — same component, same
                   rarity model, photos, badges. Fed state-park context

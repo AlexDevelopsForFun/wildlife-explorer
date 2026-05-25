@@ -22,10 +22,21 @@ import { readFileSync, existsSync } from 'fs';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import { wildlifeLocations } from '../src/wildlifeData.js';
+import { STATE_PARKS_BY_STATE } from '../src/data/stateParksNJ.js';
+
+// Total state-park entries + one state-index page per state.
+const stateCodes = Object.keys(STATE_PARKS_BY_STATE);
+const stateParkCount = stateCodes.reduce(
+  (n, c) => n + (Array.isArray(STATE_PARKS_BY_STATE[c]) ? STATE_PARKS_BY_STATE[c].length : 0), 0);
+const stateExtraUrls = stateParkCount + stateCodes.length; // parks + state index pages
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DIST = path.resolve(__dirname, '..', 'dist');
 const errors = [];
+
+// Match the prerender's HTML escaping so names with &, <, > etc. compare cleanly.
+const esc = (s) => String(s ?? '')
+  .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 if (!existsSync(path.join(DIST, 'index.html'))) {
   console.error('❌ dist/ not found — run `npm run build` before this guard.');
@@ -62,13 +73,48 @@ for (const park of wildlifeLocations) {
   }
 }
 
+// State parks — same SEO contract (static page per park + per state index).
+for (const code of stateCodes) {
+  const lc = code.toLowerCase();
+  for (const park of STATE_PARKS_BY_STATE[code]) {
+    const f = path.join(DIST, 'state-park', lc, park.id, 'index.html');
+    if (!existsSync(f)) { errors.push(`Missing prerendered page: state-park/${lc}/${park.id}/index.html`); continue; }
+    const html = readFileSync(f, 'utf8');
+    const title = (html.match(/<title>([\s\S]*?)<\/title>/) || [])[1] || '';
+    if (!title.includes(esc(park.name))) {
+      errors.push(`state-park/${lc}/${park.id}: <title> not park-specific ("${title.slice(0, 60)}")`);
+    }
+    if (!new RegExp(`<link rel="canonical" href="[^"]*/state-park/${lc}/${park.id}"`).test(html)) {
+      errors.push(`state-park/${lc}/${park.id}: canonical not → /state-park/${lc}/${park.id}`);
+    }
+    if (!html.includes('application/ld+json')) {
+      errors.push(`state-park/${lc}/${park.id}: JSON-LD structured data missing`);
+    }
+    if (!html.includes('class="seo-parklinks"')) {
+      errors.push(`state-park/${lc}/${park.id}: crawlable internal links missing (orphan page)`);
+    }
+  }
+  const idx = path.join(DIST, 'state', lc, 'index.html');
+  if (!existsSync(idx)) {
+    errors.push(`Missing prerendered state index: state/${lc}/index.html`);
+  } else {
+    const html = readFileSync(idx, 'utf8');
+    if (!new RegExp(`<link rel="canonical" href="[^"]*/state/${lc}"`).test(html)) {
+      errors.push(`state/${lc}: canonical not → /state/${lc}`);
+    }
+    if (!html.includes('class="seo-parklinks"')) {
+      errors.push(`state/${lc}: crawlable park links missing`);
+    }
+  }
+}
+
 const smPath = path.join(DIST, 'sitemap.xml');
 if (!existsSync(smPath)) {
   errors.push('dist/sitemap.xml missing');
 } else {
   const locs = (readFileSync(smPath, 'utf8').match(/<loc>/g) || []).length;
-  const expected = wildlifeLocations.length + 1;
-  if (locs !== expected) errors.push(`sitemap has ${locs} URLs, expected ${expected} (homepage + ${wildlifeLocations.length} parks)`);
+  const expected = wildlifeLocations.length + 1 + stateExtraUrls;
+  if (locs !== expected) errors.push(`sitemap has ${locs} URLs, expected ${expected} (homepage + ${wildlifeLocations.length} parks + ${stateExtraUrls} state)`);
 }
 
 if (errors.length) {
@@ -79,6 +125,6 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`✓ Prerender OK — ${wildlifeLocations.length} park pages (unique titles, canonical, `
-  + `JSON-LD, internal links) + homepage index + sitemap.`);
+console.log(`✓ Prerender OK — ${wildlifeLocations.length} national-park + ${stateParkCount} state-park pages `
+  + `(unique titles, canonical, JSON-LD, internal links) + homepage + ${stateCodes.length} state index + sitemap.`);
 process.exit(0);
