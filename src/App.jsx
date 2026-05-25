@@ -1029,6 +1029,14 @@ function StateParkPanel({ park, onClose, openAbout }) {
   // linear canals) this is the radius around EACH sample point — coverage
   // comes from the points, so the per-point radius stays tight.
   const searchRadiusKm = Math.min(Math.max(park.radiusKm ?? 5, 3), 20);
+  // iNaturalist non-bird taxa (mammals, reptiles, amphibians) are FAR more
+  // sparsely sampled than birds and range more widely, so a tight radius
+  // returns almost none — a park looks "birds only" purely as a sampling
+  // artifact. Give iNat a wider net (≥12 km, ≤25 km) so those species actually
+  // surface, while birds stay park-tight on the dense eBird data. Research-grade
+  // filtering still guards against misidentified species, so completeness rises
+  // without accuracy loss.
+  const inatRadiusKm = Math.min(Math.max(park.radiusKm ?? 8, 12), 25);
   // Sample points: most parks use their single center; large/linear parks
   // (see stateParksNJ.js `points`) sample several spots so one off-centre
   // point can't misrepresent a 100k-acre forest or a 70 km linear canal.
@@ -1076,18 +1084,19 @@ function StateParkPanel({ park, onClose, openAbout }) {
     setState({ status: 'loading', species: [], total: 0, sources: [], stats: null });
     (async () => {
       try {
-        const radius = searchRadiusKm;
+        const birdDist = searchRadiusKm;       // tight — dense eBird data
+        const inatRadius = inatRadiusKm;        // wider — sparse non-bird taxa
         const pool = [];
         const sources = [];
         let ebirdChecklists = null, ebirdHistoricalSpecies = 0, inatObservations = 0;
 
-        // Fetch one sample point: eBird birds (geo/recent at `radius`) + iNat
+        // Fetch one sample point: eBird birds (geo/recent at birdDist) + iNat
         // per taxon. Each point gets a unique locId suffix so caches don't
         // collide and a multi-point park doesn't read another point's result.
         const fetchPoint = async ([lat, lng], idx) => {
           const pointId = samplePoints.length > 1 ? `${park.id}-p${idx}` : park.id;
           const hotspot = await fetchEbirdHotspot(lat, lng);
-          const eb = await fetchEbird(lat, lng, pointId, hotspot, { dist: radius });
+          const eb = await fetchEbird(lat, lng, pointId, hotspot, { dist: birdDist });
           if (eb?.animals?.length) {
             pool.push(...eb.animals);
             if (!sources.includes('ebird')) sources.push('ebird');
@@ -1100,7 +1109,10 @@ function StateParkPanel({ park, onClose, openAbout }) {
             const next = () => {
               while (running < 2 && queue.length) {
                 const taxon = queue.shift(); running++;
-                fetchINat(lat, lng, pointId, taxon, { radius, days: 0 })
+                // Birds stay park-tight (dense eBird/iNat coverage); every other
+                // taxon uses the wider iNat radius so sparse vertebrates surface.
+                const taxonRadius = taxon === 'bird' ? birdDist : inatRadius;
+                fetchINat(lat, lng, pointId, taxon, { radius: taxonRadius, days: 0 })
                   .then(r => {
                     if (r?.animals?.length) { pool.push(...r.animals); if (!sources.includes('inaturalist')) sources.push('inaturalist'); }
                     inatObservations += r?._stats?.totalObsCount ?? 0;
