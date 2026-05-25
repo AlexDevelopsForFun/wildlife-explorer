@@ -1011,12 +1011,13 @@ function StateParkPanel({ park, onClose, openAbout }) {
   const [displayLimit, setDisplayLimit] = useState(40);
   const [catFilter, setCatFilter]   = useState('all');
   const [subtypeFilter, setSubtypeFilter] = useState('all'); // e.g. raptor (Birds of Prey)
-  const [sortBy, setSortBy]         = useState('common'); // common | rare
+  const [sortBy, setSortBy]         = useState('iconic-first'); // iconic-first | common-first | rarest-first | a-z
+  const [season, setSeason]         = useState('all');      // all | spring | summer | fall | winter
   const [query, setQuery]           = useState('');
   const [seenFilter, setSeenFilter] = useState('all');      // all | unseen | seen
-  const [rarityFilter, setRarityFilter] = useState('all');  // spectrum-bar click filter
+  const [rarityFilter, setRarityFilter] = useState('all');  // spectrum bar / rarity dropdown
   useEffect(() => {
-    setDisplayLimit(24); setCatFilter('all'); setSubtypeFilter('all'); setQuery(''); setSeenFilter('all'); setSortBy('common'); setRarityFilter('all');
+    setDisplayLimit(24); setCatFilter('all'); setSubtypeFilter('all'); setQuery(''); setSeenFilter('all'); setSortBy('iconic-first'); setSeason('all'); setRarityFilter('all');
   }, [park.id]);
   useEffect(() => { setSubtypeFilter('all'); setRarityFilter('all'); }, [catFilter]); // reset subtype + rarity when category changes
   useEffect(() => {
@@ -1090,26 +1091,51 @@ function StateParkPanel({ park, onClose, openAbout }) {
     track('seen_toggle', { added, animal: s.name, park: park.name });
   };
 
+  // Season-filtered pool (mirrors national parks' seasonFiltered) — applies
+  // ONLY the season filter, so tab/breakdown counts are season-aware. Live
+  // eBird/iNat species carry year-round seasons, so this rarely narrows, but
+  // the control + behaviour match national parks exactly.
+  const seasonSpecies = useMemo(() => {
+    if (season === 'all') return state.species;
+    return state.species.filter(s => {
+      const segs = s.seasons ?? [];
+      return segs.includes('year-round') || segs.includes('year_round') || segs.includes(season);
+    });
+  }, [state.species, season]);
+
   // Category tab counts by the app's native animalType (same as national parks).
   const typeCounts = useMemo(() => {
     const m = {};
-    for (const s of state.species) { const t = s.animalType || 'other'; m[t] = (m[t] || 0) + 1; }
+    for (const s of seasonSpecies) { const t = s.animalType || 'other'; m[t] = (m[t] || 0) + 1; }
     return m;
-  }, [state.species]);
+  }, [seasonSpecies]);
+
+  // Type breakdown row (🐦 184 chips) — same order/markup as national parks.
+  const typeBreakdown = useMemo(() => {
+    const m = {};
+    for (const s of seasonSpecies) { const t = s.animalType; if (t) m[t] = (m[t] || 0) + 1; }
+    return m;
+  }, [seasonSpecies]);
+
+  // Live data attribution (e.g. "Cornell Lab of Ornithology · iNaturalist").
+  const sourceAttr = useMemo(() => {
+    const live = [...new Set((state.sources || []).filter(s => s !== 'static' && s !== 'estimated'))];
+    return live.length ? live.map(s => SOURCE_LONG[s] ?? s).join(' · ') : 'eBird · iNaturalist';
+  }, [state.sources]);
 
   // Subtype tabs (Birds of Prey, Songbirds, …) — name-based, reused from
   // national parks; only shown when the active type defines sub-types.
   const activeType = catFilter === 'all' ? null : catFilter;
   const subtypeDefs = activeType ? getSubtypeDefs(activeType) : null;
 
-  // Species after category + subtype tabs — drives spectrum + list.
+  // Species after season + category + subtype tabs — drives spectrum + list.
   const inCategory = useMemo(() => {
-    let list = catFilter === 'all' ? state.species : state.species.filter(s => s.animalType === catFilter);
+    let list = catFilter === 'all' ? seasonSpecies : seasonSpecies.filter(s => s.animalType === catFilter);
     if (subtypeFilter !== 'all' && subtypeDefs) {
       list = list.filter(s => classifyAnimalSubtype(s) === subtypeFilter);
     }
     return list;
-  }, [state.species, catFilter, subtypeFilter, subtypeDefs]);
+  }, [seasonSpecies, catFilter, subtypeFilter, subtypeDefs]);
 
   // Copies with `.rarity` set to the calibrated effective tier, so the SAME
   // RaritySpectrumBar national parks use renders the correct composition,
@@ -1130,10 +1156,23 @@ function StateParkPanel({ park, onClose, openAbout }) {
       }
       return true;
     });
-    const dir = sortBy === 'rare' ? -1 : 1; // default 'common' = most-likely first
-    list = [...list].sort((a, b) =>
-      ((_RARITY_ORDER[effRarity.get(a)] ?? 5) - (_RARITY_ORDER[effRarity.get(b)] ?? 5)) * dir
-      || (b.frequency ?? 0) - (a.frequency ?? 0));
+    // Same four sort modes as national parks. For iconic, reuse the shared
+    // iconicSortFn on copies whose `.rarity` is the calibrated effective tier
+    // (state-park species have no curated funFact, so they sort by charisma +
+    // rarity — exactly national parks' behaviour for live-only species).
+    if (sortBy === 'a-z') {
+      list = [...list].sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+    } else if (sortBy === 'iconic-first') {
+      list = [...list]
+        .map(s => ({ s, k: { ...s, rarity: effRarity.get(s) || s.rarity } }))
+        .sort((a, b) => iconicSortFn(a.k, b.k))
+        .map(x => x.s);
+    } else {
+      const dir = sortBy === 'common-first' ? 1 : -1; // rarest-first = -1
+      list = [...list].sort((a, b) =>
+        ((_RARITY_ORDER[effRarity.get(a)] ?? 5) - (_RARITY_ORDER[effRarity.get(b)] ?? 5)) * dir
+        || (a.name || '').localeCompare(b.name || ''));
+    }
     return list;
   }, [inCategory, query, seenFilter, seenKeys, sortBy, effRarity, rarityFilter]);
 
@@ -1144,18 +1183,41 @@ function StateParkPanel({ park, onClose, openAbout }) {
         <button className="about-modal__close" onClick={onClose} aria-label="Close">X</button>
         <div className="statepark-modal__head">
           <h2 className="statepark-modal__title">{park.name}</h2>
-          <p className="statepark-modal__sub">
-            New Jersey · {park.category?.replace('-', ' ') ?? 'state park'} · search radius {park.radiusKm ?? 5} km
-          </p>
-          <div className="statepark-modal__banner" role="note">
-            <strong>Live from eBird + iNaturalist.</strong> Rarity is derived the same
-            way as national parks (eBird checklist frequency + iNaturalist density →
-            the calibrated model). State parks have no NPS curated inventory or
-            naturalist write-ups, so those sections aren't shown.
+          {/* Meta row — state + park-type badge, mirroring national parks. */}
+          <div className="lp__meta">
+            <span className="lp__state">New Jersey</span>
+            <span className="lp__park-badge" style={{ background: '#2f7d4f' }}>
+              {(park.category?.replace('-', ' ') ?? 'state park').replace(/\b\w/g, c => c.toUpperCase())}
+            </span>
           </div>
+          {/* Data attribution line — same format as national parks. */}
+          {state.status === 'ok' && state.species.length > 0 && (
+            <div className="lp__source-attr"><span title="Live data">● Live · </span>{sourceAttr}</div>
+          )}
 
           {state.status === 'ok' && state.species.length > 0 && (
             <>
+              {/* Species type breakdown row (🐦 184 …) — same as national parks. */}
+              {Object.keys(typeBreakdown).length > 0 && (
+                <div className="lp__breakdown">
+                  {Object.entries(ANIMAL_TYPES)
+                    .filter(([k]) => k !== 'all' && typeBreakdown[k])
+                    .map(([k, { emoji, label }]) => (
+                      <span key={k} className="breakdown-chip" title={label}>{emoji} {typeBreakdown[k]}</span>
+                    ))}
+                  {season !== 'all' && (
+                    <span className="breakdown-chip breakdown-chip--season" title="Active season filter">
+                      {SEASONS[season]?.emoji ?? '📅'} {SEASONS[season]?.label ?? season}
+                    </span>
+                  )}
+                </div>
+              )}
+              <div className="statepark-modal__banner" role="note">
+                <strong>Live from eBird + iNaturalist.</strong> Rarity is derived the same
+                way as national parks. State parks have no NPS curated inventory or
+                naturalist write-ups, so those sections aren't shown.
+              </div>
+
               {/* Rarity spectrum — the SAME component national parks use. */}
               <RaritySpectrumBar
                 animals={spectrumAnimals}
@@ -1229,15 +1291,30 @@ function StateParkPanel({ park, onClose, openAbout }) {
                 </div>
               )}
 
-              {/* Controls — national-park styling (.lp__controls / .lp__select / .lp__search). */}
+              {/* Controls — sort + season + rarity + search, identical to national parks. */}
               <div className="lp__controls">
                 <div className="lp__controls-row">
-                  <select className="lp__select" value={sortBy} onChange={e => setSortBy(e.target.value)}
+                  <select className="lp__select" value={sortBy} onChange={e => { setSortBy(e.target.value); setDisplayLimit(24); }}
                     aria-label="Sort order">
-                    <option value="common">Most likely first</option>
-                    <option value="rare">Rarest first</option>
+                    <option value="iconic-first">Most Iconic</option>
+                    <option value="common-first">Most Common</option>
+                    <option value="rarest-first">Rarest First</option>
+                    <option value="a-z">A–Z</option>
+                  </select>
+                  <select className="lp__select" value={season} onChange={e => { setSeason(e.target.value); setDisplayLimit(24); }}
+                    aria-label="Season filter">
+                    {Object.entries(SEASONS).map(([k, { emoji, label }]) => (
+                      <option key={k} value={k}>{emoji} {label}</option>
+                    ))}
                   </select>
                 </div>
+                <select className="lp__select lp__select--full" value={rarityFilter}
+                  onChange={e => { setRarityFilter(e.target.value); setDisplayLimit(24); }}
+                  aria-label="Likelihood filter">
+                  {Object.entries(RARITY).map(([k, { emoji, label }]) => (
+                    <option key={k} value={k}>{emoji} {label}</option>
+                  ))}
+                </select>
                 <div className="lp__search">
                   <span className="lp__search-icon" aria-hidden="true">🔍</span>
                   <input className="lp__search-input" type="search" placeholder="Search species…"
