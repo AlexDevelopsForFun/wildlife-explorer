@@ -40,7 +40,11 @@ export const STATE_PARKS_NJ = [
   { id: 'nj-cape-may-point',   name: 'Cape May Point State Park',           lat: 38.933153,   lng: -74.960925,  radiusKm: 3,  category: 'state-park' },
   { id: 'nj-cheesequake',      name: 'Cheesequake State Park',              lat: 40.4350,     lng: -74.27028,   radiusKm: 3,  category: 'state-park' },
   { id: 'nj-corsons-inlet',    name: "Corson's Inlet State Park",           lat: 39.217208,   lng: -74.646256,  radiusKm: 2,  category: 'state-park' },
-  { id: 'nj-d-and-r-canal',    name: 'Delaware & Raritan Canal State Park', lat: 40.368686,   lng: -74.61615,   radiusKm: 10, category: 'state-park' },
+  // Linear park (~70 km): one center+radius can't represent it, so sample
+  // along both arms — main canal (Trenton→Kingston→New Brunswick) + the
+  // feeder canal along the Delaware (Lambertville). Per-point radius 6 km.
+  { id: 'nj-d-and-r-canal',    name: 'Delaware & Raritan Canal State Park', lat: 40.368686,   lng: -74.61615,   radiusKm: 6,  category: 'state-park',
+    points: [[40.221, -74.756], [40.376, -74.612], [40.487, -74.456], [40.366, -74.946]] },
   { id: 'nj-double-trouble',   name: 'Double Trouble State Park',           lat: 39.897878,   lng: -74.221292,  radiusKm: 4,  category: 'state-park' },
   { id: 'nj-farny',            name: 'Farny State Park',                    lat: 40.96245,    lng: -74.458003,  radiusKm: 4,  category: 'state-park' },
   { id: 'nj-fort-mott',        name: 'Fort Mott State Park',                lat: 39.6031,     lng: -75.5525,    radiusKm: 2,  category: 'state-park' },
@@ -72,10 +76,18 @@ export const STATE_PARKS_NJ = [
   { id: 'nj-washington-x',     name: 'Washington Crossing State Park',      lat: 40.3111,     lng: -74.8636,    radiusKm: 3,  category: 'state-park' },
   { id: 'nj-washington-rock',  name: 'Washington Rock State Park',          lat: 40.613236,   lng: -74.47325,   radiusKm: 2,  category: 'state-park' },
   { id: 'nj-wawayanda',        name: 'Wawayanda State Park',                lat: 41.1981119,  lng: -74.3977478, radiusKm: 8,  category: 'state-park' },
-  { id: 'nj-wharton',          name: 'Wharton State Forest',                lat: 39.64389,    lng: -74.64678,   radiusKm: 14, category: 'state-forest' },
+  // NJ's largest park (~122k acres). The single Batsto center sits in the
+  // south, so sample the heart + Atsion (north) too. Per-point radius 8 km.
+  { id: 'nj-wharton',          name: 'Wharton State Forest',                lat: 39.64389,    lng: -74.64678,   radiusKm: 8,  category: 'state-forest',
+    points: [[39.64389, -74.64678], [39.741, -74.733], [39.700, -74.620]] },
   { id: 'nj-worthington',      name: 'Worthington State Forest',            lat: 40.9932,     lng: -75.0855,    radiusKm: 6,  category: 'state-forest' },
 ];
 
+// Multi-state registry. Each new state ships its own data file (same shape)
+// and is added here + to STATE_PARK_STATES in App.jsx + STATE_NAMES in
+// scripts/prerenderParks.js; the selector, map, deep links, and prerender
+// then pick it up automatically. (Delaware is built + verified in
+// stateParksDE.js but intentionally un-wired until NJ accuracy is locked.)
 export const STATE_PARKS_BY_STATE = {
   NJ: STATE_PARKS_NJ,
 };

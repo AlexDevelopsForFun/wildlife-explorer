@@ -22,6 +22,9 @@ const STATE_PARK_STATES = [
     view: { center: [40.18, -74.55], zoom: 8 },
     bounds: [[38.60, -75.90], [41.70, -73.60]],
   },
+  // Delaware is built + verified (src/data/stateParksDE.js) but intentionally
+  // un-wired until NJ accuracy is locked. Re-add this entry + the registry
+  // entry in stateParksNJ.js + STATE_NAMES in prerenderParks.js to ship it.
 ];
 import { classifyAnimalSubtype, getSubtypeDefs } from './utils/subcategories';
 import {
@@ -1020,10 +1023,19 @@ function StateParkPanel({ park, onClose, openAbout }) {
   const [query, setQuery]           = useState('');
   const [seenFilter, setSeenFilter] = useState('all');      // all | unseen | seen
   const [rarityFilter, setRarityFilter] = useState('all');  // spectrum bar / rarity dropdown
-  // Park-proportional search radius (km): the park's own radiusKm, floored at
-  // 5 km so eBird/iNat return enough recent obs, capped at 20 km. Drives both
-  // the eBird and iNaturalist queries so the species list reflects the PARK.
-  const searchRadiusKm = Math.min(Math.max(park.radiusKm ?? 5, 5), 20);
+  // Per-point search radius (km): the park's own radiusKm, floored at 3 km so
+  // even tiny/urban parks (Liberty, Barnegat Lighthouse) don't inherit a whole
+  // city's species, capped at 20 km. For multi-point parks (large forests,
+  // linear canals) this is the radius around EACH sample point — coverage
+  // comes from the points, so the per-point radius stays tight.
+  const searchRadiusKm = Math.min(Math.max(park.radiusKm ?? 5, 3), 20);
+  // Sample points: most parks use their single center; large/linear parks
+  // (see stateParksNJ.js `points`) sample several spots so one off-centre
+  // point can't misrepresent a 100k-acre forest or a 70 km linear canal.
+  const samplePoints = useMemo(
+    () => (Array.isArray(park.points) && park.points.length ? park.points : [[park.lat, park.lng]]),
+    [park.points, park.lat, park.lng],
+  );
   // Per-species iNat seasonal histograms + park-wide observer-effort baseline —
   // the SAME ancillary inputs national parks fetch (fetchInatMonthlyHist /
   // fetchInatParkMonthlyEffort). Feeding these into the identical
@@ -1065,46 +1077,61 @@ function StateParkPanel({ park, onClose, openAbout }) {
     (async () => {
       try {
         const radius = searchRadiusKm;
-        const hotspot = await fetchEbirdHotspot(park.lat, park.lng);
         const pool = [];
         const sources = [];
-        // Same stats national parks surface: eBird checklist + historical-spp
-        // counts, and the running iNaturalist observation total.
-        let ebirdChecklists = null, ebirdHistoricalSpecies = null, inatObservations = 0;
-        const eb = await fetchEbird(park.lat, park.lng, park.id, hotspot, { dist: radius });
-        if (eb?.animals?.length) {
-          pool.push(...eb.animals); sources.push('ebird');
-          ebirdChecklists        = eb._stats?.recentChecklistCount ?? null;
-          ebirdHistoricalSpecies = eb._stats?.historicalSpeciesCount ?? null;
+        let ebirdChecklists = null, ebirdHistoricalSpecies = 0, inatObservations = 0;
+
+        // Fetch one sample point: eBird birds (geo/recent at `radius`) + iNat
+        // per taxon. Each point gets a unique locId suffix so caches don't
+        // collide and a multi-point park doesn't read another point's result.
+        const fetchPoint = async ([lat, lng], idx) => {
+          const pointId = samplePoints.length > 1 ? `${park.id}-p${idx}` : park.id;
+          const hotspot = await fetchEbirdHotspot(lat, lng);
+          const eb = await fetchEbird(lat, lng, pointId, hotspot, { dist: radius });
+          if (eb?.animals?.length) {
+            pool.push(...eb.animals);
+            if (!sources.includes('ebird')) sources.push('ebird');
+            // Historical-spp count is per-hotspot; take the max across points.
+            ebirdHistoricalSpecies = Math.max(ebirdHistoricalSpecies, eb._stats?.historicalSpeciesCount ?? 0);
+          }
+          const queue = [...SP_TAXA]; let running = 0;
+          await new Promise(resolve => {
+            let remaining = queue.length;
+            const next = () => {
+              while (running < 2 && queue.length) {
+                const taxon = queue.shift(); running++;
+                fetchINat(lat, lng, pointId, taxon, { radius, days: 0 })
+                  .then(r => {
+                    if (r?.animals?.length) { pool.push(...r.animals); if (!sources.includes('inaturalist')) sources.push('inaturalist'); }
+                    inatObservations += r?._stats?.totalObsCount ?? 0;
+                  })
+                  .catch(() => {})
+                  .finally(() => { running--; if (--remaining === 0) resolve(); else next(); });
+              }
+            };
+            next();
+          });
+        };
+
+        // Points sequentially (each already runs its taxa concurrently) so a
+        // 5-point linear park doesn't fire 35 requests at once.
+        for (let i = 0; i < samplePoints.length; i++) {
+          if (!alive) return;
+          await fetchPoint(samplePoints[i], i);
         }
-        // iNaturalist taxa, 2 concurrent (same throttle as national parks).
-        const queue = [...SP_TAXA]; let running = 0;
-        await new Promise(resolve => {
-          let remaining = queue.length;
-          const next = () => {
-            while (running < 2 && queue.length) {
-              const taxon = queue.shift(); running++;
-              fetchINat(park.lat, park.lng, park.id, taxon, { radius, days: 0 })
-                .then(r => {
-                  if (r?.animals?.length) { pool.push(...r.animals); if (!sources.includes('inaturalist')) sources.push('inaturalist'); }
-                  inatObservations += r?._stats?.totalObsCount ?? 0;
-                })
-                .catch(() => {})
-                .finally(() => { running--; if (--remaining === 0) resolve(); else next(); });
-            }
-          };
-          next();
-        });
+
         if (!alive) return;
+        // deduplicateAnimals collapses species seen at multiple points, keeping
+        // the highest-frequency sighting — so coverage grows without inflating.
         const animals = deduplicateAnimals(pool);
-        const stats = { ebirdChecklists, ebirdHistoricalSpecies, inatObservations };
+        const stats = { ebirdChecklists, ebirdHistoricalSpecies: ebirdHistoricalSpecies || null, inatObservations };
         setState({ status: animals.length ? 'ok' : 'empty', species: animals, total: animals.length, sources, stats });
       } catch {
         if (alive) setState({ status: 'error', species: [], total: 0, sources: [], stats: null });
       }
     })();
     return () => { alive = false; };
-  }, [park.id, park.lat, park.lng, park.radiusKm]);
+  }, [park.id, park.lat, park.lng, park.radiusKm, samplePoints]);
 
   const spLocation = useMemo(() => ({ id: park.id, name: park.name, lat: park.lat, lng: park.lng }), [park.id, park.name, park.lat, park.lng]);
 
