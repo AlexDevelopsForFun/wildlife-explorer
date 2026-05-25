@@ -1069,21 +1069,52 @@ function StateParkPanel({ park, onClose, openAbout }) {
   }, [park.id, park.lat, park.lng, park.radiusKm]);
 
   const spLocation = useMemo(() => ({ id: park.id, name: park.name, lat: park.lat, lng: park.lng }), [park.id, park.name, park.lat, park.lng]);
-  // Effective rarity per animal — the SAME function AnimalCard / national
-  // parks use (year-round baseline; no season/zone context for state parks).
+
+  // Enrich each live species EXACTLY as national parks do (App's `enriched`):
+  // apply the county→park correction factor, cap live-only (non-curated)
+  // species at `rare` (only hand-curated entries can be Exceptional), apply
+  // any rarity override, and clamp frequency to the resulting tier's ceiling.
+  // Without this, computeEffectiveRarity reads the raw iNat frequency proxy and
+  // mislabels hundreds of one-off sightings as "Exceptional" — national parks
+  // never show that for live-only species. This makes the rarity derivation
+  // identical and keeps the spectrum, sort, and card badges in agreement.
+  const enrichedSpecies = useMemo(() => {
+    const clampFreq = (freq, rarity) => {
+      if (freq == null || rarity == null) return freq;
+      const ceiling = TIER_CEILING[rarity];
+      return ceiling != null ? Math.min(freq, ceiling) : freq;
+    };
+    return state.species.map(a => {
+      const factor = getCorrectionFactor(a.name);
+      if (a.frequency != null && factor !== 1) {
+        const correctedFreq = Math.min(1, a.frequency * factor);
+        let ebirdRarity = rarityFromChecklist(correctedFreq);
+        if (!a._curated && ebirdRarity === 'exceptional') ebirdRarity = 'rare';
+        const computedRarity = applyRarityOverride(park.id, a.name, ebirdRarity);
+        return { ...a, rarity: computedRarity, frequency: clampFreq(correctedFreq, computedRarity) };
+      }
+      const baseRarity = (!a._curated && a.rarity === 'exceptional') ? 'rare' : a.rarity;
+      const overridden = applyRarityOverride(park.id, a.name, baseRarity);
+      const clamped = clampFreq(a.frequency, overridden);
+      return { ...a, rarity: overridden, ...(clamped !== a.frequency ? { frequency: clamped } : {}) };
+    });
+  }, [state.species, park.id]);
+
+  // Effective rarity per (enriched) animal — the SAME function AnimalCard and
+  // national parks use (year-round baseline; no season/zone context).
   const effRarity = useMemo(() => {
     const m = new Map();
-    for (const a of state.species) {
+    for (const a of enrichedSpecies) {
       m.set(a, computeEffectiveRarity(a, {
         activeSeason: null, activeZone: null, seasonalFreqs: null,
         parkEffort: null, parkZones: null, effortRescaler: 1, visitTime: 'any',
       }));
     }
     return m;
-  }, [state.species]);
+  }, [enrichedSpecies]);
 
   const seenKeys = useMemo(() => getSeenKeySet(), [seenVersion]);
-  const spProgress = useMemo(() => parkProgress(state.species), [state.species, seenVersion]);
+  const spProgress = useMemo(() => parkProgress(enrichedSpecies), [enrichedSpecies, seenVersion]);
   const onToggleSeen = (s) => {
     const added = !seenKeys.has(speciesKey(s));
     toggleSeen(s, { parkId: park.id, parkName: park.name });
@@ -1096,12 +1127,12 @@ function StateParkPanel({ park, onClose, openAbout }) {
   // eBird/iNat species carry year-round seasons, so this rarely narrows, but
   // the control + behaviour match national parks exactly.
   const seasonSpecies = useMemo(() => {
-    if (season === 'all') return state.species;
-    return state.species.filter(s => {
+    if (season === 'all') return enrichedSpecies;
+    return enrichedSpecies.filter(s => {
       const segs = s.seasons ?? [];
       return segs.includes('year-round') || segs.includes('year_round') || segs.includes(season);
     });
-  }, [state.species, season]);
+  }, [enrichedSpecies, season]);
 
   // Category tab counts by the app's native animalType (same as national parks).
   const typeCounts = useMemo(() => {
@@ -1235,7 +1266,7 @@ function StateParkPanel({ park, onClose, openAbout }) {
                     onClick={() => { setCatFilter('all'); setDisplayLimit(24); }}
                   >
                     <span className="lp__tab-label">All</span>
-                    <span className="lp__tab-count">{state.species.length}</span>
+                    <span className="lp__tab-count">{seasonSpecies.length}</span>
                   </button>
                   {['bird', 'mammal', 'reptile', 'amphibian', 'insect', 'marine', 'fish', 'other']
                     .filter(t => typeCounts[t]).map(t => {
