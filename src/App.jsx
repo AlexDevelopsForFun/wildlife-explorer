@@ -1020,6 +1020,10 @@ function StateParkPanel({ park, onClose, openAbout }) {
   const [query, setQuery]           = useState('');
   const [seenFilter, setSeenFilter] = useState('all');      // all | unseen | seen
   const [rarityFilter, setRarityFilter] = useState('all');  // spectrum bar / rarity dropdown
+  // Park-proportional search radius (km): the park's own radiusKm, floored at
+  // 5 km so eBird/iNat return enough recent obs, capped at 20 km. Drives both
+  // the eBird and iNaturalist queries so the species list reflects the PARK.
+  const searchRadiusKm = Math.min(Math.max(park.radiusKm ?? 5, 5), 20);
   useEffect(() => {
     setDisplayLimit(24); setActiveTypes(new Set(DEFAULT_ACTIVE_TYPES)); setSubtypeFilter('all'); setQuery(''); setSeenFilter('all'); setSortBy('iconic-first'); setSeason(currentSeasonKey()); setRarityFilter('all');
   }, [park.id]);
@@ -1044,14 +1048,14 @@ function StateParkPanel({ park, onClose, openAbout }) {
     setState({ status: 'loading', species: [], total: 0, sources: [], stats: null });
     (async () => {
       try {
-        const radius = Math.max(park.radiusKm ?? 8, 15);
+        const radius = searchRadiusKm;
         const hotspot = await fetchEbirdHotspot(park.lat, park.lng);
         const pool = [];
         const sources = [];
         // Same stats national parks surface: eBird checklist + historical-spp
         // counts, and the running iNaturalist observation total.
         let ebirdChecklists = null, ebirdHistoricalSpecies = null, inatObservations = 0;
-        const eb = await fetchEbird(park.lat, park.lng, park.id, hotspot);
+        const eb = await fetchEbird(park.lat, park.lng, park.id, hotspot, { dist: radius });
         if (eb?.animals?.length) {
           pool.push(...eb.animals); sources.push('ebird');
           ebirdChecklists        = eb._stats?.recentChecklistCount ?? null;
@@ -1409,7 +1413,7 @@ function StateParkPanel({ park, onClose, openAbout }) {
           {state.status === 'loading' && <p className="statepark-modal__empty">Loading wildlife from eBird + iNaturalist…</p>}
           {state.status === 'error' && <p className="statepark-modal__empty">Could not load live data right now. Try again in a moment.</p>}
           {state.status === 'empty' && (
-            <p className="statepark-modal__empty">No recent eBird/iNaturalist observations found within {Math.max(park.radiusKm ?? 8, 15)} km.</p>
+            <p className="statepark-modal__empty">No recent eBird/iNaturalist observations found within {searchRadiusKm} km.</p>
           )}
           {state.status === 'ok' && state.species.length > 0 && (
             <>

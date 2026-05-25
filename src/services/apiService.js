@@ -625,8 +625,14 @@ export async function fetchEbirdHotspot(lat, lng) {
 //
 // Returns { animals, _stats } | null.
 // ─────────────────────────────────────────────────────────────────────────────
-export async function fetchEbird(lat, lng, locId, hotspotCode = null) {
-  const cacheKey = `ebird_v8_${locId}`;
+export async function fetchEbird(lat, lng, locId, hotspotCode = null, { dist = 25 } = {}) {
+  // `dist` (km) is the eBird geo/recent + iNat-bird search radius. National
+  // parks use the historic 25 km default (large parks span many hotspots);
+  // small state parks pass their own park-sized radius so the bird list
+  // reflects the PARK, not a ~1,960 km² circle around it. Non-default radii
+  // get their own cache key so a tighter state-park query never reads a wide
+  // national-park-style cached result for the same coords.
+  const cacheKey = `ebird_v8_${locId}${dist !== 25 ? `_d${dist}` : ''}`;
   const cached = cacheGet(cacheKey);
   if (cached) return cached;
 
@@ -656,11 +662,11 @@ export async function fetchEbird(lat, lng, locId, hotspotCode = null) {
     const [geoRes, inatRes] = await Promise.all([
       fetch(
         `/api/ebird-proxy/data/obs/geo/recent` +
-        `?lat=${lat}&lng=${lng}&dist=25&back=30&maxResults=500&includeProvisional=true`
+        `?lat=${lat}&lng=${lng}&dist=${dist}&back=30&maxResults=500&includeProvisional=true`
       ),
       fetch(
         `/api/inat-proxy/observations/species_counts` +
-        `?lat=${lat}&lng=${lng}&radius=25&iconic_taxa[]=Aves` +
+        `?lat=${lat}&lng=${lng}&radius=${dist}&iconic_taxa[]=Aves` +
         `&quality_grade=research,needs_id&d1=${d1str}&d2=${d2str}&per_page=200`
       ).catch(() => null),
     ]);
@@ -728,7 +734,7 @@ export async function fetchEbird(lat, lng, locId, hotspotCode = null) {
           seasons:        ['spring', 'summer', 'fall', 'winter'],
           bestSeason:     'spring',
           rarity:         rarityFromChecklist(freq),
-          funFact:        `Last reported ${ageLabel} within 15 km (eBird).`,
+          funFact:        `Last reported ${ageLabel} within ${dist} km (eBird).`,
           source:         'ebird',
           frequency:      freq,
           _ageDays:       ageDays,
