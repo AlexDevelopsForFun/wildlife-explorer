@@ -1006,20 +1006,27 @@ const STATE_GROUP_TO_TYPE = {
 };
 
 function StateParkPanel({ park, onClose, openAbout }) {
-  const [state, setState] = useState({ status: 'loading', species: [], total: 0, sources: [] });
+  const [state, setState] = useState({ status: 'loading', species: [], total: 0, sources: [], stats: null });
   const [seenVersion, setSeenVersion] = useState(0);
   const [displayLimit, setDisplayLimit] = useState(40);
-  const [catFilter, setCatFilter]   = useState('all');
+  // Multi-select animal-type filter, identical to national parks: defaults to
+  // birds/mammals/reptiles/amphibians/marine (insects opt-in). Clicking a tab
+  // focuses just that type (enabling its subtype bar); "All" re-selects every
+  // type present in the data.
+  const [activeTypes, setActiveTypes] = useState(() => new Set(DEFAULT_ACTIVE_TYPES));
   const [subtypeFilter, setSubtypeFilter] = useState('all'); // e.g. raptor (Birds of Prey)
   const [sortBy, setSortBy]         = useState('iconic-first'); // iconic-first | common-first | rarest-first | a-z
-  const [season, setSeason]         = useState('all');      // all | spring | summer | fall | winter
+  const [season, setSeason]         = useState(currentSeasonKey); // default to current season, like national parks
   const [query, setQuery]           = useState('');
   const [seenFilter, setSeenFilter] = useState('all');      // all | unseen | seen
   const [rarityFilter, setRarityFilter] = useState('all');  // spectrum bar / rarity dropdown
   useEffect(() => {
-    setDisplayLimit(24); setCatFilter('all'); setSubtypeFilter('all'); setQuery(''); setSeenFilter('all'); setSortBy('iconic-first'); setSeason('all'); setRarityFilter('all');
+    setDisplayLimit(24); setActiveTypes(new Set(DEFAULT_ACTIVE_TYPES)); setSubtypeFilter('all'); setQuery(''); setSeenFilter('all'); setSortBy('iconic-first'); setSeason(currentSeasonKey()); setRarityFilter('all');
   }, [park.id]);
-  useEffect(() => { setSubtypeFilter('all'); setRarityFilter('all'); }, [catFilter]); // reset subtype + rarity when category changes
+  // focusedType = the single selected type (drives the subtype bar); null when
+  // multiple types are active.
+  const focusedType = activeTypes.size === 1 ? [...activeTypes][0] : null;
+  useEffect(() => { setSubtypeFilter('all'); setRarityFilter('all'); }, [focusedType]); // reset subtype + rarity when focus changes
   useEffect(() => {
     const h = e => { if (e.key === 'Escape') onClose(); };
     window.addEventListener('keydown', h);
@@ -1034,15 +1041,22 @@ function StateParkPanel({ park, onClose, openAbout }) {
   const SP_TAXA = ['bird', 'mammal', 'reptile', 'amphibian', 'insect', 'marine'];
   useEffect(() => {
     let alive = true;
-    setState({ status: 'loading', species: [], total: 0, sources: [] });
+    setState({ status: 'loading', species: [], total: 0, sources: [], stats: null });
     (async () => {
       try {
         const radius = Math.max(park.radiusKm ?? 8, 15);
         const hotspot = await fetchEbirdHotspot(park.lat, park.lng);
         const pool = [];
         const sources = [];
+        // Same stats national parks surface: eBird checklist + historical-spp
+        // counts, and the running iNaturalist observation total.
+        let ebirdChecklists = null, ebirdHistoricalSpecies = null, inatObservations = 0;
         const eb = await fetchEbird(park.lat, park.lng, park.id, hotspot);
-        if (eb?.animals?.length) { pool.push(...eb.animals); sources.push('ebird'); }
+        if (eb?.animals?.length) {
+          pool.push(...eb.animals); sources.push('ebird');
+          ebirdChecklists        = eb._stats?.recentChecklistCount ?? null;
+          ebirdHistoricalSpecies = eb._stats?.historicalSpeciesCount ?? null;
+        }
         // iNaturalist taxa, 2 concurrent (same throttle as national parks).
         const queue = [...SP_TAXA]; let running = 0;
         await new Promise(resolve => {
@@ -1051,7 +1065,10 @@ function StateParkPanel({ park, onClose, openAbout }) {
             while (running < 2 && queue.length) {
               const taxon = queue.shift(); running++;
               fetchINat(park.lat, park.lng, park.id, taxon, { radius, days: 0 })
-                .then(r => { if (r?.animals?.length) { pool.push(...r.animals); if (!sources.includes('inaturalist')) sources.push('inaturalist'); } })
+                .then(r => {
+                  if (r?.animals?.length) { pool.push(...r.animals); if (!sources.includes('inaturalist')) sources.push('inaturalist'); }
+                  inatObservations += r?._stats?.totalObsCount ?? 0;
+                })
                 .catch(() => {})
                 .finally(() => { running--; if (--remaining === 0) resolve(); else next(); });
             }
@@ -1060,9 +1077,10 @@ function StateParkPanel({ park, onClose, openAbout }) {
         });
         if (!alive) return;
         const animals = deduplicateAnimals(pool);
-        setState({ status: animals.length ? 'ok' : 'empty', species: animals, total: animals.length, sources });
+        const stats = { ebirdChecklists, ebirdHistoricalSpecies, inatObservations };
+        setState({ status: animals.length ? 'ok' : 'empty', species: animals, total: animals.length, sources, stats });
       } catch {
-        if (alive) setState({ status: 'error', species: [], total: 0, sources: [] });
+        if (alive) setState({ status: 'error', species: [], total: 0, sources: [], stats: null });
       }
     })();
     return () => { alive = false; };
@@ -1154,19 +1172,28 @@ function StateParkPanel({ park, onClose, openAbout }) {
     return live.length ? live.map(s => SOURCE_LONG[s] ?? s).join(' · ') : 'eBird · iNaturalist';
   }, [state.sources]);
 
-  // Subtype tabs (Birds of Prey, Songbirds, …) — name-based, reused from
-  // national parks; only shown when the active type defines sub-types.
-  const activeType = catFilter === 'all' ? null : catFilter;
-  const subtypeDefs = activeType ? getSubtypeDefs(activeType) : null;
+  // All animal-type keys actually present in this park's data — drives the
+  // tab list and the "All" selection target.
+  const presentTypeKeys = useMemo(
+    () => ['bird', 'mammal', 'reptile', 'amphibian', 'insect', 'marine', 'fish', 'other'].filter(t => typeCounts[t]),
+    [typeCounts],
+  );
+  const allTypesActive = presentTypeKeys.length > 0 && presentTypeKeys.every(t => activeTypes.has(t));
 
-  // Species after season + category + subtype tabs — drives spectrum + list.
+  // Subtype tabs (Birds of Prey, Songbirds, …) — only when exactly one type is
+  // focused (same rule as national parks).
+  const subtypeDefs = focusedType ? getSubtypeDefs(focusedType) : null;
+
+  // Species after season + (multi-select) type + subtype filters — drives
+  // spectrum + list. Mirrors national parks: filter to active types unless all
+  // present types are selected.
   const inCategory = useMemo(() => {
-    let list = catFilter === 'all' ? seasonSpecies : seasonSpecies.filter(s => s.animalType === catFilter);
+    let list = allTypesActive ? seasonSpecies : seasonSpecies.filter(s => activeTypes.has(s.animalType));
     if (subtypeFilter !== 'all' && subtypeDefs) {
       list = list.filter(s => classifyAnimalSubtype(s) === subtypeFilter);
     }
     return list;
-  }, [seasonSpecies, catFilter, subtypeFilter, subtypeDefs]);
+  }, [seasonSpecies, activeTypes, allTypesActive, subtypeFilter, subtypeDefs]);
 
   // Copies with `.rarity` set to the calibrated effective tier, so the SAME
   // RaritySpectrumBar national parks use renders the correct composition,
@@ -1243,6 +1270,23 @@ function StateParkPanel({ park, onClose, openAbout }) {
                   )}
                 </div>
               )}
+              {/* API data note — eBird checklist + iNat observation + historical-spp counts. */}
+              {state.stats && (state.stats.ebirdChecklists || state.stats.inatObservations > 0) && (
+                <div className="lp__api-note">
+                  📊{' '}
+                  {[
+                    state.stats.ebirdChecklists
+                      ? `${state.stats.ebirdChecklists} eBird checklist${state.stats.ebirdChecklists !== 1 ? 's' : ''}`
+                      : null,
+                    state.stats.inatObservations
+                      ? `${state.stats.inatObservations.toLocaleString()} iNat obs`
+                      : null,
+                  ].filter(Boolean).join(' · ')}
+                  {state.stats.ebirdHistoricalSpecies
+                    ? ` · ${state.stats.ebirdHistoricalSpecies} historical spp`
+                    : null}
+                </div>
+              )}
               <div className="statepark-modal__banner" role="note">
                 <strong>Live from eBird + iNaturalist.</strong> Rarity is derived the same
                 way as national parks. State parks have no NPS curated inventory or
@@ -1256,28 +1300,20 @@ function StateParkPanel({ park, onClose, openAbout }) {
                 onSelectRarity={setRarityFilter}
               />
 
-              {/* Category tabs — national-park pill styling (.lp__tab*). */}
+              {/* Category tabs — multi-select, national-park behaviour: the
+                  default preset highlights several types at once; clicking one
+                  focuses it; "All" re-selects every present type. */}
               <div className="lp__tabs-wrapper">
                 <div className="lp__tabs" role="tablist">
-                  <button
-                    role="tab"
-                    aria-selected={catFilter === 'all'}
-                    className={`lp__tab${catFilter === 'all' ? ' lp__tab--active' : ''}`}
-                    onClick={() => { setCatFilter('all'); setDisplayLimit(24); }}
-                  >
-                    <span className="lp__tab-label">All</span>
-                    <span className="lp__tab-count">{seasonSpecies.length}</span>
-                  </button>
-                  {['bird', 'mammal', 'reptile', 'amphibian', 'insect', 'marine', 'fish', 'other']
-                    .filter(t => typeCounts[t]).map(t => {
-                    const isActive = catFilter === t;
+                  {presentTypeKeys.map(t => {
+                    const isActive = activeTypes.has(t);
                     return (
                       <button
                         key={t}
                         role="tab"
                         aria-selected={isActive}
                         className={`lp__tab${isActive ? ' lp__tab--active' : ''}`}
-                        onClick={() => { setCatFilter(t); setDisplayLimit(24); track('state_park_filter', { group: t }); }}
+                        onClick={() => { setActiveTypes(new Set([t])); setDisplayLimit(24); track('state_park_filter', { group: t }); }}
                         title={`Show ${ANIMAL_TYPES[t]?.label ?? t}`}
                       >
                         <span aria-hidden="true">{ANIMAL_TYPES[t]?.emoji ?? '🐾'}</span>
@@ -1286,6 +1322,15 @@ function StateParkPanel({ park, onClose, openAbout }) {
                       </button>
                     );
                   })}
+                  {!allTypesActive && (
+                    <button
+                      className="lp__tab lp__tab--show-all"
+                      onClick={() => { setActiveTypes(new Set(presentTypeKeys)); setDisplayLimit(24); }}
+                      title="Show all animal types"
+                    >
+                      <span className="lp__tab-label">All</span>
+                    </button>
+                  )}
                 </div>
               </div>
 
@@ -1298,7 +1343,7 @@ function StateParkPanel({ park, onClose, openAbout }) {
                       onClick={() => { setSubtypeFilter('all'); setDisplayLimit(24); }}
                       aria-pressed={subtypeFilter === 'all'}
                     >
-                      <span className="lp__subtype-label">All {ANIMAL_TYPES[catFilter]?.label ?? ''}</span>
+                      <span className="lp__subtype-label">All {ANIMAL_TYPES[focusedType]?.label ?? ''}</span>
                     </button>
                     {subtypeDefs.map(({ key, emoji, label }) => {
                       const count = inCategory.filter(s => classifyAnimalSubtype(s) === key).length;
@@ -1307,7 +1352,7 @@ function StateParkPanel({ park, onClose, openAbout }) {
                         <button
                           key={key}
                           className={`lp__subtype-btn${subtypeFilter === key ? ' lp__subtype-btn--active' : ''}${isEmpty ? ' lp__subtype-btn--empty' : ''}`}
-                          onClick={() => { if (!isEmpty) { setSubtypeFilter(key); setDisplayLimit(24); track('state_park_subtype', { type: activeType, subtype: key }); } }}
+                          onClick={() => { if (!isEmpty) { setSubtypeFilter(key); setDisplayLimit(24); track('state_park_subtype', { type: focusedType, subtype: key }); } }}
                           disabled={isEmpty}
                           aria-pressed={subtypeFilter === key}
                           title={label}
@@ -1801,6 +1846,16 @@ function iconicSortFn(a, b) {
 // one click away. Hoisted to module scope so it's a stable reference for
 // useState init and useCallback closures.
 const DEFAULT_ACTIVE_TYPES = ['bird', 'mammal', 'reptile', 'amphibian', 'marine'];
+
+// Current meteorological season key — shared so national parks and state parks
+// both default their season filter to "now".
+function currentSeasonKey() {
+  const m = new Date().getMonth() + 1;
+  if (m >= 3 && m <= 5) return 'spring';
+  if (m >= 6 && m <= 8) return 'summer';
+  if (m >= 9 && m <= 11) return 'fall';
+  return 'winter';
+}
 
 const RARITY_FREQ_FALLBACK = {
   guaranteed: 0.92, very_likely: 0.70, likely: 0.40,
