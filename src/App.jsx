@@ -1032,11 +1032,12 @@ function StateParkPanel({ park, onClose, openAbout }) {
   // iNaturalist non-bird taxa (mammals, reptiles, amphibians) are FAR more
   // sparsely sampled than birds and range more widely, so a tight radius
   // returns almost none — a park looks "birds only" purely as a sampling
-  // artifact. Give iNat a wider net (≥12 km, ≤25 km) so those species actually
+  // artifact. Give iNat a wider net (≥15 km, ≤25 km) so those species actually
   // surface, while birds stay park-tight on the dense eBird data. Research-grade
   // filtering still guards against misidentified species, so completeness rises
-  // without accuracy loss.
-  const inatRadiusKm = Math.min(Math.max(park.radiusKm ?? 8, 12), 25);
+  // without accuracy loss. The fetch also retries at the 25 km cap if a taxon
+  // still comes back empty, so even isolated parks surface vertebrates.
+  const inatRadiusKm = Math.min(Math.max(park.radiusKm ?? 8, 15), 25);
   // Sample points: most parks use their single center; large/linear parks
   // (see stateParksNJ.js `points`) sample several spots so one off-centre
   // point can't misrepresent a 100k-acre forest or a 70 km linear canal.
@@ -1104,20 +1105,26 @@ function StateParkPanel({ park, onClose, openAbout }) {
             ebirdHistoricalSpecies = Math.max(ebirdHistoricalSpecies, eb._stats?.historicalSpeciesCount ?? 0);
           }
           const queue = [...SP_TAXA]; let running = 0;
+          // Fetch one taxon, with adaptive expansion: if a NON-bird taxon comes
+          // back empty at the per-park radius, retry once at the 25 km cap so
+          // even sparsely-sampled vertebrates at isolated parks still surface.
+          const fetchTaxon = async (taxon) => {
+            const taxonRadius = taxon === 'bird' ? birdDist : inatRadius;
+            try {
+              let r = await fetchINat(lat, lng, pointId, taxon, { radius: taxonRadius, days: 0 });
+              if (taxon !== 'bird' && !r?.animals?.length && taxonRadius < 25) {
+                r = await fetchINat(lat, lng, `${pointId}-wide`, taxon, { radius: 25, days: 0 });
+              }
+              if (r?.animals?.length) { pool.push(...r.animals); if (!sources.includes('inaturalist')) sources.push('inaturalist'); }
+              inatObservations += r?._stats?.totalObsCount ?? 0;
+            } catch { /* non-fatal — other taxa still load */ }
+          };
           await new Promise(resolve => {
             let remaining = queue.length;
             const next = () => {
               while (running < 2 && queue.length) {
                 const taxon = queue.shift(); running++;
-                // Birds stay park-tight (dense eBird/iNat coverage); every other
-                // taxon uses the wider iNat radius so sparse vertebrates surface.
-                const taxonRadius = taxon === 'bird' ? birdDist : inatRadius;
-                fetchINat(lat, lng, pointId, taxon, { radius: taxonRadius, days: 0 })
-                  .then(r => {
-                    if (r?.animals?.length) { pool.push(...r.animals); if (!sources.includes('inaturalist')) sources.push('inaturalist'); }
-                    inatObservations += r?._stats?.totalObsCount ?? 0;
-                  })
-                  .catch(() => {})
+                fetchTaxon(taxon)
                   .finally(() => { running--; if (--remaining === 0) resolve(); else next(); });
               }
             };
