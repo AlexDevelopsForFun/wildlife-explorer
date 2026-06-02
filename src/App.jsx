@@ -54,6 +54,7 @@ import {
 import { getParkZones } from './data/parkZones.js';
 import { detectabilityCeiling, classifyDetectability, DETECTABILITY_LEVELS } from './data/detectability.js';
 import { recordSighting, clearSighting, getSightingVerdict, exportSightings, getAllSightings } from './data/sightingFeedback.js';
+import { fetchParkSightings, postSighting, sightingsBucketKey } from './services/sightingsService.js';
 
 // ── Park type colors & icons ──────────────────────────────────────────────────
 const PARK_COLORS = { nationalPark: '#7B5B2E' };
@@ -1259,6 +1260,27 @@ function StateParkPanel({ park, onClose, openAbout }) {
     track('seen_toggle', { added, animal: s.name, park: park.name });
   };
 
+  // Cross-visitor sighting aggregates for this park (api/sightings). Fetched
+  // once per park open; empty + no-op until the datastore is connected.
+  const [community, setCommunity] = useState({ buckets: {}, configured: false });
+  useEffect(() => {
+    let alive = true;
+    setCommunity({ buckets: {}, configured: false });
+    fetchParkSightings(park.id).then(r => { if (alive) setCommunity(r); });
+    return () => { alive = false; };
+  }, [park.id]);
+  // Optimistic local bump so a card's "N of M" updates instantly on vote.
+  const bumpCommunity = useCallback((species, season, verdict) => {
+    setCommunity(prev => {
+      const bk = sightingsBucketKey(species, season);
+      const cur = prev.buckets[bk] ?? { seen: 0, missed: 0 };
+      return {
+        ...prev,
+        buckets: { ...prev.buckets, [bk]: { ...cur, [verdict]: (cur[verdict] ?? 0) + 1 } },
+      };
+    });
+  }, []);
+
   // Season-filtered pool (mirrors national parks' seasonFiltered) — applies
   // ONLY the season filter, so tab/breakdown counts are season-aware. Live
   // eBird/iNat species carry year-round seasons, so this rarely narrows, but
@@ -1588,6 +1610,8 @@ function StateParkPanel({ park, onClose, openAbout }) {
                     highlightSpecies={null}
                     seen={seenKeys.has(speciesKey(a))}
                     onToggleSeen={onToggleSeen}
+                    communitySightings={community.buckets}
+                    onCommunityVote={bumpCommunity}
                   />
                 ))}
               </div>
@@ -2566,7 +2590,7 @@ function composeFallbackTip(animal, period) {
 }
 
 // ── Animal card ───────────────────────────────────────────────────────────────
-function AnimalCard({ animal, debugMode, seasonalFreqs, parkEffort = null, location, openAbout, highlightSpecies, activeSeason, activeZone, parkZones = null, onSelectZone = null, effortRescaler = 1, visitTime = 'any', effortLabel = 'casual', seen = false, onToggleSeen = null }) {
+function AnimalCard({ animal, debugMode, seasonalFreqs, parkEffort = null, location, openAbout, highlightSpecies, activeSeason, activeZone, parkZones = null, onSelectZone = null, effortRescaler = 1, visitTime = 'any', effortLabel = 'casual', seen = false, onToggleSeen = null, communitySightings = null, onCommunityVote = null }) {
   // Combined zone- + season- + effort- + time-of-day-aware rarity.
   //   1. Pick base frequency: zone freq > season freq > park freq.
   //   2. Rescale by effort multiplier (expert=1.54, casual=1.0, drive=0.54 —
@@ -2620,8 +2644,27 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, parkEffort = null, locat
   useEffect(() => { setVerdict(getSightingVerdict(sightingCtx)); }, [sightingCtx]);
   const submitVerdict = (v) => {
     if (verdict === v) { clearSighting(sightingCtx); setVerdict(null); }      // toggle off
-    else { recordSighting(sightingCtx, v); setVerdict(v); }
+    else {
+      recordSighting(sightingCtx, v); setVerdict(v);
+      // Cross-visitor aggregation (state parks): post the vote + optimistically
+      // bump the panel's community count. localStorage de-dupes per device, so
+      // we only post when SETTING a verdict, not on toggle-off.
+      if (onCommunityVote) {
+        const seasonBk = activeSeason ?? 'any';
+        postSighting({ parkId: location?.id, species: animal.name, season: seasonBk, verdict: v });
+        onCommunityVote(animal.name, seasonBk, v);
+      }
+    }
   };
+
+  // Community ground-truth count for THIS card's (species, season) bucket.
+  const community = (() => {
+    if (!communitySightings) return null;
+    const b = communitySightings[sightingsBucketKey(animal.name, activeSeason ?? 'any')];
+    if (!b) return null;
+    const n = (b.seen ?? 0) + (b.missed ?? 0);
+    return n > 0 ? { seen: b.seen ?? 0, n } : null;
+  })();
 
   // Fetch photo lazily when the card mounts (i.e. when the popup opens)
   useEffect(() => {
@@ -2981,6 +3024,15 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, parkEffort = null, locat
         >👎 Didn’t</button>
         {verdict && <span className="sighting-feedback__thanks">✓ thanks</span>}
       </div>
+
+      {/* Cross-visitor ground truth — real seen-rate from other visitors'
+          votes for this species + season at this park. Display-only for now;
+          a bounded rarity nudge comes once buckets accumulate enough votes. */}
+      {community && (
+        <div className="sighting-community" title="Anonymous community reports for this species and season at this park.">
+          🧭 <strong>{community.seen}</strong> of <strong>{community.n}</strong> visitor{community.n === 1 ? '' : 's'} saw this here
+        </div>
+      )}
 
       {(() => {
         const segments = [];

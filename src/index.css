@@ -1896,6 +1896,13 @@ body, #root {
   color: var(--text-muted, #6b7280);
   margin-right: 2px;
 }
+/* Cross-visitor ground-truth count (community sightings backend). */
+.sighting-community {
+  margin-top: 5px;
+  font-size: 12px;
+  color: var(--text-secondary, #8aa);
+}
+.sighting-community strong { color: var(--text-primary, #eaf4ee); font-weight: 700; }
 .sighting-feedback__btn {
   appearance: none;
   border: 1px solid var(--border-tip, #d1eddb);
