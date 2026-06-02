@@ -54,7 +54,7 @@ export function needsGeneratedDescription(funFact) {
 // card keeps its factual observation-record line.
 const _factCache    = new Map();
 const _factPending  = new Map();
-const FACT_PREFIX   = 'wm_factdesc_v1_';
+const FACT_PREFIX   = 'wm_factdesc_v2_'; // v2: sci-name-first lookup (fixes common-name collisions e.g. "Merlin")
 const FACT_TTL      = 30 * 24 * 60 * 60 * 1000; // 30 days
 const FACT_NEG_TTL  = 3  * 24 * 60 * 60 * 1000; // 3 days for null (let new sources fill in)
 
@@ -104,7 +104,11 @@ async function factFromWikipedia(name) {
     if (!data?.extract || data.type === 'disambiguation' || data.extract.length < 30) return null;
     const desc = (data.description ?? '').toLowerCase();
     const bad = ['city', 'town', 'county', 'region', 'river', 'mountain', 'lake',
-                 'disambiguation', 'village', 'municipality'];
+                 'disambiguation', 'village', 'municipality',
+                 // non-animal common-name collisions (Merlin the wizard, Robin the name…)
+                 'legendary', 'mythical', 'fictional', 'wizard', 'magician', 'deity',
+                 'given name', 'surname', 'film', 'song', 'album', 'band', 'novel',
+                 'video game', 'character', 'company', 'musician', 'singer', 'actor'];
     if (bad.some(t => desc.includes(t))) return null;
     return { text: firstNSentences(data.extract, 2), source: 'Wikipedia' };
   } catch { return null; }
@@ -128,9 +132,14 @@ export async function fetchAnimalDescription(animalName, scientificName) {
   } catch { /* storage unavailable */ }
 
   const promise = (async () => {
+    // 1. iNaturalist taxon summary (taxon-aware + name-match guarded).
+    // 2. Wikipedia by SCIENTIFIC name — unambiguous, so it can't match a
+    //    same-named non-animal (e.g. "Merlin" the falcon vs the wizard).
+    // 3. Wikipedia by common name ONLY as a last resort when there is no
+    //    scientific name (with the bad-type guard in factFromWikipedia).
     let result = await factFromInat(animalName, scientificName);
-    if (!result) result = await factFromWikipedia(animalName);
     if (!result && scientificName) result = await factFromWikipedia(scientificName);
+    if (!result && !scientificName) result = await factFromWikipedia(animalName);
     result = result ?? null;
     _factCache.set(key, result);
     _factPending.delete(key);
