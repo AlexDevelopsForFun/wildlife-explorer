@@ -822,12 +822,23 @@ export async function fetchINat(lat, lng, locId, taxonKey = null, { radius = 20,
       `?lat=${lat}&lng=${lng}&radius=${radius}&per_page=200` +
       `&quality_grade=research&order_by=observations_count&order=desc&locale=en&preferred_place_id=1${taxonParam}${dateParam}`;
 
-    const firstRes = await fetch(baseUrl);
+    // iNaturalist intermittently returns 503/429 under load. One short
+    // backoff-retry rides out brief blips before we give up — benefits every
+    // caller (national parks + state parks) and turns transient "birds only"
+    // gaps (when non-bird taxa happened to hit a 503) back into full results.
+    let firstRes = await fetch(baseUrl);
+    if (!firstRes.ok && (firstRes.status >= 500 || firstRes.status === 429)) {
+      await new Promise(r => setTimeout(r, 700));
+      firstRes = await fetch(baseUrl);
+    }
     if (!firstRes.ok) throw new Error(`iNat ${firstRes.status}`);
     const firstJson = await firstRes.json();
     const total_results = firstJson.total_results;
     let results = firstJson.results ?? [];
-    if (!results.length) return null;
+    // Genuine empty (200 OK, 0 results) — distinct from a hard error (null
+    // below). Returning an empty-but-valid object lets callers tell "no
+    // species here" from "the API failed" and avoid retrying into an outage.
+    if (!results.length) return { animals: [], _stats: { taxonKey, totalObsCount: 0 }, _empty: true };
 
     // Paginate when the first page is full (200 = per_page cap hit)
     if (results.length === 200) {

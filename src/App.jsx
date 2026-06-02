@@ -1112,8 +1112,12 @@ function StateParkPanel({ park, onClose, openAbout }) {
             const taxonRadius = taxon === 'bird' ? birdDist : inatRadius;
             try {
               let r = await fetchINat(lat, lng, pointId, taxon, { radius: taxonRadius, days: 0 });
-              if (taxon !== 'bird' && !r?.animals?.length && taxonRadius < 25) {
-                r = await fetchINat(lat, lng, `${pointId}-wide`, taxon, { radius: 25, days: 0 });
+              // Widen to the 25 km cap ONLY on a genuine empty (r exists, 0
+              // animals) — never on a hard error (r === null, e.g. an iNat 503),
+              // so a transient outage doesn't get a second wasted request.
+              if (taxon !== 'bird' && r && r.animals.length === 0 && taxonRadius < 25) {
+                const wide = await fetchINat(lat, lng, `${pointId}-wide`, taxon, { radius: 25, days: 0 });
+                if (wide) r = wide;
               }
               if (r?.animals?.length) { pool.push(...r.animals); if (!sources.includes('inaturalist')) sources.push('inaturalist'); }
               inatObservations += r?._stats?.totalObsCount ?? 0;
