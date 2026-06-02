@@ -9,7 +9,7 @@ import { SpeedInsights } from '@vercel/speed-insights/react';
 import { track } from '@vercel/analytics';
 
 import { wildlifeLocations, SEASONS, RARITY, ANIMAL_TYPES, STATE_NAMES } from './wildlifeData';
-import { STATE_PARKS_NJ, STATE_PARKS_BY_STATE, findStatePark } from './data/stateParksNJ';
+import { STATE_PARKS_NJ, STATE_PARKS_BY_STATE, findStatePark, INAT_PLACE_IDS } from './data/stateParksNJ';
 
 // States we have curated park data for. Add a new state's entry here +
 // extend STATE_PARKS_BY_STATE — the selector + map handle it automatically.
@@ -1091,56 +1091,71 @@ function StateParkPanel({ park, onClose, openAbout }) {
         const sources = [];
         let ebirdChecklists = null, ebirdHistoricalSpecies = 0, inatObservations = 0;
 
-        // Fetch one sample point: eBird birds (geo/recent at birdDist) + iNat
-        // per taxon. Each point gets a unique locId suffix so caches don't
-        // collide and a multi-point park doesn't read another point's result.
-        const fetchPoint = async ([lat, lng], idx) => {
+        // Run up to `conc` async tasks at a time (gentle on the APIs).
+        const runQueue = (tasks, conc = 2) => new Promise(resolve => {
+          let i = 0, running = 0, done = 0;
+          if (!tasks.length) return resolve();
+          const next = () => {
+            while (running < conc && i < tasks.length) {
+              const task = tasks[i++]; running++;
+              task().finally(() => { running--; if (++done === tasks.length) resolve(); else next(); });
+            }
+          };
+          next();
+        });
+
+        // ── eBird birds: per sample point (radius). eBird has no boundary
+        //    query, so multi-point sampling stays the way large/linear parks
+        //    get full coverage. ──
+        const fetchEbirdAt = async ([lat, lng], idx) => {
           const pointId = samplePoints.length > 1 ? `${park.id}-p${idx}` : park.id;
           const hotspot = await fetchEbirdHotspot(lat, lng);
           const eb = await fetchEbird(lat, lng, pointId, hotspot, { dist: birdDist });
           if (eb?.animals?.length) {
             pool.push(...eb.animals);
             if (!sources.includes('ebird')) sources.push('ebird');
-            // Historical-spp count is per-hotspot; take the max across points.
             ebirdHistoricalSpecies = Math.max(ebirdHistoricalSpecies, eb._stats?.historicalSpeciesCount ?? 0);
           }
-          const queue = [...SP_TAXA]; let running = 0;
-          // Fetch one taxon, with adaptive expansion: if a NON-bird taxon comes
-          // back empty at the per-park radius, retry once at the 25 km cap so
-          // even sparsely-sampled vertebrates at isolated parks still surface.
-          const fetchTaxon = async (taxon) => {
-            const taxonRadius = taxon === 'bird' ? birdDist : inatRadius;
-            try {
-              let r = await fetchINat(lat, lng, pointId, taxon, { radius: taxonRadius, days: 0 });
-              // Widen to the 25 km cap ONLY on a genuine empty (r exists, 0
-              // animals) — never on a hard error (r === null, e.g. an iNat 503),
-              // so a transient outage doesn't get a second wasted request.
-              if (taxon !== 'bird' && r && r.animals.length === 0 && taxonRadius < 25) {
-                const wide = await fetchINat(lat, lng, `${pointId}-wide`, taxon, { radius: 25, days: 0 });
-                if (wide) r = wide;
-              }
-              if (r?.animals?.length) { pool.push(...r.animals); if (!sources.includes('inaturalist')) sources.push('inaturalist'); }
-              inatObservations += r?._stats?.totalObsCount ?? 0;
-            } catch { /* non-fatal — other taxa still load */ }
-          };
-          await new Promise(resolve => {
-            let remaining = queue.length;
-            const next = () => {
-              while (running < 2 && queue.length) {
-                const taxon = queue.shift(); running++;
-                fetchTaxon(taxon)
-                  .finally(() => { running--; if (--remaining === 0) resolve(); else next(); });
-              }
-            };
-            next();
-          });
         };
-
-        // Points sequentially (each already runs its taxa concurrently) so a
-        // 5-point linear park doesn't fire 35 requests at once.
         for (let i = 0; i < samplePoints.length; i++) {
           if (!alive) return;
-          await fetchPoint(samplePoints[i], i);
+          await fetchEbirdAt(samplePoints[i], i);
+        }
+        if (!alive) return;
+
+        // ── iNaturalist: boundary query (place_id) when the park has a verified
+        //    iNat polygon — ONE query per taxon counts species INSIDE the park,
+        //    excluding the neighbouring-area observations a circle would include.
+        //    Parks without a polygon keep the radius path (per-point + adaptive
+        //    widen for sparse non-bird taxa). ──
+        const placeId = INAT_PLACE_IDS[park.id] ?? null;
+        const takeInat = (r) => {
+          if (r?.animals?.length) { pool.push(...r.animals); if (!sources.includes('inaturalist')) sources.push('inaturalist'); }
+          inatObservations += r?._stats?.totalObsCount ?? 0;
+        };
+        if (placeId) {
+          await runQueue(SP_TAXA.map(taxon => async () => {
+            try { takeInat(await fetchINat(park.lat, park.lng, park.id, taxon, { placeId })); }
+            catch { /* non-fatal */ }
+          }), 2);
+        } else {
+          for (let idx = 0; idx < samplePoints.length; idx++) {
+            if (!alive) return;
+            const [lat, lng] = samplePoints[idx];
+            const pointId = samplePoints.length > 1 ? `${park.id}-p${idx}` : park.id;
+            await runQueue(SP_TAXA.map(taxon => async () => {
+              const taxonRadius = taxon === 'bird' ? birdDist : inatRadius;
+              try {
+                let r = await fetchINat(lat, lng, pointId, taxon, { radius: taxonRadius, days: 0 });
+                // Widen to the 25 km cap only on a genuine empty (not a 503).
+                if (taxon !== 'bird' && r && r.animals.length === 0 && taxonRadius < 25) {
+                  const wide = await fetchINat(lat, lng, `${pointId}-wide`, taxon, { radius: 25, days: 0 });
+                  if (wide) r = wide;
+                }
+                takeInat(r);
+              } catch { /* non-fatal — other taxa still load */ }
+            }), 2);
+          }
         }
 
         if (!alive) return;

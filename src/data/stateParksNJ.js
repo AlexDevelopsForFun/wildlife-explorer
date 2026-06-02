@@ -83,6 +83,26 @@ export const STATE_PARKS_NJ = [
   { id: 'nj-worthington',      name: 'Worthington State Forest',            lat: 40.9932,     lng: -75.0855,    radiusKm: 6,  category: 'state-forest' },
 ];
 
+// iNaturalist place IDs — the park's curated boundary polygon. When present,
+// the app queries iNat species by the ACTUAL park boundary (place_id) instead
+// of a lat/lng circle, so non-bird species from neighbouring towns/water are
+// excluded. Verified May 2026 by scripts/lookupInatPlaces.mjs: each id's place
+// centroid was confirmed within ~8 km of the park's coordinate (Island Beach's
+// larger offset is expected — it's a ~16 km barrier island; exact name match).
+// The 20 parks without an entry have no iNat polygon and keep the radius path
+// (the large/linear ones there use multi-point sampling).
+export const INAT_PLACE_IDS = {
+  'nj-hewitt': 162995, 'nj-allaire': 162914, 'nj-allamuchy': 162919,
+  'nj-cape-may-point': 214672, 'nj-cheesequake': 162896, 'nj-corsons-inlet': 162936,
+  'nj-double-trouble': 162934, 'nj-farny': 162915, 'nj-fort-mott': 162935,
+  'nj-hacklebarney': 162943, 'nj-high-point': 163073, 'nj-island-beach': 162948,
+  'nj-kittatinny': 162953, 'nj-liberty': 66812, 'nj-long-pond': 162836,
+  'nj-parvin': 162949, 'nj-pigeon-swamp': 118304, 'nj-rancocas': 130952,
+  'nj-ringwood': 162916, 'nj-round-valley': 139622, 'nj-spruce-run': 139525,
+  'nj-stokes-forest': 162773, 'nj-swartswood': 162986, 'nj-tall-pines': 163451,
+  'nj-voorhees': 139996, 'nj-washington-rock': 162984,
+};
+
 // Multi-state registry. Each new state ships its own data file (same shape)
 // and is added here + to STATE_PARK_STATES in App.jsx + STATE_NAMES in
 // scripts/prerenderParks.js; the selector, map, deep links, and prerender

@@ -793,8 +793,13 @@ const INAT_SUBGROUP_IDS = {
 // iNaturalist — research-grade observations near a lat/lng, by taxon.
 // Uses order_by=votes so the most community-verified species surface first.
 // Returns { animals, _stats } | null.
-export async function fetchINat(lat, lng, locId, taxonKey = null, { radius = 20, days = 0 } = {}) {
-  const extraKey = radius !== 20 || days ? `_r${radius}${days ? `_d${days}` : ''}` : '';
+export async function fetchINat(lat, lng, locId, taxonKey = null, { radius = 20, days = 0, placeId = null } = {}) {
+  // placeId (iNat curated boundary polygon) takes precedence over lat/lng+radius
+  // when provided: species are then counted INSIDE the park boundary rather than
+  // a circle, excluding neighbouring-area observations. Falls back to radius when
+  // a park has no iNat place.
+  const extraKey = placeId ? `_pl${placeId}${days ? `_d${days}` : ''}`
+    : (radius !== 20 || days ? `_r${radius}${days ? `_d${days}` : ''}` : '');
   const cacheKey = `inat_v6_${locId}_${taxonKey ?? 'all'}${extraKey}`;
   const cached = cacheGet(cacheKey);
   if (cached) return cached;
@@ -817,9 +822,11 @@ export async function fetchINat(lat, lng, locId, taxonKey = null, { radius = 20,
     // until a page comes back with <200 results (last page) or we reach the 5-page cap
     // (1 000 species max per group). Each page is a non-overlapping slice sorted by
     // observation count, so concatenation produces a clean deduplicated ranked list.
+    // Boundary query (place_id) when available; otherwise the lat/lng circle.
+    const geoParam = placeId ? `place_id=${placeId}` : `lat=${lat}&lng=${lng}&radius=${radius}`;
     const baseUrl =
       `https://api.inaturalist.org/v1/observations/species_counts` +
-      `?lat=${lat}&lng=${lng}&radius=${radius}&per_page=200` +
+      `?${geoParam}&per_page=200` +
       `&quality_grade=research&order_by=observations_count&order=desc&locale=en&preferred_place_id=1${taxonParam}${dateParam}`;
 
     // iNaturalist intermittently returns 503/429 under load. One short
