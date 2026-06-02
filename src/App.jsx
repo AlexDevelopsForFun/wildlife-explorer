@@ -1207,20 +1207,46 @@ function StateParkPanel({ park, onClose, openAbout }) {
   // Active season for rarity (null when "All Seasons" selected).
   const activeSeasonForRarity = season === 'all' ? null : season;
 
+  // Cross-visitor sighting aggregates for this park (api/sightings). Fetched
+  // once per park open; empty + no-op until the datastore is connected.
+  const [community, setCommunity] = useState({ buckets: {}, configured: false });
+  useEffect(() => {
+    let alive = true;
+    setCommunity({ buckets: {}, configured: false });
+    fetchParkSightings(park.id).then(r => { if (alive) setCommunity(r); });
+    return () => { alive = false; };
+  }, [park.id]);
+  // Optimistic local bump so a card's "N of M" updates instantly on vote.
+  const bumpCommunity = useCallback((species, season, verdict) => {
+    setCommunity(prev => {
+      const bk = sightingsBucketKey(species, season);
+      const cur = prev.buckets[bk] ?? { seen: 0, missed: 0 };
+      return { ...prev, buckets: { ...prev.buckets, [bk]: { ...cur, [verdict]: (cur[verdict] ?? 0) + 1 } } };
+    });
+  }, []);
+  const communityFor = useCallback((species) => {
+    const b = community.buckets[sightingsBucketKey(species, activeSeasonForRarity ?? 'any')];
+    if (!b) return null;
+    const n = (b.seen ?? 0) + (b.missed ?? 0);
+    return n > 0 ? { seen: b.seen ?? 0, n } : null;
+  }, [community, activeSeasonForRarity]);
+
   // Effective rarity per (enriched) animal — the SAME function + inputs national
   // parks use: season-aware, using the live iNat seasonal histograms
-  // (seasonalFreqs) effort-corrected by parkEffort. Drives the spectrum, sort,
-  // and rarity-dropdown filter so they all agree with the card pills.
+  // (seasonalFreqs) effort-corrected by parkEffort, then the conservative
+  // community nudge. Drives the spectrum, sort, and rarity-dropdown filter so
+  // they all agree with the (also-nudged) card pills.
   const effRarity = useMemo(() => {
     const m = new Map();
     for (const a of enrichedSpecies) {
-      m.set(a, computeEffectiveRarity(a, {
+      const base = computeEffectiveRarity(a, {
         activeSeason: activeSeasonForRarity, activeZone: null, seasonalFreqs,
         parkEffort, parkZones: null, effortRescaler: 1, visitTime: 'any',
-      }));
+      });
+      m.set(a, nudgeRarityWithCommunity(base, communityFor(a.name)));
     }
     return m;
-  }, [enrichedSpecies, activeSeasonForRarity, seasonalFreqs, parkEffort]);
+  }, [enrichedSpecies, activeSeasonForRarity, seasonalFreqs, parkEffort, communityFor]);
 
   // Lazy-fetch iNat seasonal histograms for the most-likely species first
   // (same throttle/ordering as national parks). Each result streams into
@@ -1259,27 +1285,6 @@ function StateParkPanel({ park, onClose, openAbout }) {
     setSeenVersion(v => v + 1);
     track('seen_toggle', { added, animal: s.name, park: park.name });
   };
-
-  // Cross-visitor sighting aggregates for this park (api/sightings). Fetched
-  // once per park open; empty + no-op until the datastore is connected.
-  const [community, setCommunity] = useState({ buckets: {}, configured: false });
-  useEffect(() => {
-    let alive = true;
-    setCommunity({ buckets: {}, configured: false });
-    fetchParkSightings(park.id).then(r => { if (alive) setCommunity(r); });
-    return () => { alive = false; };
-  }, [park.id]);
-  // Optimistic local bump so a card's "N of M" updates instantly on vote.
-  const bumpCommunity = useCallback((species, season, verdict) => {
-    setCommunity(prev => {
-      const bk = sightingsBucketKey(species, season);
-      const cur = prev.buckets[bk] ?? { seen: 0, missed: 0 };
-      return {
-        ...prev,
-        buckets: { ...prev.buckets, [bk]: { ...cur, [verdict]: (cur[verdict] ?? 0) + 1 } },
-      };
-    });
-  }, []);
 
   // Season-filtered pool (mirrors national parks' seasonFiltered) — applies
   // ONLY the season filter, so tab/breakdown counts are season-aware. Live
@@ -1925,6 +1930,37 @@ function getCharismaScore(name, animalType) {
 }
 
 const _RARITY_ORDER = { guaranteed: 0, very_likely: 1, likely: 2, unlikely: 3, rare: 4, exceptional: 5 };
+const _RARITY_BY_INDEX = ['guaranteed', 'very_likely', 'likely', 'unlikely', 'rare', 'exceptional'];
+
+// ── Community ground-truth rarity nudge ─────────────────────────────────────
+// Blend the cross-visitor seen-rate (api/sightings) into the model's tier —
+// CONSERVATIVELY, so thin or noisy votes can never hijack the calibrated
+// eBird/iNaturalist model:
+//   • requires a real consensus sample (≥ COMMUNITY_MIN_N votes in the bucket)
+//   • moves the tier AT MOST one step, and ONLY toward the empirical signal
+//   • only fires when the community CLEARLY disagrees with the model (the
+//     empirical band differs by ≥ 2 tiers); near-agreement leaves it untouched
+// The card always shows the underlying "N of M saw this here" count, so the
+// adjustment is transparent and auditable. Returns the (possibly) shifted tier.
+const COMMUNITY_MIN_N = 12;
+function _communityBandTier(rate) {
+  if (rate >= 0.75) return 'guaranteed';
+  if (rate >= 0.55) return 'very_likely';
+  if (rate >= 0.30) return 'likely';
+  if (rate >= 0.12) return 'unlikely';
+  if (rate >= 0.03) return 'rare';
+  return 'exceptional';
+}
+function nudgeRarityWithCommunity(baseTier, community) {
+  if (!community || (community.n ?? 0) < COMMUNITY_MIN_N) return baseTier;
+  const rate = community.seen / community.n;
+  const bi = _RARITY_ORDER[baseTier];
+  const ti = _RARITY_ORDER[_communityBandTier(rate)];
+  if (bi == null || ti == null) return baseTier;
+  // Only act on a clear disagreement (≥2 tiers apart); then step exactly one.
+  if (Math.abs(ti - bi) < 2) return baseTier;
+  return _RARITY_BY_INDEX[bi + (ti > bi ? 1 : -1)];
+}
 
 function iconicSortFn(a, b) {
   // Tier 1: curated Park Naturalist animals (real funFact, not a placeholder)
@@ -2597,12 +2633,29 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, parkEffort = null, locat
   //      relative to the casual baseline baked into the stored frequency).
   //   3. Rescale by activity-period × time-of-day multiplier.
   //   4. Re-map to tier.
-  const displayRarity = useMemo(
+  // Community ground-truth count for THIS card's (species, season) bucket.
+  const community = useMemo(() => {
+    if (!communitySightings) return null;
+    const b = communitySightings[sightingsBucketKey(animal.name, activeSeason ?? 'any')];
+    if (!b) return null;
+    const n = (b.seen ?? 0) + (b.missed ?? 0);
+    return n > 0 ? { seen: b.seen ?? 0, n } : null;
+  }, [communitySightings, animal.name, activeSeason]);
+
+  const modelRarity = useMemo(
     () => computeEffectiveRarity(animal, {
       activeSeason, activeZone, seasonalFreqs, parkEffort, parkZones, effortRescaler, visitTime,
     }),
     [animal, activeSeason, activeZone, seasonalFreqs, parkEffort, parkZones, effortRescaler, visitTime],
   );
+  // Conservatively blend cross-visitor ground truth into the displayed tier
+  // (gated by sample size, bounded to ±1 tier). No-op until a bucket has
+  // ≥ COMMUNITY_MIN_N votes, so this is dormant until real data accumulates.
+  const displayRarity = useMemo(
+    () => nudgeRarityWithCommunity(modelRarity, community),
+    [modelRarity, community],
+  );
+  const rarityNudged = displayRarity !== modelRarity;
 
   const r = RARITY[displayRarity] ?? RARITY.rare;
   const t = ANIMAL_TYPES[animal.animalType];
@@ -2656,15 +2709,6 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, parkEffort = null, locat
       }
     }
   };
-
-  // Community ground-truth count for THIS card's (species, season) bucket.
-  const community = (() => {
-    if (!communitySightings) return null;
-    const b = communitySightings[sightingsBucketKey(animal.name, activeSeason ?? 'any')];
-    if (!b) return null;
-    const n = (b.seen ?? 0) + (b.missed ?? 0);
-    return n > 0 ? { seen: b.seen ?? 0, n } : null;
-  })();
 
   // Fetch photo lazily when the card mounts (i.e. when the popup opens)
   useEffect(() => {
@@ -3026,11 +3070,12 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, parkEffort = null, locat
       </div>
 
       {/* Cross-visitor ground truth — real seen-rate from other visitors'
-          votes for this species + season at this park. Display-only for now;
-          a bounded rarity nudge comes once buckets accumulate enough votes. */}
+          votes for this species + season at this park. Once a bucket has
+          enough votes it conservatively refines the odds above (±1 tier). */}
       {community && (
         <div className="sighting-community" title="Anonymous community reports for this species and season at this park.">
           🧭 <strong>{community.seen}</strong> of <strong>{community.n}</strong> visitor{community.n === 1 ? '' : 's'} saw this here
+          {rarityNudged && <span className="sighting-community__adj"> · refining the odds</span>}
         </div>
       )}
 
