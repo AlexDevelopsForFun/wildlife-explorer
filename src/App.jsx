@@ -3597,6 +3597,23 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
     return () => { alive = false; };
   }, [location.id, location.lat, location.lng]);
 
+  // Cross-visitor sighting aggregates for this park (api/sightings) — same
+  // backend as state parks; empty + no-op until the datastore is connected.
+  const [npCommunity, setNpCommunity] = useState({ buckets: {}, configured: false });
+  useEffect(() => {
+    let alive = true;
+    setNpCommunity({ buckets: {}, configured: false });
+    fetchParkSightings(location.id).then(r => { if (alive) setNpCommunity(r); });
+    return () => { alive = false; };
+  }, [location.id]);
+  const bumpNpCommunity = useCallback((species, season, verdict) => {
+    setNpCommunity(prev => {
+      const bk = sightingsBucketKey(species, season);
+      const cur = prev.buckets[bk] ?? { seen: 0, missed: 0 };
+      return { ...prev, buckets: { ...prev.buckets, [bk]: { ...cur, [verdict]: (cur[verdict] ?? 0) + 1 } } };
+    });
+  }, []);
+
   // Lazy-fetch iNat histograms for every bird in the visible list.
   // • Sorted by frequency desc so the most-likely-seen birds load first.
   // • Staggered 150 ms apart so we don't hammer the iNat API.
@@ -4334,7 +4351,7 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
                   )}
                 </div>
 
-                {visibleList.map((a, i) => <AnimalCard key={`${a.name}-${i}`} animal={a} debugMode={debugMode} seasonalFreqs={seasonalFreqs} parkEffort={parkEffort} location={location} openAbout={openAbout} highlightSpecies={highlightSpecies} activeSeason={popupSeason !== 'all' ? popupSeason : null} activeZone={popupZone !== 'all' ? popupZone : null} parkZones={availableZones} onSelectZone={setPopupZone} effortRescaler={effortRescaler} visitTime={visitTime} effortLabel={effectiveEffort} seen={seenKeys.has(speciesKey(a))} onToggleSeen={markSeenToggle} />)}
+                {visibleList.map((a, i) => <AnimalCard key={`${a.name}-${i}`} animal={a} debugMode={debugMode} seasonalFreqs={seasonalFreqs} parkEffort={parkEffort} location={location} openAbout={openAbout} highlightSpecies={highlightSpecies} activeSeason={popupSeason !== 'all' ? popupSeason : null} activeZone={popupZone !== 'all' ? popupZone : null} parkZones={availableZones} onSelectZone={setPopupZone} effortRescaler={effortRescaler} visitTime={visitTime} effortLabel={effectiveEffort} seen={seenKeys.has(speciesKey(a))} onToggleSeen={markSeenToggle} communitySightings={npCommunity.buckets} onCommunityVote={bumpNpCommunity} />)}
                 {hasMore && (
                   <div className="lp__load-more-row">
                     <button className="lp__load-more-btn" onClick={() => setDisplayLimit(d => d + 50)}>
