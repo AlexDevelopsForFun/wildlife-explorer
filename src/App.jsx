@@ -40,7 +40,7 @@ import { WILDLIFE_CACHE, WILDLIFE_CACHE_BUILT_AT } from './data/wildlifeCacheLoa
 import { useSecondaryCache } from './hooks/useSecondaryCache.js';
 import { fetchAnimalPhoto } from './services/photoService';
 import { BUNDLED_PHOTOS } from './data/photoCache.js';
-import { needsGeneratedDescription } from './services/descriptionService';
+import { needsGeneratedDescription, fetchAnimalDescription } from './services/descriptionService';
 import {
   toggleSeen, getSeenKeySet, parkProgress, speciesKey,
   getSeenCount, exportLifeList, getMilestone, getLifeList, clearAll,
@@ -2501,6 +2501,35 @@ const TYPE_HABITAT_HINT = {
   marine:    'shorelines, tide pools, and offshore waters',
 };
 
+// Keyword → habitat phrase. More specific than the per-type default, so the
+// auto-composed tip names where to actually look (raptors over ridgelines,
+// waterfowl on ponds, woodpeckers on snags…). Purely associative — general
+// habitat knowledge, no park-specific claims to get wrong. Checked in order;
+// first match wins. Benefits national + state parks alike.
+const HABITAT_KEYWORDS = [
+  [/\b(hawk|eagle|falcon|osprey|owl|vulture|kite|harrier|merlin|kestrel|condor|caracara|goshawk)\b/, 'ridgelines, open fields, and tall bare perches'],
+  [/\b(duck|goose|geese|swan|merganser|teal|widgeon|wigeon|bufflehead|loon|grebe|cormorant|coot|gallinule|pintail|mallard|gadwall)\b/, 'lakes, ponds, and quiet marshes'],
+  [/\b(heron|egret|ibis|bittern|crane|stork|rail|sora|spoonbill)\b/, 'shorelines, mudflats, and marsh edges'],
+  [/\b(gull|tern|sandpiper|plover|sanderling|dunlin|yellowlegs|willet|dowitcher|oystercatcher|skimmer|turnstone)\b/, 'beaches, tidal flats, and jetties'],
+  [/\b(woodpecker|flicker|sapsucker|nuthatch)\b/, 'mature trees, dead snags, and woodland edges'],
+  [/\b(warbler|sparrow|finch|wren|thrush|vireo|chickadee|titmouse|kinglet|gnatcatcher|bunting|tanager|oriole|grosbeak|catbird|towhee)\b/, 'shrubby edges, thickets, and treetops'],
+  [/\b(turtle|terrapin|tortoise)\b/, 'basking logs, pond banks, and slow water'],
+  [/\b(snake|rattlesnake|copperhead|racer|watersnake)\b/, 'sunny rock piles, logs, and trail edges'],
+  [/\b(frog|toad|spring peeper|bullfrog)\b/, 'ponds, vernal pools, and damp leaf litter'],
+  [/\b(salamander|newt|mudpuppy)\b/, 'streambeds, springs, and damp logs'],
+  [/\b(squirrel|chipmunk|woodchuck|groundhog|marmot)\b/, 'oak woods, stone walls, and trail edges'],
+  [/\b(deer|elk|moose|pronghorn)\b/, 'forest edges and meadows at dawn and dusk'],
+  [/\b(bat)\b/, 'open water and clearings at dusk'],
+  [/\b(fox|coyote|bobcat|otter|mink|weasel|raccoon|opossum|skunk|beaver|muskrat)\b/, 'water edges, field margins, and quiet trails'],
+  [/\b(butterfly|skipper|swallowtail|monarch|fritillary|dragonfly|damselfly)\b/, 'sunny wildflower meadows and pond edges'],
+];
+
+function resolveHabitatHint(animal) {
+  const n = (animal.name ?? '').toLowerCase();
+  for (const [re, phrase] of HABITAT_KEYWORDS) if (re.test(n)) return phrase;
+  return TYPE_HABITAT_HINT[animal.animalType] ?? 'trails and quiet overlooks';
+}
+
 function composeFallbackTip(animal, period) {
   const seasons = animal.displaySeasons ?? animal.seasons ?? [];
   const yearRound = seasons.includes('year-round') || seasons.includes('year_round') || seasons.length >= 4;
@@ -2516,7 +2545,7 @@ function composeFallbackTip(animal, period) {
                        : period === 'crepuscular' ? 'at dawn and dusk'
                        : period === 'nocturnal'   ? 'after dark'
                        :                            'any time of day';
-  const habitat = TYPE_HABITAT_HINT[animal.animalType] ?? 'trails and quiet overlooks';
+  const habitat = resolveHabitatHint(animal);
   const scan = seasonPhrase === 'year-round' ? 'Scan' : `Visit ${seasonPhrase} and scan`;
   return `${scan} ${habitat} — most active ${activityPhrase}. Binoculars help.`;
 }
@@ -2551,6 +2580,11 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, parkEffort = null, locat
   // Photo state: undefined = loading, null = not found, object = loaded
   const [photo,    setPhoto]    = useState(undefined);
   const [expanded, setExpanded] = useState(false);
+  // Runtime species description — only fetched when the animal has no curated
+  // funFact AND no build-time `description` (i.e. live state-park species and
+  // non-enriched national-park species). { text, source } | null.
+  const [fetchedDesc, setFetchedDesc] = useState(null);
+  const wantsRuntimeDesc = needsGeneratedDescription(animal.funFact) && !animal.description;
 
   // Ground-truth sighting feedback (see src/data/sightingFeedback.js).
   // The context tuple is exactly what makes a verdict useful for
@@ -2580,6 +2614,16 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, parkEffort = null, locat
     fetchAnimalPhoto(animal.name, animal.scientificName).then(p => { if (alive) setPhoto(p); });
     return () => { alive = false; };
   }, [animal.name, animal.scientificName]);
+
+  // Fetch a sourced species description lazily, but only when the card would
+  // otherwise show the dry observation-record placeholder. Reuses the cached,
+  // species-keyed service so each species is fetched once per device.
+  useEffect(() => {
+    if (!wantsRuntimeDesc) { setFetchedDesc(null); return; }
+    let alive = true;
+    fetchAnimalDescription(animal.name, animal.scientificName).then(d => { if (alive) setFetchedDesc(d); });
+    return () => { alive = false; };
+  }, [animal.name, animal.scientificName, wantsRuntimeDesc]);
 
   // Generic per-type placeholder — avoids showing 🦌 deer for every mammal
   const placeholderEmoji = PHOTO_PLACEHOLDER[animal.animalType] ?? '🐾';
@@ -2834,17 +2878,25 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, parkEffort = null, locat
                 </span>
               )}
             </>
-          : animal.funFact
+          : fetchedDesc?.text
             ? <>
-                <p className="animal-card__fact animal-card__fact--placeholder">{animal.funFact}</p>
-                <span className="description-source">📊 Observation record</span>
+                <p className="animal-card__fact">{fetchedDesc.text}</p>
+                <span className="description-source">
+                  {DESC_SOURCE_ICON[fetchedDesc.source] ?? '📖'}{' '}
+                  {DESC_SOURCE_LABEL[fetchedDesc.source] ?? fetchedDesc.source}
+                </span>
               </>
-            : <>
-                <p className="animal-card__fact animal-card__fact--placeholder">
-                  Documented presence at {location?.name ?? 'this park'} — species description coming soon.
-                </p>
-                <span className="description-source">📊 Park record</span>
-              </>
+            : animal.funFact
+              ? <>
+                  <p className="animal-card__fact animal-card__fact--placeholder">{animal.funFact}</p>
+                  <span className="description-source">📊 Observation record</span>
+                </>
+              : <>
+                  <p className="animal-card__fact animal-card__fact--placeholder">
+                    Documented presence at {location?.name ?? 'this park'} — species description coming soon.
+                  </p>
+                  <span className="description-source">📊 Park record</span>
+                </>
       ) : (
         <>
           <p className="animal-card__fact">{animal.funFact}</p>

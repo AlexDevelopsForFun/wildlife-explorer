@@ -18,6 +18,7 @@
 
 const ALLOW = [
   /^taxa\/autocomplete(\?|$)/,
+  /^taxa(\?|$)/,                       // taxon lookup → wikipedia_summary (species descriptions)
   /^observations\/species_counts(\?|$)/,
   /^observations\/histogram(\?|$)/,
 ];
