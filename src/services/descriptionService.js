@@ -34,6 +34,9 @@ const PLACEHOLDER_PATTERNS = [
   /^Appears on \d+% of .+ eBird checklists/i,
   /^Verified in \d+ iNaturalist research-grade observations/i,
   /^Officially documented in the NPS wildlife registry/i,
+  // Live runtime formats (state-park + live national-park species):
+  /^Last reported .+ \(eBird\)\.?$/i,                 // eBird geo/recent birds
+  /^Verified in \d+ iNaturalist research-grade observations near this location/i,
 ];
 
 export function needsGeneratedDescription(funFact) {
