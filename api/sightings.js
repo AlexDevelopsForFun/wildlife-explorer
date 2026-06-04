@@ -23,10 +23,29 @@
  * (IP is used transiently for rate-limiting and never persisted.)
  */
 
-const REDIS_URL =
-  process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL || null;
-const REDIS_TOKEN =
-  process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN || null;
+// Resolve the Upstash/KV REST credentials. Vercel's Marketplace integration
+// can name these differently depending on how the store was added (KV_*,
+// UPSTASH_*, or a prefixed variant like STORAGE_KV_REST_API_URL), so we check
+// the known names first, then AUTO-DETECT any "*REST*URL"/"*REST*TOKEN" pair
+// (with an https Upstash URL) — making setup work regardless of the exact
+// var names the integration chose.
+function resolveRedisCreds() {
+  const e = process.env;
+  let url = e.KV_REST_API_URL || e.UPSTASH_REDIS_REST_URL || null;
+  let token = e.KV_REST_API_TOKEN || e.UPSTASH_REDIS_REST_TOKEN || null;
+  if (!url) {
+    const k = Object.keys(e).find(
+      (key) => /REST.*URL$/i.test(key) && /^https:\/\//.test(e[key] || '')
+    );
+    if (k) url = e[k];
+  }
+  if (!token) {
+    const k = Object.keys(e).find((key) => /REST.*TOKEN$/i.test(key) && e[key]);
+    if (k) token = e[k];
+  }
+  return { url, token };
+}
+const { url: REDIS_URL, token: REDIS_TOKEN } = resolveRedisCreds();
 const CONFIGURED = !!(REDIS_URL && REDIS_TOKEN);
 
 const RATE_PER_MIN = 30;   // max votes per IP per minute — blocks scripted floods
