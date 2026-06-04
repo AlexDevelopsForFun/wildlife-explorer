@@ -89,8 +89,10 @@ export default async function handler(req, res) {
         if (!m) continue;
         (buckets[m[1]] ??= { seen: 0, missed: 0 })[m[2]] = val;
       }
-      // Slow-moving data — edge-cache 6h so repeat park-opens skip the datastore.
-      res.setHeader('cache-control', 'public, max-age=21600, s-maxage=21600');
+      // Short edge cache: absorbs traffic bursts (keeps datastore reads cheap)
+      // while keeping votes near-fresh — a reload reflects new votes within ~60s
+      // (the in-session optimistic update shows the user's own vote instantly).
+      res.setHeader('cache-control', 'public, max-age=60, s-maxage=60');
       return res.status(200).json({ ok: true, configured: true, buckets });
     } catch {
       res.setHeader('cache-control', 'no-store');

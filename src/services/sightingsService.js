@@ -44,17 +44,13 @@ export async function fetchParkSightings(parkId) {
   return promise;
 }
 
-// Record one vote. Fire-and-forget; never throws. Optimistically updates the
-// session cache so the community count reflects the user's own vote instantly.
+// Record one vote. Fire-and-forget; never throws. The OPTIMISTIC display
+// update is owned solely by the panel's bumpCommunity (immutable setState) —
+// this function only POSTs. (It must NOT also mutate _parkCache: the panel's
+// community state aliases that same object, so a second in-place bump here
+// would double-count a single vote.)
 export function postSighting({ parkId, species, season, verdict }) {
   if (!parkId || !species || (verdict !== 'seen' && verdict !== 'missed')) return;
-  // Optimistic local bump so the card's "N of M" updates without a refetch.
-  const cached = _parkCache.get(parkId);
-  if (cached) {
-    const bk = sightingsBucketKey(species, season);
-    const b = (cached.buckets[bk] ??= { seen: 0, missed: 0 });
-    b[verdict] = (b[verdict] ?? 0) + 1;
-  }
   try {
     fetch('/api/sightings', {
       method: 'POST',
