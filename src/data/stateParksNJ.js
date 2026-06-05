@@ -103,6 +103,24 @@ export const INAT_PLACE_IDS = {
   'nj-voorhees': 139996, 'nj-washington-rock': 162984,
 };
 
+// Curated naturalist highlights for the flagship NJ parks — the "what makes
+// this place special for wildlife" note national parks get. Only parks with a
+// well-documented, verifiable wildlife story are included; the rest show none.
+// Facts are established (hawk-migration sites, barrier-island ecology, Pine
+// Barrens specialties, etc.) — nothing invented.
+export const STATE_PARK_HIGHLIGHTS = {
+  'nj-cape-may-point': "One of North America's premier birding sites. Each fall (Sept–Nov) the Cape May Hawkwatch tallies tens of thousands of migrating raptors, alongside monarch butterflies and waves of songbirds funneling down the peninsula.",
+  'nj-island-beach': 'A ~10-mile undeveloped barrier island — one of the largest on the Atlantic coast. Ospreys nest spring through summer, and harbor seals haul out on the Barnegat Bay side through winter.',
+  'nj-high-point': "Home to New Jersey's highest elevation (1,803 ft). The Kittatinny Ridge above the park is a classic fall hawk-migration flyway, and the cool highland forest holds breeding warblers in summer.",
+  'nj-barnegat': "The inlet jetty is one of the East Coast's best winter birding spots — Harlequin Ducks, Purple Sandpipers, scoters, and Long-tailed Ducks gather here, with seals offshore.",
+  'nj-liberty': 'An urban oasis on the Hudson: tidal salt marsh and the Caven Point shoreline draw herons, egrets, shorebirds, and wintering waterfowl — with peregrine falcons hunting the harbor against the Manhattan skyline.',
+  'nj-wharton': "New Jersey's largest state forest (~122,000 acres) and the heart of the Pine Barrens — habitat for specialties like the Pine Barrens treefrog, amid tea-colored cedar streams and vast pitch-pine forest.",
+  'nj-stokes-forest': 'Sunrise Mountain, on the Kittatinny Ridge, is a renowned fall hawk-watch. The high ridgeline and hemlock ravines support breeding warblers and other highland species.',
+  'nj-worthington': 'In the Delaware Water Gap, the steep Kittatinny ridge (Mount Tammany, Appalachian Trail) channels migrating raptors each fall and shelters forest-interior breeding birds.',
+  'nj-cheesequake': 'A rare transition zone where northern and southern habitats meet — saltmarsh, freshwater swamp, and pine-oak forest in one park make for unusually diverse birdlife.',
+  'nj-belleplain': 'A southern pinelands forest famous among birders for breeding songbirds — Summer Tanager, Prothonotary and Hooded Warblers, and Acadian Flycatcher around Lake Nummy.',
+};
+
 // Multi-state registry. Each new state ships its own data file (same shape)
 // and is added here + to STATE_PARK_STATES in App.jsx + STATE_NAMES in
 // scripts/prerenderParks.js; the selector, map, deep links, and prerender

@@ -9,7 +9,7 @@ import { SpeedInsights } from '@vercel/speed-insights/react';
 import { track } from '@vercel/analytics';
 
 import { wildlifeLocations, SEASONS, RARITY, ANIMAL_TYPES, STATE_NAMES } from './wildlifeData';
-import { STATE_PARKS_NJ, STATE_PARKS_BY_STATE, findStatePark, INAT_PLACE_IDS } from './data/stateParksNJ';
+import { STATE_PARKS_NJ, STATE_PARKS_BY_STATE, findStatePark, INAT_PLACE_IDS, STATE_PARK_HIGHLIGHTS } from './data/stateParksNJ';
 import { NJ_PARK_COUNTY, NJ_COUNTY_BIRD_FREQ } from './data/stateParkBirdFreqNJ';
 
 // States we have curated park data for. Add a new state's entry here +
@@ -1125,11 +1125,45 @@ function StateParkPanel({ park, onClose, openAbout }) {
         }
         if (!alive) return;
 
-        // ── iNaturalist: boundary query (place_id) when the park has a verified
-        //    iNat polygon — ONE query per taxon counts species INSIDE the park,
-        //    excluding the neighbouring-area observations a circle would include.
-        //    Parks without a polygon keep the radius path (per-point + adaptive
-        //    widen for sparse non-bird taxa). ──
+        // Dedupe + re-rate birds with eBird county-level peak-season checklist
+        // frequency (build-time cache, scripts/buildStateParkBirdFreqNJ.js) —
+        // the gold-standard signal national parks use, far better than the
+        // geo/recent recency proxy. Only re-rates birds ALREADY in the list
+        // (keeps the species set park-specific); birds absent from the cache
+        // keep their existing rarity (graceful — e.g. Salem-county parks).
+        // Factored into finalize() so we can emit birds first, then the full set.
+        const countyFreq = NJ_COUNTY_BIRD_FREQ[NJ_PARK_COUNTY[park.id]] ?? null;
+        const finalize = () => {
+          const animals = deduplicateAnimals(pool);
+          if (countyFreq) {
+            for (const a of animals) {
+              if (a.animalType !== 'bird' || !a.name) continue;
+              const e = countyFreq[a.name.toLowerCase()];
+              if (!e) continue;
+              a.frequency = e.f;
+              a.rarity = rarityFromChecklist(e.f);
+              a.seasons = e.s;        // real per-species seasonality (migrants ≠ year-round)
+              a._raritySource = 'ebird_county_freq';
+            }
+          }
+          return animals;
+        };
+
+        // ── Phase 1: render birds (eBird) immediately so the panel populates
+        //    fast, while the slower iNat non-bird taxa stream in below. ──
+        const birds = finalize();
+        if (alive && birds.length) {
+          setState({
+            status: 'ok', species: birds, total: birds.length, sources: [...sources],
+            stats: { ebirdChecklists, ebirdHistoricalSpecies: ebirdHistoricalSpecies || null, inatObservations },
+            partial: true,
+          });
+        }
+
+        // ── Phase 2: iNaturalist. Boundary query (place_id) when the park has a
+        //    verified iNat polygon — ONE query per taxon counts species INSIDE
+        //    the park; parks without one use the radius path (per-point +
+        //    adaptive widen for sparse non-bird taxa). ──
         const placeId = INAT_PLACE_IDS[park.id] ?? null;
         const takeInat = (r) => {
           if (r?.animals?.length) { pool.push(...r.animals); if (!sources.includes('inaturalist')) sources.push('inaturalist'); }
@@ -1161,31 +1195,9 @@ function StateParkPanel({ park, onClose, openAbout }) {
         }
 
         if (!alive) return;
-        // deduplicateAnimals collapses species seen at multiple points, keeping
-        // the highest-frequency sighting — so coverage grows without inflating.
-        const animals = deduplicateAnimals(pool);
-
-        // Re-rate birds with eBird county-level peak-season checklist frequency
-        // (build-time cache, scripts/buildStateParkBirdFreqNJ.js) — the same
-        // gold-standard signal national parks use, far better than the
-        // geo/recent recency proxy. Only re-rates birds ALREADY in the list
-        // (keeps the species set park-specific); birds absent from the cache
-        // keep their existing rarity (graceful — e.g. Salem-county parks).
-        const countyFreq = NJ_COUNTY_BIRD_FREQ[NJ_PARK_COUNTY[park.id]] ?? null;
-        if (countyFreq) {
-          for (const a of animals) {
-            if (a.animalType !== 'bird' || !a.name) continue;
-            const e = countyFreq[a.name.toLowerCase()];
-            if (!e) continue;
-            a.frequency = e.f;
-            a.rarity = rarityFromChecklist(e.f);
-            a.seasons = e.s;          // real per-species seasonality (migrants ≠ year-round)
-            a._raritySource = 'ebird_county_freq';
-          }
-        }
-
+        const animals = finalize();
         const stats = { ebirdChecklists, ebirdHistoricalSpecies: ebirdHistoricalSpecies || null, inatObservations };
-        setState({ status: animals.length ? 'ok' : 'empty', species: animals, total: animals.length, sources, stats });
+        setState({ status: animals.length ? 'ok' : 'empty', species: animals, total: animals.length, sources, stats, partial: false });
       } catch {
         if (alive) setState({ status: 'error', species: [], total: 0, sources: [], stats: null });
       }
@@ -1454,10 +1466,18 @@ function StateParkPanel({ park, onClose, openAbout }) {
                     : null}
                 </div>
               )}
+              {/* Curated naturalist highlight (flagship parks only). */}
+              {STATE_PARK_HIGHLIGHTS[park.id] && (
+                <div className="statepark-modal__highlight" role="note">
+                  <span className="statepark-modal__highlight-label">🌟 Park highlight</span>
+                  <p className="statepark-modal__highlight-text">{STATE_PARK_HIGHLIGHTS[park.id]}</p>
+                </div>
+              )}
               <div className="statepark-modal__banner" role="note">
                 <strong>Live from eBird + iNaturalist.</strong> Rarity is derived the same
-                way as national parks. State parks have no NPS curated inventory or
-                naturalist write-ups, so those sections aren't shown.
+                way as national parks{STATE_PARK_HIGHLIGHTS[park.id]
+                  ? '.'
+                  : '. State parks have no NPS curated species inventory, so that section isn’t shown.'}
               </div>
 
               {/* Rarity spectrum — the SAME component national parks use. */}
@@ -1582,6 +1602,7 @@ function StateParkPanel({ park, onClose, openAbout }) {
             <>
               <div className="lp__showing-count">
                 Showing {Math.min(displayLimit, visible.length)} of {visible.length} species
+                {state.partial && <span className="statepark-modal__loading-more"> · loading mammals, reptiles &amp; more…</span>}
               </div>
 
               {/* Same rating key + seen-filter bar as national parks. */}

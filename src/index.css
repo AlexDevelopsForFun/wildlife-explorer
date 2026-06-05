@@ -4233,6 +4233,17 @@ textarea:focus-visible,
   color: #d8efd8; background: rgba(255,193,7,0.08); border: 1px solid #c4942055;
 }
 .statepark-modal__banner strong { color: #fff; }
+/* Curated naturalist highlight (flagship parks). */
+.statepark-modal__highlight {
+  margin-bottom: 8px; padding: 10px 12px; border-radius: 8px;
+  background: rgba(95,211,138,0.10); border: 1px solid #5fd38a55;
+}
+.statepark-modal__highlight-label {
+  display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.3px;
+  text-transform: uppercase; color: #5fd38a; margin-bottom: 3px;
+}
+.statepark-modal__highlight-text { margin: 0; font-size: 12.5px; line-height: 1.5; color: #eaf4ee; }
+.statepark-modal__loading-more { color: #8fb3a1; font-style: italic; }
 .statepark-modal__body { overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 12px 18px 24px; }
 .statepark-modal__count { font-size: 12px; color: #8fb3a1; margin: 4px 0 10px; }
 .statepark-modal__empty { color: #9bbcab; padding: 24px 12px; text-align: center; font-size: 14px; }
