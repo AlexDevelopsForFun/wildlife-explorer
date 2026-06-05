@@ -1795,12 +1795,25 @@ function StateParkMap({ state, parks, stateGeo, onPickPark, onClose }) {
     return null;
   }
 
-  // Bind markers imperatively — same pattern as the national MarkerLayer
-  // (a Leaflet primitive layer avoids per-marker React reconciliation).
+  // Bind markers imperatively into a marker-cluster group — parity with the
+  // national map (which clusters), and it declutters the crowded northern-NJ
+  // pins. Clusters use the existing .wm-cluster--nj green badge; at close zoom
+  // (≥11) clustering disables so individual category-emoji pins show, and
+  // overlapping pins spiderfy at max zoom.
   function StateMarkers({ parks, onPick }) {
     const map = useMap();
     useEffect(() => {
-      const group = L.layerGroup();
+      const group = L.markerClusterGroup({
+        maxClusterRadius: 44,
+        showCoverageOnHover: false,
+        spiderfyOnMaxZoom: true,
+        disableClusteringAtZoom: 11,
+        iconCreateFunction: (cluster) => L.divIcon({
+          html: `<div class="wm-cluster--nj">${cluster.getChildCount()}</div>`,
+          className: '',
+          iconSize: [38, 38],
+        }),
+      });
       parks.forEach(p => {
         const m = L.marker([p.lat, p.lng], { icon: pinFor(p) });
         m.bindTooltip(p.name, { direction: 'top', opacity: 0.95, className: 'park-tooltip' });
