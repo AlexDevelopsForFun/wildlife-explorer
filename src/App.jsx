@@ -1423,9 +1423,13 @@ function StateParkPanel({ park, onClose, openAbout }) {
         <button className="about-modal__close" onClick={onClose} aria-label="Close">X</button>
         <div className="statepark-modal__head">
           <h2 className="statepark-modal__title">{park.name}</h2>
-          {/* Meta row — state + park-type badge, mirroring national parks. */}
+          {/* Meta row — state + park-type badge, mirroring national parks.
+              State name is derived from the park id prefix (nj-/de-/…) so it's
+              correct for every wired state, not hardcoded. */}
           <div className="lp__meta">
-            <span className="lp__state">New Jersey</span>
+            <span className="lp__state">
+              {STATE_PARK_STATES.find(s => park.id?.startsWith(s.code.toLowerCase() + '-'))?.name ?? ''}
+            </span>
             <span className="lp__park-badge" style={{ background: '#2f7d4f' }}>
               {(park.category?.replace('-', ' ') ?? 'state park').replace(/\b\w/g, c => c.toUpperCase())}
             </span>
