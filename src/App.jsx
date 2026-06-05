@@ -32,7 +32,7 @@ import {
   getCorrectionFactor, getMonthlyFrequency,
   rarityFromChecklist, applyRarityOverride,
   fetchInatMonthlyHist, fetchInatParkMonthlyEffort,
-  fetchEbird, fetchINat, fetchEbirdHotspot, fetchEbirdBarChart, deduplicateAnimals,
+  fetchEbird, fetchINat, fetchEbirdHotspot, deduplicateAnimals,
 } from './services/apiService';
 import { useLiveData } from './hooks/useLiveData';
 import { useNpsParks } from './hooks/useNpsParks';
@@ -1108,17 +1108,10 @@ function StateParkPanel({ park, onClose, openAbout }) {
         // ── eBird birds: per sample point (radius). eBird has no boundary
         //    query, so multi-point sampling stays the way large/linear parks
         //    get full coverage. ──
-        // Bar chart (2020–2024 weekly checklist frequency) for the primary
-        // hotspot — the gold-standard bird-rarity signal, fetched once and
-        // applied to every point's birds. Null → birds keep the recency/iNat
-        // proxy (graceful: no breakage if barChart is unavailable).
-        const primaryHotspot = await fetchEbirdHotspot(samplePoints[0][0], samplePoints[0][1]);
-        const barChart = await fetchEbirdBarChart(primaryHotspot, 'NJ');
-
         const fetchEbirdAt = async ([lat, lng], idx) => {
           const pointId = samplePoints.length > 1 ? `${park.id}-p${idx}` : park.id;
-          const hotspot = idx === 0 ? primaryHotspot : await fetchEbirdHotspot(lat, lng);
-          const eb = await fetchEbird(lat, lng, pointId, hotspot, { dist: birdDist, barChart });
+          const hotspot = await fetchEbirdHotspot(lat, lng);
+          const eb = await fetchEbird(lat, lng, pointId, hotspot, { dist: birdDist });
           if (eb?.animals?.length) {
             pool.push(...eb.animals);
             if (!sources.includes('ebird')) sources.push('ebird');
