@@ -25,7 +25,7 @@ import { wildlifeLocations } from '../src/wildlifeData.js';
 import { STATE_PARKS_BY_STATE } from '../src/data/stateParksNJ.js';
 
 // State-code → full name, for prerendered titles/copy. Extend as states ship.
-const STATE_NAMES = { NJ: 'New Jersey' /* , DE: 'Delaware' — wired when NJ accuracy is locked */ };
+const STATE_NAMES = { NJ: 'New Jersey', DE: 'Delaware' };
 
 // Category → human label, for state-park prerender copy.
 const CAT_LABEL = {

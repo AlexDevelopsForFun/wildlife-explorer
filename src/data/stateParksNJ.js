@@ -30,6 +30,8 @@
  * it by name (radii will overlap — acceptable).
  */
 
+import { STATE_PARKS_DE } from './stateParksDE.js';
+
 export const STATE_PARKS_NJ = [
   { id: 'nj-hewitt',           name: 'Abram S. Hewitt State Forest',        lat: 41.18570453, lng: -74.331375,  radiusKm: 6,  category: 'state-forest' },
   { id: 'nj-allaire',          name: 'Allaire State Park',                  lat: 40.162111,   lng: -74.131561,  radiusKm: 4,  category: 'state-park' },
@@ -105,6 +107,12 @@ export const INAT_PLACE_IDS = {
   'nj-ringwood': 162916, 'nj-round-valley': 139622, 'nj-spruce-run': 139525,
   'nj-stokes-forest': 162773, 'nj-swartswood': 162986, 'nj-tall-pines': 163451,
   'nj-voorhees': 139996, 'nj-washington-rock': 162984,
+  // Delaware (verified May 2026, STATE=DE node scripts/lookupInatPlaces.mjs).
+  // Brandywine excluded: its only iNat match is the small "Pollinator Garden"
+  // sub-polygon, which would under-count the park → it uses the radius instead.
+  'de-alapocas': 181333, 'de-auburn-valley': 169859, 'de-cape-henlopen': 222476,
+  'de-killens-pond': 208396, 'de-lums-pond': 177713, 'de-trap-pond': 172845,
+  'de-white-clay': 95508,
 };
 
 // Curated naturalist highlights for the flagship NJ parks — the "what makes
@@ -124,15 +132,21 @@ export const STATE_PARK_HIGHLIGHTS = {
   'nj-cheesequake': 'A rare transition zone where northern and southern habitats meet — saltmarsh, freshwater swamp, and pine-oak forest in one park make for unusually diverse birdlife.',
   'nj-belleplain': 'A southern pinelands forest famous among birders for breeding songbirds — Summer Tanager, Prothonotary and Hooded Warblers, and Acadian Flycatcher around Lake Nummy.',
   'nj-stow-creek': 'A Delaware Bayshore park centered on a long-active bald eagle nest, with a dedicated viewing platform. Tidal marsh and woods along Stow Creek also draw herons, ospreys, and wintering waterfowl.',
+  // Delaware flagships (established, verifiable wildlife stories).
+  'de-cape-henlopen': "Delaware's premier birding site, where the Cape Henlopen Hawk Watch tracks thousands of migrating raptors each fall. 'The Point' concentrates seabirds, shorebirds, and migrant songbirds, with harbor seals offshore in winter.",
+  'de-seashore': 'A barrier island between Rehoboth Bay and the Atlantic. The Indian River Inlet draws gulls, terns, gannets, and wintering sea ducks; ospreys nest on the bay side and seals appear offshore in winter.',
+  'de-trap-pond': 'Home to the northernmost natural stand of bald cypress in the United States. The cypress swamp shelters nesting Prothonotary Warblers, herons, owls, and a rich amphibian community.',
+  'de-brandywine': 'A Piedmont park of old-growth Tulip Tree Woods (a National Natural Landmark) and meadows, with a fall hawk watch and diverse breeding forest birds along Brandywine Creek.',
+  'de-white-clay': 'A large Piedmont preserve of forest, meadow, and trout streams straddling the Delaware–Pennsylvania line — strong breeding-bird diversity and a notable spring warbler migration.',
 };
 
 // Multi-state registry. Each new state ships its own data file (same shape)
 // and is added here + to STATE_PARK_STATES in App.jsx + STATE_NAMES in
 // scripts/prerenderParks.js; the selector, map, deep links, and prerender
-// then pick it up automatically. (Delaware is built + verified in
-// stateParksDE.js but intentionally un-wired until NJ accuracy is locked.)
+// then pick it up automatically.
 export const STATE_PARKS_BY_STATE = {
   NJ: STATE_PARKS_NJ,
+  DE: STATE_PARKS_DE,
 };
 
 // Resolve a state-park entry from a path like /state-park/nj/<id>.

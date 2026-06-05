@@ -1,36 +1,35 @@
 #!/usr/bin/env node
 /**
- * scripts/buildStateParkBirdFreqNJ.js
+ * scripts/buildStateParkBirdFreq.js
  *
- * Build-time eBird county-level bird-frequency cache for NJ state parks — the
- * same gold-standard signal national parks use (the live barChart API 404s;
- * real frequency comes from sampling county historic checklists). For each NJ
- * park we resolve its eBird county (programmatically, via the subnational2Code
- * on nearby observations — no hand-mapping), then sample 48 dates per county
- * (1st/8th/15th/22nd of each month, most recent full year) hitting
+ * Build-time eBird county-level bird-frequency cache for ALL wired state-park
+ * states — the gold-standard signal national parks use (the live barChart API
+ * 404s; real frequency comes from sampling county historic checklists). For
+ * each park we resolve its eBird county (via the nearest hotspot's
+ * subnational2Code — no hand-mapping), then sample 48 dates per county
+ * (1st/8th/15th/22nd of each month, most recent full year):
  *   /v2/product/stats/{county}/{y}/{m}/{d}      (checklist count — skip thin dates)
  *   /v2/data/obs/{county}/historic/{y}/{m}/{d}  (species present that date)
  * → per-species peak-season checklist frequency (dates_present / valid_dates).
  *
- * Output: src/data/stateParkBirdFreqNJ.js
- *   NJ_PARK_COUNTY      = { parkId: 'US-NJ-###' }
- *   NJ_COUNTY_BIRD_FREQ = { 'US-NJ-###': { '<lower comName>': { f: peak, s: seasons } } }
+ * Output: src/data/stateParkBirdFreq.js  (covers every state in the registry)
+ *   PARK_COUNTY       = { parkId: 'US-XX-###' }
+ *   COUNTY_BIRD_FREQ  = { 'US-XX-###': { '<lower comName>': { f: peak, s: seasons } } }
  *
- * Per-county results are cached under scripts/_nj_county_cache/ so an
- * interrupted run resumes without refetching. Requires VITE_EBIRD_API_KEY
- * (read from .env). Run: node scripts/buildStateParkBirdFreqNJ.js
+ * County results are cached under scripts/_nj_county_cache/ (county codes are
+ * unique, so the cache is shared across states) — re-runs only sample NEW
+ * counties. Requires VITE_EBIRD_API_KEY (.env). Run: node scripts/buildStateParkBirdFreq.js
  */
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs';
 import { fileURLToPath } from 'url';
 import path from 'path';
-import { STATE_PARKS_NJ } from '../src/data/stateParksNJ.js';
+import { STATE_PARKS_BY_STATE } from '../src/data/stateParksNJ.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
-const OUT = path.join(ROOT, 'src', 'data', 'stateParkBirdFreqNJ.js');
-const CACHE_DIR = path.join(__dirname, '_nj_county_cache');
+const OUT = path.join(ROOT, 'src', 'data', 'stateParkBirdFreq.js');
+const CACHE_DIR = path.join(__dirname, '_nj_county_cache'); // shared county cache (codes are unique)
 
-// ── eBird key from .env ───────────────────────────────────────────────────────
 function loadEnv() {
   try {
     const txt = readFileSync(path.join(ROOT, '.env'), 'utf8');
@@ -62,8 +61,10 @@ const MIN_CHECKLISTS_PER_DATE = 5;
 const MIN_VALID_DATES = 20;
 const YEAR = new Date().getFullYear() - 1;
 
-// Resolve a park's eBird county from the NEAREST hotspot's subnational2Code
-// (geo/recent obs don't carry the county; hotspot records do, with lat/lng).
+// Border parks whose nearest hotspot sits in an adjacent state — pin to the
+// correct in-state county (which we also sample).
+const COUNTY_OVERRIDE = { 'nj-hewitt': 'US-NJ-031' }; // on the NY line → Passaic, NJ
+
 async function countyForPark(lat, lng) {
   for (const dist of [10, 25]) {
     const hs = await jget(`https://api.ebird.org/v2/ref/hotspot/geo?lat=${lat}&lng=${lng}&dist=${dist}&fmt=json`);
@@ -81,18 +82,11 @@ async function countyForPark(lat, lng) {
   return null;
 }
 
-// Sample one county's per-species peak-season checklist frequency.
 async function sampleCounty(county) {
   const cacheFile = path.join(CACHE_DIR, `${county}.json`);
-  if (existsSync(cacheFile)) {
-    console.log(`  [${county}] cached`);
-    return JSON.parse(readFileSync(cacheFile, 'utf8'));
-  }
-  const datesPresent = new Map();        // comName → total dates present
-  const monthData = new Map();           // comName → { month → 1 }
-  const monthValid = {};                  // month → valid date count
+  if (existsSync(cacheFile)) { console.log(`  [${county}] cached`); return JSON.parse(readFileSync(cacheFile, 'utf8')); }
+  const datesPresent = new Map(), monthData = new Map(), monthValid = {};
   let valid = 0, total = 0;
-
   for (let month = 1; month <= 12; month++) {
     for (const day of SAMPLE_DAYS) {
       total++;
@@ -113,9 +107,8 @@ async function sampleCounty(county) {
   }
   console.log(`  [${county}] ${valid}/${total} valid dates, ${datesPresent.size} species`);
   if (valid < MIN_VALID_DATES) { console.log(`  [${county}] ⚠ too few valid dates — skipping`); return null; }
-
   const out = {};
-  for (const [comName, present] of datesPresent) {
+  for (const [comName] of datesPresent) {
     const md = monthData.get(comName) ?? {};
     const seasonFreqs = {};
     for (const [season, months] of Object.entries(SEASON_MONTHS)) {
@@ -135,37 +128,35 @@ async function sampleCounty(county) {
 }
 
 async function main() {
-  console.log(`\n🐦 NJ state-park county bird-frequency build (year ${YEAR})\n`);
-  // Border parks whose nearest hotspot sits in an adjacent state — pin to the
-  // correct NJ county (which we also sample).
-  const COUNTY_OVERRIDE = { 'nj-hewitt': 'US-NJ-031' }; // on the NY line → Passaic, NJ
+  const allParks = Object.values(STATE_PARKS_BY_STATE).flat();
+  console.log(`\n🐦 State-park county bird-frequency build — ${allParks.length} parks (year ${YEAR})\n`);
   const parkCounty = {};
   console.log('Resolving park → county…');
-  for (const p of STATE_PARKS_NJ) {
+  for (const p of allParks) {
     const c = COUNTY_OVERRIDE[p.id] ?? await countyForPark(p.lat, p.lng);
     if (c) { parkCounty[p.id] = c; console.log(`  ${p.id.padEnd(22)} ${c}`); }
     else console.log(`  ${p.id.padEnd(22)} (none)`);
   }
   const counties = [...new Set(Object.values(parkCounty))];
   console.log(`\n${counties.length} unique counties to sample…\n`);
-
   const countyFreq = {};
   for (const c of counties) {
     const data = await sampleCounty(c);
     if (data) countyFreq[c] = data;
   }
-
   const body =
-    `// AUTO-GENERATED by scripts/buildStateParkBirdFreqNJ.js — do not edit by hand.\n` +
-    `// eBird county-level peak-season checklist frequency for NJ state-park birds\n` +
-    `// (year ${YEAR}, 48-date sampling). f = peak seasonal frequency (0–1),\n` +
-    `// s = present seasons. Used to give state-park birds national-park-grade rarity.\n` +
-    `export const NJ_PARK_COUNTY = ${JSON.stringify(parkCounty, null, 0)};\n\n` +
-    `export const NJ_COUNTY_BIRD_FREQ = ${JSON.stringify(countyFreq)};\n`;
+    `// AUTO-GENERATED by scripts/buildStateParkBirdFreq.js — do not edit by hand.\n` +
+    `// eBird county-level peak-season checklist frequency for state-park birds,\n` +
+    `// all wired states (year ${YEAR}, 48-date sampling). f = peak seasonal\n` +
+    `// frequency (0–1), s = present seasons. Gives state-park birds national-\n` +
+    `// park-grade rarity. Counties with too few eBird dates are omitted →\n` +
+    `// those parks gracefully fall back to the live recency/iNat signal.\n` +
+    `export const PARK_COUNTY = ${JSON.stringify(parkCounty, null, 0)};\n\n` +
+    `export const COUNTY_BIRD_FREQ = ${JSON.stringify(countyFreq)};\n`;
   writeFileSync(OUT, body, 'utf8');
   const spp = Object.values(countyFreq).reduce((n, c) => n + Object.keys(c).length, 0);
   console.log(`\n✅ Wrote ${OUT}`);
-  console.log(`   ${Object.keys(parkCounty).length} parks → ${counties.length} counties, ${spp} county-species freq entries.`);
+  console.log(`   ${Object.keys(parkCounty).length} parks → ${Object.keys(countyFreq).length} counties w/ data, ${spp} county-species entries.`);
 }
 
 main().catch(e => { console.error(e); process.exit(1); });

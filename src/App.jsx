@@ -10,7 +10,7 @@ import { track } from '@vercel/analytics';
 
 import { wildlifeLocations, SEASONS, RARITY, ANIMAL_TYPES, STATE_NAMES } from './wildlifeData';
 import { STATE_PARKS_NJ, STATE_PARKS_BY_STATE, findStatePark, INAT_PLACE_IDS, STATE_PARK_HIGHLIGHTS } from './data/stateParksNJ';
-import { NJ_PARK_COUNTY, NJ_COUNTY_BIRD_FREQ } from './data/stateParkBirdFreqNJ';
+import { PARK_COUNTY, COUNTY_BIRD_FREQ } from './data/stateParkBirdFreq';
 
 // States we have curated park data for. Add a new state's entry here +
 // extend STATE_PARKS_BY_STATE — the selector + map handle it automatically.
@@ -23,9 +23,12 @@ const STATE_PARK_STATES = [
     view: { center: [40.18, -74.55], zoom: 8 },
     bounds: [[38.60, -75.90], [41.70, -73.60]],
   },
-  // Delaware is built + verified (src/data/stateParksDE.js) but intentionally
-  // un-wired until NJ accuracy is locked. Re-add this entry + the registry
-  // entry in stateParksNJ.js + STATE_NAMES in prerenderParks.js to ship it.
+  {
+    code: 'DE',
+    name: 'Delaware',
+    view: { center: [39.00, -75.50], zoom: 9 },
+    bounds: [[38.30, -75.90], [39.95, -75.00]],
+  },
 ];
 import { classifyAnimalSubtype, getSubtypeDefs } from './utils/subcategories';
 import {
@@ -1132,7 +1135,7 @@ function StateParkPanel({ park, onClose, openAbout }) {
         // (keeps the species set park-specific); birds absent from the cache
         // keep their existing rarity (graceful — e.g. Salem-county parks).
         // Factored into finalize() so we can emit birds first, then the full set.
-        const countyFreq = NJ_COUNTY_BIRD_FREQ[NJ_PARK_COUNTY[park.id]] ?? null;
+        const countyFreq = COUNTY_BIRD_FREQ[PARK_COUNTY[park.id]] ?? null;
         const finalize = () => {
           const animals = deduplicateAnimals(pool);
           if (countyFreq) {

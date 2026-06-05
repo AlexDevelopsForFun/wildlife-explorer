@@ -1,23 +1,26 @@
 #!/usr/bin/env node
 /**
- * scripts/lookupInatPlaces.mjs — find + verify each NJ park's iNaturalist
- * place polygon, so the app can query species by the park's ACTUAL boundary
- * (place_id) instead of a lat/lng circle.
+ * scripts/lookupInatPlaces.mjs — find + verify each park's iNaturalist place
+ * polygon so the app can query species by the ACTUAL park boundary (place_id)
+ * instead of a lat/lng circle.
  *
- * For every park in stateParksNJ.js it calls iNat places/autocomplete, then
- * verifies each candidate by computing the great-circle distance between the
- * park's known coordinate and the place's centroid. A candidate is accepted
- * only when the name plausibly matches AND the centroid is within ACCEPT_KM —
- * so we never attach the wrong (or a same-named out-of-state) polygon.
+ * For every park in the chosen state it calls iNat places/autocomplete, then
+ * verifies each candidate by great-circle distance between the park's known
+ * coordinate and the place's centroid. A candidate is auto-accepted only when
+ * its name plausibly matches AND the centroid is within ACCEPT_KM — so we never
+ * attach the wrong (or a same-named out-of-state) polygon. Larger parks have a
+ * distant centroid, so 8–25 km is flagged for manual review rather than auto-
+ * accepted.
  *
- * Output: a parkId → placeId map (verified) printed as JS, plus a review list
- * of near-misses for manual confirmation. No files are written — the verified
- * map is pasted into stateParksNJ.js by hand after review.
+ * Usage:  STATE=DE node scripts/lookupInatPlaces.mjs   (defaults to NJ)
+ * Output: a parkId → placeId map (verified) to paste into INAT_PLACE_IDS.
  */
-import { STATE_PARKS_NJ } from '../src/data/stateParksNJ.js';
+import { STATE_PARKS_BY_STATE } from '../src/data/stateParksNJ.js';
 
-const ACCEPT_KM = 8;     // centroid within 8 km of the park point → accept
-const REVIEW_KM = 25;    // 8–25 km → flag for manual review
+const STATE = (process.env.STATE || 'NJ').toUpperCase();
+const PARKS = STATE_PARKS_BY_STATE[STATE] || [];
+const ACCEPT_KM = 8;
+const REVIEW_KM = 25;
 
 const haversine = (a, b, c, d) => {
   const R = 6371, t = x => x * Math.PI / 180;
@@ -25,25 +28,12 @@ const haversine = (a, b, c, d) => {
   const h = Math.sin(dLat / 2) ** 2 + Math.cos(t(a)) * Math.cos(t(c)) * Math.sin(dLng / 2) ** 2;
   return 2 * R * Math.asin(Math.sqrt(h));
 };
-
 const norm = s => s.toLowerCase().replace(/[^a-z]/g, '');
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-// Already-verified place_ids (the 26 confirmed in INAT_PLACE_IDS). Only the
-// REMAINING parks need investigation — for them, dump every candidate so the
-// legitimate boundary polygons can be hand-verified (large parks have distant
-// centroids; some use old/alternate names) and added.
-const ALREADY = new Set([
-  'nj-hewitt','nj-allaire','nj-allamuchy','nj-cape-may-point','nj-cheesequake',
-  'nj-corsons-inlet','nj-double-trouble','nj-farny','nj-fort-mott','nj-hacklebarney',
-  'nj-high-point','nj-island-beach','nj-kittatinny','nj-liberty','nj-long-pond',
-  'nj-parvin','nj-pigeon-swamp','nj-rancocas','nj-ringwood','nj-round-valley',
-  'nj-spruce-run','nj-stokes-forest','nj-swartswood','nj-tall-pines','nj-voorhees',
-  'nj-washington-rock',
-]);
+const accepted = {}, review = [], misses = [];
 
-for (const park of STATE_PARKS_NJ) {
-  if (ALREADY.has(park.id)) continue;
+for (const park of PARKS) {
   try {
     const res = await fetch(
       `https://api.inaturalist.org/v1/places/autocomplete?q=${encodeURIComponent(park.name)}`,
@@ -52,24 +42,36 @@ for (const park of STATE_PARKS_NJ) {
     const data = await res.json();
     const cands = (data.results ?? []).map(r => {
       let clat = null, clng = null;
-      if (typeof r.location === 'string' && r.location.includes(',')) {
-        [clat, clng] = r.location.split(',').map(Number);
-      }
+      if (typeof r.location === 'string' && r.location.includes(',')) [clat, clng] = r.location.split(',').map(Number);
       const dist = (clat != null && clng != null) ? haversine(park.lat, park.lng, clat, clng) : null;
       return { id: r.id, name: r.display_name, dist };
-    }).sort((a, b) => (a.dist ?? 1e9) - (b.dist ?? 1e9));
-    console.log(`\n${park.id}  (${park.name})  [${park.lat},${park.lng}]`);
-    if (!cands.length) { console.log('   — no candidates'); }
-    for (const c of cands.slice(0, 6)) {
-      console.log(`   id=${String(c.id).padEnd(8)} ${c.dist != null ? c.dist.toFixed(1).padStart(6) + 'km' : '   —  '}  ${c.name}`);
+    });
+    const keyword = norm(park.name).replace('statepark', '').replace('stateforest', '')
+      .replace('recreationarea', '').replace('statepreserve', '');
+    const named = cands.filter(c => {
+      const n = norm(c.name);
+      return keyword.length >= 4 && (n.includes(keyword.slice(0, 6)) || keyword.includes(norm(c.name).slice(0, 6)));
+    });
+    const pool = (named.length ? named : cands).filter(c => c.dist != null).sort((a, b) => a.dist - b.dist);
+    const best = pool[0];
+    if (best && best.dist <= ACCEPT_KM) {
+      accepted[park.id] = best.id;
+      console.log(`✓ ${park.id.padEnd(22)} place_id=${String(best.id).padEnd(8)} ${best.dist.toFixed(1)}km  ${best.name}`);
+    } else if (best && best.dist <= REVIEW_KM) {
+      review.push({ park: park.id, best });
+      console.log(`? ${park.id.padEnd(22)} place_id=${String(best.id).padEnd(8)} ${best.dist.toFixed(1)}km  ${best.name}  (REVIEW)`);
+    } else {
+      misses.push(park.id);
+      console.log(`✗ ${park.id.padEnd(22)} no place within ${REVIEW_KM}km`);
     }
   } catch (e) {
-    console.log(`\n${park.id}  lookup failed: ${e.message}`);
+    misses.push(park.id);
+    console.log(`✗ ${park.id.padEnd(22)} lookup failed: ${e.message}`);
   }
   await sleep(700);
 }
-const accepted = {}, review = [], misses = []; // (unused in dump mode)
 
-console.log(`\n— Verified (${Object.keys(accepted).length}/${STATE_PARKS_NJ.length}) —`);
-console.log(JSON.stringify(accepted, null, 2));
-console.log(`\nReview: ${review.length}  ·  Misses (radius fallback): ${misses.length}`);
+console.log(`\n— ${STATE}: verified ${Object.keys(accepted).length}/${PARKS.length} —`);
+console.log(JSON.stringify(accepted, null, 0));
+console.log(`\nReview (${review.length}):`, JSON.stringify(review.map(r => `${r.park}=${r.best.id}@${r.best.dist.toFixed(0)}km(${r.best.name})`), null, 0));
+console.log(`Misses (radius fallback, ${misses.length}):`, JSON.stringify(misses));
