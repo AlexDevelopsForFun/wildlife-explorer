@@ -4358,6 +4358,46 @@ textarea:focus-visible,
   .statemap-overlay__legend { width: 100%; margin-left: 0; order: 3; }
 }
 
+/* Clickable category filter chips (replaces the passive legend). */
+.statemap-overlay__filters {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-left: 22px; align-items: center;
+}
+.statemap-filter-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 11px; border-radius: 999px; cursor: pointer;
+  font-size: 13px; font-weight: 600; color: #9bbcab;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.14);
+  transition: background .12s, border-color .12s, color .12s, opacity .12s;
+}
+.statemap-filter-chip > span[aria-hidden] { font-size: 15px; line-height: 1; }
+.statemap-filter-chip:hover { background: rgba(255,255,255,0.10); }
+.statemap-filter-chip.is-active { background: #1f7a47; border-color: #5fd38a; color: #eaf4ee; }
+.statemap-filter-chip:not(.is-active) { opacity: 0.55; }
+.statemap-filter-chip__count {
+  font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 999px;
+  background: rgba(0,0,0,0.28); color: inherit;
+}
+/* Park-name search box in the map bar. */
+.statemap-overlay__search {
+  display: inline-flex; align-items: center; gap: 6px; margin-left: auto; margin-right: 12px;
+  padding: 6px 10px; border-radius: 999px;
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.16);
+}
+.statemap-overlay__search > span[aria-hidden] { font-size: 13px; opacity: 0.7; }
+.statemap-overlay__search input {
+  background: transparent; border: 0; outline: none; color: #eaf4ee;
+  font-size: 13px; width: 150px;
+}
+.statemap-overlay__search input::placeholder { color: #7f9b8c; }
+.statemap-overlay__search-clear {
+  background: none; border: 0; color: #9bbcab; cursor: pointer; font-size: 13px; padding: 0 2px;
+}
+@media (max-width: 720px) {
+  .statemap-overlay__filters { width: 100%; margin-left: 0; order: 3; }
+  .statemap-overlay__search { margin-left: 0; order: 4; width: 100%; }
+  .statemap-overlay__search input { width: 100%; flex: 1; }
+}
+
 /* The state-park panel's header chrome (spectrum, tabs, controls, seen filter)
    reuses the national-park .lp__* / .rarity-spectrum / .lifelist-bar classes
    verbatim, so there are no state-park-specific styles for those — parity is

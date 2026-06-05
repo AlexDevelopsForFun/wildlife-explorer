@@ -1757,8 +1757,27 @@ function StateParkMap({ state, parks, stateGeo, onPickPark, onClose }) {
     });
   };
 
-  // Distinct categories present in this state's park list — drives legend.
+  // Distinct categories present in this state's park list — drives the filter.
   const legendCats = [...new Set(parks.map(p => p.category || 'state-park'))];
+  const catCount = (c) => parks.filter(p => (p.category || 'state-park') === c).length;
+
+  // Category + name filtering (mirrors the national map's filter bar). Default:
+  // all categories on. Clicking a category chip toggles it; the search box
+  // narrows by park name.
+  const [activeCats, setActiveCats] = useState(() => new Set(legendCats));
+  const [query, setQuery] = useState('');
+  const toggleCat = (c) => setActiveCats(prev => {
+    const next = new Set(prev);
+    if (next.has(c)) next.delete(c); else next.add(c);
+    return next.size ? next : new Set(legendCats); // never allow an empty (all-off) map
+  });
+  const visibleParks = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return parks.filter(p =>
+      activeCats.has(p.category || 'state-park') &&
+      (!q || (p.name || '').toLowerCase().includes(q))
+    );
+  }, [parks, activeCats, query]);
 
   // Frame the state tightly: fit to the actual boundary polygon when we
   // have it (snug, regardless of viewport), else the hand-tuned view, else
@@ -1799,15 +1818,43 @@ function StateParkMap({ state, parks, stateGeo, onPickPark, onClose }) {
       <div className="statemap-overlay__bar">
         <div className="statemap-overlay__title">
           🗺️ {state.name} State Parks
-          <span className="statemap-overlay__count">· {parks.length} parks</span>
+          <span className="statemap-overlay__count">
+            · {visibleParks.length === parks.length ? `${parks.length} parks` : `${visibleParks.length} of ${parks.length}`}
+          </span>
         </div>
-        <div className="statemap-overlay__legend" aria-label="Map legend">
-          {legendCats.map(c => (
-            <span key={c} className="statemap-overlay__legend-item">
-              <span aria-hidden="true">{CAT_EMOJI[c] ?? '🏞️'}</span>
-              {CAT_LABEL[c] ?? c}
-            </span>
-          ))}
+        {/* Clickable category filter (Park / Forest / Recreation / Preserve). */}
+        <div className="statemap-overlay__filters" role="group" aria-label="Filter by park type">
+          {legendCats.map(c => {
+            const on = activeCats.has(c);
+            return (
+              <button
+                key={c}
+                type="button"
+                className={`statemap-filter-chip${on ? ' is-active' : ''}`}
+                aria-pressed={on}
+                onClick={() => toggleCat(c)}
+                title={`${on ? 'Hide' : 'Show'} ${CAT_LABEL[c] ?? c}`}
+              >
+                <span aria-hidden="true">{CAT_EMOJI[c] ?? '🏞️'}</span>
+                <span>{CAT_LABEL[c] ?? c}</span>
+                <span className="statemap-filter-chip__count">{catCount(c)}</span>
+              </button>
+            );
+          })}
+        </div>
+        {/* Park-name search (the national map's "find parks" equivalent). */}
+        <div className="statemap-overlay__search">
+          <span aria-hidden="true">🔍</span>
+          <input
+            type="search"
+            placeholder="Find a park…"
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            aria-label="Search parks by name"
+          />
+          {query && (
+            <button className="statemap-overlay__search-clear" onClick={() => setQuery('')} aria-label="Clear search">✕</button>
+          )}
         </div>
         <button className="statemap-overlay__close" onClick={onClose} aria-label="Back to main map">
           ← Back to national map
@@ -1836,7 +1883,7 @@ function StateParkMap({ state, parks, stateGeo, onPickPark, onClose }) {
             />
           )}
           <FrameState state={state} feature={stateFeature} />
-          <StateMarkers parks={parks} onPick={onPickPark} />
+          <StateMarkers parks={visibleParks} onPick={onPickPark} />
         </MapContainer>
       </div>
       <p className="statemap-overlay__hint">
