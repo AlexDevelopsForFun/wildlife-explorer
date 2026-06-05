@@ -625,14 +625,75 @@ export async function fetchEbirdHotspot(lat, lng) {
 //
 // Returns { animals, _stats } | null.
 // ─────────────────────────────────────────────────────────────────────────────
-export async function fetchEbird(lat, lng, locId, hotspotCode = null, { dist = 25 } = {}) {
+// ── eBird bar chart (2020–2024 weekly checklist frequency) ──────────────────
+// The gold-standard bird-rarity signal national parks derive at build time,
+// brought to state parks at RUNTIME via the proxy. Fetches the nearest
+// hotspot's bar chart (falls back to the US-state region), parses the TSV, and
+// returns { lowercaseCommonName: { peak, seasons } } — `peak` = best
+// single-season checklist frequency (0–1), `seasons` = present-season list
+// (['year_round'] when present all four). Returns null when unavailable, so
+// callers gracefully keep their existing recency/iNat rarity proxy.
+const _BC_MONTH_PERIODS = {
+  1:[0,1,2,3],2:[4,5,6,7],3:[8,9,10,11],4:[12,13,14,15],5:[16,17,18,19],6:[20,21,22,23],
+  7:[24,25,26,27],8:[28,29,30,31],9:[32,33,34,35],10:[36,37,38,39],11:[40,41,42,43],12:[44,45,46,47],
+};
+const _BC_SEASON_MONTHS = { spring:[3,4,5], summer:[6,7,8], fall:[9,10,11], winter:[12,1,2] };
+function _bcSeasonalFreq(periods, season) {
+  const monthFreq = (m) => {
+    const idxs = _BC_MONTH_PERIODS[m] ?? [0,1,2,3];
+    return idxs.reduce((s, i) => s + (periods[i] ?? 0), 0) / idxs.length;
+  };
+  const fs = _BC_SEASON_MONTHS[season].map(monthFreq);
+  return fs.reduce((s, v) => s + v, 0) / fs.length;
+}
+function _bcParse(text) {
+  if (!text) return null;
+  const out = {};
+  for (const line of text.split('\n')) {
+    const cols = line.split('\t');
+    if (cols.length < 10) continue;
+    const rawName = cols[0].trim();
+    if (!rawName || rawName.toLowerCase() === 'species') continue;
+    const comName = rawName.replace(/\s*\([^)]+\)\s*$/, '').trim();
+    if (!comName) continue;
+    const periods = [];
+    for (let i = 1; i <= 48; i++) { const v = parseFloat(cols[i]); periods.push(isNaN(v) ? 0 : v); }
+    if (!periods.some(v => v > 0)) continue;
+    const present = ['spring', 'summer', 'fall', 'winter'].filter(s => _bcSeasonalFreq(periods, s) >= 0.05);
+    out[comName.toLowerCase()] = {
+      peak: Math.max(...['spring', 'summer', 'fall', 'winter'].map(s => _bcSeasonalFreq(periods, s))),
+      seasons: present.length === 4 ? ['year_round'] : (present.length ? present : ['spring', 'summer', 'fall', 'winter']),
+    };
+  }
+  return Object.keys(out).length > 5 ? out : null;
+}
+export async function fetchEbirdBarChart(hotspotLocId, stateCode = 'NJ') {
+  const cacheKey = `ebird_bc_v1_${hotspotLocId || 'none'}_${stateCode || ''}`;
+  const cached = cacheGet(cacheKey);
+  if (cached) return cached;
+  const tryFetch = async (r) => {
+    try {
+      const res = await fetch(
+        `/api/ebird-proxy/product/barChart?r=${encodeURIComponent(r)}&bYear=2020&eYear=2024&bMonth=1&eMonth=12`
+      );
+      if (!res.ok) return null;
+      return _bcParse(await res.text());
+    } catch { return null; }
+  };
+  let chart = hotspotLocId ? await tryFetch(hotspotLocId) : null;
+  if (!chart && stateCode) chart = await tryFetch(`US-${stateCode}`);
+  if (chart) cacheSet(cacheKey, chart);   // cache positives only; proxy edge-caches the rest
+  return chart;
+}
+
+export async function fetchEbird(lat, lng, locId, hotspotCode = null, { dist = 25, barChart = null } = {}) {
   // `dist` (km) is the eBird geo/recent + iNat-bird search radius. National
   // parks use the historic 25 km default (large parks span many hotspots);
   // small state parks pass their own park-sized radius so the bird list
   // reflects the PARK, not a ~1,960 km² circle around it. Non-default radii
   // get their own cache key so a tighter state-park query never reads a wide
   // national-park-style cached result for the same coords.
-  const cacheKey = `ebird_v8_${locId}${dist !== 25 ? `_d${dist}` : ''}`;
+  const cacheKey = `ebird_v8_${locId}${dist !== 25 ? `_d${dist}` : ''}${barChart ? '_bc' : ''}`;
   const cached = cacheGet(cacheKey);
   if (cached) return cached;
 
@@ -714,29 +775,40 @@ export async function fetchEbird(lat, lng, locId, hotspotCode = null, { dist = 2
                        : ageDays < 2.5 ? 'yesterday'
                        : `${Math.round(ageDays)} days ago`;
 
-        // iNat observation count is a strong frequency signal; fall back to
-        // recency-based proxy when the species has no iNat data.
+        // Frequency signal priority:
+        //   1. eBird bar chart peak (2020–2024 checklist frequency) — gold
+        //      standard, the same signal national parks use.
+        //   2. iNat species observation density.
+        //   3. recency of the most-recent sighting (weakest fallback).
         const sciKey  = (o.sciName ?? '').toLowerCase();
         const comKey  = (o.comName ?? '').toLowerCase();
+        const bc       = barChart?.[comKey] ?? null;
         const inatFreq = inatFreqMap.get(sciKey) ?? inatFreqMap.get(comKey) ?? null;
-        const freq    = inatFreq != null
-          ? Math.min(0.95, inatFreq)
-          : (ageDays < 5  ? 0.55
-           : ageDays < 12 ? 0.38
-           : ageDays < 21 ? 0.16
-           :                0.07);
+        const freq    = bc
+          ? Math.min(0.99, bc.peak)
+          : (inatFreq != null
+            ? Math.min(0.95, inatFreq)
+            : (ageDays < 5  ? 0.55
+             : ageDays < 12 ? 0.38
+             : ageDays < 21 ? 0.16
+             :                0.07));
 
         return {
           name:           o.comName,
           scientificName: o.sciName ?? null,
           emoji:          '🐦',
           animalType:     'bird',
-          seasons:        ['spring', 'summer', 'fall', 'winter'],
+          // Real per-species seasonality from the bar chart when available;
+          // otherwise assume year-round (the prior behaviour).
+          seasons:        bc ? bc.seasons : ['spring', 'summer', 'fall', 'winter'],
           bestSeason:     'spring',
           rarity:         rarityFromChecklist(freq),
-          funFact:        `Last reported ${ageLabel} within ${dist} km (eBird).`,
+          funFact:        bc
+            ? `Appears on ${Math.max(1, Math.round(bc.peak * 100))}% of eBird checklists here at peak season (2020–2024).`
+            : `Last reported ${ageLabel} within ${dist} km (eBird).`,
           source:         'ebird',
           frequency:      freq,
+          _raritySource:  bc ? 'ebird_st' : 'ebird_recent',
           _ageDays:       ageDays,
           _inatFreq:      inatFreq,
           _debug: { endpoint: 'data/obs/geo/recent', frequency: freq, obsDt, fetchedAt, hotspotCode },
