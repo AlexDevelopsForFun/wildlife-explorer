@@ -1736,10 +1736,10 @@ function StateParkMap({ state, parks, stateGeo, onPickPark, onClose }) {
   // pin style. Distinct emoji is itself a colour-independent cue, so this
   // remains accessible without the earlier shape variants.
   const CAT_EMOJI = {
-    'state-park':       '🏞️',
-    'state-forest':     '🌲',
-    'recreation-area':  '🛶',
-    'state-preserve':   '🌿',
+    'state-park':       '🏞️',   // landscape — the iconic "park"
+    'state-forest':     '🌲',   // evergreen — forest
+    'recreation-area':  '🛶',   // canoe — NJ rec areas are reservoirs/lakes
+    'state-preserve':   '🦋',   // butterfly — wildlife preserve (distinct from the greens)
   };
   const CAT_LABEL = {
     'state-park':       'Park',

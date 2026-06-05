@@ -13,7 +13,10 @@
  *   (2) each park's individual article infobox (spot-checked on the three
  *       largest, most outlier values: Wharton, Island Beach, Worthington —
  *       all three sources agreed to 4 decimal places).
- * Parks with no published coordinates (Capital, Stow Creek) are omitted.
+ * Capital State Park (Trenton) is omitted — still in planning, no defined
+ * grounds. Marinas and golf courses are excluded (not wildlife destinations).
+ * This is the complete set of 47 NJ state parks, forests, recreation areas,
+ * and preserves with public natural grounds.
  *
  * `radiusKm` is the live-data search radius (eBird caps at 50 km). Roughly:
  *   • compact parks / battlefields / preserves → 2–3 km
@@ -69,6 +72,7 @@ export const STATE_PARKS_NJ = [
   { id: 'nj-spruce-run',       name: 'Spruce Run Recreation Area',          lat: 40.6628,     lng: -74.9389,    radiusKm: 4,  category: 'recreation-area' },
   { id: 'nj-stephens',         name: 'Stephens State Park',                 lat: 40.869183,   lng: -74.81,      radiusKm: 3,  category: 'state-park' },
   { id: 'nj-stokes-forest',    name: 'Stokes State Forest',                 lat: 41.184453,   lng: -74.797314,  radiusKm: 8,  category: 'state-forest' },
+  { id: 'nj-stow-creek',       name: 'Stow Creek State Park',               lat: 39.4426,     lng: -75.4085,    radiusKm: 3,  category: 'state-park' },
   { id: 'nj-swartswood',       name: 'Swartswood State Park',               lat: 41.073631,   lng: -74.818783,  radiusKm: 4,  category: 'state-park' },
   { id: 'nj-tall-pines',       name: 'Tall Pines State Preserve',           lat: 39.778,      lng: -75.142,     radiusKm: 3,  category: 'state-preserve' },
   { id: 'nj-voorhees',         name: 'Voorhees State Park',                 lat: 40.695981,   lng: -74.887133,  radiusKm: 3,  category: 'state-park' },
@@ -119,6 +123,7 @@ export const STATE_PARK_HIGHLIGHTS = {
   'nj-worthington': 'In the Delaware Water Gap, the steep Kittatinny ridge (Mount Tammany, Appalachian Trail) channels migrating raptors each fall and shelters forest-interior breeding birds.',
   'nj-cheesequake': 'A rare transition zone where northern and southern habitats meet — saltmarsh, freshwater swamp, and pine-oak forest in one park make for unusually diverse birdlife.',
   'nj-belleplain': 'A southern pinelands forest famous among birders for breeding songbirds — Summer Tanager, Prothonotary and Hooded Warblers, and Acadian Flycatcher around Lake Nummy.',
+  'nj-stow-creek': 'A Delaware Bayshore park centered on a long-active bald eagle nest, with a dedicated viewing platform. Tidal marsh and woods along Stow Creek also draw herons, ospreys, and wintering waterfowl.',
 };
 
 // Multi-state registry. Each new state ships its own data file (same shape)
