@@ -10,6 +10,7 @@ import { track } from '@vercel/analytics';
 
 import { wildlifeLocations, SEASONS, RARITY, ANIMAL_TYPES, STATE_NAMES } from './wildlifeData';
 import { STATE_PARKS_NJ, STATE_PARKS_BY_STATE, findStatePark, INAT_PLACE_IDS } from './data/stateParksNJ';
+import { NJ_PARK_COUNTY, NJ_COUNTY_BIRD_FREQ } from './data/stateParkBirdFreqNJ';
 
 // States we have curated park data for. Add a new state's entry here +
 // extend STATE_PARKS_BY_STATE — the selector + map handle it automatically.
@@ -1163,6 +1164,26 @@ function StateParkPanel({ park, onClose, openAbout }) {
         // deduplicateAnimals collapses species seen at multiple points, keeping
         // the highest-frequency sighting — so coverage grows without inflating.
         const animals = deduplicateAnimals(pool);
+
+        // Re-rate birds with eBird county-level peak-season checklist frequency
+        // (build-time cache, scripts/buildStateParkBirdFreqNJ.js) — the same
+        // gold-standard signal national parks use, far better than the
+        // geo/recent recency proxy. Only re-rates birds ALREADY in the list
+        // (keeps the species set park-specific); birds absent from the cache
+        // keep their existing rarity (graceful — e.g. Salem-county parks).
+        const countyFreq = NJ_COUNTY_BIRD_FREQ[NJ_PARK_COUNTY[park.id]] ?? null;
+        if (countyFreq) {
+          for (const a of animals) {
+            if (a.animalType !== 'bird' || !a.name) continue;
+            const e = countyFreq[a.name.toLowerCase()];
+            if (!e) continue;
+            a.frequency = e.f;
+            a.rarity = rarityFromChecklist(e.f);
+            a.seasons = e.s;          // real per-species seasonality (migrants ≠ year-round)
+            a._raritySource = 'ebird_county_freq';
+          }
+        }
+
         const stats = { ebirdChecklists, ebirdHistoricalSpecies: ebirdHistoricalSpecies || null, inatObservations };
         setState({ status: animals.length ? 'ok' : 'empty', species: animals, total: animals.length, sources, stats });
       } catch {

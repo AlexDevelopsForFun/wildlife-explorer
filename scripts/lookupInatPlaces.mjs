@@ -29,9 +29,21 @@ const haversine = (a, b, c, d) => {
 const norm = s => s.toLowerCase().replace(/[^a-z]/g, '');
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-const accepted = {}, review = [], misses = [];
+// Already-verified place_ids (the 26 confirmed in INAT_PLACE_IDS). Only the
+// REMAINING parks need investigation — for them, dump every candidate so the
+// legitimate boundary polygons can be hand-verified (large parks have distant
+// centroids; some use old/alternate names) and added.
+const ALREADY = new Set([
+  'nj-hewitt','nj-allaire','nj-allamuchy','nj-cape-may-point','nj-cheesequake',
+  'nj-corsons-inlet','nj-double-trouble','nj-farny','nj-fort-mott','nj-hacklebarney',
+  'nj-high-point','nj-island-beach','nj-kittatinny','nj-liberty','nj-long-pond',
+  'nj-parvin','nj-pigeon-swamp','nj-rancocas','nj-ringwood','nj-round-valley',
+  'nj-spruce-run','nj-stokes-forest','nj-swartswood','nj-tall-pines','nj-voorhees',
+  'nj-washington-rock',
+]);
 
 for (const park of STATE_PARKS_NJ) {
+  if (ALREADY.has(park.id)) continue;
   try {
     const res = await fetch(
       `https://api.inaturalist.org/v1/places/autocomplete?q=${encodeURIComponent(park.name)}`,
@@ -39,39 +51,24 @@ for (const park of STATE_PARKS_NJ) {
     );
     const data = await res.json();
     const cands = (data.results ?? []).map(r => {
-      // place centroid: prefer location "lat,lng", else bbox center
       let clat = null, clng = null;
       if (typeof r.location === 'string' && r.location.includes(',')) {
         [clat, clng] = r.location.split(',').map(Number);
       }
       const dist = (clat != null && clng != null) ? haversine(park.lat, park.lng, clat, clng) : null;
       return { id: r.id, name: r.display_name, dist };
-    });
-    // best = closest candidate whose name shares the park's key words
-    const keyword = norm(park.name).replace('statepark', '').replace('stateforest', '')
-      .replace('recreationarea', '').replace('statepreserve', '');
-    const named = cands.filter(c => {
-      const n = norm(c.name);
-      return keyword.length >= 4 && (n.includes(keyword.slice(0, 6)) || keyword.includes(norm(c.name).slice(0, 6)));
-    });
-    const pool = (named.length ? named : cands).filter(c => c.dist != null).sort((a, b) => a.dist - b.dist);
-    const best = pool[0];
-    if (best && best.dist <= ACCEPT_KM) {
-      accepted[park.id] = best.id;
-      console.log(`✓ ${park.id.padEnd(22)} place_id=${String(best.id).padEnd(8)} ${best.dist.toFixed(1)}km  ${best.name}`);
-    } else if (best && best.dist <= REVIEW_KM) {
-      review.push({ park: park.id, best });
-      console.log(`? ${park.id.padEnd(22)} place_id=${String(best.id).padEnd(8)} ${best.dist.toFixed(1)}km  ${best.name}  (REVIEW)`);
-    } else {
-      misses.push(park.id);
-      console.log(`✗ ${park.id.padEnd(22)} no place within ${REVIEW_KM}km`);
+    }).sort((a, b) => (a.dist ?? 1e9) - (b.dist ?? 1e9));
+    console.log(`\n${park.id}  (${park.name})  [${park.lat},${park.lng}]`);
+    if (!cands.length) { console.log('   — no candidates'); }
+    for (const c of cands.slice(0, 6)) {
+      console.log(`   id=${String(c.id).padEnd(8)} ${c.dist != null ? c.dist.toFixed(1).padStart(6) + 'km' : '   —  '}  ${c.name}`);
     }
   } catch (e) {
-    misses.push(park.id);
-    console.log(`✗ ${park.id.padEnd(22)} lookup failed: ${e.message}`);
+    console.log(`\n${park.id}  lookup failed: ${e.message}`);
   }
-  await sleep(700); // be polite to iNat
+  await sleep(700);
 }
+const accepted = {}, review = [], misses = []; // (unused in dump mode)
 
 console.log(`\n— Verified (${Object.keys(accepted).length}/${STATE_PARKS_NJ.length}) —`);
 console.log(JSON.stringify(accepted, null, 2));
