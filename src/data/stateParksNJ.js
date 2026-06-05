@@ -31,6 +31,7 @@
  */
 
 import { STATE_PARKS_DE } from './stateParksDE.js';
+import { STATE_PARKS_CT } from './stateParksCT.js';
 
 export const STATE_PARKS_NJ = [
   { id: 'nj-hewitt',           name: 'Abram S. Hewitt State Forest',        lat: 41.18570453, lng: -74.331375,  radiusKm: 6,  category: 'state-forest' },
@@ -113,6 +114,28 @@ export const INAT_PLACE_IDS = {
   'de-alapocas': 181333, 'de-auburn-valley': 169859, 'de-cape-henlopen': 222476,
   'de-killens-pond': 208396, 'de-lums-pond': 177713, 'de-trap-pond': 172845,
   'de-white-clay': 95508,
+  // Connecticut (verified May 2026, STATE=CT node scripts/lookupInatPlaces.mjs;
+  // Natchaug/Enders/Trout Brook re-pinned to the iNat centroid). 57/58 parks;
+  // Great Pond SF has no iNat polygon → radius fallback.
+  'ct-hammonasset': 54044, 'ct-sherwood-island': 56341, 'ct-silver-sands': 56345,
+  'ct-bluff-point': 10040, 'ct-rocky-neck': 56320, 'ct-harkness': 56165,
+  'ct-haley-farm': 56161, 'ct-farm-river': 56420, 'ct-sleeping-giant': 56349,
+  'ct-talcott-mountain': 56372, 'ct-penwood': 56282, 'ct-west-rock-ridge': 56389,
+  'ct-mount-tom': 56237, 'ct-mount-riga': 56236, 'ct-gillette-castle': 56151,
+  'ct-selden-neck': 56335, 'ct-haddam-meadows': 56158, 'ct-devils-hopyard': 56110,
+  'ct-kent-falls': 56194, 'ct-housatonic-meadows': 56180, 'ct-wadsworth-falls': 56384,
+  'ct-southford-falls': 56363, 'ct-indian-well': 56185, 'ct-bigelow-hollow': 56063,
+  'ct-mansfield-hollow': 56214, 'ct-burr-pond': 56086, 'ct-black-rock': 56069,
+  'ct-squantz-pond': 56364, 'ct-lake-waramaug': 56199, 'ct-kettletown': 56195,
+  'ct-hopeville-pond': 56178, 'ct-quaddick': 56302, 'ct-chatfield-hollow': 6722,
+  'ct-day-pond': 56108, 'ct-macedonia-brook': 56212, 'ct-mashamoquet-brook': 56217,
+  'ct-gay-city': 56148, 'ct-huntington': 56097, 'ct-putnam-memorial': 56298,
+  'ct-osbornedale': 56267, 'ct-quinnipiac-river': 56309, 'ct-dinosaur': 56112,
+  'ct-pachaug-sf': 56271, 'ct-cockaponset-sf': 56095, 'ct-mohawk-sf': 56229,
+  'ct-meshomasic-sf': 56222, 'ct-shenipsit-sf': 56340, 'ct-tunxis-sf': 56382,
+  'ct-mattatuck-sf': 56220, 'ct-naugatuck-sf': 56245, 'ct-salmon-river-sf': 56327,
+  'ct-american-legion-sf': 56035, 'ct-campbell-falls': 56088, 'ct-seth-low-pierrepont': 56337,
+  'ct-natchaug-sf': 56241, 'ct-enders-sf': 56128, 'ct-trout-brook-valley': 56432,
 };
 
 // Curated naturalist highlights for the flagship NJ parks — the "what makes
@@ -138,6 +161,15 @@ export const STATE_PARK_HIGHLIGHTS = {
   'de-trap-pond': 'Home to the northernmost natural stand of bald cypress in the United States. The cypress swamp shelters nesting Prothonotary Warblers, herons, owls, and a rich amphibian community.',
   'de-brandywine': 'A Piedmont park of old-growth Tulip Tree Woods (a National Natural Landmark) and meadows, with a fall hawk watch and diverse breeding forest birds along Brandywine Creek.',
   'de-white-clay': 'A large Piedmont preserve of forest, meadow, and trout streams straddling the Delaware–Pennsylvania line — strong breeding-bird diversity and a notable spring warbler migration.',
+  // Connecticut flagships (established, verifiable wildlife stories).
+  'ct-hammonasset': "Connecticut's largest shoreline park. Meigs Point is a premier birding spot — fall hawk and songbird migration funnels along the coast, with wintering sea ducks, shorebirds, and salt-marsh wildlife.",
+  'ct-bluff-point': "Connecticut's largest undeveloped stretch of coast — a peninsula between Long Island Sound and the Poquonnock estuary famed among birders for the fall 'morning flight' of songbirds, plus wintering waterfowl and ospreys in summer.",
+  'ct-sherwood-island': "Connecticut's oldest state park, on Long Island Sound. Its point and salt marsh draw migrating shorebirds and monarch butterflies in fall, herons and egrets through summer, and wintering waterfowl.",
+  'ct-talcott-mountain': "The traprock cliffs at Heublein Tower, on the Metacomet Ridge, host a noted fall hawk-watch — thousands of Broad-winged Hawks and other raptors stream past each September.",
+  'ct-sleeping-giant': 'A two-mile traprock ridge above the Quinnipiac valley. Its hemlock ravines and mixed hardwood forest hold breeding warblers and thrushes, with raptors passing along the ridge in fall.',
+  'ct-pachaug-sf': "Connecticut's largest state forest (~24,000 acres). The Rhododendron Sanctuary's Atlantic white cedar swamp, extensive woodlands, and Beachdale Pond support breeding warblers, owls, and a rich amphibian community.",
+  'ct-housatonic-meadows': 'A classic stretch of the Housatonic River framed by pine and hemlock — a renowned trout river where bald eagles winter and warblers breed along the wooded banks.',
+  'ct-bigelow-hollow': "Northern-flavored woodland in the vast Nipmuck State Forest, set around Mashapaug Pond (Connecticut's largest natural lake) and Breakneck Pond — breeding forest songbirds and excellent amphibian habitat.",
 };
 
 // Multi-state registry. Each new state ships its own data file (same shape)
@@ -147,6 +179,7 @@ export const STATE_PARK_HIGHLIGHTS = {
 export const STATE_PARKS_BY_STATE = {
   NJ: STATE_PARKS_NJ,
   DE: STATE_PARKS_DE,
+  CT: STATE_PARKS_CT,
 };
 
 // Resolve a state-park entry from a path like /state-park/nj/<id>.

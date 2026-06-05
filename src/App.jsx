@@ -29,6 +29,12 @@ const STATE_PARK_STATES = [
     view: { center: [39.00, -75.50], zoom: 9 },
     bounds: [[38.30, -75.90], [39.95, -75.00]],
   },
+  {
+    code: 'CT',
+    name: 'Connecticut',
+    view: { center: [41.55, -72.70], zoom: 9 },
+    bounds: [[40.85, -73.95], [42.20, -71.65]],
+  },
 ];
 import { classifyAnimalSubtype, getSubtypeDefs } from './utils/subcategories';
 import {
