@@ -35,6 +35,12 @@ const STATE_PARK_STATES = [
     view: { center: [41.55, -72.70], zoom: 9 },
     bounds: [[40.85, -73.95], [42.20, -71.65]],
   },
+  {
+    code: 'RI',
+    name: 'Rhode Island',
+    view: { center: [41.62, -71.55], zoom: 9 },
+    bounds: [[41.05, -72.00], [42.10, -71.05]],
+  },
 ];
 import { classifyAnimalSubtype, getSubtypeDefs } from './utils/subcategories';
 import {
@@ -1752,12 +1758,14 @@ function StateParkMap({ state, parks, stateGeo, onPickPark, onClose }) {
     'state-park':       '🏞️',   // landscape — the iconic "park"
     'state-forest':     '🌲',   // evergreen — forest
     'recreation-area':  '🛶',   // canoe — NJ rec areas are reservoirs/lakes
-    'state-preserve':   '🦋',   // butterfly — wildlife preserve (distinct from the greens)
+    'state-beach':      '🏖️',   // beach — RI (Ocean State) coastal state beaches
+    'state-preserve':   '🦋',   // butterfly — wildlife preserve / management area
   };
   const CAT_LABEL = {
     'state-park':       'Park',
     'state-forest':     'Forest',
     'recreation-area':  'Recreation',
+    'state-beach':      'Beach',
     'state-preserve':   'Preserve',
   };
   const pinFor = (park) => {

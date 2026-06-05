@@ -63,7 +63,11 @@ const YEAR = new Date().getFullYear() - 1;
 
 // Border parks whose nearest hotspot sits in an adjacent state — pin to the
 // correct in-state county (which we also sample).
-const COUNTY_OVERRIDE = { 'nj-hewitt': 'US-NJ-031' }; // on the NY line → Passaic, NJ
+const COUNTY_OVERRIDE = {
+  'nj-hewitt': 'US-NJ-031',          // on the NY line → Passaic, NJ
+  'ri-buck-hill': 'US-RI-007',       // Burrillville, NW corner on the CT/MA line → Providence, RI
+  'ri-pawcatuck-river': 'US-RI-009', // Westerly; the Pawcatuck R. is the CT border → Washington, RI
+};
 
 async function countyForPark(lat, lng) {
   for (const dist of [10, 25]) {

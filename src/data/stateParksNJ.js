@@ -32,6 +32,7 @@
 
 import { STATE_PARKS_DE } from './stateParksDE.js';
 import { STATE_PARKS_CT } from './stateParksCT.js';
+import { STATE_PARKS_RI } from './stateParksRI.js';
 
 export const STATE_PARKS_NJ = [
   { id: 'nj-hewitt',           name: 'Abram S. Hewitt State Forest',        lat: 41.18570453, lng: -74.331375,  radiusKm: 6,  category: 'state-forest' },
@@ -136,6 +137,12 @@ export const INAT_PLACE_IDS = {
   'ct-mattatuck-sf': 56220, 'ct-naugatuck-sf': 56245, 'ct-salmon-river-sf': 56327,
   'ct-american-legion-sf': 56035, 'ct-campbell-falls': 56088, 'ct-seth-low-pierrepont': 56337,
   'ct-natchaug-sf': 56241, 'ct-enders-sf': 56128, 'ct-trout-brook-valley': 56432,
+  // Rhode Island (verified May 2026, STATE=RI node scripts/lookupInatPlaces.mjs).
+  // RI is sparsely represented in iNat's PLACES database — only these 5 units
+  // have a polygon; the other 36 use the radius fallback (their iNat OBServations
+  // are still dense, just queried by lat/lng circle rather than boundary).
+  'ri-colt': 152757, 'ri-lincoln-woods': 194890, 'ri-nicholas-farm': 127993,
+  'ri-buck-hill': 141335, 'ri-great-swamp': 215903,
 };
 
 // Curated naturalist highlights for the flagship NJ parks — the "what makes
@@ -170,6 +177,13 @@ export const STATE_PARK_HIGHLIGHTS = {
   'ct-pachaug-sf': "Connecticut's largest state forest (~24,000 acres). The Rhododendron Sanctuary's Atlantic white cedar swamp, extensive woodlands, and Beachdale Pond support breeding warblers, owls, and a rich amphibian community.",
   'ct-housatonic-meadows': 'A classic stretch of the Housatonic River framed by pine and hemlock — a renowned trout river where bald eagles winter and warblers breed along the wooded banks.',
   'ct-bigelow-hollow': "Northern-flavored woodland in the vast Nipmuck State Forest, set around Mashapaug Pond (Connecticut's largest natural lake) and Breakneck Pond — breeding forest songbirds and excellent amphibian habitat.",
+  // Rhode Island flagships (established, verifiable wildlife stories).
+  'ri-block-island': "One of the Northeast's premier migration stopovers — each fall huge numbers of migrant songbirds (and rarities) concentrate on 'the Block,' a vital refueling point on the Atlantic Flyway.",
+  'ri-great-swamp': "Rhode Island's premier inland wildlife area — ~3,300 acres of swamp, marsh, and the shore of Worden Pond, with nesting ospreys, herons, waterfowl, and a rich amphibian and reptile community.",
+  'ri-arcadia': "Rhode Island's largest protected area (~14,000 acres) — extensive woodland, the Wood and Falls rivers, and ponds supporting breeding forest birds, river otters, and a diverse herpetofauna.",
+  'ri-beavertail': "Rhode Island's classic seawatch — the rocky point at the tip of Conanicut Island draws migrating seabirds, gannets, and sea ducks, with harbor seals on the rocks in winter.",
+  'ri-colt': 'Open meadows along a Narragansett Bay shoreline in Bristol — ospreys nest over the bay, and the fields and hedgerows draw migrant songbirds, wading birds, and wintering waterfowl.',
+  'ri-charlestown-breachway': 'The Charlestown salt ponds and barrier beach are a shorebird and waterfowl magnet — terns and oystercatchers nest near the breachway, with loons and sea ducks offshore in winter.',
 };
 
 // Multi-state registry. Each new state ships its own data file (same shape)
@@ -180,6 +194,7 @@ export const STATE_PARKS_BY_STATE = {
   NJ: STATE_PARKS_NJ,
   DE: STATE_PARKS_DE,
   CT: STATE_PARKS_CT,
+  RI: STATE_PARKS_RI,
 };
 
 // Resolve a state-park entry from a path like /state-park/nj/<id>.
