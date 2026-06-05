@@ -21,7 +21,6 @@ const ALLOW = [
   /^ref\/hotspot\/geo(\?|$)/,
   /^product\/spplist\/[A-Za-z0-9]+(\?|$)/,
   /^data\/obs\/geo\/recent(\?|$)/,
-  /^product\/barChart(\?|$)/,   // 2020–2024 weekly checklist frequency (gold-standard bird rarity)
 ];
 
 export default async function handler(req, res) {
