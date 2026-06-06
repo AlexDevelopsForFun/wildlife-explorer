@@ -39,6 +39,9 @@ import { STATE_PARKS_VT } from './stateParksVT.js';
 import { STATE_PARKS_ME } from './stateParksME.js';
 import { STATE_PARKS_NY } from './stateParksNY.js';
 import { STATE_PARKS_PA } from './stateParksPA.js';
+import { STATE_PARKS_MD } from './stateParksMD.js';
+import { STATE_PARKS_VA } from './stateParksVA.js';
+import { STATE_PARKS_WV } from './stateParksWV.js';
 
 export const STATE_PARKS_NJ = [
   { id: 'nj-hewitt',           name: 'Abram S. Hewitt State Forest',        lat: 41.18570453, lng: -74.331375,  radiusKm: 6,  category: 'state-forest' },
@@ -232,6 +235,30 @@ export const INAT_PLACE_IDS = {
   'pa-trough-creek': 93482, 'pa-canoe-creek': 93299, 'pa-michaux-sf': 152164,
   'pa-loyalsock-sf': 152197, 'pa-bear-meadows-na': 172338, 'pa-tioga-sf': 152187,
   'pa-moshannon-sf': 152198, 'pa-elk-sf': 152188,
+  // Batch 1 — MD/VA/WV (verified 2026, scripts/lookupInatPlaces.mjs variant pass).
+  'md-assateague': 133637, 'md-pocomoke-river': 140256, 'md-deal-island-wma': 118660,
+  'md-tuckahoe': 188008, 'md-martinak': 188009, 'md-sandy-point': 77272,
+  'md-north-point': 79489, 'md-point-lookout': 118580, 'md-st-marys-river': 142654,
+  'md-smallwood': 156943, 'md-merkle-wma': 121342, 'md-patapsco-valley': 72652,
+  'md-patuxent-river': 228924, 'md-mckee-beshers-wma': 128728, 'md-cunningham-falls': 111194,
+  'md-gambrill': 228920, 'md-rocky-gap': 79721, 'md-green-ridge-sf': 79411,
+  'md-deep-creek-lake': 152021, 'md-swallow-falls': 152016,
+  'va-first-landing': 160047, 'va-false-cape': 225463, 'va-kiptopeke': 126301,
+  'va-machicomoco': 174482, 'va-york-river': 161168, 'va-chippokes': 161648,
+  'va-belle-isle': 153562, 'va-westmoreland': 9189, 'va-caledon': 138012,
+  'va-leesylvania': 143631, 'va-mason-neck': 143634, 'va-widewater': 141561,
+  'va-pocahontas': 52890, 'va-powhatan': 160915, 'va-james-river': 161195,
+  'va-bear-creek-lake': 50618, 'va-holliday-lake': 125738, 'va-twin-lakes': 125739,
+  'va-lake-anna': 144724, 'va-mayo-river': 210008, 'va-sky-meadows': 121998,
+  'va-shenandoah-river': 124934, 'va-douthat': 201262, 'va-fairy-stone': 204917,
+  'va-claytor-lake': 231118, 'va-new-river-trail': 201998, 'va-hungry-mother': 181373,
+  'va-natural-tunnel': 160052, 'va-wilderness-road': 159919,
+  'wv-blackwater-falls': 160709, 'wv-coopers-rock-sf': 109878, 'wv-audra': 159824,
+  'wv-kumbrabow-sf': 109864, 'wv-holly-river': 70227, 'wv-watoga': 70228,
+  'wv-seneca-sf': 109868, 'wv-calvin-price-sf': 109870, 'wv-greenbrier-sf': 109856,
+  'wv-babcock': 159825, 'wv-bluestone': 95114, 'wv-chief-logan': 160349,
+  'wv-panther-sf': 168081, 'wv-cabwaylingo-sf': 109869, 'wv-kanawha-sf': 109795,
+  'wv-north-bend': 159831,
 };
 
 // Curated naturalist highlights for the flagship NJ parks — the "what makes
@@ -329,6 +356,20 @@ export const STATE_PARK_HIGHLIGHTS = {
   'pa-pymatuning': "Pennsylvania's largest lake — where Bald Eagles first returned to nest in the state, now a stronghold for eagles, ospreys, and tens of thousands of migrating waterfowl.",
   'pa-leonard-harrison': 'The east rim of the Pine Creek Gorge — the "Grand Canyon of Pennsylvania," ~800 feet deep, where Bald Eagles, ospreys, and ravens ride the updrafts.',
   'pa-moraine': 'Built around Lake Arthur, a noted osprey-reintroduction success — now prime habitat for nesting ospreys, migrating waterfowl, and grassland birds on the reclaimed glacial landscape.',
+  // Maryland flagships.
+  'md-assateague': 'A wild barrier island shared with Virginia, famous for its free-roaming ponies — with nesting piping plovers and oystercatchers, migrating shorebirds, and Delmarva fox squirrels in the loblolly pines.',
+  'md-deal-island-wma': "A vast tidal marsh on the Chesapeake's Eastern Shore — one of Maryland's premier spots for wintering waterfowl, marsh sparrows, rails, and hunting Northern Harriers.",
+  'md-calvert-cliffs': 'Miocene fossil cliffs on the Chesapeake — shark teeth wash onto the beach below bluffs patrolled by Bald Eagles and ospreys.',
+  'md-swallow-falls': "Maryland's highest waterfall amid a rare old-growth hemlock and white-pine grove on the Youghiogheny — a cool relict northern forest.",
+  // Virginia flagships.
+  'va-kiptopeke': 'At the tip of the Delmarva Peninsula — a legendary fall migration funnel whose hawk-watch and songbird banding station tally huge numbers of raptors and migrants staging before the Chesapeake Bay crossing.',
+  'va-grayson-highlands': "Virginia's high country above 5,000 ft — open balds with free-roaming ponies and northern breeding birds amid the spruce-fir near Mount Rogers.",
+  'va-mason-neck': "A Potomac peninsula protected for the Bald Eagle — one of the Chesapeake's first eagle refuges, with a large great blue heron rookery and wintering waterfowl.",
+  'va-false-cape': 'A remote barrier spit between Back Bay and the Atlantic — wild undeveloped beach and maritime forest with feral horses and huge concentrations of wintering waterfowl.',
+  // West Virginia flagships.
+  'wv-canaan-valley': 'The highest large valley east of the Mississippi — a boreal wetland of bogs and spruce that feels like Canada, with breeding northern birds, beavers, and black bears.',
+  'wv-blackwater-falls': 'The amber Blackwater River plunges through a rugged hemlock-and-rhododendron gorge in the Allegheny highlands — cool-forest songbirds and a famed highland landscape.',
+  'wv-cranberry-wma': 'Gateway to the Cranberry Glades — a boreal bog relict of sphagnum, carnivorous plants, and northern birds high in the Allegheny Mountains.',
 };
 
 // Multi-state registry. Each new state ships its own data file (same shape)
@@ -346,6 +387,9 @@ export const STATE_PARKS_BY_STATE = {
   ME: STATE_PARKS_ME,
   NY: STATE_PARKS_NY,
   PA: STATE_PARKS_PA,
+  MD: STATE_PARKS_MD,
+  VA: STATE_PARKS_VA,
+  WV: STATE_PARKS_WV,
 };
 
 // Resolve a state-park entry from a path like /state-park/nj/<id>.

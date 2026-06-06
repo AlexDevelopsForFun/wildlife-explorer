@@ -75,6 +75,11 @@ const haversine = (a, b, c, d) => {
 };
 
 const SAMPLE_DAYS = [1, 8, 15, 22];
+// Denser "deep" pass (every other day) re-tried only for counties the 48-date
+// pass finds too sparse — rural Appalachian / western counties genuinely have
+// the checklists, just not on the 4-days-a-month grid. Finds the real ≥12 valid
+// dates without lowering the quality bar.
+const DEEP_DAYS = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27];
 const SEASON_MONTHS = { spring: [3,4,5], summer: [6,7,8], fall: [9,10,11], winter: [12,1,2] };
 const MIN_CHECKLISTS_PER_DATE = 5;
 // 12 valid sample-dates (of 48) is the floor for a usable peak-season frequency
@@ -93,6 +98,7 @@ const COUNTY_OVERRIDE = {
   'ri-buck-hill': 'US-RI-007',       // Burrillville, NW corner on the CT/MA line → Providence, RI
   'ri-pawcatuck-river': 'US-RI-009', // Westerly; the Pawcatuck R. is the CT border → Washington, RI
   'ma-bash-bish-falls': 'US-MA-003', // Mount Washington, SW corner on the NY line → Berkshire, MA
+  'wv-panther-sf': 'US-WV-047',      // Panther SF, far SW WV on the VA/KY line → McDowell, WV
 };
 
 async function countyForPark(lat, lng) {
@@ -112,20 +118,18 @@ async function countyForPark(lat, lng) {
   return null;
 }
 
-async function sampleCounty(county) {
-  const cacheFile = path.join(CACHE_DIR, `${county}.json`);
-  if (existsSync(cacheFile)) { console.log(`  [${county}] cached`); return JSON.parse(readFileSync(cacheFile, 'utf8')); }
+async function sampleDates(county, days) {
   const datesPresent = new Map(), monthData = new Map(), monthValid = {};
   let valid = 0, total = 0;
   for (let month = 1; month <= 12; month++) {
-    for (const day of SAMPLE_DAYS) {
+    for (const day of days) {
       total++;
       const stats = await jget(`https://api.ebird.org/v2/product/stats/${county}/${YEAR}/${month}/${day}`);
-      await sleep(180);
+      await sleep(150);
       if ((stats?.numChecklists ?? 0) < MIN_CHECKLISTS_PER_DATE) continue;
       valid++; monthValid[month] = (monthValid[month] ?? 0) + 1;
       const obs = await jget(`https://api.ebird.org/v2/data/obs/${county}/historic/${YEAR}/${month}/${day}`);
-      await sleep(520);
+      await sleep(400);
       if (!Array.isArray(obs)) continue;
       for (const o of obs) {
         if (!o.comName) continue;
@@ -135,8 +139,21 @@ async function sampleCounty(county) {
       }
     }
   }
-  console.log(`  [${county}] ${valid}/${total} valid dates, ${datesPresent.size} species`);
-  if (valid < MIN_VALID_DATES) { console.log(`  [${county}] ⚠ too few valid dates — skipping`); return null; }
+  return { valid, total, datesPresent, monthData, monthValid };
+}
+
+async function sampleCounty(county) {
+  const cacheFile = path.join(CACHE_DIR, `${county}.json`);
+  if (existsSync(cacheFile)) { console.log(`  [${county}] cached`); return JSON.parse(readFileSync(cacheFile, 'utf8')); }
+  let samp = await sampleDates(county, SAMPLE_DAYS);
+  let note = '';
+  if (samp.valid < MIN_VALID_DATES) {                 // sparse → denser deep pass
+    const deep = await sampleDates(county, DEEP_DAYS);
+    if (deep.valid > samp.valid) { samp = deep; note = ' (deep)'; }
+  }
+  const { datesPresent, monthData, monthValid } = samp;
+  console.log(`  [${county}] ${samp.valid}/${samp.total} valid dates, ${datesPresent.size} species${note}`);
+  if (samp.valid < MIN_VALID_DATES) { console.log(`  [${county}] ⚠ too few valid dates — skipping`); return null; }
   const out = {};
   for (const [comName] of datesPresent) {
     const md = monthData.get(comName) ?? {};

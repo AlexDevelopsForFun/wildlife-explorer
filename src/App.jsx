@@ -77,6 +77,24 @@ const STATE_PARK_STATES = [
     view: { center: [41.00, -77.60], zoom: 7 },
     bounds: [[39.60, -80.65], [42.40, -74.60]],
   },
+  {
+    code: 'MD',
+    name: 'Maryland',
+    view: { center: [39.00, -77.00], zoom: 7 },
+    bounds: [[37.80, -79.60], [39.80, -74.90]],
+  },
+  {
+    code: 'VA',
+    name: 'Virginia',
+    view: { center: [37.70, -79.00], zoom: 6 },
+    bounds: [[36.40, -83.80], [39.60, -75.10]],
+  },
+  {
+    code: 'WV',
+    name: 'West Virginia',
+    view: { center: [38.80, -80.50], zoom: 7 },
+    bounds: [[37.10, -82.80], [40.70, -77.60]],
+  },
 ];
 import { classifyAnimalSubtype, getSubtypeDefs } from './utils/subcategories';
 import {
