@@ -65,6 +65,12 @@ const STATE_PARK_STATES = [
     view: { center: [45.30, -69.20], zoom: 7 },
     bounds: [[42.90, -71.20], [47.60, -66.80]],
   },
+  {
+    code: 'NY',
+    name: 'New York',
+    view: { center: [43.00, -75.50], zoom: 6 },
+    bounds: [[40.40, -79.90], [45.10, -71.80]],
+  },
 ];
 import { classifyAnimalSubtype, getSubtypeDefs } from './utils/subcategories';
 import {

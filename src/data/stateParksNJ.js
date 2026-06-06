@@ -37,6 +37,7 @@ import { STATE_PARKS_MA } from './stateParksMA.js';
 import { STATE_PARKS_NH } from './stateParksNH.js';
 import { STATE_PARKS_VT } from './stateParksVT.js';
 import { STATE_PARKS_ME } from './stateParksME.js';
+import { STATE_PARKS_NY } from './stateParksNY.js';
 
 export const STATE_PARKS_NJ = [
   { id: 'nj-hewitt',           name: 'Abram S. Hewitt State Forest',        lat: 41.18570453, lng: -74.331375,  radiusKm: 6,  category: 'state-forest' },
@@ -187,6 +188,23 @@ export const INAT_PLACE_IDS = {
   // rest use radius. Scarborough Marsh matched the short "Scarborough Marsh".
   'me-baxter': 70218, 'me-birch-point': 216646, 'me-camden-hills': 120558,
   'me-cutler-coast': 121996, 'me-roque-bluffs': 160967, 'me-scarborough-marsh': 67518,
+  // New York (verified 2026, STATE=NY node scripts/lookupInatPlaces.mjs + variant
+  // pass). 36/68 units have an iNat polygon; rest use radius. Connetquot, Slide
+  // Mountain, Braddock Bay, Thacher, Bashakill, and Five Ponds matched under
+  // variant names. Taconic (a 13 km regional grouping) and Storm King (only the
+  // Art Center) were excluded → radius fallback.
+  'ny-jones-beach': 121117, 'ny-lido-beach-wma': 119429, 'ny-harriman': 124741,
+  'ny-hudson-highlands': 153467, 'ny-minnewaska': 192775, 'ny-sterling-forest': 153106,
+  'ny-fahnestock': 185471, 'ny-rockefeller': 134752, 'ny-nyack-beach': 128149,
+  'ny-lake-taghkanic': 204809, 'ny-moreau-lake': 96630, 'ny-grafton-lakes': 170269,
+  'ny-moose-river-plains': 167756, 'ny-higley-flow': 192648, 'ny-letchworth': 152362,
+  'ny-watkins-glen': 146133, 'ny-taughannock': 121729, 'ny-buttermilk-falls': 232900,
+  'ny-green-lakes': 130925, 'ny-fillmore-glen': 190441, 'ny-clark-reservation': 125672,
+  'ny-chenango-valley': 130836, 'ny-allegany': 61332, 'ny-niagara-falls': 186696,
+  'ny-fort-niagara': 145079, 'ny-evangola': 139691, 'ny-hamlin-beach': 202395,
+  'ny-buffalo-harbor': 139869, 'ny-golden-hill': 184353, 'ny-beaver-island': 139871,
+  'ny-connetquot': 160258, 'ny-slide-mountain': 167744, 'ny-braddock-bay-wma': 172803,
+  'ny-thacher': 179667, 'ny-basha-kill-wma': 167947, 'ny-five-ponds': 168115,
 };
 
 // Curated naturalist highlights for the flagship NJ parks — the "what makes
@@ -264,6 +282,16 @@ export const STATE_PARK_HIGHLIGHTS = {
   'me-cobscook-bay': 'Some of the largest tides in the Lower 48 flush this bay twice daily — a bald eagle stronghold with abundant wintering waterfowl and shorebirds on the mudflats.',
   'me-camden-hills': 'Mount Battie and the Camden Hills rise straight from Penobscot Bay — a fall hawk-migration ridge with sweeping views over island-studded waters.',
   'me-bigelow-preserve': "The Bigelow Range — a 36,000-acre wild preserve of alpine summits above Flagstaff Lake, with breeding Bicknell's Thrush on the heights and moose in the lowlands.",
+  // New York flagships (established, verifiable wildlife stories).
+  'ny-niagara-falls': 'One of the world’s great waterfalls — and a globally significant winter gull spectacle, where many thousands of gulls of up to ~19 species gather on the Niagara River gorge.',
+  'ny-letchworth': "The 'Grand Canyon of the East' — the Genesee River carves a 550-foot gorge where Bald Eagles nest and Turkey Vultures and hawks ride the cliff updrafts.",
+  'ny-montauk-point': "Long Island's eastern tip — a premier winter seawatch for loons, sea ducks, gannets, and alcids, with harbor and gray seals hauled out on the rocks.",
+  'ny-high-peaks': "The wild heart of the Adirondacks — New York's highest summits hold rare alpine tundra and Bicknell's Thrush amid vast spruce-fir forest roamed by moose and black bears.",
+  'ny-minnewaska': 'The Shawangunk Ridge — white quartzite cliffs and dwarf pitch-pine barrens with nesting Peregrine Falcons, a globally rare ridgetop ecosystem, and clear sky lakes.',
+  'ny-braddock-bay-wma': "One of the East's great spring hawk flights — Braddock Bay funnels tens of thousands of migrating raptors along the Lake Ontario shore each spring.",
+  'ny-bear-mountain': 'A Hudson Highlands landmark where fall hawk-watchers tally thousands of raptors over the river, amid rugged oak forest along the Appalachian Trail.',
+  'ny-allegany': "New York's largest state park (~65,000 acres) — a vast Allegheny Plateau forest of beech, maple, and hemlock that shelters black bears, bobcats, and breeding warblers.",
+  'ny-basha-kill-wma': 'The largest freshwater wetland in southeastern New York — a birding magnet for herons, bitterns, ospreys, Bald Eagles, and migrating waterfowl.',
 };
 
 // Multi-state registry. Each new state ships its own data file (same shape)
@@ -279,6 +307,7 @@ export const STATE_PARKS_BY_STATE = {
   NH: STATE_PARKS_NH,
   VT: STATE_PARKS_VT,
   ME: STATE_PARKS_ME,
+  NY: STATE_PARKS_NY,
 };
 
 // Resolve a state-park entry from a path like /state-park/nj/<id>.
