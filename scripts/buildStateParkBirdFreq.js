@@ -67,6 +67,7 @@ const COUNTY_OVERRIDE = {
   'nj-hewitt': 'US-NJ-031',          // on the NY line → Passaic, NJ
   'ri-buck-hill': 'US-RI-007',       // Burrillville, NW corner on the CT/MA line → Providence, RI
   'ri-pawcatuck-river': 'US-RI-009', // Westerly; the Pawcatuck R. is the CT border → Washington, RI
+  'ma-bash-bish-falls': 'US-MA-003', // Mount Washington, SW corner on the NY line → Berkshire, MA
 };
 
 async function countyForPark(lat, lng) {

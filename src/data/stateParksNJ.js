@@ -33,6 +33,7 @@
 import { STATE_PARKS_DE } from './stateParksDE.js';
 import { STATE_PARKS_CT } from './stateParksCT.js';
 import { STATE_PARKS_RI } from './stateParksRI.js';
+import { STATE_PARKS_MA } from './stateParksMA.js';
 
 export const STATE_PARKS_NJ = [
   { id: 'nj-hewitt',           name: 'Abram S. Hewitt State Forest',        lat: 41.18570453, lng: -74.331375,  radiusKm: 6,  category: 'state-forest' },
@@ -143,6 +144,16 @@ export const INAT_PLACE_IDS = {
   // are still dense, just queried by lat/lng circle rather than boundary).
   'ri-colt': 152757, 'ri-lincoln-woods': 194890, 'ri-nicholas-farm': 127993,
   'ri-buck-hill': 141335, 'ri-great-swamp': 215903,
+  // Massachusetts (verified 2026, STATE=MA node scripts/lookupInatPlaces.mjs).
+  // 17/62 units have an iNat polygon (MA, like RI, is patchy in iNat's PLACES db
+  // despite dense observations); the rest use the radius fallback. Hopkinton SP
+  // was excluded — its only nearby match is the adjacent *Whitehall* SP polygon.
+  'ma-greylock': 51732, 'ma-savoy-mtn': 185525, 'ma-wachusett-mtn': 129257,
+  'ma-bolton-flats-wma': 141166, 'ma-walden-pond': 130331, 'ma-callahan': 203905,
+  'ma-blue-hills': 51261, 'ma-borderland': 159853, 'ma-myles-standish-sf': 125247,
+  'ma-burrage-pond-wma': 141168, 'ma-halibut-point': 226458, 'ma-harold-parker-sf': 185502,
+  'ma-nickerson': 217371, 'ma-correllus-sf': 189349, 'ma-horseneck-beach': 217873,
+  'ma-frances-crane-wma': 141171, 'ma-mt-holyoke-range': 181127,
 };
 
 // Curated naturalist highlights for the flagship NJ parks — the "what makes
@@ -184,6 +195,15 @@ export const STATE_PARK_HIGHLIGHTS = {
   'ri-beavertail': "Rhode Island's classic seawatch — the rocky point at the tip of Conanicut Island draws migrating seabirds, gannets, and sea ducks, with harbor seals on the rocks in winter.",
   'ri-colt': 'Open meadows along a Narragansett Bay shoreline in Bristol — ospreys nest over the bay, and the fields and hedgerows draw migrant songbirds, wading birds, and wintering waterfowl.',
   'ri-charlestown-breachway': 'The Charlestown salt ponds and barrier beach are a shorebird and waterfowl magnet — terns and oystercatchers nest near the breachway, with loons and sea ducks offshore in winter.',
+  // Massachusetts flagships (established, verifiable wildlife stories).
+  'ma-greylock': "Massachusetts' highest peak (3,491 ft) — its cool summit holds a boreal spruce-fir forest with northern breeding songbirds (thrushes and warblers), and the ridge channels migrating hawks each fall.",
+  'ma-mt-tom': "A traprock ridge above the Connecticut River and one of the Northeast's great fall hawk-watches — thousands of Broad-winged Hawks and other raptors stream past each September.",
+  'ma-wachusett-mtn': "Central Massachusetts' highest summit and a noted fall hawk-watch, with stands of old-growth forest on its slopes and waves of migrant songbirds in season.",
+  'ma-blue-hills': 'The largest conservation land in Greater Boston (~7,000 acres) — its Great Blue Hill hosts a fall hawk-watch, and the varied forest, marsh, and rocky-ledge habitats support diverse breeding birds and woodland wildlife.',
+  'ma-quabbin': "A vast protected wilderness around Massachusetts' largest reservoir — the site of the state's bald eagle restoration, with nesting Common Loons, wintering waterfowl, and roaming black bears, moose, and bobcats.",
+  'ma-nickerson': "Cape Cod's largest state park — a glacial landscape of clear kettle ponds and pitch-pine woods, with ospreys overhead, breeding warblers, and wintering waterfowl on the ponds.",
+  'ma-salisbury-beach': 'Where the Merrimack River meets the sea — dunes, salt marsh, and estuary on the premier North Shore draw migrating shorebirds and terns, with wintering sea ducks, gulls, and (in irruption years) Snowy Owls.',
+  'ma-correllus-sf': 'The wild heart of Martha’s Vineyard — rare sandplain grassland and pitch-pine barrens supporting Northern Harriers, whip-poor-wills, and a globally rare community of moths and grassland wildlife.',
 };
 
 // Multi-state registry. Each new state ships its own data file (same shape)
@@ -195,6 +215,7 @@ export const STATE_PARKS_BY_STATE = {
   DE: STATE_PARKS_DE,
   CT: STATE_PARKS_CT,
   RI: STATE_PARKS_RI,
+  MA: STATE_PARKS_MA,
 };
 
 // Resolve a state-park entry from a path like /state-park/nj/<id>.

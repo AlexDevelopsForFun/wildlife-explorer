@@ -41,6 +41,12 @@ const STATE_PARK_STATES = [
     view: { center: [41.62, -71.55], zoom: 9 },
     bounds: [[41.05, -72.00], [42.10, -71.05]],
   },
+  {
+    code: 'MA',
+    name: 'Massachusetts',
+    view: { center: [42.20, -71.80], zoom: 8 },
+    bounds: [[41.10, -73.65], [42.95, -69.80]],
+  },
 ];
 import { classifyAnimalSubtype, getSubtypeDefs } from './utils/subcategories';
 import {
