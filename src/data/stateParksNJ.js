@@ -47,6 +47,12 @@ import { STATE_PARKS_SC } from './stateParksSC.js';
 import { STATE_PARKS_GA } from './stateParksGA.js';
 import { STATE_PARKS_TN } from './stateParksTN.js';
 import { STATE_PARKS_KY } from './stateParksKY.js';
+import { STATE_PARKS_OH } from './stateParksOH.js';
+import { STATE_PARKS_MI } from './stateParksMI.js';
+import { STATE_PARKS_IN } from './stateParksIN.js';
+import { STATE_PARKS_IL } from './stateParksIL.js';
+import { STATE_PARKS_WI } from './stateParksWI.js';
+import { STATE_PARKS_MN } from './stateParksMN.js';
 
 export const STATE_PARKS_NJ = [
   { id: 'nj-hewitt',           name: 'Abram S. Hewitt State Forest',        lat: 41.18570453, lng: -74.331375,  radiusKm: 6,  category: 'state-forest' },
@@ -316,6 +322,60 @@ export const INAT_PLACE_IDS = {
   'ky-john-james-audubon': 166323, 'ky-big-bone-lick': 143397, 'ky-blue-licks': 202923,
   'ky-cumberland-falls': 209669, 'ky-dale-hollow': 132139, 'ky-jenny-wiley': 228648,
   'ky-kingdom-come': 202791,
+  // Batch 3 — Midwest/Great Lakes (verified 2026). IL sparse in iNat PLACES.
+  // Rejected: OH "Delaware County", IL "Rock Cut CBC" + "Trail of Tears MO",
+  // MN St. Croix park→forest mismatch.
+  'oh-maumee-bay': 138098, 'oh-east-harbor': 160314, 'oh-kelleys-island': 160315,
+  'oh-middle-bass-island': 184797, 'oh-punderson': 159759, 'oh-nelson-kennedy-ledges': 195652,
+  'oh-west-branch': 119970, 'oh-pymatuning': 222609, 'oh-mosquito-lake': 230967,
+  'oh-alum-creek': 160665, 'oh-deer-creek': 176359, 'oh-indian-lake': 227203,
+  'oh-caesar-creek': 137545, 'oh-east-fork': 159277, 'oh-john-bryan': 167357,
+  'oh-cowan-lake': 137546, 'oh-burr-oak': 220394, 'oh-strouds-run': 123835,
+  'oh-scioto-trail': 160868, 'oh-forked-run': 227381, 'oh-salt-fork': 158152,
+  'oh-mohican': 159125, 'oh-dillon': 171172, 'oh-shawnee': 159746, 'oh-mohican-sf': 159125,
+  'mi-porcupine-mountains': 147606, 'mi-tahquamenon-falls': 158574, 'mi-fort-wilkins': 160612,
+  'mi-mclain': 168887, 'mi-craig-lake': 159054, 'mi-van-riper': 160609,
+  'mi-lake-gogebic': 158569, 'mi-muskallonge-lake': 161778, 'mi-indian-lake': 161781,
+  'mi-palms-book': 161779, 'mi-fayette': 161782, 'mi-wilderness': 159051,
+  'mi-mackinac-island': 160819, 'mi-hartwick-pines': 72802, 'mi-cheboygan': 128613,
+  'mi-leelanau': 161785, 'mi-fishermans-island': 159632, 'mi-ludington': 162377,
+  'mi-muskegon': 168888, 'mi-warren-dunes': 160596, 'mi-tawas-point': 119803,
+  'mi-port-crescent': 159061, 'mi-bay-city': 117245, 'mi-negwegon': 161788,
+  'mi-sterling': 163241, 'mi-algonac': 186235, 'mi-waterloo': 161791,
+  'mi-seven-lakes': 171708, 'mi-allegan-sf': 159072,
+  'in-indiana-dunes': 159481, 'in-pokagon': 225371, 'in-potato-creek': 158772,
+  'in-prophetstown': 173408, 'in-ouabache': 158905, 'in-summit-lake': 160770,
+  'in-turkey-run': 130761, 'in-shades': 130762, 'in-mccormicks-creek': 202674,
+  'in-fort-harrison': 120954, 'in-mounds': 81476, 'in-brown-county': 160776,
+  'in-spring-mill': 173545, 'in-clifty-falls': 219147, 'in-versailles': 117057,
+  'in-charlestown': 160781, 'in-falls-of-the-ohio': 127890, 'in-obannon-woods': 160491,
+  'in-harmonie': 66919, 'in-whitewater-memorial': 159445, 'in-yellowwood-sf': 160777,
+  'in-clark-sf': 158700, 'in-harrison-crawford-sf': 158689, 'in-morgan-monroe-sf': 160775,
+  'in-jackson-washington-sf': 160488,
+  'il-illinois-beach': 163871, 'il-volo-bog': 161681, 'il-apple-river-canyon': 214417,
+  'il-starved-rock': 129021, 'il-matthiessen': 128910, 'il-buffalo-rock': 128922,
+  'il-kankakee-river': 125740, 'il-goose-lake-prairie': 168647, 'il-sand-ridge-sf': 128629,
+  'il-jubilee-college': 141740, 'il-fox-ridge': 142928, 'il-giant-city': 170464,
+  'il-ferne-clyffe': 207880, 'il-beall-woods': 122831,
+  'wi-brule-river-sf': 115060, 'wi-flambeau-river-sf': 115172, 'wi-governor-knowles-sf': 115046,
+  'wi-copper-falls': 136170, 'wi-pattison': 122694, 'wi-amnicon-falls': 82250,
+  'wi-big-bay': 82251, 'wi-rib-mountain': 115679, 'wi-council-grounds': 115315,
+  'wi-peninsula': 115552, 'wi-newport': 115489, 'wi-whitefish-dunes': 94054,
+  'wi-potawatomi': 122693, 'wi-rock-island': 115693, 'wi-point-beach-sf': 115496,
+  'wi-high-cliff': 115182, 'wi-devils-lake': 49561, 'wi-mirror-lake': 115400,
+  'wi-governor-dodge': 115587, 'wi-blue-mound': 144934, 'wi-wildcat-mountain': 115417,
+  'wi-roche-a-cri': 82253, 'wi-buckhorn': 115070, 'wi-mill-bluff': 115392,
+  'wi-wyalusing': 115942, 'wi-perrot': 115044, 'wi-nelson-dewey': 136183,
+  'wi-horicon-marsh': 115978, 'wi-mead': 115381, 'wi-kettle-moraine': 116081,
+  'mn-gooseberry-falls': 94052, 'mn-split-rock-lighthouse': 158883, 'mn-tettegouche': 113517,
+  'mn-cascade-river': 72797, 'mn-bear-head-lake': 72796, 'mn-jay-cooke': 127581,
+  'mn-banning': 173181, 'mn-itasca': 117396, 'mn-lake-bemidji': 171515,
+  'mn-mille-lacs-kathio': 72808, 'mn-buffalo-river': 171663, 'mn-lac-qui-parle': 147837,
+  'mn-afton': 160392, 'mn-william-obrien': 117767, 'mn-wild-river': 186735,
+  'mn-interstate': 111409, 'mn-fort-snelling': 109409, 'mn-nerstrand-big-woods': 186430,
+  'mn-myre-big-island': 168926, 'mn-beaver-creek-valley': 173535, 'mn-frontenac': 185877,
+  'mn-minneopa': 169501, 'mn-beltrami-island-sf': 171664, 'mn-st-croix-sf': 171186,
+  'mn-carlos-avery-wma': 158804, 'mn-lac-qui-parle-wma': 160375,
 };
 
 // Curated naturalist highlights for the flagship NJ parks — the "what makes
@@ -444,6 +504,27 @@ export const STATE_PARK_HIGHLIGHTS = {
   'ky-cumberland-falls': 'The "Niagara of the South" — a 68-foot falls on the Cumberland River that casts a rare moonbow, set in a rugged forested gorge with breeding warblers and nesting Black Vultures.',
   'ky-john-james-audubon': 'Where John James Audubon studied and painted American birds — Ohio River woodlands that remain a migration corridor, with a museum holding original Audubon works.',
   'ky-big-bone-lick': 'The "birthplace of American paleontology," where Ice Age megafauna died at salt licks — today a live bison herd grazes beside the marshes and savanna.',
+  // Ohio flagships.
+  'oh-crane-creek': 'On the Lake Erie marshes beside Magee Marsh — the heart of the "Warbler Capital of the World," where May migration concentrates dazzling numbers of songbirds at the lakeshore.',
+  'oh-maumee-bay': 'Western Lake Erie marsh and meadow at the gateway to the world-famous Magee Marsh warbler migration — herons, bald eagles, shorebirds, and spring songbird waves.',
+  'oh-hocking-hills': 'A landscape of hemlock gorges, recess caves, and waterfalls cut into Blackhand sandstone — cool-microclimate forest with breeding warblers and nesting Black Vultures.',
+  // Michigan flagships.
+  'mi-porcupine-mountains': 'One of the largest tracts of old-growth northern hardwood in the U.S. — virgin hemlock and maple above Lake Superior, home to black bears, wolves, and breeding boreal birds.',
+  'mi-tawas-point': 'A sandy hook into Lake Huron known as the "Cape May of the Midwest" — a spring migrant trap where warblers, shorebirds, and waterbirds pile up on the point.',
+  'mi-tahquamenon-falls': 'One of the largest waterfalls east of the Mississippi, amber with cedar tannins — surrounded by vast boreal forest with moose, black bears, and northern birds.',
+  // Indiana flagships.
+  'in-indiana-dunes': 'Towering Lake Michigan dunes backed by oak savanna, bog, and marsh — one of the most biodiverse parks in the country and a key migration stopover.',
+  'in-brown-county': "Indiana's largest state park — a rolling expanse of forested hills and ridgetop vistas with abundant deer, wild turkey, and breeding woodland birds.",
+  // Illinois flagships.
+  'il-starved-rock': 'Sandstone canyons and waterfalls above the Illinois River — a winter gathering spot for Bald Eagles below the dam, with breeding warblers in the cool box canyons.',
+  'il-cache-river': 'Among the northernmost bald-cypress–tupelo swamps in North America — a Ramsar wetland of ancient trees, herons, and a rich amphibian and reptile community.',
+  // Wisconsin flagships.
+  'wi-horicon-marsh': 'The largest freshwater cattail marsh in the U.S. — a spectacle of staging Canada Geese and migrating cranes, herons, and waterfowl each spring and fall.',
+  'wi-devils-lake': "Wisconsin's most-visited park — a spring-fed lake walled by 500-foot Baraboo quartzite bluffs, with turkey vultures and breeding forest birds on the talus and clifftops.",
+  // Minnesota flagships.
+  'mn-itasca': "Minnesota's oldest state park, where the Mississippi River begins — old-growth red and white pine sheltering loons, eagles, and a famed northern-forest birdlife.",
+  'mn-blue-mounds': 'A Sioux quartzite prairie outcrop on the southwest plains — home to a state bison herd, prairie wildflowers, and grassland birds.',
+  'mn-gooseberry-falls': 'The gateway to Lake Superior\'s North Shore — tumbling falls in birch-and-spruce forest, with peregrines on the cliffs and boreal birds inland.',
 };
 
 // Multi-state registry. Each new state ships its own data file (same shape)
@@ -469,6 +550,12 @@ export const STATE_PARKS_BY_STATE = {
   GA: STATE_PARKS_GA,
   TN: STATE_PARKS_TN,
   KY: STATE_PARKS_KY,
+  OH: STATE_PARKS_OH,
+  MI: STATE_PARKS_MI,
+  IN: STATE_PARKS_IN,
+  IL: STATE_PARKS_IL,
+  WI: STATE_PARKS_WI,
+  MN: STATE_PARKS_MN,
 };
 
 // Resolve a state-park entry from a path like /state-park/nj/<id>.

@@ -125,6 +125,42 @@ const STATE_PARK_STATES = [
     view: { center: [37.60, -85.80], zoom: 6 },
     bounds: [[36.40, -89.70], [39.25, -81.85]],
   },
+  {
+    code: 'OH',
+    name: 'Ohio',
+    view: { center: [40.20, -82.80], zoom: 7 },
+    bounds: [[38.30, -84.90], [42.10, -80.40]],
+  },
+  {
+    code: 'MI',
+    name: 'Michigan',
+    view: { center: [44.80, -85.60], zoom: 6 },
+    bounds: [[41.60, -90.50], [47.60, -82.30]],
+  },
+  {
+    code: 'IN',
+    name: 'Indiana',
+    view: { center: [39.90, -86.30], zoom: 7 },
+    bounds: [[37.70, -88.20], [41.85, -84.70]],
+  },
+  {
+    code: 'IL',
+    name: 'Illinois',
+    view: { center: [40.00, -89.20], zoom: 6 },
+    bounds: [[36.90, -91.60], [42.60, -87.00]],
+  },
+  {
+    code: 'WI',
+    name: 'Wisconsin',
+    view: { center: [44.50, -89.90], zoom: 6 },
+    bounds: [[42.40, -93.00], [47.20, -86.70]],
+  },
+  {
+    code: 'MN',
+    name: 'Minnesota',
+    view: { center: [46.30, -94.30], zoom: 6 },
+    bounds: [[43.40, -97.30], [49.45, -89.40]],
+  },
 ];
 import { classifyAnimalSubtype, getSubtypeDefs } from './utils/subcategories';
 import {

@@ -50,7 +50,10 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 async function jget(url, tries = 3) {
   for (let i = 0; i < tries; i++) {
     try {
-      const r = await fetch(url, HDRS);
+      // 20s per-request timeout — a stalled/dropped eBird connection otherwise
+      // blocks a worker forever (the whole parallel build can hang). Timeout →
+      // throw → retry/backoff below.
+      const r = await fetch(url, { ...HDRS, signal: AbortSignal.timeout(20000) });
       if (r.ok) return await r.json();
       if (r.status === 429 || r.status >= 500) { await sleep(800 * (i + 1)); continue; }
       return null;
@@ -99,6 +102,7 @@ const COUNTY_OVERRIDE = {
   'ri-pawcatuck-river': 'US-RI-009', // Westerly; the Pawcatuck R. is the CT border → Washington, RI
   'ma-bash-bish-falls': 'US-MA-003', // Mount Washington, SW corner on the NY line → Berkshire, MA
   'wv-panther-sf': 'US-WV-047',      // Panther SF, far SW WV on the VA/KY line → McDowell, WV
+  'in-falls-of-the-ohio': 'US-IN-019', // Clarksville IN, across the river from Louisville → Clark, IN
 };
 
 async function countyForPark(lat, lng) {
