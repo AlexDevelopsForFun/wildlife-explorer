@@ -38,6 +38,7 @@ import { STATE_PARKS_NH } from './stateParksNH.js';
 import { STATE_PARKS_VT } from './stateParksVT.js';
 import { STATE_PARKS_ME } from './stateParksME.js';
 import { STATE_PARKS_NY } from './stateParksNY.js';
+import { STATE_PARKS_PA } from './stateParksPA.js';
 
 export const STATE_PARKS_NJ = [
   { id: 'nj-hewitt',           name: 'Abram S. Hewitt State Forest',        lat: 41.18570453, lng: -74.331375,  radiusKm: 6,  category: 'state-forest' },
@@ -205,6 +206,32 @@ export const INAT_PLACE_IDS = {
   'ny-buffalo-harbor': 139869, 'ny-golden-hill': 184353, 'ny-beaver-island': 139871,
   'ny-connetquot': 160258, 'ny-slide-mountain': 167744, 'ny-braddock-bay-wma': 172803,
   'ny-thacher': 179667, 'ny-basha-kill-wma': 167947, 'ny-five-ponds': 168115,
+  // Pennsylvania (verified 2026, STATE=PA node scripts/lookupInatPlaces.mjs).
+  // 62/67 units have an iNat polygon — PA's iNat PLACES coverage is the best of
+  // the big states. Tioga/Moshannon/Elk SF accepted at large-forest centroids.
+  // Pymatuning's only match is the OHIO side (rejected → radius covers the PA
+  // reservoir); Ole Bull, George Childs, Bald Eagle SF, Buzzard Swamp → radius.
+  'pa-presque-isle': 51826, 'pa-erie-bluffs': 93338, 'pa-maurice-goddard': 93395,
+  'pa-moraine': 211728, 'pa-mcconnells-mill': 79167, 'pa-raccoon-creek': 64240,
+  'pa-oil-creek': 70225, 'pa-cook-forest': 129938, 'pa-clear-creek': 93304,
+  'pa-kinzua-bridge': 93371, 'pa-elk-state-park': 93335, 'pa-sinnemahoning': 93491,
+  'pa-cherry-springs': 93303, 'pa-kettle-creek': 93360, 'pa-leonard-harrison': 93375,
+  'pa-colton-point': 93308, 'pa-bald-eagle': 93277, 'pa-black-moshannon': 93288,
+  'pa-parker-dam': 93768, 'pa-prince-gallitzin': 93527, 'pa-ricketts-glen': 93512,
+  'pa-worlds-end': 93315, 'pa-hills-creek': 93358, 'pa-salt-springs': 93500,
+  'pa-tuscarora': 93481, 'pa-promised-land': 93526, 'pa-tobyhanna': 93483,
+  'pa-big-pocono': 93283, 'pa-hickory-run': 93355, 'pa-lehigh-gorge': 93385,
+  'pa-beltzville': 93278, 'pa-nescopeck': 93788, 'pa-nockamixon': 93784,
+  'pa-marsh-creek': 93396, 'pa-french-creek': 76433, 'pa-ridley-creek': 93511,
+  'pa-tyler': 93479, 'pa-delaware-canal': 134478, 'pa-middle-creek-wma': 132198,
+  'pa-gifford-pinchot': 93347, 'pa-codorus': 93305, 'pa-samuel-lewis': 93498,
+  'pa-susquehannock': 93485, 'pa-shikellamy': 79710, 'pa-little-buffalo': 93388,
+  'pa-swatara': 93484, 'pa-caledonia': 93295, 'pa-pine-grove-furnace': 93777,
+  'pa-ohiopyle': 93269, 'pa-laurel-hill': 93376, 'pa-linn-run': 93387,
+  'pa-keystone': 93362, 'pa-yellow-creek': 93314, 'pa-blue-knob': 93290,
+  'pa-trough-creek': 93482, 'pa-canoe-creek': 93299, 'pa-michaux-sf': 152164,
+  'pa-loyalsock-sf': 152197, 'pa-bear-meadows-na': 172338, 'pa-tioga-sf': 152187,
+  'pa-moshannon-sf': 152198, 'pa-elk-sf': 152188,
 };
 
 // Curated naturalist highlights for the flagship NJ parks — the "what makes
@@ -292,6 +319,16 @@ export const STATE_PARK_HIGHLIGHTS = {
   'ny-bear-mountain': 'A Hudson Highlands landmark where fall hawk-watchers tally thousands of raptors over the river, amid rugged oak forest along the Appalachian Trail.',
   'ny-allegany': "New York's largest state park (~65,000 acres) — a vast Allegheny Plateau forest of beech, maple, and hemlock that shelters black bears, bobcats, and breeding warblers.",
   'ny-basha-kill-wma': 'The largest freshwater wetland in southeastern New York — a birding magnet for herons, bitterns, ospreys, Bald Eagles, and migrating waterfowl.',
+  // Pennsylvania flagships (established, verifiable wildlife stories).
+  'pa-presque-isle': 'A sandy peninsula arcing into Lake Erie and one of the Northeast’s premier migration traps — over 320 bird species recorded, with waterfowl, shorebirds, and waves of warblers funneling through Gull Point.',
+  'pa-middle-creek-wma': 'Famous for its late-winter spectacle — tens of thousands of Snow Geese and Tundra Swans stage on the lake each February–March, with nesting Bald Eagles and grassland birds.',
+  'pa-ricketts-glen': 'A National Natural Landmark of 22 named waterfalls tumbling through a gorge of old-growth hemlock, pine, and oak — habitat for breeding warblers, thrushes, and salamanders.',
+  'pa-ohiopyle': 'The Youghiogheny River gorge cuts through 20,000+ acres of rich Appalachian forest — spring wildflowers, breeding warblers, and one of the East’s great whitewater canyons.',
+  'pa-cook-forest': 'The "Forest Cathedral" — a National Natural Landmark stand of old-growth white pine and hemlock, some over 300 years old, sheltering breeding forest birds and black bears.',
+  'pa-sinnemahoning': "In the heart of Pennsylvania's elk range — elk and white-tailed deer browse the valley, Bald Eagles nest, and the wetlands draw herons and waterfowl.",
+  'pa-pymatuning': "Pennsylvania's largest lake — where Bald Eagles first returned to nest in the state, now a stronghold for eagles, ospreys, and tens of thousands of migrating waterfowl.",
+  'pa-leonard-harrison': 'The east rim of the Pine Creek Gorge — the "Grand Canyon of Pennsylvania," ~800 feet deep, where Bald Eagles, ospreys, and ravens ride the updrafts.',
+  'pa-moraine': 'Built around Lake Arthur, a noted osprey-reintroduction success — now prime habitat for nesting ospreys, migrating waterfowl, and grassland birds on the reclaimed glacial landscape.',
 };
 
 // Multi-state registry. Each new state ships its own data file (same shape)
@@ -308,6 +345,7 @@ export const STATE_PARKS_BY_STATE = {
   VT: STATE_PARKS_VT,
   ME: STATE_PARKS_ME,
   NY: STATE_PARKS_NY,
+  PA: STATE_PARKS_PA,
 };
 
 // Resolve a state-park entry from a path like /state-park/nj/<id>.

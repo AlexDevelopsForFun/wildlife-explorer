@@ -71,6 +71,12 @@ const STATE_PARK_STATES = [
     view: { center: [43.00, -75.50], zoom: 6 },
     bounds: [[40.40, -79.90], [45.10, -71.80]],
   },
+  {
+    code: 'PA',
+    name: 'Pennsylvania',
+    view: { center: [41.00, -77.60], zoom: 7 },
+    bounds: [[39.60, -80.65], [42.40, -74.60]],
+  },
 ];
 import { classifyAnimalSubtype, getSubtypeDefs } from './utils/subcategories';
 import {
