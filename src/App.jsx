@@ -59,6 +59,12 @@ const STATE_PARK_STATES = [
     view: { center: [44.00, -72.70], zoom: 7 },
     bounds: [[42.60, -73.55], [45.10, -71.40]],
   },
+  {
+    code: 'ME',
+    name: 'Maine',
+    view: { center: [45.30, -69.20], zoom: 7 },
+    bounds: [[42.90, -71.20], [47.60, -66.80]],
+  },
 ];
 import { classifyAnimalSubtype, getSubtypeDefs } from './utils/subcategories';
 import {

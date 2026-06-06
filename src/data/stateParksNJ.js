@@ -36,6 +36,7 @@ import { STATE_PARKS_RI } from './stateParksRI.js';
 import { STATE_PARKS_MA } from './stateParksMA.js';
 import { STATE_PARKS_NH } from './stateParksNH.js';
 import { STATE_PARKS_VT } from './stateParksVT.js';
+import { STATE_PARKS_ME } from './stateParksME.js';
 
 export const STATE_PARKS_NJ = [
   { id: 'nj-hewitt',           name: 'Abram S. Hewitt State Forest',        lat: 41.18570453, lng: -74.331375,  radiusKm: 6,  category: 'state-forest' },
@@ -181,6 +182,11 @@ export const INAT_PLACE_IDS = {
   'vt-lake-shaftsbury': 122989, 'vt-lake-st-catherine': 122978, 'vt-bomoseen': 122985,
   'vt-branbury': 122981, 'vt-silver-lake': 123008, 'vt-quechee': 122974,
   'vt-wilgus': 122994, 'vt-mount-mansfield-sf': 123037, 'vt-victory-sf': 8672,
+  // Maine (verified 2026, STATE=ME node scripts/lookupInatPlaces.mjs + variant
+  // pass). 6/42 units have an iNat polygon (ME is sparse in iNat's PLACES db);
+  // rest use radius. Scarborough Marsh matched the short "Scarborough Marsh".
+  'me-baxter': 70218, 'me-birch-point': 216646, 'me-camden-hills': 120558,
+  'me-cutler-coast': 121996, 'me-roque-bluffs': 160967, 'me-scarborough-marsh': 67518,
 };
 
 // Curated naturalist highlights for the flagship NJ parks — the "what makes
@@ -249,6 +255,15 @@ export const STATE_PARK_HIGHLIGHTS = {
   'vt-maidstone': 'One of Vermont’s most remote lakes, ringed by spruce-fir forest in the Northeast Kingdom — nesting Common Loons, with a real chance at moose and boreal birds.',
   'vt-lake-carmi': 'Home to one of the largest peat bogs in the Northeast — a State Natural Area where breeding loons, bitterns, and bog specialties thrive around Vermont’s fourth-largest lake.',
   'vt-green-river-reservoir': 'A wild, motor-restricted reservoir with one of Vermont’s highest concentrations of nesting Common Loons, ringed by undeveloped forest.',
+  // Maine flagships (established, verifiable wildlife stories).
+  'me-baxter': "Maine's wilderness crown — Mount Katahdin, the Appalachian Trail's northern terminus, rises above 200,000+ acres of forest, bog, and pond that shelter moose, black bears, and breeding boreal birds.",
+  'me-quoddy-head': 'The easternmost point in the United States — bold cliffs and cold, churning waters host nesting seabirds, passing whales, and a rare coastal peat bog.',
+  'me-scarborough-marsh': "Maine's largest salt marsh — over 3,000 acres of tidal creeks and grasses teeming with herons, egrets, glossy ibis, saltmarsh sparrows, and migrating shorebirds.",
+  'me-cutler-coast': 'The Bold Coast — dramatic headland cliffs over the Bay of Fundy, with nesting seabirds, migrating raptors, and whales offshore in summer.',
+  'me-bradbury-mountain': "A modest summit with an outsized reputation — its spring hawk-watch is one of the Northeast's best inland counts, tallying thousands of migrating raptors each April.",
+  'me-cobscook-bay': 'Some of the largest tides in the Lower 48 flush this bay twice daily — a bald eagle stronghold with abundant wintering waterfowl and shorebirds on the mudflats.',
+  'me-camden-hills': 'Mount Battie and the Camden Hills rise straight from Penobscot Bay — a fall hawk-migration ridge with sweeping views over island-studded waters.',
+  'me-bigelow-preserve': "The Bigelow Range — a 36,000-acre wild preserve of alpine summits above Flagstaff Lake, with breeding Bicknell's Thrush on the heights and moose in the lowlands.",
 };
 
 // Multi-state registry. Each new state ships its own data file (same shape)
@@ -263,6 +278,7 @@ export const STATE_PARKS_BY_STATE = {
   MA: STATE_PARKS_MA,
   NH: STATE_PARKS_NH,
   VT: STATE_PARKS_VT,
+  ME: STATE_PARKS_ME,
 };
 
 // Resolve a state-park entry from a path like /state-park/nj/<id>.
