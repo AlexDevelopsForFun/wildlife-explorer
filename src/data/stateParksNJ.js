@@ -42,6 +42,11 @@ import { STATE_PARKS_PA } from './stateParksPA.js';
 import { STATE_PARKS_MD } from './stateParksMD.js';
 import { STATE_PARKS_VA } from './stateParksVA.js';
 import { STATE_PARKS_WV } from './stateParksWV.js';
+import { STATE_PARKS_NC } from './stateParksNC.js';
+import { STATE_PARKS_SC } from './stateParksSC.js';
+import { STATE_PARKS_GA } from './stateParksGA.js';
+import { STATE_PARKS_TN } from './stateParksTN.js';
+import { STATE_PARKS_KY } from './stateParksKY.js';
 
 export const STATE_PARKS_NJ = [
   { id: 'nj-hewitt',           name: 'Abram S. Hewitt State Forest',        lat: 41.18570453, lng: -74.331375,  radiusKm: 6,  category: 'state-forest' },
@@ -259,6 +264,58 @@ export const INAT_PLACE_IDS = {
   'wv-babcock': 159825, 'wv-bluestone': 95114, 'wv-chief-logan': 160349,
   'wv-panther-sf': 168081, 'wv-cabwaylingo-sf': 109869, 'wv-kanawha-sf': 109795,
   'wv-north-bend': 159831,
+  // Batch 2 — NC/SC/GA/TN/KY (verified 2026). NC 38/38; KY sparse (resort-park
+  // naming) → mostly radius. Rejected: SC Lake Warren (14km), KY "Ballard County".
+  'nc-jockeys-ridge': 147527, 'nc-fort-macon': 163030, 'nc-fort-fisher': 143834,
+  'nc-carolina-beach': 121672, 'nc-hammocks-beach': 163035, 'nc-goose-creek': 164940,
+  'nc-pettigrew': 164960, 'nc-merchants-millpond': 164797, 'nc-dismal-swamp': 150847,
+  'nc-lake-waccamaw': 165006, 'nc-lumber-river': 165008, 'nc-jones-lake': 164997,
+  'nc-singletary-lake': 165075, 'nc-bladen-lakes-sf': 111547, 'nc-carvers-creek': 164993,
+  'nc-raven-rock': 165042, 'nc-eno-river': 153197, 'nc-umstead': 124988,
+  'nc-haw-river': 164996, 'nc-medoc-mountain': 163036, 'nc-occoneechee-mtn': 148937,
+  'nc-mayo-river': 164796, 'nc-lake-norman': 129396, 'nc-crowders-mountain': 181941,
+  'nc-hanging-rock': 164995, 'nc-pilot-mountain': 81860, 'nc-stone-mountain': 165077,
+  'nc-new-river': 160091, 'nc-mount-jefferson': 143075, 'nc-elk-knob': 143074,
+  'nc-grandfather-mountain': 113319, 'nc-mount-mitchell': 111546, 'nc-lake-james': 165000,
+  'nc-south-mountains': 129435, 'nc-chimney-rock': 143930, 'nc-gorges': 143926,
+  'nc-dupont-sf': 180382, 'nc-pisgah-view': 189437,
+  'sc-huntington-beach': 109417, 'sc-hunting-island': 225098, 'sc-edisto-beach': 175847,
+  'sc-myrtle-beach': 175824, 'sc-colleton': 175983, 'sc-givhans-ferry': 175877,
+  'sc-old-santee-canal': 153087, 'sc-santee': 147168, 'sc-poinsett': 185244,
+  'sc-lee': 175898, 'sc-sesquicentennial': 121719, 'sc-aiken': 185193,
+  'sc-cheraw': 147171, 'sc-little-pee-dee': 147172, 'sc-lynches-river': 159764,
+  'sc-harbison-sf': 185416, 'sc-manchester-sf': 165412, 'sc-sand-hills-sf': 165406,
+  'sc-kings-mountain': 147163, 'sc-andrew-jackson': 185167, 'sc-landsford-canal': 175798,
+  'sc-croft': 185242, 'sc-paris-mountain': 147199, 'sc-caesars-head': 175828,
+  'sc-jones-gap': 175846, 'sc-keowee-toxaway': 175897, 'sc-devils-fork': 109506,
+  'sc-oconee': 129746, 'sc-lake-hartwell': 147200, 'sc-calhoun-falls': 147183,
+  'sc-baker-creek': 147184, 'sc-hickory-knob': 147160,
+  'ga-cloudland-canyon': 157541, 'ga-fort-mountain': 194727, 'ga-amicalola-falls': 194083,
+  'ga-vogel': 194504, 'ga-unicoi': 194231, 'ga-black-rock-mountain': 194058,
+  'ga-tallulah-gorge': 194059, 'ga-moccasin-creek': 194798, 'ga-tugaloo': 189430,
+  'ga-victoria-bryant': 194505, 'ga-red-top-mountain': 189355, 'ga-sweetwater-creek': 194057,
+  'ga-panola-mountain': 189354, 'ga-arabia-mountain': 147736, 'ga-fort-yargo': 189356,
+  'ga-hard-labor-creek': 189388, 'ga-don-carter': 194913, 'ga-chattahoochee-bend': 189386,
+  'ga-high-falls': 194151, 'ga-indian-springs': 194180, 'ga-watson-mill': 194502,
+  'ga-mistletoe': 189431, 'ga-providence-canyon': 194796, 'ga-magnolia-springs': 194200,
+  'ga-george-l-smith': 194124, 'ga-little-ocmulgee': 194199, 'ga-general-coffee': 194122,
+  'ga-reed-bingham': 194201, 'ga-kolomoki-mounds': 194178, 'ga-seminole': 194736,
+  'ga-dixon-memorial-sf': 181202, 'ga-skidaway-island': 194233, 'ga-crooked-river': 194121,
+  'ga-stephen-foster': 201572, 'ga-altamaha-wma': 187775,
+  'tn-reelfoot-lake': 129911, 'tn-meeman-shelby': 129897, 'tn-fort-pillow': 129925,
+  'tn-chickasaw': 129876, 'tn-big-hill-pond': 129871, 'tn-natchez-trace': 129900,
+  'tn-pickwick-landing': 129906, 'tn-paris-landing': 129904, 'tn-radnor-lake': 112397,
+  'tn-long-hunter': 129896, 'tn-cedars-of-lebanon': 129875, 'tn-montgomery-bell': 129898,
+  'tn-harpeth-river': 129889, 'tn-bledsoe-creek': 129872, 'tn-tims-ford': 129921,
+  'tn-david-crockett': 129882, 'tn-natchez-trace-sf': 228327, 'tn-fall-creek-falls': 129886,
+  'tn-cumberland-mountain': 129879, 'tn-frozen-head': 129888, 'tn-cummins-falls': 129880,
+  'tn-burgess-falls': 129874, 'tn-pickett': 120096, 'tn-norris-dam': 129902,
+  'tn-big-ridge': 129923, 'tn-roan-mountain': 129461, 'tn-warriors-path': 129922,
+  'tn-panther-creek': 129924, 'tn-harrison-bay': 81518, 'tn-booker-t-washington': 129873,
+  'tn-red-clay': 129910, 'tn-south-cumberland': 129917,
+  'ky-john-james-audubon': 166323, 'ky-big-bone-lick': 143397, 'ky-blue-licks': 202923,
+  'ky-cumberland-falls': 209669, 'ky-dale-hollow': 132139, 'ky-jenny-wiley': 228648,
+  'ky-kingdom-come': 202791,
 };
 
 // Curated naturalist highlights for the flagship NJ parks — the "what makes
@@ -370,6 +427,23 @@ export const STATE_PARK_HIGHLIGHTS = {
   'wv-canaan-valley': 'The highest large valley east of the Mississippi — a boreal wetland of bogs and spruce that feels like Canada, with breeding northern birds, beavers, and black bears.',
   'wv-blackwater-falls': 'The amber Blackwater River plunges through a rugged hemlock-and-rhododendron gorge in the Allegheny highlands — cool-forest songbirds and a famed highland landscape.',
   'wv-cranberry-wma': 'Gateway to the Cranberry Glades — a boreal bog relict of sphagnum, carnivorous plants, and northern birds high in the Allegheny Mountains.',
+  // North Carolina flagships.
+  'nc-mount-mitchell': 'The highest peak east of the Mississippi (6,684 ft) — a sky-island of Fraser fir and red spruce with breeding Northern Saw-whet Owls, Red Crossbills, and other boreal birds at their southern limit.',
+  'nc-jockeys-ridge': 'The tallest active sand dunes on the Atlantic coast — a shifting Outer Banks landscape where fall hawks and migrants pass over maritime thicket and sound-side marsh.',
+  'nc-merchants-millpond': "Where the coastal plain meets the swamp — a blackwater millpond of bald cypress and tupelo draped in Spanish moss, full of wading birds, turtles, and the occasional bear.",
+  // South Carolina flagships.
+  'sc-huntington-beach': "Widely rated South Carolina's best birding — a barrier-island park of beach, salt marsh, and freshwater lagoon teeming with wading birds, alligators, painted buntings, and wintering waterfowl.",
+  'sc-caesars-head': 'A Blue Ridge escarpment overlook and a major fall hawk-watch, where thousands of Broad-winged Hawks kettle past the cliffs above the Jocassee Gorges.',
+  // Georgia flagships.
+  'ga-stephen-foster': 'The gateway to the Okefenokee Swamp — a vast blackwater wilderness of cypress prairies and gator holes, home to sandhill cranes, wood storks, and wading birds.',
+  'ga-providence-canyon': "Georgia's \"Little Grand Canyon\" — vivid eroded gullies and rare plumleaf azalea, with woodland birds along the rim and floor.",
+  // Tennessee flagships.
+  'tn-reelfoot-lake': 'A cypress-studded lake born of the 1811–12 earthquakes — one of the inland South’s premier spots for wintering Bald Eagles, herons, and huge concentrations of waterfowl.',
+  'tn-roan-mountain': "Famed for its grassy balds and Catawba rhododendron, the Roan highlands hold spruce-fir forest and breeding northern songbirds along the Appalachian crest.",
+  // Kentucky flagships.
+  'ky-cumberland-falls': 'The "Niagara of the South" — a 68-foot falls on the Cumberland River that casts a rare moonbow, set in a rugged forested gorge with breeding warblers and nesting Black Vultures.',
+  'ky-john-james-audubon': 'Where John James Audubon studied and painted American birds — Ohio River woodlands that remain a migration corridor, with a museum holding original Audubon works.',
+  'ky-big-bone-lick': 'The "birthplace of American paleontology," where Ice Age megafauna died at salt licks — today a live bison herd grazes beside the marshes and savanna.',
 };
 
 // Multi-state registry. Each new state ships its own data file (same shape)
@@ -390,6 +464,11 @@ export const STATE_PARKS_BY_STATE = {
   MD: STATE_PARKS_MD,
   VA: STATE_PARKS_VA,
   WV: STATE_PARKS_WV,
+  NC: STATE_PARKS_NC,
+  SC: STATE_PARKS_SC,
+  GA: STATE_PARKS_GA,
+  TN: STATE_PARKS_TN,
+  KY: STATE_PARKS_KY,
 };
 
 // Resolve a state-park entry from a path like /state-park/nj/<id>.

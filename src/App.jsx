@@ -95,6 +95,36 @@ const STATE_PARK_STATES = [
     view: { center: [38.80, -80.50], zoom: 7 },
     bounds: [[37.10, -82.80], [40.70, -77.60]],
   },
+  {
+    code: 'NC',
+    name: 'North Carolina',
+    view: { center: [35.50, -79.50], zoom: 6 },
+    bounds: [[33.70, -84.40], [36.70, -75.30]],
+  },
+  {
+    code: 'SC',
+    name: 'South Carolina',
+    view: { center: [33.90, -80.90], zoom: 7 },
+    bounds: [[31.95, -83.45], [35.30, -78.40]],
+  },
+  {
+    code: 'GA',
+    name: 'Georgia',
+    view: { center: [32.90, -83.30], zoom: 6 },
+    bounds: [[30.30, -85.70], [35.10, -80.80]],
+  },
+  {
+    code: 'TN',
+    name: 'Tennessee',
+    view: { center: [35.80, -86.40], zoom: 6 },
+    bounds: [[34.90, -90.40], [36.75, -81.55]],
+  },
+  {
+    code: 'KY',
+    name: 'Kentucky',
+    view: { center: [37.60, -85.80], zoom: 6 },
+    bounds: [[36.40, -89.70], [39.25, -81.85]],
+  },
 ];
 import { classifyAnimalSubtype, getSubtypeDefs } from './utils/subcategories';
 import {
