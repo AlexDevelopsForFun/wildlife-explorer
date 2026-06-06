@@ -35,6 +35,7 @@ import { STATE_PARKS_CT } from './stateParksCT.js';
 import { STATE_PARKS_RI } from './stateParksRI.js';
 import { STATE_PARKS_MA } from './stateParksMA.js';
 import { STATE_PARKS_NH } from './stateParksNH.js';
+import { STATE_PARKS_VT } from './stateParksVT.js';
 
 export const STATE_PARKS_NJ = [
   { id: 'nj-hewitt',           name: 'Abram S. Hewitt State Forest',        lat: 41.18570453, lng: -74.331375,  radiusKm: 6,  category: 'state-forest' },
@@ -162,6 +163,24 @@ export const INAT_PLACE_IDS = {
   'nh-bear-brook': 231917, 'nh-pawtuckaway': 232249, 'nh-white-lake': 6758,
   'nh-ahern': 229326, 'nh-odiorne-point': 120922, 'nh-mount-sunapee': 213353,
   'nh-cardigan': 141036,
+  // Vermont (verified 2026, STATE=VT node scripts/lookupInatPlaces.mjs). VT is
+  // richly covered in iNat's PLACES db — 39/52 units have a polygon. Mt Mansfield
+  // SF accepted at its centroid (large multi-part forest); Victory SF matched
+  // "Victory Bog Basin". The 13 misses (incl. Smugglers' Notch, Willoughby SF,
+  // Dead Creek WMA) use the radius fallback.
+  'vt-mount-philo': 122971, 'vt-button-bay': 122964, 'vt-kingsland-bay': 122970,
+  'vt-dar': 123005, 'vt-sand-bar': 122996, 'vt-niquette-bay': 123001,
+  'vt-grand-isle': 123012, 'vt-north-hero': 122967, 'vt-knight-point': 123003,
+  'vt-burton-island': 122975, 'vt-alburg-dunes': 81705, 'vt-camels-hump': 148206,
+  'vt-ascutney': 194334, 'vt-gifford-woods': 122976, 'vt-hazens-notch': 122969,
+  'vt-elmore': 122968, 'vt-green-river-reservoir': 95545, 'vt-mollys-falls-pond': 122958,
+  'vt-groton-sf': 123036, 'vt-maidstone': 123042, 'vt-brighton': 122983,
+  'vt-crystal-lake': 122980, 'vt-lake-carmi': 122963, 'vt-sentinel-rock': 122960,
+  'vt-jamaica': 193217, 'vt-townshend': 123041, 'vt-molly-stark': 123035,
+  'vt-woodford': 123010, 'vt-fort-dummer': 123013, 'vt-emerald-lake': 122977,
+  'vt-lake-shaftsbury': 122989, 'vt-lake-st-catherine': 122978, 'vt-bomoseen': 122985,
+  'vt-branbury': 122981, 'vt-silver-lake': 123008, 'vt-quechee': 122974,
+  'vt-wilgus': 122994, 'vt-mount-mansfield-sf': 123037, 'vt-victory-sf': 8672,
 };
 
 // Curated naturalist highlights for the flagship NJ parks — the "what makes
@@ -221,6 +240,15 @@ export const STATE_PARK_HIGHLIGHTS = {
   'nh-odiorne-point': "New Hampshire's largest undeveloped stretch of seacoast — rocky shore, salt marsh, and thickets make it the state's premier coastal birding site, with migrant songbirds, seabirds, and wintering sea ducks.",
   'nh-umbagog-lake': 'A vast wild lake on the Maine border — nesting Common Loons and bald eagles, with moose and boreal birds in the surrounding spruce-fir wetlands.',
   'nh-lake-francis': 'In the remote Great North Woods near the Canadian border — the Connecticut Lakes country is prime habitat for moose, Canada Jays, Spruce Grouse, and Boreal Chickadees in the spruce-fir forest.',
+  // Vermont flagships (established, verifiable wildlife stories).
+  'vt-dead-creek': "Vermont's premier waterfowl area — each fall thousands of Snow Geese stage on the Dead Creek impoundments in the Champlain Valley, alongside ducks, raptors, and grassland birds.",
+  'vt-mount-philo': "Vermont's oldest state park — its cliff-top perch over the Champlain Valley is a classic fall hawk-watch as Broad-winged Hawks and other raptors ride the ridge.",
+  'vt-mount-mansfield-sf': "Vermont's highest peak (4,393 ft), capped by a fragile ribbon of arctic-alpine tundra — Bicknell's Thrush breeds in the summit krummholz, a globally rare songbird.",
+  'vt-camels-hump': "Vermont's most iconic undeveloped peak — its tiny alpine summit shelters rare arctic plants and breeding Bicknell's Thrush, with Peregrine Falcons on the cliffs below.",
+  'vt-willoughby-sf': 'The cliffs of Mount Pisgah and Mount Hor plunge into glacial Lake Willoughby — a fjord-like Northeast Kingdom gem with nesting Peregrine Falcons and rare arctic-alpine plants on the ledges.',
+  'vt-maidstone': 'One of Vermont’s most remote lakes, ringed by spruce-fir forest in the Northeast Kingdom — nesting Common Loons, with a real chance at moose and boreal birds.',
+  'vt-lake-carmi': 'Home to one of the largest peat bogs in the Northeast — a State Natural Area where breeding loons, bitterns, and bog specialties thrive around Vermont’s fourth-largest lake.',
+  'vt-green-river-reservoir': 'A wild, motor-restricted reservoir with one of Vermont’s highest concentrations of nesting Common Loons, ringed by undeveloped forest.',
 };
 
 // Multi-state registry. Each new state ships its own data file (same shape)
@@ -234,6 +262,7 @@ export const STATE_PARKS_BY_STATE = {
   RI: STATE_PARKS_RI,
   MA: STATE_PARKS_MA,
   NH: STATE_PARKS_NH,
+  VT: STATE_PARKS_VT,
 };
 
 // Resolve a state-park entry from a path like /state-park/nj/<id>.

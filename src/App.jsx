@@ -53,6 +53,12 @@ const STATE_PARK_STATES = [
     view: { center: [43.70, -71.55], zoom: 7 },
     bounds: [[42.50, -72.70], [45.40, -70.45]],
   },
+  {
+    code: 'VT',
+    name: 'Vermont',
+    view: { center: [44.00, -72.70], zoom: 7 },
+    bounds: [[42.60, -73.55], [45.10, -71.40]],
+  },
 ];
 import { classifyAnimalSubtype, getSubtypeDefs } from './utils/subcategories';
 import {

@@ -58,7 +58,11 @@ const haversine = (a, b, c, d) => {
 const SAMPLE_DAYS = [1, 8, 15, 22];
 const SEASON_MONTHS = { spring: [3,4,5], summer: [6,7,8], fall: [9,10,11], winter: [12,1,2] };
 const MIN_CHECKLISTS_PER_DATE = 5;
-const MIN_VALID_DATES = 20;
+// 15 valid sample-dates (of 48) still yields a usable peak-season frequency.
+// Lowering from 20 → 15 brings sparse rural counties (e.g. VT's Grand Isle &
+// Essex, far-north Maine) up to county-grade rather than the radius fallback;
+// counties already ≥20 are unaffected, so this only ever adds coverage.
+const MIN_VALID_DATES = 15;
 const YEAR = new Date().getFullYear() - 1;
 
 // Border parks whose nearest hotspot sits in an adjacent state — pin to the
