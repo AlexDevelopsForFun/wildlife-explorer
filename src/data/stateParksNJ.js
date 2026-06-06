@@ -34,6 +34,7 @@ import { STATE_PARKS_DE } from './stateParksDE.js';
 import { STATE_PARKS_CT } from './stateParksCT.js';
 import { STATE_PARKS_RI } from './stateParksRI.js';
 import { STATE_PARKS_MA } from './stateParksMA.js';
+import { STATE_PARKS_NH } from './stateParksNH.js';
 
 export const STATE_PARKS_NJ = [
   { id: 'nj-hewitt',           name: 'Abram S. Hewitt State Forest',        lat: 41.18570453, lng: -74.331375,  radiusKm: 6,  category: 'state-forest' },
@@ -154,6 +155,13 @@ export const INAT_PLACE_IDS = {
   'ma-burrage-pond-wma': 141168, 'ma-halibut-point': 226458, 'ma-harold-parker-sf': 185502,
   'ma-nickerson': 217371, 'ma-correllus-sf': 189349, 'ma-horseneck-beach': 217873,
   'ma-frances-crane-wma': 141171, 'ma-mt-holyoke-range': 181127,
+  // New Hampshire (verified 2026, STATE=NH node scripts/lookupInatPlaces.mjs +
+  // variant-name pass). 7/45 units have an iNat polygon (NH is sparse in iNat's
+  // PLACES db); rest use radius. Odiorne/Sunapee/Cardigan matched under shorter
+  // names; Umbagog's only match is the federal NWR (excluded, kept state-only).
+  'nh-bear-brook': 231917, 'nh-pawtuckaway': 232249, 'nh-white-lake': 6758,
+  'nh-ahern': 229326, 'nh-odiorne-point': 120922, 'nh-mount-sunapee': 213353,
+  'nh-cardigan': 141036,
 };
 
 // Curated naturalist highlights for the flagship NJ parks — the "what makes
@@ -204,6 +212,15 @@ export const STATE_PARK_HIGHLIGHTS = {
   'ma-nickerson': "Cape Cod's largest state park — a glacial landscape of clear kettle ponds and pitch-pine woods, with ospreys overhead, breeding warblers, and wintering waterfowl on the ponds.",
   'ma-salisbury-beach': 'Where the Merrimack River meets the sea — dunes, salt marsh, and estuary on the premier North Shore draw migrating shorebirds and terns, with wintering sea ducks, gulls, and (in irruption years) Snowy Owls.',
   'ma-correllus-sf': 'The wild heart of Martha’s Vineyard — rare sandplain grassland and pitch-pine barrens supporting Northern Harriers, whip-poor-wills, and a globally rare community of moths and grassland wildlife.',
+  // New Hampshire flagships (established, verifiable wildlife stories).
+  'nh-franconia-notch': 'A dramatic glacial pass between the Franconia and Kinsman ranges — peregrine falcons nest on Cannon Cliff, and the surrounding boreal forest holds Canada Jays, crossbills, and other northern specialties.',
+  'nh-mount-washington': "The Northeast's highest peak (6,288 ft), capped by rare alpine tundra — home to nesting American Pipits, the endemic White Mountain fritillary butterfly, and some of the world's most extreme weather.",
+  'nh-monadnock': "One of the world's most-climbed mountains — its bare rocky summit draws migrating hawks in fall, while the wooded slopes hold breeding warblers and thrushes.",
+  'nh-miller': 'Pack Monadnock hosts New Hampshire’s premier fall hawk-watch — thousands of Broad-winged Hawks and other raptors stream past the summit each September.',
+  'nh-pawtuckaway': "A marsh, ledges, and a beaver-flooded basin make this one of southern New Hampshire's richest wildlife spots — nesting Great Blue Herons and ospreys, abundant turtles and amphibians, and a famous boulder field.",
+  'nh-odiorne-point': "New Hampshire's largest undeveloped stretch of seacoast — rocky shore, salt marsh, and thickets make it the state's premier coastal birding site, with migrant songbirds, seabirds, and wintering sea ducks.",
+  'nh-umbagog-lake': 'A vast wild lake on the Maine border — nesting Common Loons and bald eagles, with moose and boreal birds in the surrounding spruce-fir wetlands.',
+  'nh-lake-francis': 'In the remote Great North Woods near the Canadian border — the Connecticut Lakes country is prime habitat for moose, Canada Jays, Spruce Grouse, and Boreal Chickadees in the spruce-fir forest.',
 };
 
 // Multi-state registry. Each new state ships its own data file (same shape)
@@ -216,6 +233,7 @@ export const STATE_PARKS_BY_STATE = {
   CT: STATE_PARKS_CT,
   RI: STATE_PARKS_RI,
   MA: STATE_PARKS_MA,
+  NH: STATE_PARKS_NH,
 };
 
 // Resolve a state-park entry from a path like /state-park/nj/<id>.

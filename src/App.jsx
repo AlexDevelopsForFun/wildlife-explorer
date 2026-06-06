@@ -47,6 +47,12 @@ const STATE_PARK_STATES = [
     view: { center: [42.20, -71.80], zoom: 8 },
     bounds: [[41.10, -73.65], [42.95, -69.80]],
   },
+  {
+    code: 'NH',
+    name: 'New Hampshire',
+    view: { center: [43.70, -71.55], zoom: 7 },
+    bounds: [[42.50, -72.70], [45.40, -70.45]],
+  },
 ];
 import { classifyAnimalSubtype, getSubtypeDefs } from './utils/subcategories';
 import {
