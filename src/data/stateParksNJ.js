@@ -53,6 +53,11 @@ import { STATE_PARKS_IN } from './stateParksIN.js';
 import { STATE_PARKS_IL } from './stateParksIL.js';
 import { STATE_PARKS_WI } from './stateParksWI.js';
 import { STATE_PARKS_MN } from './stateParksMN.js';
+import { STATE_PARKS_FL } from './stateParksFL.js';
+import { STATE_PARKS_AL } from './stateParksAL.js';
+import { STATE_PARKS_MS } from './stateParksMS.js';
+import { STATE_PARKS_LA } from './stateParksLA.js';
+import { STATE_PARKS_AR } from './stateParksAR.js';
 
 export const STATE_PARKS_NJ = [
   { id: 'nj-hewitt',           name: 'Abram S. Hewitt State Forest',        lat: 41.18570453, lng: -74.331375,  radiusKm: 6,  category: 'state-forest' },
@@ -376,6 +381,34 @@ export const INAT_PLACE_IDS = {
   'mn-myre-big-island': 168926, 'mn-beaver-creek-valley': 173535, 'mn-frontenac': 185877,
   'mn-minneopa': 169501, 'mn-beltrami-island-sf': 171664, 'mn-st-croix-sf': 171186,
   'mn-carlos-avery-wma': 158804, 'mn-lac-qui-parle-wma': 160375,
+  // Batch 4 — Gulf South (verified 2026). FL rich (47/52); AL/MS/LA/AR sparse in
+  // iNat PLACES → mostly radius (county-grade birds still cover them). Rejected:
+  // FL "[rectangle]" boxes, MS counties, AR federal Buffalo National River.
+  'fl-blue-spring': 124138, 'fl-silver-springs': 150311, 'fl-rainbow-springs': 150527,
+  'fl-ichetucknee-springs': 149787, 'fl-manatee-springs': 150087, 'fl-homosassa-springs': 151044,
+  'fl-wekiwa-springs': 150967, 'fl-crystal-river': 185072, 'fl-myakka-river': 143685,
+  'fl-oscar-scherer': 152837, 'fl-collier-seminole': 188893, 'fl-lovers-key': 184713,
+  'fl-delnor-wiggins': 117762, 'fl-highlands-hammock': 119787, 'fl-lake-kissimmee': 151901,
+  'fl-honeymoon-island': 151753, 'fl-caladesi-island': 151805, 'fl-hillsborough-river': 151718,
+  'fl-egmont-key': 152350, 'fl-paynes-prairie': 142723, 'fl-lake-louisa': 151324,
+  'fl-hontoon-island': 150588, 'fl-sebastian-inlet': 151954, 'fl-st-sebastian-river': 151982,
+  'fl-jonathan-dickinson': 131291, 'fl-macarthur-beach': 144551, 'fl-bill-baggs': 129494,
+  'fl-anastasia': 149864, 'fl-fort-clinch': 149646, 'fl-little-talbot': 149702,
+  'fl-tomoka': 150298, 'fl-faver-dykes': 149953, 'fl-john-pennekamp': 187537,
+  'fl-bahia-honda': 119102, 'fl-long-key': 192507, 'fl-curry-hammock': 185772,
+  'fl-st-andrews': 148742, 'fl-st-joseph-peninsula': 148814, 'fl-st-george-island': 149360,
+  'fl-topsail-hill': 148631, 'fl-big-lagoon': 129992, 'fl-florida-caverns': 148817,
+  'fl-torreya': 187184, 'fl-suwannee-river': 149756, 'fl-three-rivers': 148984,
+  'fl-myakka-sf': 143300, 'fl-wakulla-sf': 227687,
+  'al-gulf': 147491, 'al-meaher': 178196, 'al-cheaha': 161743, 'al-desoto': 122942,
+  'al-monte-sano': 135971, 'al-oak-mountain': 144440, 'al-chewacla': 112928,
+  'al-joe-wheeler': 163844, 'al-cahaba-river-wma': 119238,
+  'ms-pascagoula-river-wma': 185692, 'ms-lefleurs-bluff': 91665, 'ms-percy-quin': 182397,
+  'la-grand-isle': 124391, 'la-palmetto-island': 154516, 'la-sam-houston-jones': 118190,
+  'la-lake-fausse-pointe': 72805, 'la-chicot': 119927, 'la-hodges-gardens': 120136,
+  'la-fontainebleau': 134664, 'la-maurepas-swamp-wma': 53220,
+  'ar-petit-jean': 205393, 'ar-mount-magazine': 169800, 'ar-cossatot-river': 150418,
+  'ar-millwood': 177472, 'ar-logoly': 122698, 'ar-lake-chicot': 215834, 'ar-big-lake-wma': 124443,
 };
 
 // Curated naturalist highlights for the flagship NJ parks — the "what makes
@@ -525,6 +558,26 @@ export const STATE_PARK_HIGHLIGHTS = {
   'mn-itasca': "Minnesota's oldest state park, where the Mississippi River begins — old-growth red and white pine sheltering loons, eagles, and a famed northern-forest birdlife.",
   'mn-blue-mounds': 'A Sioux quartzite prairie outcrop on the southwest plains — home to a state bison herd, prairie wildflowers, and grassland birds.',
   'mn-gooseberry-falls': 'The gateway to Lake Superior\'s North Shore — tumbling falls in birch-and-spruce forest, with peregrines on the cliffs and boreal birds inland.',
+  // Florida flagships.
+  'fl-myakka-river': 'One of Florida\'s oldest and largest parks — wet prairie, oak hammock, and the Myakka River teeming with alligators, wading birds, and roseate spoonbills.',
+  'fl-wakulla-springs': 'One of the world\'s largest and deepest freshwater springs — a jungle river of manatees, alligators, anhingas, and limpkins, cruised by tour boats since the 1930s.',
+  'fl-paynes-prairie': 'A vast savanna basin where wild horses and a bison herd roam — sandhill cranes winter by the thousands, with alligators and 270+ bird species.',
+  'fl-john-pennekamp': 'The first undersea park in the U.S. — living coral reef, seagrass, and mangrove sheltering sea turtles, reef fish, and wading birds in the upper Keys.',
+  'fl-st-joseph-peninsula': 'A slender Gulf barrier spit famed for its fall raptor migration — thousands of hawks and falcons funnel down the point past pristine dunes.',
+  // Alabama flagships.
+  'al-gulf': "Two miles of white-sand Gulf shore backed by dunes, marsh, and freshwater lakes — a migration landfall for songbirds and a haven for shorebirds and alligators.",
+  'al-cheaha': "Alabama's highest point atop the Talladega range — quartzite outcrops and oak-pine forest with breeding warblers and fall hawk movements.",
+  'al-lake-guntersville': 'A sprawling Tennessee River reservoir park and one of the Southeast\'s premier wintering grounds for Bald Eagles, with waterfowl and herons.',
+  // Mississippi flagships.
+  'ms-leroy-percy': 'A cypress-and-Spanish-moss park in the heart of the Delta, built around warm artesian springs — alligators, wood ducks, and abundant wading birds.',
+  'ms-tishomingo': "In Mississippi's Appalachian-foothill corner — moss-draped sandstone bluffs and Bear Creek, an Ozark-like outpost of ferns and breeding songbirds.",
+  // Louisiana flagships.
+  'la-grand-isle': "Louisiana's only inhabited barrier island and a legendary migration landfall — trans-Gulf songbirds, terns, and shorebirds pile onto the beach and oak cheniers.",
+  'la-atchafalaya-delta-wma': 'The growing delta where the Atchafalaya River meets the Gulf — a building wilderness of marsh and mudflat alive with wading birds, ducks, and alligators.',
+  // Arkansas flagships.
+  'ar-mount-magazine': "Arkansas's highest peak (2,753 ft) — bluff-top vistas, black bears, and rare butterflies on a sky-island of the Ozarks-Ouachitas.",
+  'ar-dagmar-wma': 'A primeval bald-cypress and tupelo swamp on the Cache River — Big Woods wilderness of staggering waterfowl numbers, woodpeckers, and herons.',
+  'ar-buffalo-river': "Along America's first National River — bluff-lined Ozark wilderness with elk in the valleys, black bears, and breeding warblers.",
 };
 
 // Multi-state registry. Each new state ships its own data file (same shape)
@@ -556,6 +609,11 @@ export const STATE_PARKS_BY_STATE = {
   IL: STATE_PARKS_IL,
   WI: STATE_PARKS_WI,
   MN: STATE_PARKS_MN,
+  FL: STATE_PARKS_FL,
+  AL: STATE_PARKS_AL,
+  MS: STATE_PARKS_MS,
+  LA: STATE_PARKS_LA,
+  AR: STATE_PARKS_AR,
 };
 
 // Resolve a state-park entry from a path like /state-park/nj/<id>.
