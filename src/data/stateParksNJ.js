@@ -58,6 +58,13 @@ import { STATE_PARKS_AL } from './stateParksAL.js';
 import { STATE_PARKS_MS } from './stateParksMS.js';
 import { STATE_PARKS_LA } from './stateParksLA.js';
 import { STATE_PARKS_AR } from './stateParksAR.js';
+import { STATE_PARKS_IA } from './stateParksIA.js';
+import { STATE_PARKS_MO } from './stateParksMO.js';
+import { STATE_PARKS_ND } from './stateParksND.js';
+import { STATE_PARKS_SD } from './stateParksSD.js';
+import { STATE_PARKS_NE } from './stateParksNE.js';
+import { STATE_PARKS_KS } from './stateParksKS.js';
+import { STATE_PARKS_OK } from './stateParksOK.js';
 
 export const STATE_PARKS_NJ = [
   { id: 'nj-hewitt',           name: 'Abram S. Hewitt State Forest',        lat: 41.18570453, lng: -74.331375,  radiusKm: 6,  category: 'state-forest' },
@@ -409,6 +416,34 @@ export const INAT_PLACE_IDS = {
   'la-fontainebleau': 134664, 'la-maurepas-swamp-wma': 53220,
   'ar-petit-jean': 205393, 'ar-mount-magazine': 169800, 'ar-cossatot-river': 150418,
   'ar-millwood': 177472, 'ar-logoly': 122698, 'ar-lake-chicot': 215834, 'ar-big-lake-wma': 124443,
+  // Iowa
+  'ia-backbone': 158291, 'ia-wapsipinicon': 160786, 'ia-george-wyth': 122520, 'ia-springbrook': 162059,
+  'ia-rock-creek': 159607, 'ia-lake-wapello': 159539, 'ia-black-hawk': 158443, 'ia-stone': 157622,
+  'ia-loess-hills-sf': 160204, 'ia-shimek-sf': 162190, 'ia-stephens-sf': 162036,
+  // Missouri
+  'mo-ha-ha-tonka': 160245, 'mo-bennett-spring': 56621, 'mo-roaring-river': 159085, 'mo-meramec': 70222,
+  'mo-onondaga-cave': 171936, 'mo-johnsons-shut-ins': 158079, 'mo-taum-sauk': 171183, 'mo-sam-baker': 158075,
+  'mo-hawn': 157758, 'mo-lake-of-the-ozarks': 157763, 'mo-pomme-de-terre': 160613, 'mo-stockton': 159670,
+  'mo-cuivre-river': 157781, 'mo-mark-twain': 158416, 'mo-thousand-hills': 158007, 'mo-pershing': 157773,
+  'mo-prairie': 160834, 'mo-knob-noster': 160243, 'mo-august-busch-ca': 126473, 'mo-columbia-bottom-ca': 157785,
+  'mo-grand-pass-ca': 159090,
+  // North Dakota
+  'nd-cross-ranch': 159390, 'nd-homen-sf': 159369, 'nd-icelandic': 112608, 'nd-beaver-lake': 159388,
+  // South Dakota
+  'sd-custer': 158608, 'sd-bear-butte': 119197, 'sd-angostura': 158131, 'sd-roy-lake': 160333,
+  'sd-sica-hollow': 210780, 'sd-hartford-beach': 158123, 'sd-oakwood-lakes': 182702, 'sd-newton-hills': 141861,
+  'sd-palisades': 222906, 'sd-good-earth': 96185, 'sd-union-grove': 159794, 'sd-fisher-grove': 158026,
+  // Nebraska
+  'ne-fort-robinson': 168874, 'ne-chadron': 129508, 'ne-wildcat-hills': 128590, 'ne-box-butte': 162456,
+  'ne-niobrara': 110628, 'ne-smith-falls': 157742, 'ne-calamus': 158330, 'ne-ponca': 162451,
+  'ne-indian-cave': 160642, 'ne-lewis-and-clark': 158488, 'ne-platte-river': 49770, 'ne-mahoney': 148759,
+  'ne-branched-oak': 162614, 'ne-two-rivers': 148762, 'ne-lake-mcconaughy': 158071, 'ne-buffalo-bill-ranch': 157736,
+  'ne-johnson-lake': 157738,
+  // Kansas
+  'ks-kaw-river': 130469, 'ks-el-dorado': 168594, 'ks-crawford': 205776,
+  // Oklahoma
+  'ok-beavers-bend': 121267, 'ok-black-mesa': 142431, 'ok-gloss-mountain': 184917, 'ok-lake-thunderbird': 152385,
+  'ok-sequoyah': 118668, 'ok-lake-texoma': 114014,
 };
 
 // Curated naturalist highlights for the flagship NJ parks — the "what makes
@@ -578,6 +613,29 @@ export const STATE_PARK_HIGHLIGHTS = {
   'ar-mount-magazine': "Arkansas's highest peak (2,753 ft) — bluff-top vistas, black bears, and rare butterflies on a sky-island of the Ozarks-Ouachitas.",
   'ar-dagmar-wma': 'A primeval bald-cypress and tupelo swamp on the Cache River — Big Woods wilderness of staggering waterfowl numbers, woodpeckers, and herons.',
   'ar-buffalo-river': "Along America's first National River — bluff-lined Ozark wilderness with elk in the valleys, black bears, and breeding warblers.",
+  // Iowa flagships.
+  'ia-pikes-peak': 'High bluffs above the confluence of the Mississippi and Wisconsin rivers — hardwood forest and a fall flyway where eagles and migrating hawks ride the valley.',
+  'ia-loess-hills-sf': 'A rare landform of wind-piled loess ridges found almost nowhere else on Earth — prairie remnants with badgers, bobcats, and grassland birds.',
+  // Missouri flagships.
+  'mo-ha-ha-tonka': 'Castle ruins above a turquoise spring and karst sinkholes on the Niangua arm of Lake of the Ozarks — savanna glades alive with collared lizards and warblers.',
+  'mo-johnsons-shut-ins': 'The East Fork of the Black River churns through billion-year-old igneous shut-ins in the St. Francois Mountains — rugged glades, black bears, and clear-water fish.',
+  'mo-prairie': "Missouri's largest remaining tallgrass prairie — a sea of grass where bison and elk roam and greater prairie-chickens still boom in spring.",
+  // North Dakota flagships.
+  'nd-cross-ranch': 'One of the last free-flowing stretches of the Missouri River, bordered by bottomland cottonwood gallery forest and an adjacent bison preserve on native prairie.',
+  'nd-little-missouri': 'A maze of rugged badlands coulees above the Little Missouri River — wild, trail-only backcountry roamed by mule deer, golden eagles, and prairie rattlesnakes.',
+  // South Dakota flagships.
+  'sd-custer': 'A Black Hills icon — granite spires and ponderosa forest where a famous free-roaming bison herd shares the hills with elk, pronghorn, bighorn, and begging burros.',
+  'sd-bear-butte': 'A sacred laccolith rising abruptly from the plains — a sky-island of grassland and woods drawing migrating raptors and a small bison herd at its base.',
+  // Nebraska flagships.
+  'ne-fort-robinson': 'Sprawling Pine Ridge buttes and grassland in the northwest panhandle — bison and bighorn sheep herds, prairie dogs, and one of the West\'s great frontier landscapes.',
+  'ne-smith-falls': "Home to Nebraska's tallest waterfall, tucked in the spring-fed canyon of the Niobrara — a biological crossroads where six ecosystems and their wildlife meet.",
+  // Kansas flagships.
+  'ks-cheyenne-bottoms': 'The largest interior marsh in the United States — a Western Hemisphere shorebird reserve where millions of sandpipers, plovers, and waterfowl stage each migration.',
+  'ks-little-jerusalem': "Kansas's largest exposure of Niobrara chalk — 100-foot badland spires sheltering cliff-nesting birds, swift fox, and the rare ferruginous hawk.",
+  // Oklahoma flagships.
+  'ok-black-mesa': "Oklahoma's highest point in the far panhandle — a mesa-and-shortgrass meeting of Rocky Mountain and plains species, from pronghorn to piñon-juniper birds.",
+  'ok-beavers-bend': 'Deep in the Ouachita pine-hardwood forest along the Mountain Fork River — clear trout water, white-tailed deer, and breeding warblers under towering pines.',
+  'ok-great-salt-plains': 'A glittering expanse of salt flats and a shallow lake on the Central Flyway — selenite crystals below and clouds of shorebirds, gulls, and migrating waterfowl above.',
 };
 
 // Multi-state registry. Each new state ships its own data file (same shape)
@@ -614,6 +672,13 @@ export const STATE_PARKS_BY_STATE = {
   MS: STATE_PARKS_MS,
   LA: STATE_PARKS_LA,
   AR: STATE_PARKS_AR,
+  IA: STATE_PARKS_IA,
+  MO: STATE_PARKS_MO,
+  ND: STATE_PARKS_ND,
+  SD: STATE_PARKS_SD,
+  NE: STATE_PARKS_NE,
+  KS: STATE_PARKS_KS,
+  OK: STATE_PARKS_OK,
 };
 
 // Resolve a state-park entry from a path like /state-park/nj/<id>.

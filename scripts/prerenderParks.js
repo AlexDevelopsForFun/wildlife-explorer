@@ -25,7 +25,7 @@ import { wildlifeLocations } from '../src/wildlifeData.js';
 import { STATE_PARKS_BY_STATE } from '../src/data/stateParksNJ.js';
 
 // State-code → full name, for prerendered titles/copy. Extend as states ship.
-const STATE_NAMES = { NJ: 'New Jersey', DE: 'Delaware', CT: 'Connecticut', RI: 'Rhode Island', MA: 'Massachusetts', NH: 'New Hampshire', VT: 'Vermont', ME: 'Maine', NY: 'New York', PA: 'Pennsylvania', MD: 'Maryland', VA: 'Virginia', WV: 'West Virginia', NC: 'North Carolina', SC: 'South Carolina', GA: 'Georgia', TN: 'Tennessee', KY: 'Kentucky', OH: 'Ohio', MI: 'Michigan', IN: 'Indiana', IL: 'Illinois', WI: 'Wisconsin', MN: 'Minnesota', FL: 'Florida', AL: 'Alabama', MS: 'Mississippi', LA: 'Louisiana', AR: 'Arkansas' };
+const STATE_NAMES = { NJ: 'New Jersey', DE: 'Delaware', CT: 'Connecticut', RI: 'Rhode Island', MA: 'Massachusetts', NH: 'New Hampshire', VT: 'Vermont', ME: 'Maine', NY: 'New York', PA: 'Pennsylvania', MD: 'Maryland', VA: 'Virginia', WV: 'West Virginia', NC: 'North Carolina', SC: 'South Carolina', GA: 'Georgia', TN: 'Tennessee', KY: 'Kentucky', OH: 'Ohio', MI: 'Michigan', IN: 'Indiana', IL: 'Illinois', WI: 'Wisconsin', MN: 'Minnesota', FL: 'Florida', AL: 'Alabama', MS: 'Mississippi', LA: 'Louisiana', AR: 'Arkansas', IA: 'Iowa', MO: 'Missouri', ND: 'North Dakota', SD: 'South Dakota', NE: 'Nebraska', KS: 'Kansas', OK: 'Oklahoma' };
 
 // Category → human label, for state-park prerender copy.
 const CAT_LABEL = {

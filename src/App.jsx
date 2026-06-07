@@ -191,6 +191,48 @@ const STATE_PARK_STATES = [
     view: { center: [34.80, -92.40], zoom: 7 },
     bounds: [[32.90, -94.70], [36.60, -89.50]],
   },
+  {
+    code: 'IA',
+    name: 'Iowa',
+    view: { center: [42.00, -93.50], zoom: 7 },
+    bounds: [[40.30, -96.80], [43.60, -90.00]],
+  },
+  {
+    code: 'MO',
+    name: 'Missouri',
+    view: { center: [38.40, -92.50], zoom: 6 },
+    bounds: [[35.90, -95.90], [40.70, -89.00]],
+  },
+  {
+    code: 'ND',
+    name: 'North Dakota',
+    view: { center: [47.45, -100.40], zoom: 6 },
+    bounds: [[45.85, -104.15], [49.05, -96.45]],
+  },
+  {
+    code: 'SD',
+    name: 'South Dakota',
+    view: { center: [44.40, -100.20], zoom: 6 },
+    bounds: [[42.40, -104.15], [45.99, -96.40]],
+  },
+  {
+    code: 'NE',
+    name: 'Nebraska',
+    view: { center: [41.50, -99.70], zoom: 6 },
+    bounds: [[39.95, -104.10], [43.05, -95.25]],
+  },
+  {
+    code: 'KS',
+    name: 'Kansas',
+    view: { center: [38.50, -98.30], zoom: 6 },
+    bounds: [[36.95, -102.10], [40.05, -94.55]],
+  },
+  {
+    code: 'OK',
+    name: 'Oklahoma',
+    view: { center: [35.50, -97.50], zoom: 6 },
+    bounds: [[33.60, -103.05], [37.05, -94.40]],
+  },
 ];
 import { classifyAnimalSubtype, getSubtypeDefs } from './utils/subcategories';
 import {
