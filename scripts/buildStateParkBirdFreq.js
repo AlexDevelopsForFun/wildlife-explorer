@@ -122,17 +122,17 @@ async function countyForPark(lat, lng) {
   return null;
 }
 
-async function sampleDates(county, days) {
+async function sampleDates(county, days, year) {
   const datesPresent = new Map(), monthData = new Map(), monthValid = {};
   let valid = 0, total = 0;
   for (let month = 1; month <= 12; month++) {
     for (const day of days) {
       total++;
-      const stats = await jget(`https://api.ebird.org/v2/product/stats/${county}/${YEAR}/${month}/${day}`);
+      const stats = await jget(`https://api.ebird.org/v2/product/stats/${county}/${year}/${month}/${day}`);
       await sleep(150);
       if ((stats?.numChecklists ?? 0) < MIN_CHECKLISTS_PER_DATE) continue;
       valid++; monthValid[month] = (monthValid[month] ?? 0) + 1;
-      const obs = await jget(`https://api.ebird.org/v2/data/obs/${county}/historic/${YEAR}/${month}/${day}`);
+      const obs = await jget(`https://api.ebird.org/v2/data/obs/${county}/historic/${year}/${month}/${day}`);
       await sleep(400);
       if (!Array.isArray(obs)) continue;
       for (const o of obs) {
@@ -146,18 +146,53 @@ async function sampleDates(county, days) {
   return { valid, total, datesPresent, monthData, monthValid };
 }
 
+// Pool two sample results (same date grid, different years): sum valid/total
+// sample-dates and per-species/per-month presence counts. The seasonal frequency
+// (present/valid) is then computed over the pooled multi-year sample — more data
+// for genuinely under-birded counties, not a lowered bar.
+function mergeSamples(a, b) {
+  const datesPresent = new Map(a.datesPresent);
+  for (const [k, v] of b.datesPresent) datesPresent.set(k, (datesPresent.get(k) ?? 0) + v);
+  const monthData = new Map();
+  for (const src of [a.monthData, b.monthData]) {
+    for (const [name, mm] of src) {
+      if (!monthData.has(name)) monthData.set(name, {});
+      const tgt = monthData.get(name);
+      for (const [m, c] of Object.entries(mm)) tgt[m] = (tgt[m] ?? 0) + c;
+    }
+  }
+  const monthValid = { ...a.monthValid };
+  for (const [m, c] of Object.entries(b.monthValid)) monthValid[m] = (monthValid[m] ?? 0) + c;
+  return { valid: a.valid + b.valid, total: a.total + b.total, datesPresent, monthData, monthValid };
+}
+
 async function sampleCounty(county) {
   const cacheFile = path.join(CACHE_DIR, `${county}.json`);
-  if (existsSync(cacheFile)) { console.log(`  [${county}] cached`); return JSON.parse(readFileSync(cacheFile, 'utf8')); }
-  let samp = await sampleDates(county, SAMPLE_DAYS);
+  if (existsSync(cacheFile)) {
+    const cached = JSON.parse(readFileSync(cacheFile, 'utf8'));
+    if (cached.__skip__) { console.log(`  [${county}] cached (skip)`); return null; }
+    console.log(`  [${county}] cached`);
+    return cached;
+  }
+  let samp = await sampleDates(county, SAMPLE_DAYS, YEAR);
   let note = '';
-  if (samp.valid < MIN_VALID_DATES) {                 // sparse → denser deep pass
-    const deep = await sampleDates(county, DEEP_DAYS);
-    if (deep.valid > samp.valid) { samp = deep; note = ' (deep)'; }
+  if (samp.valid < MIN_VALID_DATES) {                 // sparse → denser deep pass…
+    samp = await sampleDates(county, DEEP_DAYS, YEAR);
+    note = ' (deep)';
+    for (const y of [YEAR - 1, YEAR - 2]) {            // …then pool prior years until we clear the floor
+      if (samp.valid >= MIN_VALID_DATES) break;
+      samp = mergeSamples(samp, await sampleDates(county, DEEP_DAYS, y));
+      note = ` (deep ${YEAR - y + 1}yr)`;
+    }
   }
   const { datesPresent, monthData, monthValid } = samp;
   console.log(`  [${county}] ${samp.valid}/${samp.total} valid dates, ${datesPresent.size} species${note}`);
-  if (samp.valid < MIN_VALID_DATES) { console.log(`  [${county}] ⚠ too few valid dates — skipping`); return null; }
+  mkdirSync(CACHE_DIR, { recursive: true });
+  if (samp.valid < MIN_VALID_DATES) {                 // genuinely under-birded even over 3 years
+    console.log(`  [${county}] ⚠ too few valid dates — skipping`);
+    writeFileSync(cacheFile, JSON.stringify({ __skip__: 1 }), 'utf8'); // cache the skip → no re-sample next build
+    return null;
+  }
   const out = {};
   for (const [comName] of datesPresent) {
     const md = monthData.get(comName) ?? {};
@@ -173,7 +208,6 @@ async function sampleCounty(county) {
     const seasons = present4.length === 4 ? ['year_round'] : (present4.length ? present4 : ['spring','summer','fall']);
     out[comName.toLowerCase()] = { f: +peak.toFixed(3), s: seasons };
   }
-  mkdirSync(CACHE_DIR, { recursive: true });
   writeFileSync(cacheFile, JSON.stringify(out), 'utf8');
   return out;
 }
