@@ -64,7 +64,7 @@ export const STATE_PARKS_RI = [
   { id: 'ri-black-farm',         name: 'Black Farm Management Area',             lat: 41.4686, lng: -71.7244, radiusKm: 3, category: 'state-preserve' },
   { id: 'ri-woody-hill',         name: 'Woody Hill Management Area',             lat: 41.3731, lng: -71.7417, radiusKm: 4, category: 'state-preserve' },
   { id: 'ri-dutch-island',       name: 'Dutch Island Management Area',           lat: 41.5036, lng: -71.4003, radiusKm: 2, category: 'state-preserve' },
-  { id: 'ri-succotash-marsh',    name: 'Succotash Marsh Management Area',        lat: 41.3792, lng: -71.5258, radiusKm: 2, category: 'state-preserve' },
+  { id: 'ri-succotash-marsh',    name: 'Succotash Marsh Management Area',        lat: 41.3858, lng: -71.5193, radiusKm: 2, category: 'state-preserve' },
   { id: 'ri-south-shore',        name: 'South Shore Management Area',            lat: 41.3881, lng: -71.6031, radiusKm: 4, category: 'state-preserve' },
   { id: 'ri-pawcatuck-river',    name: 'Pawcatuck River Management Area',        lat: 41.3500, lng: -71.8342, radiusKm: 4, category: 'state-preserve' },
   { id: 'ri-great-swamp',        name: 'Great Swamp Management Area',            lat: 41.4610, lng: -71.5866, radiusKm: 5, category: 'state-preserve' },

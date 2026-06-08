@@ -1301,7 +1301,7 @@ const STATE_GROUP_TO_TYPE = {
   amphibians: 'amphibian', fish: 'fish', insects: 'insect', other: null,
 };
 
-function StateParkPanel({ park, onClose, openAbout }) {
+function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
   const [state, setState] = useState({ status: 'loading', species: [], total: 0, sources: [], stats: null });
   const [seenVersion, setSeenVersion] = useState(0);
   const [displayLimit, setDisplayLimit] = useState(40);
@@ -1704,6 +1704,15 @@ function StateParkPanel({ park, onClose, openAbout }) {
     return list;
   }, [inCategory, query, seenFilter, seenKeys, sortBy, effRarity, rarityFilter]);
 
+  // Same-state siblings, for the in-panel park switcher (jump to another park
+  // without returning to the state map). Derived from the id prefix so it also
+  // works on a direct deep-link landing.
+  const stateInfo = STATE_PARK_STATES.find(s => park.id?.startsWith(s.code.toLowerCase() + '-'));
+  const siblingParks = useMemo(
+    () => (stateInfo ? (STATE_PARKS_BY_STATE[stateInfo.code] || []).slice().sort((a, b) => a.name.localeCompare(b.name)) : []),
+    [stateInfo?.code],
+  );
+
   return (
     <>
       <div className="about-overlay" onClick={onClose} />
@@ -1715,13 +1724,31 @@ function StateParkPanel({ park, onClose, openAbout }) {
               State name is derived from the park id prefix (nj-/de-/…) so it's
               correct for every wired state, not hardcoded. */}
           <div className="lp__meta">
-            <span className="lp__state">
-              {STATE_PARK_STATES.find(s => park.id?.startsWith(s.code.toLowerCase() + '-'))?.name ?? ''}
-            </span>
+            <span className="lp__state">{stateInfo?.name ?? ''}</span>
             <span className="lp__park-badge" style={{ background: '#2f7d4f' }}>
               {(park.category?.replace('-', ' ') ?? 'state park').replace(/\b\w/g, c => c.toUpperCase())}
             </span>
           </div>
+          {/* In-panel park switcher — jump to another park in the same state
+              without closing back to the state map. */}
+          {onSwitchPark && siblingParks.length > 1 && (
+            <div className="statepark-modal__switch">
+              <span className="statepark-modal__switch-label" aria-hidden="true">↔ Jump to another {stateInfo?.name ?? ''} park:</span>
+              <select
+                className="statepark-modal__switch-select"
+                aria-label={`Jump to another park in ${stateInfo?.name ?? 'this state'}`}
+                value={park.id}
+                onChange={e => {
+                  const next = siblingParks.find(p => p.id === e.target.value);
+                  if (next && next.id !== park.id) onSwitchPark(next);
+                }}
+              >
+                {siblingParks.map(p => (
+                  <option key={p.id} value={p.id}>{p.name}</option>
+                ))}
+              </select>
+            </div>
+          )}
           {/* Data attribution line — same format as national parks. */}
           {state.status === 'ok' && state.species.length > 0 && (
             <div className="lp__source-attr"><span title="Live data">● Live · </span>{sourceAttr}</div>
@@ -1971,15 +1998,42 @@ function StateParkPanel({ park, onClose, openAbout }) {
 }
 
 // ── State selector ─────────────────────────────────────────────────────────
-// "🗺️ State Parks" header button opens this. v1 has NJ only, but the
-// architecture is plural — add a state to STATE_PARK_STATES + provide its
-// park list in STATE_PARKS_BY_STATE and it shows up here automatically.
+// "🗺️ State Parks" header button opens this. All 50 states are wired; the list
+// is alphabetical with a search box and region filter so 50 entries stay
+// browsable. Add a state to STATE_PARK_STATES + STATE_PARKS_BY_STATE and it
+// appears automatically (give it a STATE_REGION entry too).
+const STATE_REGION = {
+  CT:'Northeast', ME:'Northeast', MA:'Northeast', NH:'Northeast', RI:'Northeast', VT:'Northeast', NJ:'Northeast', NY:'Northeast', PA:'Northeast',
+  DE:'Southeast', MD:'Southeast', VA:'Southeast', WV:'Southeast', NC:'Southeast', SC:'Southeast', GA:'Southeast', FL:'Southeast', KY:'Southeast', TN:'Southeast', AL:'Southeast', MS:'Southeast',
+  OH:'Midwest', MI:'Midwest', IN:'Midwest', IL:'Midwest', WI:'Midwest', MN:'Midwest', IA:'Midwest', MO:'Midwest', KS:'Midwest', NE:'Midwest', ND:'Midwest', SD:'Midwest',
+  AR:'South Central', LA:'South Central', OK:'South Central', TX:'South Central',
+  MT:'Mountain', WY:'Mountain', CO:'Mountain', ID:'Mountain', UT:'Mountain', NV:'Mountain', AZ:'Mountain', NM:'Mountain',
+  CA:'Pacific', OR:'Pacific', WA:'Pacific', AK:'Pacific', HI:'Pacific',
+};
+const REGION_ORDER = ['Northeast', 'Southeast', 'Midwest', 'South Central', 'Mountain', 'Pacific'];
+
 function StateSelectorModal({ states, onPick, onClose }) {
+  const [region, setRegion] = useState('All');
+  const [query, setQuery] = useState('');
   useEffect(() => {
     const h = e => { if (e.key === 'Escape') onClose(); };
     window.addEventListener('keydown', h);
     return () => window.removeEventListener('keydown', h);
   }, [onClose]);
+
+  const totalParks = useMemo(
+    () => Object.values(STATE_PARKS_BY_STATE).reduce((n, l) => n + l.length, 0),
+    [],
+  );
+  const q = query.trim().toLowerCase();
+  const visible = useMemo(() => (
+    states
+      .filter(s => region === 'All' || STATE_REGION[s.code] === region)
+      .filter(s => !q || s.name.toLowerCase().includes(q) || s.code.toLowerCase() === q)
+      .slice()
+      .sort((a, b) => a.name.localeCompare(b.name))
+  ), [states, region, q]);
+
   return (
     <>
       <div className="about-overlay" onClick={onClose} />
@@ -1987,15 +2041,40 @@ function StateSelectorModal({ states, onPick, onClose }) {
         <button className="about-modal__close" onClick={onClose} aria-label="Close">X</button>
         <div className="stateselect-modal__head">
           <h2 className="stateselect-modal__title">State Parks</h2>
-          <p className="stateselect-modal__sub">Choose a state. More states coming soon.</p>
+          <p className="stateselect-modal__sub">All 50 states · {totalParks.toLocaleString()} parks &amp; preserves</p>
+        </div>
+        <div className="stateselect-modal__controls">
+          <input
+            className="stateselect-modal__search"
+            type="search"
+            placeholder="Search states…"
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            aria-label="Search states"
+          />
+          <div className="stateselect-modal__regions" role="tablist" aria-label="Filter by region">
+            {['All', ...REGION_ORDER].map(r => (
+              <button
+                key={r}
+                role="tab"
+                aria-selected={region === r}
+                className={`stateselect-modal__region${region === r ? ' is-active' : ''}`}
+                onClick={() => setRegion(r)}
+              >{r}</button>
+            ))}
+          </div>
         </div>
         <ul className="stateselect-modal__list" aria-label="Available states">
-          {states.map(s => {
+          {visible.length === 0 && (
+            <li className="stateselect-modal__empty">No states match “{query}”.</li>
+          )}
+          {visible.map(s => {
             const count = (STATE_PARKS_BY_STATE[s.code] || []).length;
             return (
               <li key={s.code}>
                 <button className="stateselect-modal__item" onClick={() => onPick(s)}>
                   <span className="stateselect-modal__item-name">{s.name}</span>
+                  <span className="stateselect-modal__item-region">{STATE_REGION[s.code]}</span>
                   <span className="stateselect-modal__item-count">{count} parks</span>
                 </button>
               </li>
@@ -5907,6 +5986,14 @@ function AppInner() {
         <StateParkPanel
           park={activeStatePark}
           openAbout={openAbout}
+          onSwitchPark={(p) => {
+            setActiveStatePark(p);
+            const sc = STATE_PARK_STATES.find(s => p.id?.startsWith(s.code.toLowerCase() + '-'))?.code;
+            // Keep the map underneath in sync (matters on a deep-link landing).
+            if (sc && sc !== selectedStateForMap) setSelectedStateForMap(sc);
+            track('state_park_switch', { park: p.name, state: sc });
+            try { window.history.replaceState(null, '', `/state-park/${(sc || '').toLowerCase()}/${encodeURIComponent(p.id)}`); } catch {}
+          }}
           onClose={() => {
             setActiveStatePark(null);
             // Don't drop the state map underneath — close panel returns to the map.
