@@ -10,25 +10,38 @@
 
 import { useState, useEffect } from 'react';
 
-// v4 — broadened from 2 designations to the whole NATURAL NPS system (parks,
-// monuments, preserves, seashores, lakeshores, recreation areas, reserves,
-// rivers/riverways); busts v3 cache. Purely cultural/historic units
-// (battlefields, memorials, historic sites/parks, parkways, trails) stay out.
-const CACHE_KEY = 'wm_nps_parks_v4';
+// v5 — wildlife-focused refocus. Auto-include the inherently-NATURAL NPS
+// designations (parks, preserves, seashores, lakeshores, recreation areas,
+// reserves, rivers/riverways). "National Monument" is a mixed bag — it covers
+// both natural areas (Craters of the Moon) and civic/archaeological sites
+// (Statue of Liberty, pueblo ruins, forts) — so monuments are included ONLY via
+// a curated allow-list of genuinely-natural ones. This keeps the wildlife
+// habitats and drops the landmarks-to-people. Busts v4 cache.
+const CACHE_KEY = 'wm_nps_parks_v5';
 const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
 
-// A unit qualifies if its designation names a natural land/water type AND isn't
-// a cultural/historic designation. This is wildlife-first: we want the habitats,
-// not the monuments-to-people.
-const NP_INCLUDE = [
-  'national park', 'national monument', 'national preserve', 'national seashore',
-  'national lakeshore', 'national recreation area', 'national reserve',
+// Inherently-natural designations — always wildlife-relevant.
+const NP_NATURAL = [
+  'national park', 'national preserve', 'national seashore', 'national lakeshore',
+  'national recreation area', 'national reserve',
   'national river', 'scenic river', 'scenic riverway', 'wild and scenic river', 'wild river',
 ];
+// Cultural/historic designations never qualify (also guards the rare
+// "National Monument and Historic Shrine" style combos).
 const NP_EXCLUDE = [
   'historic', 'memorial', 'battlefield', 'military', 'cemetery',
   'heritage', 'parkway', 'scenic trail', 'historic trail',
 ];
+// Genuinely-natural National Monuments (by NPS parkCode). Everything not listed
+// — civic monuments (Statue of Liberty, Castle Clinton…), archaeological sites
+// (pueblos, cliff dwellings, ruins, mounds, flint quarries), forts and
+// battlefields designated as monuments — is excluded.
+const NATURAL_MONUMENTS = new Set([
+  'agfo', 'ania', 'band', 'buis', 'cabr', 'cakr', 'camo', 'cavo', 'cebr', 'chir',
+  'colm', 'crmo', 'depo', 'deto', 'dino', 'elma', 'flfo', 'fobu', 'hafo', 'jeca',
+  'joda', 'kaww', 'labe', 'muwo', 'nabr', 'orca', 'orpi', 'para', 'rabr', 'sucr',
+  'tica', 'tusk', 'vicr',
+]);
 // Map a full designation string to a short kind, for the UI/legend.
 const NP_KIND = (d = '') => {
   const s = d.toLowerCase();
@@ -42,9 +55,13 @@ const NP_KIND = (d = '') => {
   if (s.includes('river')) return 'National River';
   return 'National Park Unit';
 };
-function npsQualifies(designation = '') {
-  const d = designation.toLowerCase();
-  return NP_INCLUDE.some(p => d.includes(p)) && !NP_EXCLUDE.some(p => d.includes(p));
+function npsQualifies(park) {
+  const d = (park.designation || '').toLowerCase();
+  if (NP_EXCLUDE.some(p => d.includes(p))) return false;
+  if (NP_NATURAL.some(p => d.includes(p))) return true;   // seashore / preserve / NRA / …
+  // Monuments: natural ones only (allow-list by parkCode).
+  if (d.includes('national monument')) return NATURAL_MONUMENTS.has((park.parkCode || '').toLowerCase());
+  return false;
 }
 
 /**
@@ -52,8 +69,8 @@ function npsQualifies(designation = '') {
  * Returns null for non-natural designations or missing coordinates.
  */
 function parkToLocation(park) {
-  // Reject cultural/historic units and anything without a natural designation.
-  if (!npsQualifies(park.designation)) return null;
+  // Reject civic/cultural units; monuments must be on the natural allow-list.
+  if (!npsQualifies(park)) return null;
 
   const lat = parseFloat(park.latitude);
   const lng = parseFloat(park.longitude);
