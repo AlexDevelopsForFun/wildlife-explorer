@@ -23,4 +23,11 @@ export const STATE_PARKS_HI = [
   { id: 'hi-akaka-falls',    name: 'Akaka Falls State Park',         lat: 19.8542, lng: -155.1525, radiusKm: 2, category: 'state-park' },
   { id: 'hi-kekaha-kai',     name: 'Kekaha Kai State Park',          lat: 19.7922, lng: -156.0250, radiusKm: 3, category: 'state-park' },
   { id: 'hi-hapuna-beach',   name: 'Hapuna Beach State Recreation Area', lat: 19.9913, lng: -155.8230, radiusKm: 2, category: 'recreation-area' },
+  { id: 'hi-kalopa',         name: 'Kalopa State Recreation Area',   lat: 20.0386, lng: -155.4390, radiusKm: 3, category: 'recreation-area' },
+  { id: 'hi-mauna-kea',      name: 'Mauna Kea State Recreation Area', lat: 19.7524, lng: -155.5240, radiusKm: 3, category: 'recreation-area' },
+  // ── Oʻahu (more) ────────────────────────────────────────────────────────────
+  { id: 'hi-heeia',          name: 'Heʻeia State Park',              lat: 21.4397, lng: -157.8089, radiusKm: 2, category: 'state-park' },
+  { id: 'hi-diamond-head',   name: 'Diamond Head State Monument',    lat: 21.2620, lng: -157.8067, radiusKm: 2, category: 'state-park' },
+  // ── Molokaʻi ────────────────────────────────────────────────────────────────
+  { id: 'hi-palaau',         name: 'Palaʻau State Park',             lat: 21.1750, lng: -157.0069, radiusKm: 3, category: 'state-park' },
 ];

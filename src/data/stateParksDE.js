@@ -35,4 +35,7 @@ export const STATE_PARKS_DE = [
   { id: 'de-lums-pond',      name: 'Lums Pond State Park',        lat: 39.554287,  lng: -75.714942,  radiusKm: 4, category: 'state-park' },
   { id: 'de-trap-pond',      name: 'Trap Pond State Park',        lat: 38.5245921, lng: -75.4743265, radiusKm: 4, category: 'state-park' },
   { id: 'de-white-clay',     name: 'White Clay Creek State Park', lat: 39.73611,   lng: -75.76222,   radiusKm: 5, category: 'state-park' },
+  { id: 'de-beach-plum',     name: 'Beach Plum Island State Park', lat: 38.8000,   lng: -75.1789,    radiusKm: 3, category: 'state-park' },
+  { id: 'de-augustine-wma',  name: 'Augustine Wildlife Area',      lat: 39.4783,   lng: -75.6014,    radiusKm: 3, category: 'state-preserve' },
+  { id: 'de-woodland-beach-wma', name: 'Woodland Beach Wildlife Area', lat: 39.3500, lng: -75.5008,  radiusKm: 4, category: 'state-preserve' },
 ];

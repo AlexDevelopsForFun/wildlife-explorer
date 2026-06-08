@@ -21,4 +21,7 @@ export const STATE_PARKS_ND = [
   // ── Sheyenne Valley & south-central ─────────────────────────────────────────
   { id: 'nd-fort-ransom',    name: 'Fort Ransom State Park',         lat: 46.5444, lng: -97.9361, radiusKm: 3, category: 'state-park' },
   { id: 'nd-beaver-lake',    name: 'Beaver Lake State Park',         lat: 46.4027, lng: -99.6198, radiusKm: 3, category: 'state-park' },
+  // ── Devils Lake & Red River Valley (east) ───────────────────────────────────
+  { id: 'nd-grahams-island', name: 'Grahams Island State Park',      lat: 48.0606, lng: -99.1267, radiusKm: 4, category: 'state-park' },
+  { id: 'nd-turtle-river',   name: 'Turtle River State Park',        lat: 48.0086, lng: -97.4983, radiusKm: 3, category: 'state-park' },
 ];

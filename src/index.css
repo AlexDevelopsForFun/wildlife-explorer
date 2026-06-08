@@ -4301,16 +4301,21 @@ textarea:focus-visible,
 .stateselect-modal__sub   { font-size: 13px; color: #9bbcab; margin: 0; }
 .stateselect-modal__list  { list-style: none; margin: 0; padding: 16px 18px 24px; overflow-y: auto; }
 .stateselect-modal__item {
-  display: flex; align-items: baseline; width: 100%;
+  display: flex; align-items: baseline; gap: 10px; width: 100%;
   padding: 14px 16px; margin-bottom: 8px; border-radius: 10px;
   background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15);
   color: #eaf4ee; cursor: pointer; text-align: left;
 }
 .stateselect-modal__item:hover { background: rgba(255,255,255,0.14); }
 .stateselect-modal__item:focus-visible { outline: 3px solid #1d4ed8; outline-offset: 2px; }
-.stateselect-modal__item-name  { font-size: 16px; font-weight: 600; }
-.stateselect-modal__item-region { margin-left: auto; font-size: 10px; letter-spacing: 0.04em; text-transform: uppercase; color: #6f9a82; white-space: nowrap; }
-.stateselect-modal__item-count { margin-left: 12px; font-size: 13px; color: #9bbcab; min-width: 62px; text-align: right; }
+.stateselect-modal__item-name  { flex: 1; min-width: 0; font-size: 16px; font-weight: 600; }
+.stateselect-modal__item-region { font-size: 10px; letter-spacing: 0.04em; text-transform: uppercase; color: #6f9a82; white-space: nowrap; }
+.stateselect-modal__item-count { font-size: 13px; color: #9bbcab; min-width: 62px; text-align: right; }
+.stateselect-modal__region-head {
+  list-style: none; margin: 14px 4px 6px; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase; color: #5fd38a;
+}
+.stateselect-modal__region-head:first-child { margin-top: 2px; }
 .stateselect-modal__empty { list-style: none; padding: 24px 8px; text-align: center; color: #9bbcab; font-size: 14px; }
 
 /* Selector controls: search + region filter chips */
@@ -4346,6 +4351,13 @@ textarea:focus-visible,
 }
 .statemap-overlay__title { font-size: 18px; font-weight: 700; color: #fff; }
 .statemap-overlay__count { margin-left: 8px; font-size: 14px; color: #9bbcab; font-weight: 500; }
+.statemap-overlay__stateswitch {
+  margin-left: 12px; padding: 7px 12px; border-radius: 999px; max-width: 210px;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2);
+  color: #eaf4ee; font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.statemap-overlay__stateswitch:focus-visible { outline: 2px solid #1d4ed8; outline-offset: 1px; }
+.statemap-overlay__stateswitch option { background: #15321f; color: #eaf4ee; }
 .statemap-overlay__close {
   margin-left: auto; padding: 11px 18px; font-size: 15px; font-weight: 600;
   background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.28);

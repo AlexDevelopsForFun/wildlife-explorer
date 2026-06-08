@@ -160,7 +160,7 @@ export const INAT_PLACE_IDS = {
   // sub-polygon, which would under-count the park → it uses the radius instead.
   'de-alapocas': 181333, 'de-auburn-valley': 169859, 'de-cape-henlopen': 222476,
   'de-killens-pond': 208396, 'de-lums-pond': 177713, 'de-trap-pond': 172845,
-  'de-white-clay': 95508,
+  'de-white-clay': 95508, 'de-beach-plum': 167639, 'de-augustine-wma': 172838, 'de-woodland-beach-wma': 171612,
   // Connecticut (verified May 2026, STATE=CT node scripts/lookupInatPlaces.mjs;
   // Natchaug/Enders/Trout Brook re-pinned to the iNat centroid). 57/58 parks;
   // Great Pond SF has no iNat polygon → radius fallback.
@@ -757,9 +757,12 @@ export const STATE_PARK_HIGHLIGHTS = {
   // Alaska flagships.
   'ak-chugach': "Among the largest state parks in the U.S. — half a million acres of mountains on Anchorage's doorstep with Dall sheep, moose, bears, and beluga whales in Turnagain Arm.",
   'ak-kachemak-bay': "Alaska's first state park — glaciers, spruce forest, and a rich marine bay of sea otters, puffins, and black bears reached only by boat or plane.",
+  'ak-fort-abercrombie': 'A WWII fort on a Kodiak Island headland of Sitka-spruce rainforest — tide pools, nesting puffins and kittiwakes, sea otters, and passing whales.',
   // Hawaii flagships.
   'hi-kokee': "High native rainforest above Waimea Canyon — among the best places to see Kauaʻi's endemic honeycreepers (ʻiʻiwi, ʻapapane) and the nēnē goose.",
   'hi-na-pali-coast': 'Towering fluted sea cliffs on Kauaʻi\'s wild north shore — nesting seabirds, spinner dolphins, and Hawaiian monk seals along a roadless coast.',
+  // North Dakota flagship.
+  'nd-grahams-island': 'A wooded island park jutting into Devils Lake, North Dakota\'s largest natural lake — vast colonies of American white pelicans, western grebes, and migrating waterfowl.',
 };
 
 // Multi-state registry. Each new state ships its own data file (same shape)

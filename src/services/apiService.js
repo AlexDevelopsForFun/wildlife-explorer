@@ -1736,21 +1736,26 @@ const _HAWAII = new Set(['haleakala','hawaiivolcanoes']);
 const _FLORIDA = new Set(['everglades','biscayne','drytortugas']);
 // Species → set of park keys where they are BLOCKED (never show)
 // Format: lowercase animal name → function(parkKey) returning true if BLOCKED
+// Predicates take a `region` object ({alaska,hawaii,tropical,florida}) so the
+// same rules work for national parks (matched by key) AND state parks (matched
+// by the two-letter id prefix, e.g. "ak-chugach" → Alaska). This keeps Dall
+// sheep at Alaska state parks and monk seals/nēnē at Hawaii ones, while still
+// blocking the truly-impossible (polar bear anywhere, snowy owl in the tropics).
 const _GEO_BLOCKS = [
   { names: ['arctic wolf','arctic fox','arctic hare','muskox','musk ox','walrus','pacific walrus'],
-    blocked: p => !_ALASKA.has(p) },
+    blocked: r => !r.alaska },
   { names: ['polar bear'],
     blocked: () => true },
   { names: ['dall sheep',"dall's sheep"],
-    blocked: p => !_ALASKA.has(p) },
+    blocked: r => !r.alaska },
   { names: ['caribou','reindeer'],
-    blocked: p => !_ALASKA.has(p) },
+    blocked: r => !r.alaska },
   { names: ['marine iguana'],
     blocked: () => true },
   { names: ['snowy owl'],
-    blocked: p => _TROPICAL.has(p) },
+    blocked: r => r.tropical },
   { names: ['hawaiian monk seal','nene','hawaiian goose','hawaiian hoary bat'],
-    blocked: p => !_HAWAII.has(p) },
+    blocked: r => !r.hawaii },
 ];
 const _GEO_MAP = new Map();
 for (const rule of _GEO_BLOCKS) {
@@ -1759,9 +1764,17 @@ for (const rule of _GEO_BLOCKS) {
 
 export function filterGeographicOutliers(animals, parkKey) {
   if (!parkKey) return animals;
-  const key = parkKey.toLowerCase().replace(/[^a-z]/g, '');
+  const raw = String(parkKey).toLowerCase();
+  const st = (raw.match(/^([a-z]{2})-/) || [])[1] || null;  // state-park ids: "ak-…", "hi-…"
+  const key = raw.replace(/[^a-z]/g, '');
+  const region = {
+    alaska:   _ALASKA.has(key)   || st === 'ak',
+    hawaii:   _HAWAII.has(key)   || st === 'hi',
+    tropical: _TROPICAL.has(key) || st === 'hi' || st === 'fl',
+    florida:  _FLORIDA.has(key)  || st === 'fl',
+  };
   return animals.filter(a => {
     const check = _GEO_MAP.get(a.name.toLowerCase());
-    return !check || !check(key);
+    return !check || !check(region);
   });
 }

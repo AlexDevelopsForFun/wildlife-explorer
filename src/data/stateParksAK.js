@@ -23,4 +23,8 @@ export const STATE_PARKS_AK = [
   // ── Remote (Bristol Bay & Kodiak archipelago) ───────────────────────────────
   { id: 'ak-wood-tikchik',   name: 'Wood-Tikchik State Park',        lat: 59.7456, lng: -158.7525, radiusKm: 12, category: 'state-park' },
   { id: 'ak-afognak-island', name: 'Afognak Island State Park',      lat: 58.3558, lng: -152.3000, radiusKm: 8, category: 'state-park' },
+  { id: 'ak-fort-abercrombie', name: 'Fort Abercrombie State Historical Park', lat: 57.8344, lng: -152.3556, radiusKm: 3, category: 'state-park' },
+  { id: 'ak-pasagshak',      name: 'Pasagshak State Recreation Site', lat: 57.4625, lng: -152.4514, radiusKm: 4, category: 'recreation-area' },
+  { id: 'ak-deep-creek',     name: 'Deep Creek State Recreation Area', lat: 60.0330, lng: -151.7010, radiusKm: 4, category: 'recreation-area' },
+  { id: 'ak-harding-lake',   name: 'Harding Lake State Recreation Area', lat: 64.4406, lng: -146.8639, radiusKm: 3, category: 'recreation-area' },
 ];

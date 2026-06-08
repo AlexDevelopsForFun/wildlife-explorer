@@ -1425,7 +1425,9 @@ function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
         // Factored into finalize() so we can emit birds first, then the full set.
         const countyFreq = COUNTY_BIRD_FREQ[PARK_COUNTY[park.id]] ?? null;
         const finalize = () => {
-          const animals = deduplicateAnimals(pool);
+          // Drop clear out-of-range live-API artifacts (state-aware: keeps Dall
+          // sheep at AK parks, monk seals at HI parks; blocks polar bears etc.).
+          const animals = filterGeographicOutliers(deduplicateAnimals(pool), park.id);
           if (countyFreq) {
             for (const a of animals) {
               if (a.animalType !== 'bird' || !a.name) continue;
@@ -2034,6 +2036,19 @@ function StateSelectorModal({ states, onPick, onClose }) {
       .sort((a, b) => a.name.localeCompare(b.name))
   ), [states, region, q]);
 
+  const renderStateItem = (s, showRegion) => {
+    const count = (STATE_PARKS_BY_STATE[s.code] || []).length;
+    return (
+      <li key={s.code}>
+        <button className="stateselect-modal__item" onClick={() => onPick(s)}>
+          <span className="stateselect-modal__item-name">{s.name}</span>
+          {showRegion && <span className="stateselect-modal__item-region">{STATE_REGION[s.code]}</span>}
+          <span className="stateselect-modal__item-count">{count} parks</span>
+        </button>
+      </li>
+    );
+  };
+
   return (
     <>
       <div className="about-overlay" onClick={onClose} />
@@ -2068,18 +2083,18 @@ function StateSelectorModal({ states, onPick, onClose }) {
           {visible.length === 0 && (
             <li className="stateselect-modal__empty">No states match “{query}”.</li>
           )}
-          {visible.map(s => {
-            const count = (STATE_PARKS_BY_STATE[s.code] || []).length;
-            return (
-              <li key={s.code}>
-                <button className="stateselect-modal__item" onClick={() => onPick(s)}>
-                  <span className="stateselect-modal__item-name">{s.name}</span>
-                  <span className="stateselect-modal__item-region">{STATE_REGION[s.code]}</span>
-                  <span className="stateselect-modal__item-count">{count} parks</span>
-                </button>
-              </li>
-            );
-          })}
+          {/* When browsing everything, group under region headers; when a region
+              chip or search is active, show a flat alphabetical list. */}
+          {(region === 'All' && !q)
+            ? REGION_ORDER.flatMap(rg => {
+                const inRg = visible.filter(s => STATE_REGION[s.code] === rg);
+                if (!inRg.length) return [];
+                return [
+                  <li key={`head-${rg}`} className="stateselect-modal__region-head" aria-hidden="true">{rg}</li>,
+                  ...inRg.map(s => renderStateItem(s, false)),
+                ];
+              })
+            : visible.map(s => renderStateItem(s, true))}
         </ul>
       </div>
     </>
@@ -2091,7 +2106,7 @@ function StateSelectorModal({ states, onPick, onClose }) {
 // state's bounds with a pin per park. Mirrors the national-park flow:
 // pin → click → opens StateParkPanel (which stacks above this overlay).
 // Renders its own MapContainer so the main national-park map is untouched.
-function StateParkMap({ state, parks, stateGeo, onPickPark, onClose }) {
+function StateParkMap({ state, parks, stateGeo, onPickPark, onClose, onSwitchState }) {
   useEffect(() => {
     const h = e => { if (e.key === 'Escape') onClose(); };
     window.addEventListener('keydown', h);
@@ -2211,6 +2226,19 @@ function StateParkMap({ state, parks, stateGeo, onPickPark, onClose }) {
             · {visibleParks.length === parks.length ? `${parks.length} parks` : `${visibleParks.length} of ${parks.length}`}
           </span>
         </div>
+        {/* Switch to another state's map without returning to the national map. */}
+        {onSwitchState && (
+          <select
+            className="statemap-overlay__stateswitch"
+            aria-label="Switch to another state"
+            value={state.code}
+            onChange={e => { if (e.target.value !== state.code) onSwitchState(e.target.value); }}
+          >
+            {STATE_PARK_STATES.slice().sort((a, b) => a.name.localeCompare(b.name)).map(s => (
+              <option key={s.code} value={s.code}>{s.name}</option>
+            ))}
+          </select>
+        )}
         {/* Clickable category filter (Park / Forest / Recreation / Preserve). */}
         <div className="statemap-overlay__filters" role="group" aria-label="Filter by park type">
           {legendCats.map(c => {
@@ -5969,6 +5997,12 @@ function AppInner() {
             state={s}
             parks={STATE_PARKS_BY_STATE[s.code] || []}
             stateGeo={stateGeoData}
+            onSwitchState={(code) => {
+              setActiveStatePark(null);   // close any open panel
+              setSelectedStateForMap(code);
+              track('state_switch', { state: code });
+              try { window.history.replaceState(null, '', `/state/${code.toLowerCase()}`); } catch {}
+            }}
             onPickPark={(p) => {
               setActiveStatePark(p);
               track('state_park_open', { park: p.name, state: s.code });
