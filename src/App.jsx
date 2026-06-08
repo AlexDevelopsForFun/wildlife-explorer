@@ -5270,8 +5270,21 @@ function AppInner() {
   // the React popup content via createPortal so it stays in the React tree
   // and receives live state updates (popupType, popupSort, etc.)
   const [openPopup, setOpenPopup] = useState(null); // { loc }
-  // Fetch live data from all four APIs in the background
-  const { liveData, loading, loadingProgress, refreshLocation } = useLiveData(wildlifeLocations);
+
+  // NPS codes already in the static wildlifeLocations — dedupe so a park never
+  // appears twice. Then fetch the whole natural NPS system (Monuments, Seashores,
+  // Preserves, NRAs, Rivers); these load async and are wildlife-fetched on demand.
+  const existingNpsCodes = useMemo(() =>
+    new Set(wildlifeLocations.filter(l => l.npsCode).map(l => l.npsCode)),
+    []
+  );
+  const { parks: npsParks } = useNpsParks(existingNpsCodes);
+
+  // Fetch live data in the background. The combined list lets refreshLocation
+  // resolve NPS units for on-demand fetch; npsParks is empty at mount, so the
+  // once-only bulk warm-up still only touches the static parks.
+  const liveLocations = useMemo(() => [...wildlifeLocations, ...npsParks], [npsParks]);
+  const { liveData, loading, loadingProgress, refreshLocation } = useLiveData(liveLocations);
 
   const liveDataRef = useRef(liveData);
   const loadingRef  = useRef(loading);
@@ -5374,19 +5387,9 @@ function AppInner() {
     setCategorySubtype('all');
   }, []);
 
-  // NPS codes already covered by hardcoded wildlifeLocations — used to
-  // deduplicate so the same park doesn't appear twice on the map.
-  const existingNpsCodes = useMemo(() =>
-    new Set(wildlifeLocations.filter(l => l.npsCode).map(l => l.npsCode)),
-    []
-  );
+  // (existingNpsCodes + npsParks are declared above, just before useLiveData.)
 
-  // Fetch all NPS park units; deduplication against existingNpsCodes is done
-  // inside the hook. useLiveData is NOT called for these parks (wildlife data
-  // is fetched on demand when a park is opened, per the user's plan).
-  const { parks: npsParks } = useNpsParks(existingNpsCodes);
-
-  // Restore a shared deep link. Defined AFTER npsParks (it reads it). Re-runs
+  // Restore a shared deep link. Re-runs
   // until resolved because NPS units load async — a /park/nps_<code> link can
   // arrive before npsParks is populated, so we search both the static set and
   // npsParks and wait for the latter if needed (guarded so it opens once).
@@ -5429,6 +5432,17 @@ function AppInner() {
     });
     return out;
   }, [liveData]);
+
+  // Effective animals for the currently-open park. Static parks come from the
+  // map above; NPS units (not in wildlifeLocations) derive from their live data
+  // as it streams in on demand, processed through the identical pipeline.
+  const openPopupAnimals = useMemo(() => {
+    const loc = openPopup?.loc;
+    if (!loc) return [];
+    if (effectiveAnimalsByLoc[loc.id]) return effectiveAnimalsByLoc[loc.id];
+    const live = liveData[loc.id]?.animals ?? null;
+    return balanceAnimals(filterGeographicOutliers(mergeAnimals(loc.animals ?? [], live), loc.id));
+  }, [openPopup, effectiveAnimalsByLoc, liveData]);
 
   // ── Species → parks reverse index ────────────────────────────────────────
   const allSpeciesList = useMemo(() => {
@@ -5908,7 +5922,7 @@ function AppInner() {
               >×</button>
               <LocationPopup
                 location={openPopup.loc}
-                effectiveAnimals={effectiveAnimalsByLoc[openPopup.loc.id] ?? openPopup.loc.animals}
+                effectiveAnimals={openPopupAnimals}
                 season={season}
                 rarity={rarity}
                 animalType={animalType}
