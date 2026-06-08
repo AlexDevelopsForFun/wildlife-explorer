@@ -4513,7 +4513,7 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
           <span className="lp__state">{location.state}</span>
           {parkStyle && (
             <span className="lp__park-badge" style={{ background: parkStyle.bg }}>
-              {parkStyle.label}
+              {location.npsKind ? `🏔️ ${location.npsKind}` : parkStyle.label}
             </span>
           )}
         </div>
@@ -5055,7 +5055,7 @@ function MapLegend() {
     <div className="map-legend">
       <div className="map-legend__item">
         <div className="map-legend__swatch" style={{ borderColor: PARK_COLORS.nationalPark }}>🏔️</div>
-        <span className="map-legend__label">National Park</span>
+        <span className="map-legend__label">National Park Service</span>
       </div>
     </div>
   );

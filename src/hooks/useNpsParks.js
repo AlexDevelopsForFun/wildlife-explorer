@@ -10,24 +10,50 @@
 
 import { useState, useEffect } from 'react';
 
-// v3 — tightened to exactly two designations; busts v2 cache
-const CACHE_KEY = 'wm_nps_parks_v3';
+// v4 — broadened from 2 designations to the whole NATURAL NPS system (parks,
+// monuments, preserves, seashores, lakeshores, recreation areas, reserves,
+// rivers/riverways); busts v3 cache. Purely cultural/historic units
+// (battlefields, memorials, historic sites/parks, parkways, trails) stay out.
+const CACHE_KEY = 'wm_nps_parks_v4';
 const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
 
-// Exactly two designation strings qualify as true National Parks.
-// 'National Parks' (plural) and all others are excluded.
-const NP_DESIGNATIONS = new Set([
-  'National Park',
-  'National Park & Preserve',
-]);
+// A unit qualifies if its designation names a natural land/water type AND isn't
+// a cultural/historic designation. This is wildlife-first: we want the habitats,
+// not the monuments-to-people.
+const NP_INCLUDE = [
+  'national park', 'national monument', 'national preserve', 'national seashore',
+  'national lakeshore', 'national recreation area', 'national reserve',
+  'national river', 'scenic river', 'scenic riverway', 'wild and scenic river', 'wild river',
+];
+const NP_EXCLUDE = [
+  'historic', 'memorial', 'battlefield', 'military', 'cemetery',
+  'heritage', 'parkway', 'scenic trail', 'historic trail',
+];
+// Map a full designation string to a short kind, for the UI/legend.
+const NP_KIND = (d = '') => {
+  const s = d.toLowerCase();
+  if (s.includes('national park')) return 'National Park';
+  if (s.includes('monument')) return 'National Monument';
+  if (s.includes('seashore')) return 'National Seashore';
+  if (s.includes('lakeshore')) return 'National Lakeshore';
+  if (s.includes('preserve')) return 'National Preserve';
+  if (s.includes('recreation area')) return 'National Recreation Area';
+  if (s.includes('reserve')) return 'National Reserve';
+  if (s.includes('river')) return 'National River';
+  return 'National Park Unit';
+};
+function npsQualifies(designation = '') {
+  const d = designation.toLowerCase();
+  return NP_INCLUDE.some(p => d.includes(p)) && !NP_EXCLUDE.some(p => d.includes(p));
+}
 
 /**
  * Convert one NPS API park record into the app's location shape.
- * Returns null for non-National-Park designations or missing coordinates.
+ * Returns null for non-natural designations or missing coordinates.
  */
 function parkToLocation(park) {
-  // Reject anything that isn't a true National Park designation
-  if (!NP_DESIGNATIONS.has(park.designation)) return null;
+  // Reject cultural/historic units and anything without a natural designation.
+  if (!npsQualifies(park.designation)) return null;
 
   const lat = parseFloat(park.latitude);
   const lng = parseFloat(park.longitude);
@@ -47,6 +73,7 @@ function parkToLocation(park) {
     stateCodes,
     description: park.description ?? '',
     designation: park.designation ?? '',
+    npsKind:     NP_KIND(park.designation),  // short type for UI (Monument/Seashore/…)
     url:         park.url ?? '',
     animals:     [],    // populated by useLiveData if this park is opened
     _fromNpsApi: true,  // marker flag so App can distinguish these entries
