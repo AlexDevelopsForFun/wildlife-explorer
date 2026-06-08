@@ -5357,41 +5357,8 @@ function AppInner() {
     try { applyShareTokenFromUrl(); } catch { /* non-fatal */ }
   }, []);
 
-  // Restore a shared deep link. Re-runs until resolved because the NPS units
-  // load async — a /park/nps_<code> link can arrive before npsParks is
-  // populated, so we search both the static set and npsParks and wait for the
-  // latter if needed (guarded so it opens exactly once).
-  const deepLinkDone = useRef(false);
-  useEffect(() => {
-    if (deepLinkDone.current) return;
-    try {
-      const u = new URL(window.location.href);
-      // State-park deep links: /state-park/<state>/<id>  or  /state/<state>
-      const spMatch  = u.pathname.match(/^\/state-park\/([a-z]{2})\/([^/]+)\/?$/i);
-      const stMatch  = u.pathname.match(/^\/state\/([a-z]{2})\/?$/i);
-      if (spMatch) {
-        deepLinkDone.current = true;
-        const sp = findStatePark(spMatch[1], decodeURIComponent(spMatch[2]));
-        if (sp) { setSelectedStateForMap(spMatch[1].toUpperCase()); setActiveStatePark(sp); }
-        return;
-      }
-      if (stMatch) {
-        deepLinkDone.current = true;
-        const code = stMatch[1].toUpperCase();
-        if (STATE_PARK_STATES.some(s => s.code === code)) setSelectedStateForMap(code);
-        return;
-      }
-      // National-park / NPS-unit deep links: ?park=<id> or /park/<id>.
-      const pathMatch = u.pathname.match(/^\/park\/([^/]+)\/?$/);
-      const id = u.searchParams.get('park') || (pathMatch && decodeURIComponent(pathMatch[1]));
-      if (!id) { deepLinkDone.current = true; return; }
-      const loc = wildlifeLocations.find(l => l.id === id) || npsParks.find(l => l.id === id);
-      if (loc) { deepLinkDone.current = true; handlePopupOpen(loc); return; }
-      // An NPS unit whose data hasn't loaded yet — wait for npsParks, then retry.
-      if (npsParks.length === 0) return;
-      deepLinkDone.current = true; // unknown id — give up gracefully (just show the map)
-    } catch { deepLinkDone.current = true; }
-  }, [handlePopupOpen, npsParks]);
+  // (The shared-deep-link restore lives just below the npsParks declaration —
+  // it reads npsParks, so it must be defined after that const to avoid a TDZ.)
 
   const handleSpeciesSelect = useCallback((s) => {
     setSpeciesFilter(s.name);
@@ -5418,6 +5385,39 @@ function AppInner() {
   // inside the hook. useLiveData is NOT called for these parks (wildlife data
   // is fetched on demand when a park is opened, per the user's plan).
   const { parks: npsParks } = useNpsParks(existingNpsCodes);
+
+  // Restore a shared deep link. Defined AFTER npsParks (it reads it). Re-runs
+  // until resolved because NPS units load async — a /park/nps_<code> link can
+  // arrive before npsParks is populated, so we search both the static set and
+  // npsParks and wait for the latter if needed (guarded so it opens once).
+  const deepLinkDone = useRef(false);
+  useEffect(() => {
+    if (deepLinkDone.current) return;
+    try {
+      const u = new URL(window.location.href);
+      const spMatch  = u.pathname.match(/^\/state-park\/([a-z]{2})\/([^/]+)\/?$/i);
+      const stMatch  = u.pathname.match(/^\/state\/([a-z]{2})\/?$/i);
+      if (spMatch) {
+        deepLinkDone.current = true;
+        const sp = findStatePark(spMatch[1], decodeURIComponent(spMatch[2]));
+        if (sp) { setSelectedStateForMap(spMatch[1].toUpperCase()); setActiveStatePark(sp); }
+        return;
+      }
+      if (stMatch) {
+        deepLinkDone.current = true;
+        const code = stMatch[1].toUpperCase();
+        if (STATE_PARK_STATES.some(s => s.code === code)) setSelectedStateForMap(code);
+        return;
+      }
+      const pathMatch = u.pathname.match(/^\/park\/([^/]+)\/?$/);
+      const id = u.searchParams.get('park') || (pathMatch && decodeURIComponent(pathMatch[1]));
+      if (!id) { deepLinkDone.current = true; return; }
+      const loc = wildlifeLocations.find(l => l.id === id) || npsParks.find(l => l.id === id);
+      if (loc) { deepLinkDone.current = true; handlePopupOpen(loc); return; }
+      if (npsParks.length === 0) return;  // NPS data not loaded yet — wait & retry
+      deepLinkDone.current = true;        // unknown id — give up gracefully
+    } catch { deepLinkDone.current = true; }
+  }, [handlePopupOpen, npsParks]);
 
   // Build effective (hardcoded + live) animal list for each location,
   // then apply per-type caps so no single group dominates the popup.
