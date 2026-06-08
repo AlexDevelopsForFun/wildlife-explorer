@@ -73,6 +73,12 @@ import { STATE_PARKS_UT } from './stateParksUT.js';
 import { STATE_PARKS_NV } from './stateParksNV.js';
 import { STATE_PARKS_AZ } from './stateParksAZ.js';
 import { STATE_PARKS_NM } from './stateParksNM.js';
+import { STATE_PARKS_CA } from './stateParksCA.js';
+import { STATE_PARKS_OR } from './stateParksOR.js';
+import { STATE_PARKS_WA } from './stateParksWA.js';
+import { STATE_PARKS_TX } from './stateParksTX.js';
+import { STATE_PARKS_AK } from './stateParksAK.js';
+import { STATE_PARKS_HI } from './stateParksHI.js';
 
 export const STATE_PARKS_NJ = [
   { id: 'nj-hewitt',           name: 'Abram S. Hewitt State Forest',        lat: 41.18570453, lng: -74.331375,  radiusKm: 6,  category: 'state-forest' },
@@ -487,6 +493,38 @@ export const INAT_PLACE_IDS = {
   // New Mexico
   'nm-caballo-lake': 171591, 'nm-percha-dam': 171590, 'nm-leasburg-dam': 171594, 'nm-bottomless-lakes': 173333,
   'nm-navajo-lake': 173490, 'nm-mesilla-valley-bosque': 177360,
+  // California
+  'ca-jedediah-smith': 5839, 'ca-prairie-creek': 5860, 'ca-humboldt-redwoods': 5837, 'ca-sue-meg': 5856,
+  'ca-mackerricher': 5845, 'ca-salt-point': 3140, 'ca-sonoma-coast': 202762, 'ca-mount-tamalpais': 67043,
+  'ca-mount-diablo': 5586, 'ca-big-basin': 3176, 'ca-ano-nuevo': 111885, 'ca-angel-island': 5195,
+  'ca-tomales-bay': 3536, 'ca-julia-pfeiffer-burns': 5327, 'ca-pfeiffer-big-sur': 5734, 'ca-garrapata': 5134,
+  'ca-montana-de-oro': 5555, 'ca-morro-bay': 211953, 'ca-anza-borrego': 186405, 'ca-emerald-bay': 5827,
+  'ca-donner': 5306, 'ca-torrey-pines': 216456, 'ca-crystal-cove': 5692, 'ca-cuyamaca-rancho': 118768,
+  'ca-malibu-creek': 4006, 'ca-salton-sea': 3819, 'ca-caswell': 5439,
+  // Oregon
+  'or-fort-stevens': 94576, 'or-ecola': 118813, 'or-oswald-west': 94570, 'or-cape-lookout': 120751,
+  'or-carl-washburne': 120753, 'or-shore-acres': 120817, 'or-cape-arago': 120866, 'or-cape-blanco': 120749,
+  'or-bullards-beach': 120748, 'or-harris-beach': 120799, 'or-ainsworth': 133283, 'or-silver-falls': 61001,
+  'or-tryon-creek': 120463, 'or-smith-rock': 137713, 'or-cove-palisades': 135865, 'or-tumalo': 133690,
+  'or-wallowa-lake': 132056, 'or-cottonwood-canyon': 132978, 'or-catherine-creek': 211218, 'or-valley-of-the-rogue': 136139,
+  'or-collier-memorial': 136414,
+  // Washington
+  'wa-cape-disappointment': 129953, 'wa-fort-worden': 124979, 'wa-fort-flagler': 158220, 'wa-twin-harbors': 214309,
+  'wa-grayland-beach': 214310, 'wa-deception-pass': 123421, 'wa-moran': 72845, 'wa-sun-lakes-dry-falls': 231977,
+  'wa-mount-spokane': 184376, 'wa-fields-spring': 186576,
+  // Texas
+  'tx-palo-duro-canyon': 91238, 'tx-caprock-canyons': 91239, 'tx-copper-breaks': 141313, 'tx-possum-kingdom': 141354,
+  'tx-dinosaur-valley': 77874, 'tx-caddo-lake': 142109, 'tx-martin-dies': 118412, 'tx-village-creek': 76874,
+  'tx-huntsville': 92764, 'tx-enchanted-rock': 141509, 'tx-pedernales-falls': 138745, 'tx-lost-maples': 138752,
+  'tx-garner': 63524, 'tx-guadalupe-river': 57513, 'tx-colorado-bend': 92948, 'tx-inks-lake': 95824,
+  'tx-south-llano-river': 154050, 'tx-government-canyon': 95823, 'tx-palmetto': 119815, 'tx-goose-island': 141277,
+  'tx-mustang-island': 122262, 'tx-galveston-island': 131962, 'tx-sea-rim': 142108, 'tx-brazos-bend': 122244,
+  'tx-estero-llano-grande': 75980, 'tx-falcon': 141375, 'tx-choke-canyon': 141405, 'tx-davis-mountains': 90978,
+  'tx-balmorhea': 112953, 'tx-franklin-mountains': 120120, 'tx-big-bend-ranch': 140438,
+  // Alaska
+  'ak-kachemak-bay': 71078,
+  // Hawaii
+  'hi-iao-valley': 117677, 'hi-waianapanapa': 122279,
 };
 
 // Curated naturalist highlights for the flagship NJ parks — the "what makes
@@ -703,6 +741,25 @@ export const STATE_PARK_HIGHLIGHTS = {
   // New Mexico flagships.
   'nm-bottomless-lakes': "New Mexico's first state park — a chain of deep karst sinkhole lakes along the Pecos bluffs, drawing wintering waterfowl to the Chihuahuan desert.",
   'nm-percha-dam': 'A small cottonwood bosque below a Rio Grande diversion dam — one of the Southwest\'s legendary migration birding hotspots for flycatchers, warblers, and vagrants.',
+  // California flagships.
+  'ca-ano-nuevo': 'Site of the largest mainland breeding colony of northern elephant seals — thousands haul out to battle and breed, alongside sea lions and shorebirds.',
+  'ca-point-lobos': '"The greatest meeting of land and water in the world" — sea otters, harbor seals, and migrating gray whales below Monterey cypress headlands.',
+  'ca-anza-borrego': "California's largest state park — 600,000 acres of Colorado Desert with bighorn sheep, roadrunners, spring wildflower blooms, and dark skies.",
+  // Oregon flagships.
+  'or-ecola': 'A Cannon Beach headland above Haystack Rock — tufted puffins and common murres nest on the sea stacks while gray whales pass offshore.',
+  'or-smith-rock': 'Sheer welded-tuff walls above the Crooked River — golden eagles and prairie falcons nest the cliffs at the birthplace of American sport climbing.',
+  // Washington flagships.
+  'wa-deception-pass': "Washington's most-visited park, straddling churning tidal narrows — bald eagles, harbor seals, and orcas patrol the straits below old-growth bluffs.",
+  'wa-lime-kiln-point': 'Known as "Whale Watch Park" — the best shore-based spot in the country to see resident orcas, with minke whales and porpoises offshore.',
+  // Texas flagships.
+  'tx-caprock-canyons': 'Red-rock canyons on the Llano Estacado escarpment — home to the official Texas State Bison Herd, which roams the park freely, plus prairie dogs and golden eagles.',
+  'tx-brazos-bend': 'A bottomland-and-marsh refuge near Houston famous for its American alligators and 300+ bird species — herons, spoonbills, and wintering waterfowl.',
+  // Alaska flagships.
+  'ak-chugach': "Among the largest state parks in the U.S. — half a million acres of mountains on Anchorage's doorstep with Dall sheep, moose, bears, and beluga whales in Turnagain Arm.",
+  'ak-kachemak-bay': "Alaska's first state park — glaciers, spruce forest, and a rich marine bay of sea otters, puffins, and black bears reached only by boat or plane.",
+  // Hawaii flagships.
+  'hi-kokee': "High native rainforest above Waimea Canyon — among the best places to see Kauaʻi's endemic honeycreepers (ʻiʻiwi, ʻapapane) and the nēnē goose.",
+  'hi-na-pali-coast': 'Towering fluted sea cliffs on Kauaʻi\'s wild north shore — nesting seabirds, spinner dolphins, and Hawaiian monk seals along a roadless coast.',
 };
 
 // Multi-state registry. Each new state ships its own data file (same shape)
@@ -754,6 +811,12 @@ export const STATE_PARKS_BY_STATE = {
   NV: STATE_PARKS_NV,
   AZ: STATE_PARKS_AZ,
   NM: STATE_PARKS_NM,
+  CA: STATE_PARKS_CA,
+  OR: STATE_PARKS_OR,
+  WA: STATE_PARKS_WA,
+  TX: STATE_PARKS_TX,
+  AK: STATE_PARKS_AK,
+  HI: STATE_PARKS_HI,
 };
 
 // Resolve a state-park entry from a path like /state-park/nj/<id>.
