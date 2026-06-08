@@ -103,6 +103,7 @@ const COUNTY_OVERRIDE = {
   'ma-bash-bish-falls': 'US-MA-003', // Mount Washington, SW corner on the NY line → Berkshire, MA
   'wv-panther-sf': 'US-WV-047',      // Panther SF, far SW WV on the VA/KY line → McDowell, WV
   'in-falls-of-the-ohio': 'US-IN-019', // Clarksville IN, across the river from Louisville → Clark, IN
+  'az-lake-havasu': 'US-AZ-015',     // on the AZ bank of the Colorado R. (the CA border) → Mohave, AZ
 };
 
 async function countyForPark(lat, lng) {

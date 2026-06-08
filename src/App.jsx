@@ -233,6 +233,54 @@ const STATE_PARK_STATES = [
     view: { center: [35.50, -97.50], zoom: 6 },
     bounds: [[33.60, -103.05], [37.05, -94.40]],
   },
+  {
+    code: 'MT',
+    name: 'Montana',
+    view: { center: [47.00, -109.60], zoom: 6 },
+    bounds: [[44.30, -116.10], [49.05, -104.00]],
+  },
+  {
+    code: 'WY',
+    name: 'Wyoming',
+    view: { center: [43.00, -107.55], zoom: 6 },
+    bounds: [[40.95, -111.10], [45.05, -104.00]],
+  },
+  {
+    code: 'CO',
+    name: 'Colorado',
+    view: { center: [39.00, -105.55], zoom: 6 },
+    bounds: [[36.95, -109.10], [41.05, -102.00]],
+  },
+  {
+    code: 'ID',
+    name: 'Idaho',
+    view: { center: [44.40, -114.50], zoom: 6 },
+    bounds: [[41.95, -117.30], [49.05, -111.00]],
+  },
+  {
+    code: 'UT',
+    name: 'Utah',
+    view: { center: [39.30, -111.70], zoom: 6 },
+    bounds: [[36.95, -114.10], [42.05, -109.00]],
+  },
+  {
+    code: 'NV',
+    name: 'Nevada',
+    view: { center: [39.30, -116.90], zoom: 6 },
+    bounds: [[35.00, -120.05], [42.05, -114.00]],
+  },
+  {
+    code: 'AZ',
+    name: 'Arizona',
+    view: { center: [34.20, -111.70], zoom: 6 },
+    bounds: [[31.30, -114.90], [37.05, -109.00]],
+  },
+  {
+    code: 'NM',
+    name: 'New Mexico',
+    view: { center: [34.40, -106.10], zoom: 6 },
+    bounds: [[31.30, -109.10], [37.05, -103.00]],
+  },
 ];
 import { classifyAnimalSubtype, getSubtypeDefs } from './utils/subcategories';
 import {

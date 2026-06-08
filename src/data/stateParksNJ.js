@@ -65,6 +65,14 @@ import { STATE_PARKS_SD } from './stateParksSD.js';
 import { STATE_PARKS_NE } from './stateParksNE.js';
 import { STATE_PARKS_KS } from './stateParksKS.js';
 import { STATE_PARKS_OK } from './stateParksOK.js';
+import { STATE_PARKS_MT } from './stateParksMT.js';
+import { STATE_PARKS_WY } from './stateParksWY.js';
+import { STATE_PARKS_CO } from './stateParksCO.js';
+import { STATE_PARKS_ID } from './stateParksID.js';
+import { STATE_PARKS_UT } from './stateParksUT.js';
+import { STATE_PARKS_NV } from './stateParksNV.js';
+import { STATE_PARKS_AZ } from './stateParksAZ.js';
+import { STATE_PARKS_NM } from './stateParksNM.js';
 
 export const STATE_PARKS_NJ = [
   { id: 'nj-hewitt',           name: 'Abram S. Hewitt State Forest',        lat: 41.18570453, lng: -74.331375,  radiusKm: 6,  category: 'state-forest' },
@@ -444,6 +452,41 @@ export const INAT_PLACE_IDS = {
   // Oklahoma
   'ok-beavers-bend': 121267, 'ok-black-mesa': 142431, 'ok-gloss-mountain': 184917, 'ok-lake-thunderbird': 152385,
   'ok-sequoyah': 118668, 'ok-lake-texoma': 114014,
+  // Montana
+  'mt-wild-horse-island': 177292, 'mt-lone-pine': 139027, 'mt-lewis-clark-caverns': 233645, 'mt-tower-rock': 161845,
+  'mt-makoshika': 160742, 'mt-medicine-rocks': 160740, 'mt-pirogue-island': 160722,
+  // Wyoming
+  'wy-sinks-canyon': 149794, 'wy-guernsey': 187545,
+  // Colorado
+  'co-barr-lake': 92062, 'co-roxborough': 92020, 'co-castlewood-canyon': 91959, 'co-golden-gate-canyon': 91976,
+  'co-eldorado-canyon': 233963, 'co-mueller': 91999, 'co-cheyenne-mountain': 120633, 'co-chatfield': 91955,
+  'co-state-forest': 92024, 'co-steamboat-lake': 90191, 'co-sylvan-lake': 92034, 'co-lory': 153717,
+  'co-jackson-lake': 91979, 'co-john-martin': 92043, 'co-north-sterling': 92059, 'co-ridgway': 92014,
+  'co-rifle-falls': 92015, 'co-crawford': 91967, 'co-highline-lake': 91978, 'co-navajo': 92001,
+  'co-lake-pueblo': 92007, 'co-lathrop': 91997, 'co-trinidad-lake': 92035,
+  // Idaho
+  'id-priest-lake': 219062, 'id-farragut': 218230, 'id-heyburn': 121578, 'id-round-lake': 211359,
+  'id-dworshak': 177838, 'id-hells-gate': 186918, 'id-winchester-lake': 189253, 'id-ponderosa': 182087,
+  'id-lake-cascade': 227947, 'id-bruneau-dunes': 128310, 'id-eagle-island': 166581, 'id-lucky-peak': 173769,
+  'id-three-island': 195910, 'id-thousand-springs': 173743, 'id-massacre-rocks': 128624, 'id-lake-walcott': 182443,
+  'id-castle-rocks': 128197, 'id-bear-lake': 218233, 'id-harriman': 119781, 'id-henrys-lake': 218985,
+  // Utah
+  'ut-antelope-island': 190045, 'ut-willard-bay': 171577, 'ut-hyrum': 171356, 'ut-wasatch-mountain': 171929,
+  'ut-jordanelle': 171927, 'ut-deer-creek': 171930, 'ut-utah-lake': 179339, 'ut-rockport': 171926,
+  'ut-snow-canyon': 171579, 'ut-sand-hollow': 171582, 'ut-coral-pink-dunes': 174274, 'ut-goblin-valley': 171458,
+  'ut-dead-horse-point': 66616, 'ut-green-river': 182141, 'ut-scofield': 171931,
+  // Nevada
+  'nv-valley-of-fire': 74200, 'nv-spring-mountain-ranch': 119064, 'nv-floyd-lamb': 194648, 'nv-big-bend-colorado': 119050,
+  'nv-cathedral-gorge': 119051, 'nv-cave-lake': 119052, 'nv-kershaw-ryan': 119057, 'nv-echo-canyon': 119054,
+  'nv-spring-valley': 119065, 'nv-berlin-ichthyosaur': 119049, 'nv-lake-tahoe': 119059, 'nv-washoe-lake': 119070,
+  'nv-dayton': 119053, 'nv-walker-lake': 119068, 'nv-south-fork': 119063, 'nv-rye-patch': 119062,
+  // Arizona
+  'az-catalina': 167318, 'az-patagonia-lake': 147280, 'az-kartchner-caverns': 132180, 'az-picacho-peak': 130445,
+  'az-lost-dutchman': 144152, 'az-boyce-thompson': 182260, 'az-dead-horse-ranch': 129856, 'az-tonto-natural-bridge': 192755,
+  'az-lake-havasu': 219564, 'az-oracle': 228074,
+  // New Mexico
+  'nm-caballo-lake': 171591, 'nm-percha-dam': 171590, 'nm-leasburg-dam': 171594, 'nm-bottomless-lakes': 173333,
+  'nm-navajo-lake': 173490, 'nm-mesilla-valley-bosque': 177360,
 };
 
 // Curated naturalist highlights for the flagship NJ parks — the "what makes
@@ -636,6 +679,30 @@ export const STATE_PARK_HIGHLIGHTS = {
   'ok-black-mesa': "Oklahoma's highest point in the far panhandle — a mesa-and-shortgrass meeting of Rocky Mountain and plains species, from pronghorn to piñon-juniper birds.",
   'ok-beavers-bend': 'Deep in the Ouachita pine-hardwood forest along the Mountain Fork River — clear trout water, white-tailed deer, and breeding warblers under towering pines.',
   'ok-great-salt-plains': 'A glittering expanse of salt flats and a shallow lake on the Central Flyway — selenite crystals below and clouds of shorebirds, gulls, and migrating waterfowl above.',
+  // Montana flagships.
+  'mt-wild-horse-island': 'A roadless island in Flathead Lake reached only by boat — bighorn sheep, mule deer, wild horses, and bald eagles on a Palouse-prairie remnant.',
+  'mt-makoshika': "Montana's largest state park — eroded badlands of pine-dotted buttes that have yielded Tyrannosaurus and Triceratops fossils, with prairie falcons and golden eagles overhead.",
+  // Wyoming flagships.
+  'wy-hot-springs': "Home to one of the world's largest mineral hot springs and a free-roaming bison herd, where the Bighorn River cuts terraces of travertine.",
+  'wy-sinks-canyon': 'A Wind River Mountains canyon where the Popo Agie River vanishes into a cave (the Sinks) and rises again downstream (the Rise) — bighorn sheep and nesting raptors on the cliffs.',
+  // Colorado flagships.
+  'co-state-forest': "The self-styled \"Moose Capital of Colorado\" — some 600 moose roam spruce-fir forest and willow flats below the Never Summer Mountains.",
+  'co-barr-lake': 'A prairie reservoir ringed by cottonwoods where bald eagles nest — one of the Front Range\'s premier birding spots, with grebes, pelicans, and wintering raptors.',
+  // Idaho flagships.
+  'id-bruneau-dunes': 'Holds the tallest single-structure sand dune in North America (~470 ft) beside spring-fed desert lakes — kangaroo rats, raptors, and a dark-sky observatory.',
+  'id-harriman': 'A former cattle ranch turned wildlife refuge on the Henrys Fork — wintering trumpeter swans, elk, moose, and sandhill cranes in the Greater Yellowstone ecosystem.',
+  // Utah flagships.
+  'ut-antelope-island': "The Great Salt Lake's largest island — a free-roaming bison herd, pronghorn, and bighorn, ringed by brine flats that feed millions of phalaropes, grebes, and shorebirds.",
+  'ut-dead-horse-point': 'A 2,000-foot mesa-top overlook above a gooseneck of the Colorado River in canyon country — desert bighorn below and a dark-sky park above.',
+  // Nevada flagships.
+  'nv-valley-of-fire': "Nevada's oldest state park — flaming-red Aztec sandstone and ancient petroglyphs, home to desert bighorn sheep, chuckwallas, and kit foxes.",
+  'nv-cathedral-gorge': 'A narrow valley of soft bentonite clay eroded into cathedral-like spires and slot canyons — a desert maze for wrens, raptors, and lizards.',
+  // Arizona flagships.
+  'az-patagonia-lake': 'A spring-and-creek-fed lake in the Sky Island country — premier southeast Arizona birding for elegant trogon, vermilion flycatcher, and rare Mexican strays.',
+  'az-catalina': 'Saguaro-forest foothills of the Santa Catalina Mountains north of Tucson — nearly 5,000 saguaros, canyon streams, and Gila monsters, with rich desert and riparian birding.',
+  // New Mexico flagships.
+  'nm-bottomless-lakes': "New Mexico's first state park — a chain of deep karst sinkhole lakes along the Pecos bluffs, drawing wintering waterfowl to the Chihuahuan desert.",
+  'nm-percha-dam': 'A small cottonwood bosque below a Rio Grande diversion dam — one of the Southwest\'s legendary migration birding hotspots for flycatchers, warblers, and vagrants.',
 };
 
 // Multi-state registry. Each new state ships its own data file (same shape)
@@ -679,6 +746,14 @@ export const STATE_PARKS_BY_STATE = {
   NE: STATE_PARKS_NE,
   KS: STATE_PARKS_KS,
   OK: STATE_PARKS_OK,
+  MT: STATE_PARKS_MT,
+  WY: STATE_PARKS_WY,
+  CO: STATE_PARKS_CO,
+  ID: STATE_PARKS_ID,
+  UT: STATE_PARKS_UT,
+  NV: STATE_PARKS_NV,
+  AZ: STATE_PARKS_AZ,
+  NM: STATE_PARKS_NM,
 };
 
 // Resolve a state-park entry from a path like /state-park/nj/<id>.
