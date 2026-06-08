@@ -540,9 +540,17 @@ function MarkerLayer({ locations, icons, onPopupOpen, onPopupClose }) {
     // the click-to-open-popup behavior. Skip binding on touch-only devices.
     const isTouchOnly = window.matchMedia?.('(hover: none)').matches ?? false;
 
+    // locations changed (e.g. the async NPS units just loaded, growing the list
+    // well past the icon snapshot captured at mount) — refresh the icon map so
+    // every current id resolves to a real icon. Effect 2 then applies the
+    // zoom-tier visuals. The `?? createPinIcon(...)` is a belt-and-suspenders
+    // guard so a marker can never be created with an undefined icon (Leaflet
+    // throws on createIcon of undefined).
+    iconsRef.current = icons;
+
     const newMarkers = {};
     locations.forEach(loc => {
-      const marker = L.marker([loc.lat, loc.lng], { icon: iconsRef.current[loc.id] });
+      const marker = L.marker([loc.lat, loc.lng], { icon: iconsRef.current[loc.id] ?? createPinIcon(loc.locationType) });
       marker.on('click', () => onOpenRef.current(loc));
       if (!isTouchOnly) {
         marker.bindTooltip(loc.name, {
