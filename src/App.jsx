@@ -9,6 +9,7 @@ import { SpeedInsights } from '@vercel/speed-insights/react';
 import { track } from '@vercel/analytics';
 
 import { wildlifeLocations, SEASONS, RARITY, ANIMAL_TYPES, STATE_NAMES } from './wildlifeData';
+import { NATIONAL_WILDLIFE_REFUGES } from './data/nationalWildlifeRefuges.js';
 import { STATE_PARKS_NJ, STATE_PARKS_BY_STATE, findStatePark, INAT_PLACE_IDS, STATE_PARK_HIGHLIGHTS } from './data/stateParksNJ';
 import { PARK_COUNTY, COUNTY_BIRD_FREQ } from './data/stateParkBirdFreq';
 
@@ -349,8 +350,8 @@ import { recordSighting, clearSighting, getSightingVerdict, exportSightings, get
 import { fetchParkSightings, postSighting, sightingsBucketKey } from './services/sightingsService.js';
 
 // ── Park type colors & icons ──────────────────────────────────────────────────
-const PARK_COLORS = { nationalPark: '#7B5B2E' };
-const PARK_ICONS  = { nationalPark: '⛰️' };
+const PARK_COLORS = { nationalPark: '#7B5B2E', wildlifeRefuge: '#1f6f6f' };
+const PARK_ICONS  = { nationalPark: '⛰️', wildlifeRefuge: '🦆' };
 
 // Per-NPS-kind marker emoji (national map). A distinct emoji per designation is
 // a colour-independent cue, mirroring the state-park category markers. Order
@@ -365,6 +366,7 @@ const NPS_KIND_EMOJI = {
   'National Reserve':         '🌾',
   'National River':           '🏞️',
   'National Park Unit':       '⛰️',
+  'Wildlife Refuge':          '🦆',   // USFWS — opt-in layer, off by default
 };
 const NPS_KIND_ORDER = Object.keys(NPS_KIND_EMOJI);
 const npsKindOf  = (loc) => loc?.npsKind || 'National Park';   // static 63 have no npsKind → all are NPs
@@ -378,7 +380,8 @@ const STATE_CAT_EMOJI = {
 
 // ── Park type badge styles (used in popup header) ─────────────────────────────
 const PARK_TYPE_STYLES = {
-  nationalPark: { bg: '#7B5B2E', label: '🏔️ National Park' },
+  nationalPark:   { bg: '#7B5B2E', label: '🏔️ National Park' },
+  wildlifeRefuge: { bg: '#1f6f6f', label: '🦆 Wildlife Refuge' },
 };
 
 // ── Circular marker icon factory ──────────────────────────────────────────────
@@ -5163,7 +5166,7 @@ function MapLegend({ kinds, hiddenKinds, onToggle, onBrowseStateParks }) {
   if (!kinds?.length) return null;
   return (
     <div className="map-legend">
-      <div className="map-legend__title">National Park Service — tap a type to filter</div>
+      <div className="map-legend__title">Federal lands — tap a type to filter</div>
       <div className="map-legend__chips" role="group" aria-label="Filter by park type">
         {kinds.map(({ kind, emoji, count }) => {
           const on = !hiddenKinds.has(kind);
@@ -5405,7 +5408,7 @@ function AppInner() {
   // Fetch live data in the background. The combined list lets refreshLocation
   // resolve NPS units for on-demand fetch; npsParks is empty at mount, so the
   // once-only bulk warm-up still only touches the static parks.
-  const liveLocations = useMemo(() => [...wildlifeLocations, ...npsParks], [npsParks]);
+  const liveLocations = useMemo(() => [...wildlifeLocations, ...npsParks, ...NATIONAL_WILDLIFE_REFUGES], [npsParks]);
   const { liveData, loading, loadingProgress, refreshLocation } = useLiveData(liveLocations);
 
   const liveDataRef = useRef(liveData);
@@ -5487,7 +5490,7 @@ function AppInner() {
   // Combined national + state index for "parks near me" (all kinds, regardless
   // of the current map filter — you want the genuinely nearest site).
   const nearMeIndex = useMemo(() => {
-    const nat = [...wildlifeLocations, ...npsParks].map(l => ({
+    const nat = [...wildlifeLocations, ...npsParks, ...NATIONAL_WILDLIFE_REFUGES].map(l => ({
       id: l.id, name: l.name, lat: l.lat, lng: l.lng, kind: 'national',
       emoji: npsEmojiOf(l), sub: npsKindOf(l), loc: l,
     }));
@@ -5567,7 +5570,7 @@ function AppInner() {
       const pathMatch = u.pathname.match(/^\/park\/([^/]+)\/?$/);
       const id = u.searchParams.get('park') || (pathMatch && decodeURIComponent(pathMatch[1]));
       if (!id) { deepLinkDone.current = true; return; }
-      const loc = wildlifeLocations.find(l => l.id === id) || npsParks.find(l => l.id === id);
+      const loc = wildlifeLocations.find(l => l.id === id) || npsParks.find(l => l.id === id) || NATIONAL_WILDLIFE_REFUGES.find(l => l.id === id);
       if (loc) { deepLinkDone.current = true; handlePopupOpen(loc); return; }
       if (npsParks.length === 0) return;  // NPS data not loaded yet — wait & retry
       deepLinkDone.current = true;        // unknown id — give up gracefully
@@ -5711,7 +5714,7 @@ function AppInner() {
   // on all 63 markers → Leaflet removes/inserts DOM nodes → visible flicker on every park.
   // Live/loading status is shown in the popup header instead (● Live / ↻ Refreshing…).
   const icons = useMemo(() => {
-    const allLocs = [...wildlifeLocations, ...npsParks];
+    const allLocs = [...wildlifeLocations, ...npsParks, ...NATIONAL_WILDLIFE_REFUGES];
     return Object.fromEntries(
       allLocs.map(loc => [
         loc.id,
@@ -5750,11 +5753,13 @@ function AppInner() {
     });
   }, [season, rarity, animalType, selectedState]);
 
-  // NPS API parks filtered by state (no animal filter — they
-  // have no animals array yet, so animal/season/rarity filters don't apply).
+  // NPS units + National Wildlife Refuges, filtered by state (no animal filter —
+  // they have no animals array yet, so animal/season/rarity filters don't apply).
+  // The NPS-kind filter (hiddenKinds, incl. 'Wildlife Refuge' off by default) is
+  // applied downstream in allVisibleLocations.
   const visibleNpsParks = useMemo(() =>
-    npsParks.filter(loc => {
-      if (selectedState !== 'all' && !loc.stateCodes.includes(selectedState)) return false;
+    [...npsParks, ...NATIONAL_WILDLIFE_REFUGES].filter(loc => {
+      if (selectedState !== 'all' && !(loc.stateCodes ?? []).includes(selectedState)) return false;
       return true;
     }),
     [npsParks, selectedState]
