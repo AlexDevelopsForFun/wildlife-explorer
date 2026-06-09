@@ -5145,7 +5145,9 @@ function AppInner() {
   const [rarity,       setRarity]       = useState('all');
   const [animalType,   setAnimalType]   = useState('all');
   const [selectedState, setSelectedState] = useState('all');
-  const [hiddenKinds,  setHiddenKinds]  = useState(() => new Set()); // NPS kinds toggled OFF in the legend
+  // Default to National Parks only — every other NPS kind (Monument, Preserve,
+  // Seashore, …) starts hidden, and viewers opt in via the legend filter chips.
+  const [hiddenKinds,  setHiddenKinds]  = useState(() => new Set(NPS_KIND_ORDER.filter(k => k !== 'National Park')));
   const [debugMode,    setDebugMode]    = useState(false);
 
   // Popup-local filter preferences (persist across popup open/close)
