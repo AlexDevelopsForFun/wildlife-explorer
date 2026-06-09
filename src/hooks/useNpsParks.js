@@ -17,7 +17,7 @@ import { useState, useEffect } from 'react';
 // (Statue of Liberty, pueblo ruins, forts) — so monuments are included ONLY via
 // a curated allow-list of genuinely-natural ones. This keeps the wildlife
 // habitats and drops the landmarks-to-people. Busts v4 cache.
-const CACHE_KEY = 'wm_nps_parks_v5';
+const CACHE_KEY = 'wm_nps_parks_v6';  // v6 adds hero image url to each unit
 const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
 
 // Inherently-natural designations — always wildlife-relevant.
@@ -92,23 +92,39 @@ function parkToLocation(park) {
     designation: park.designation ?? '',
     npsKind:     NP_KIND(park.designation),  // short type for UI (Monument/Seashore/…)
     url:         park.url ?? '',
+    image:       park.images?.[0]?.url ?? null,   // hero photo of the place (NPS)
+    imageAlt:    park.images?.[0]?.altText ?? park.images?.[0]?.caption ?? '',
     animals:     [],    // populated by useLiveData if this park is opened
     _fromNpsApi: true,  // marker flag so App can distinguish these entries
   };
 }
 
+// Build { parkCode: heroImageUrl } from the FULL (pre-dedup) list, so the static
+// 63 national parks (deduped out of `parks`) can still show a hero photo by code.
+function buildImageMap(locations) {
+  const m = {};
+  for (const l of locations) if (l.npsCode && l.image) m[l.npsCode] = l.image;
+  return m;
+}
+
 export function useNpsParks(excludeNpsCodes = new Set()) {
   const [parks,   setParks]   = useState([]);
+  const [npsImages, setNpsImages] = useState({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const applyData = (locations) => {
+      setNpsImages(buildImageMap(locations));
+      setParks(locations.filter(p => !excludeNpsCodes.has(p.npsCode)));
+    };
+
     // ── 1. Try cache ──────────────────────────────────────────────────────────
     try {
       const raw = localStorage.getItem(CACHE_KEY);
       if (raw) {
         const { data, ts } = JSON.parse(raw);
         if (Date.now() - ts < CACHE_TTL && Array.isArray(data)) {
-          setParks(data.filter(p => !excludeNpsCodes.has(p.npsCode)));
+          applyData(data);
           setLoading(false);
           return;
         }
@@ -128,7 +144,7 @@ export function useNpsParks(excludeNpsCodes = new Set()) {
           localStorage.setItem(CACHE_KEY, JSON.stringify({ data: locations, ts: Date.now() }));
         } catch { /* storage full */ }
 
-        setParks(locations.filter(p => !excludeNpsCodes.has(p.npsCode)));
+        applyData(locations);
       })
       .catch(() => { /* silent — map still works with just hardcoded parks */ })
       .finally(() => setLoading(false));
@@ -138,5 +154,5 @@ export function useNpsParks(excludeNpsCodes = new Set()) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return { parks, loading };
+  return { parks, loading, npsImages };
 }

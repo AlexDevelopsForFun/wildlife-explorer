@@ -352,6 +352,24 @@ import { fetchParkSightings, postSighting, sightingsBucketKey } from './services
 const PARK_COLORS = { nationalPark: '#7B5B2E' };
 const PARK_ICONS  = { nationalPark: '⛰️' };
 
+// Per-NPS-kind marker emoji (national map). A distinct emoji per designation is
+// a colour-independent cue, mirroring the state-park category markers. Order
+// here also drives the legend/filter chips.
+const NPS_KIND_EMOJI = {
+  'National Park':            '🏔️',
+  'National Monument':        '🗿',
+  'National Preserve':        '🌲',
+  'National Seashore':        '🏖️',
+  'National Lakeshore':       '⛵',
+  'National Recreation Area': '🛶',
+  'National Reserve':         '🌾',
+  'National River':           '🏞️',
+  'National Park Unit':       '⛰️',
+};
+const NPS_KIND_ORDER = Object.keys(NPS_KIND_EMOJI);
+const npsKindOf  = (loc) => loc?.npsKind || 'National Park';   // static 63 have no npsKind → all are NPs
+const npsEmojiOf = (loc) => NPS_KIND_EMOJI[npsKindOf(loc)] ?? '⛰️';
+
 // ── Park type badge styles (used in popup header) ─────────────────────────────
 const PARK_TYPE_STYLES = {
   nationalPark: { bg: '#7B5B2E', label: '🏔️ National Park' },
@@ -362,9 +380,9 @@ const PARK_TYPE_STYLES = {
 //   Tier 1 (zoom ≤ 4): 12 px colored dot — no icon, no badge, no pulse
 //   Tier 2 (zoom 5-6): 24 px circle with park emoji — no badge, no pulse
 //   Tier 3 (zoom ≥ 7): full 48 px — icon + LIVE badge + pulse animation
-function createPinIcon(locationType, isLive = false, isLoading = false, zoomTier = 3) {
+function createPinIcon(locationType, isLive = false, isLoading = false, zoomTier = 3, emoji = null) {
   const bg   = PARK_COLORS[locationType] ?? '#1a6640';
-  const icon = PARK_ICONS[locationType]  ?? '📍';
+  const icon = emoji ?? PARK_ICONS[locationType] ?? '📍';
 
   if (zoomTier === 1) {
     return L.divIcon({
@@ -550,7 +568,7 @@ function MarkerLayer({ locations, icons, onPopupOpen, onPopupClose }) {
 
     const newMarkers = {};
     locations.forEach(loc => {
-      const marker = L.marker([loc.lat, loc.lng], { icon: iconsRef.current[loc.id] ?? createPinIcon(loc.locationType) });
+      const marker = L.marker([loc.lat, loc.lng], { icon: iconsRef.current[loc.id] ?? createPinIcon(loc.locationType, false, false, 3, npsEmojiOf(loc)) });
       marker.on('click', () => onOpenRef.current(loc));
       if (!isTouchOnly) {
         marker.bindTooltip(loc.name, {
@@ -3987,7 +4005,7 @@ function RaritySpectrumBar({ animals, activeRarity, onSelectRarity }) {
   );
 }
 
-function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
+function LocationPopup({ location, heroImage, heroAlt, effectiveAnimals, season, rarity, animalType,
   isLive, sources, isLoading, debugMode, stats, cacheTs,
   loadingProgress, refreshLocation,
   popupType, setPopupType, popupSort, setPopupSort,
@@ -4516,12 +4534,16 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
   return (
     <div className="lp">
       <div className="lp__head">
+        {heroImage && (
+          <img className="lp__hero" src={heroImage} alt={heroAlt || ''} loading="lazy"
+               onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+        )}
         <div className="lp__name">{location.name}</div>
         <div className="lp__meta">
           <span className="lp__state">{location.state}</span>
           {parkStyle && (
             <span className="lp__park-badge" style={{ background: parkStyle.bg }}>
-              {location.npsKind ? `🏔️ ${location.npsKind}` : parkStyle.label}
+              {location.npsKind ? `${NPS_KIND_EMOJI[location.npsKind] ?? '🏔️'} ${location.npsKind}` : parkStyle.label}
             </span>
           )}
         </div>
@@ -5058,13 +5080,35 @@ function FilterBtn({ active, onClick, emoji, label, activeColor, title }) {
 }
 
 // ── Map legend ─────────────────────────────────────────────────────────────────
-function MapLegend() {
+function MapLegend({ kinds, hiddenKinds, onToggle, onBrowseStateParks }) {
+  if (!kinds?.length) return null;
   return (
     <div className="map-legend">
-      <div className="map-legend__item">
-        <div className="map-legend__swatch" style={{ borderColor: PARK_COLORS.nationalPark }}>🏔️</div>
-        <span className="map-legend__label">National Park Service</span>
+      <div className="map-legend__title">National Park Service — tap a type to filter</div>
+      <div className="map-legend__chips" role="group" aria-label="Filter by park type">
+        {kinds.map(({ kind, emoji, count }) => {
+          const on = !hiddenKinds.has(kind);
+          return (
+            <button
+              key={kind}
+              type="button"
+              className={`map-legend__chip${on ? ' is-active' : ''}`}
+              aria-pressed={on}
+              onClick={() => onToggle(kind)}
+              title={`${on ? 'Hide' : 'Show'} ${kind}s`}
+            >
+              <span aria-hidden="true">{emoji}</span>
+              <span className="map-legend__chip-label">{kind.replace('National ', '')}</span>
+              <span className="map-legend__chip-count">{count}</span>
+            </button>
+          );
+        })}
       </div>
+      {onBrowseStateParks && (
+        <button type="button" className="map-legend__statelink" onClick={onBrowseStateParks}>
+          This isn’t everything — also browse <strong>1,600+ State Parks</strong> in all 50 states →
+        </button>
+      )}
     </div>
   );
 }
@@ -5101,6 +5145,7 @@ function AppInner() {
   const [rarity,       setRarity]       = useState('all');
   const [animalType,   setAnimalType]   = useState('all');
   const [selectedState, setSelectedState] = useState('all');
+  const [hiddenKinds,  setHiddenKinds]  = useState(() => new Set()); // NPS kinds toggled OFF in the legend
   const [debugMode,    setDebugMode]    = useState(false);
 
   // Popup-local filter preferences (persist across popup open/close)
@@ -5278,7 +5323,7 @@ function AppInner() {
     new Set(wildlifeLocations.filter(l => l.npsCode).map(l => l.npsCode)),
     []
   );
-  const { parks: npsParks } = useNpsParks(existingNpsCodes);
+  const { parks: npsParks, npsImages } = useNpsParks(existingNpsCodes);
 
   // Fetch live data in the background. The combined list lets refreshLocation
   // resolve NPS units for on-demand fetch; npsParks is empty at mount, so the
@@ -5566,7 +5611,8 @@ function AppInner() {
         createPinIcon(
           loc.locationType, false,
           !secondaryReady && !WILDLIFE_CACHE[loc.id],  // show loading dot for unpopulated parks
-          zoomTier
+          zoomTier,
+          npsEmojiOf(loc),
         ),
       ])
     );
@@ -5612,8 +5658,27 @@ function AppInner() {
     let all = [...visibleLocations, ...visibleNpsParks];
     if (speciesFilteredParkIds)  all = all.filter(loc => speciesFilteredParkIds.has(loc.id));
     if (categoryFilteredParkIds) all = all.filter(loc => categoryFilteredParkIds.has(loc.id));
+    if (hiddenKinds.size)        all = all.filter(loc => !hiddenKinds.has(npsKindOf(loc)));
     return all;
-  }, [visibleLocations, visibleNpsParks, speciesFilteredParkIds, categoryFilteredParkIds]);
+  }, [visibleLocations, visibleNpsParks, speciesFilteredParkIds, categoryFilteredParkIds, hiddenKinds]);
+
+  // Per-NPS-kind counts for the legend/filter chips (before the kind filter, so
+  // toggling one kind doesn't change the others' counts). Ordered by NPS_KIND_ORDER.
+  const npsKindCounts = useMemo(() => {
+    const counts = {};
+    for (const loc of [...visibleLocations, ...visibleNpsParks]) {
+      const k = npsKindOf(loc);
+      counts[k] = (counts[k] ?? 0) + 1;
+    }
+    return NPS_KIND_ORDER.filter(k => counts[k]).map(k => ({ kind: k, emoji: NPS_KIND_EMOJI[k], count: counts[k] }));
+  }, [visibleLocations, visibleNpsParks]);
+  const toggleKind = useCallback((kind) => {
+    setHiddenKinds(prev => {
+      const next = new Set(prev);
+      next.has(kind) ? next.delete(kind) : next.add(kind);
+      return next;
+    });
+  }, []);
 
   const liveCount  = Object.keys(liveData).length;
 
@@ -5922,6 +5987,8 @@ function AppInner() {
               >×</button>
               <LocationPopup
                 location={openPopup.loc}
+                heroImage={openPopup.loc.image || npsImages[openPopup.loc.npsCode] || null}
+                heroAlt={openPopup.loc.imageAlt || openPopup.loc.name}
                 effectiveAnimals={openPopupAnimals}
                 season={season}
                 rarity={rarity}
@@ -5966,7 +6033,12 @@ function AppInner() {
         )}
 
         {/* Map legend — bottom-left corner */}
-        <MapLegend />
+        <MapLegend
+          kinds={npsKindCounts}
+          hiddenKinds={hiddenKinds}
+          onToggle={toggleKind}
+          onBrowseStateParks={() => setShowStateSelector(true)}
+        />
 
         {/* Species + category filter pills — stacked vertically in the centre */}
         {(speciesFilter || categoryType !== 'all') && (
