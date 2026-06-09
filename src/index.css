@@ -4377,6 +4377,35 @@ textarea:focus-visible,
 .stateselect-modal__region.is-active { background: #2f7d4f; border-color: #2f7d4f; color: #fff; }
 .stateselect-modal__region:focus-visible { outline: 2px solid #1d4ed8; outline-offset: 1px; }
 
+/* ── "Parks near me" modal ──────────────────────────────────────────────── */
+.nearme-modal {
+  position: fixed; inset: 0; z-index: 3101;
+  display: flex; flex-direction: column;
+  max-width: 460px; max-height: calc(100vh - 40px);
+  margin: 20px auto; border-radius: 22px; overflow: hidden;
+  background: linear-gradient(145deg, #071a0d 0%, #0d3824 45%, #0a2540 100%);
+  box-shadow: 0 24px 70px rgba(0,0,0,0.45);
+  animation: aboutSlideUp 0.3s ease;
+}
+.nearme-modal__head { padding: 34px 24px 14px; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: center; }
+.nearme-modal__title { font-size: 23px; font-weight: 800; color: #fff; margin: 0 0 4px; }
+.nearme-modal__sub   { font-size: 13px; color: #9bbcab; margin: 0; }
+.nearme-modal__msg   { padding: 28px 24px; text-align: center; color: #c8ddd0; font-size: 14px; line-height: 1.5; }
+.nearme-modal__list  { list-style: none; margin: 0; padding: 14px 16px 22px; overflow-y: auto; }
+.nearme-modal__item {
+  display: flex; align-items: center; gap: 12px; width: 100%;
+  padding: 11px 14px; margin-bottom: 7px; border-radius: 10px;
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14);
+  color: #eaf4ee; cursor: pointer; text-align: left;
+}
+.nearme-modal__item:hover { background: rgba(255,255,255,0.14); }
+.nearme-modal__item:focus-visible { outline: 3px solid #1d4ed8; outline-offset: 2px; }
+.nearme-modal__emoji { font-size: 20px; flex-shrink: 0; }
+.nearme-modal__text  { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.nearme-modal__name  { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nearme-modal__metaline { font-size: 11.5px; color: #9bbcab; }
+.nearme-modal__dist  { margin-left: auto; flex-shrink: 0; font-size: 13px; font-weight: 700; color: #5fd38a; }
+
 /* ── State-park interactive map (full-screen overlay) ───────────────────── */
 .statemap-overlay {
   position: fixed; inset: 0; z-index: 3050;

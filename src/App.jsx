@@ -370,6 +370,12 @@ const NPS_KIND_ORDER = Object.keys(NPS_KIND_EMOJI);
 const npsKindOf  = (loc) => loc?.npsKind || 'National Park';   // static 63 have no npsKind → all are NPs
 const npsEmojiOf = (loc) => NPS_KIND_EMOJI[npsKindOf(loc)] ?? '⛰️';
 
+// State-park category → emoji (for the mixed "near me" results list).
+const STATE_CAT_EMOJI = {
+  'state-park': '🏞️', 'state-forest': '🌲', 'recreation-area': '🛶',
+  'state-beach': '🏖️', 'state-preserve': '🦋',
+};
+
 // ── Park type badge styles (used in popup header) ─────────────────────────────
 const PARK_TYPE_STYLES = {
   nationalPark: { bg: '#7B5B2E', label: '🏔️ National Park' },
@@ -2020,6 +2026,79 @@ function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
             </>
           )}
         </div>
+      </div>
+    </>
+  );
+}
+
+// ── "Parks near me" ─────────────────────────────────────────────────────────
+// Requests the browser geolocation (client-side only — the coordinate is never
+// sent anywhere) and lists the nearest wildlife sites, national + state, by
+// great-circle distance. Works wherever you are in the US.
+function NearMeModal({ index, onPick, onClose }) {
+  const [status, setStatus]   = useState('locating'); // locating | ok | denied | error | unsupported
+  const [results, setResults] = useState([]);
+  useEffect(() => {
+    const h = e => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, [onClose]);
+  useEffect(() => {
+    if (!('geolocation' in navigator)) { setStatus('unsupported'); return; }
+    let alive = true;
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        if (!alive) return;
+        const { latitude, longitude } = pos.coords;
+        const R = 3958.8, toRad = d => d * Math.PI / 180;            // miles
+        const miFrom = (la, lo) => {
+          const dLa = toRad(la - latitude), dLo = toRad(lo - longitude);
+          const a = Math.sin(dLa / 2) ** 2 + Math.cos(toRad(latitude)) * Math.cos(toRad(la)) * Math.sin(dLo / 2) ** 2;
+          return 2 * R * Math.asin(Math.sqrt(a));
+        };
+        setResults(index.map(it => ({ ...it, miles: miFrom(it.lat, it.lng) }))
+          .sort((a, b) => a.miles - b.miles).slice(0, 20));
+        setStatus('ok');
+      },
+      err => { if (alive) setStatus(err?.code === 1 ? 'denied' : 'error'); },
+      { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 },
+    );
+    return () => { alive = false; };
+  }, [index]);
+
+  const MSG = {
+    locating:    'Finding your location…',
+    denied:      'Location permission was denied. Enable location access in your browser to see the parks nearest you.',
+    error:       'Couldn’t get your location — please try again.',
+    unsupported: 'Your browser doesn’t support location.',
+  };
+  return (
+    <>
+      <div className="about-overlay" onClick={onClose} />
+      <div className="nearme-modal" role="dialog" aria-modal="true" aria-label="Parks near me">
+        <button className="about-modal__close" onClick={onClose} aria-label="Close">X</button>
+        <div className="nearme-modal__head">
+          <h2 className="nearme-modal__title">📍 Parks near you</h2>
+          <p className="nearme-modal__sub">Nearest national &amp; state wildlife sites</p>
+        </div>
+        {status !== 'ok'
+          ? <p className="nearme-modal__msg">{MSG[status]}</p>
+          : (
+            <ul className="nearme-modal__list" aria-label="Nearest parks">
+              {results.map(it => (
+                <li key={`${it.kind}-${it.id}`}>
+                  <button className="nearme-modal__item" onClick={() => onPick(it)}>
+                    <span className="nearme-modal__emoji" aria-hidden="true">{it.emoji}</span>
+                    <span className="nearme-modal__text">
+                      <span className="nearme-modal__name">{it.name}</span>
+                      <span className="nearme-modal__metaline">{it.kind === 'national' ? it.sub : `${it.sub} · State Park`}</span>
+                    </span>
+                    <span className="nearme-modal__dist">{Math.round(it.miles)} mi</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
       </div>
     </>
   );
@@ -5259,6 +5338,7 @@ function AppInner() {
   const [showParkList, setShowParkList] = useState(false);
   // State Parks: state selector → state-zoomed map → click pin → park panel.
   const [showStateSelector, setShowStateSelector] = useState(false);
+  const [showNearMe, setShowNearMe] = useState(false);
   const [selectedStateForMap, setSelectedStateForMap] = useState(null); // state code, e.g. 'NJ'
   const [activeStatePark, setActiveStatePark] = useState(null);         // park entry
   const [aboutScrollTo, setAboutScrollTo] = useState(null);
@@ -5403,6 +5483,36 @@ function AppInner() {
       window.history.replaceState(null, '', '/');
     } catch { /* non-fatal */ }
   }, []);
+
+  // Combined national + state index for "parks near me" (all kinds, regardless
+  // of the current map filter — you want the genuinely nearest site).
+  const nearMeIndex = useMemo(() => {
+    const nat = [...wildlifeLocations, ...npsParks].map(l => ({
+      id: l.id, name: l.name, lat: l.lat, lng: l.lng, kind: 'national',
+      emoji: npsEmojiOf(l), sub: npsKindOf(l), loc: l,
+    }));
+    const st = [];
+    for (const [code, list] of Object.entries(STATE_PARKS_BY_STATE)) {
+      const stName = STATE_PARK_STATES.find(s => s.code === code)?.name ?? code;
+      for (const p of list) st.push({
+        id: p.id, name: p.name, lat: p.lat, lng: p.lng, kind: 'state',
+        emoji: STATE_CAT_EMOJI[p.category] ?? '🏞️', sub: stName, state: code, park: p,
+      });
+    }
+    return [...nat, ...st].filter(it => typeof it.lat === 'number' && typeof it.lng === 'number');
+  }, [npsParks]);
+
+  const handleNearMePick = useCallback((item) => {
+    setShowNearMe(false);
+    if (item.kind === 'national') {
+      handlePopupOpen(item.loc);
+    } else {
+      setActiveStatePark(item.park);
+      setSelectedStateForMap(item.state);
+      track('near_me_pick', { park: item.name, kind: 'state', state: item.state });
+      try { window.history.replaceState(null, '', `/state-park/${item.state.toLowerCase()}/${encodeURIComponent(item.id)}`); } catch {}
+    }
+  }, [handlePopupOpen]);
 
   // Restore a shared life-list (#list=<token>) once on mount, then strip it.
   const shareTokenDone = useRef(false);
@@ -5800,6 +5910,9 @@ function AppInner() {
 
             {/* Right actions: About + theme toggle + mobile filter toggle */}
             <div className="hdr__actions">
+              <button className="hdr__about-btn" onClick={() => { track('near_me_open'); setShowNearMe(true); }} title="Find wildlife sites near you" aria-label="Parks near me">
+                <span className="hdr__about-icon" aria-hidden="true">📍</span> Near me
+              </button>
               <button className="hdr__about-btn" onClick={() => setShowParkList(true)} title="Browse all national parks (keyboard accessible)" aria-label="Browse all parks">
                 <span className="hdr__about-icon" aria-hidden="true">⌖</span> Parks
               </button>
@@ -6087,6 +6200,13 @@ function AppInner() {
           parks={wildlifeLocations}
           onPick={(loc) => { setShowParkList(false); handlePopupOpen(loc); }}
           onClose={() => setShowParkList(false)}
+        />
+      )}
+      {showNearMe && (
+        <NearMeModal
+          index={nearMeIndex}
+          onPick={handleNearMePick}
+          onClose={() => setShowNearMe(false)}
         />
       )}
       {showStateSelector && (
