@@ -5272,14 +5272,9 @@ function AppInner() {
     setShowSplash(false);
   }, []);
 
-  // Park count per state code — used by StateParkCounts badges.
-  const locationsByState = useMemo(() => {
-    const counts = {};
-    wildlifeLocations.forEach(loc => {
-      (loc.stateCodes ?? []).forEach(code => { counts[code] = (counts[code] ?? 0) + 1; });
-    });
-    return counts;
-  }, []);
+  // (locationsByState — the per-state count for the StateParkCounts badges — is
+  // declared below, after allVisibleLocations, so it reflects the SAME filtered
+  // set the markers do.)
 
   // Toggle debug mode with D key; Escape closes the popup
   useEffect(() => {
@@ -5661,6 +5656,19 @@ function AppInner() {
     if (hiddenKinds.size)        all = all.filter(loc => !hiddenKinds.has(npsKindOf(loc)));
     return all;
   }, [visibleLocations, visibleNpsParks, speciesFilteredParkIds, categoryFilteredParkIds, hiddenKinds]);
+
+  // Per-state count for the StateParkCounts badges — derived from the SAME
+  // filtered set as the markers so a state's badge always matches the pins you
+  // see when you zoom in (previously this counted only the static parks and
+  // ignored every filter, so e.g. a "Preserve" filter still showed a state's
+  // park count).
+  const locationsByState = useMemo(() => {
+    const counts = {};
+    for (const loc of allVisibleLocations) {
+      (loc.stateCodes ?? []).forEach(code => { counts[code] = (counts[code] ?? 0) + 1; });
+    }
+    return counts;
+  }, [allVisibleLocations]);
 
   // Per-NPS-kind counts for the legend/filter chips (before the kind filter, so
   // toggling one kind doesn't change the others' counts). Ordered by NPS_KIND_ORDER.
