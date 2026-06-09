@@ -136,6 +136,11 @@ export function rarityFromFreq(freq) {
   return 'exceptional';
 }
 
+// Minimum iNaturalist research-grade observation count for a non-bird species to
+// be shown. Single-observation species are the weakest, noisiest signal (one-off
+// vagrants, escapes, misIDs); requiring ≥2 cuts that noise across every park.
+const MIN_INAT_OBS = 2;
+
 // ── Charisma correction for iNat mammal observation counts ───────────────────
 // Over-reported charismatic species inflate raw counts; divide to normalise.
 // Under-reported small/cryptic species deflate counts; multiply to compensate.
@@ -865,6 +870,11 @@ export async function fetchINat(lat, lng, locId, taxonKey = null, { radius = 20,
     const animals = results
       .filter(r => {
         const rank = r.taxon?.rank;
+        // Accuracy threshold: drop single-observation species. A lone research-grade
+        // record is the weakest, most error-prone signal (one-off vagrants, escapes,
+        // misIDs); genuine residents accumulate ≥2. Cuts noise without touching the
+        // dense, well-attested species. (eBird birds use checklist frequency, not this.)
+        if ((r.count ?? 0) < MIN_INAT_OBS) return false;
         return (rank === 'species' || rank === 'subspecies') && r.taxon?.preferred_common_name;
       })
       .map(r => {
