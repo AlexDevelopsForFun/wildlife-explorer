@@ -1789,33 +1789,60 @@ export function filterGeographicOutliers(animals, parkKey) {
   });
 }
 
-// ── Wikipedia lead image for a park ──────────────────────────────────────────
-// State parks (and refuges) have no NPS photo source, but most have a Wikipedia
-// article with a lead image. One summary call, cached 7 days; "no article /
-// no image" is cached too (sentinel) so we never re-hit misses. Disambiguation
-// pages are rejected — better no photo than the wrong one.
-export async function fetchWikiParkImage(name) {
+// ── Park hero photo (Wikipedia + Wikimedia Commons) ─────────────────────────
+// State parks (and refuges) have no NPS photo source. Strategy, accuracy-first:
+//   1. The park's Wikipedia lead image — but REJECTED when it isn't an actual
+//      photo of the place (locator maps, logos, seals, plaques, highway signs,
+//      diagrams, SVG/graphics — common as infobox images and they look awful
+//      as heroes; that was the "photos suck" bug).
+//   2. Fallback: Wikimedia Commons GEOSEARCH — openly-licensed photos actually
+//      taken within ~2.5 km of the park's coordinates, same junk filter.
+//   3. Nothing — the panel renders without a hero (better than a wrong image).
+// Cached 7 days incl. misses (sentinel). v2 key: v1 cached the junk images.
+const _JUNK_IMG = /\b(map|locator|logo|seal|crest|coat[_ ]of[_ ]arms|flag|plaque|marker|sign|signage|diagram|chart|layout|plan|emblem|icon|banner|brochure|poster|nrhp|svg)\b|\.svg(\?|$)/i;
+const _isPhotoFile = (url) => /\.jpe?g(\?|$)/i.test(url ?? '') && !_JUNK_IMG.test(decodeURIComponent(url ?? ''));
+
+export async function fetchWikiParkImage(name, lat = null, lng = null) {
   if (!name) return null;
-  const cacheKey = `wiki_img_v1_${name.toLowerCase().replace(/[^a-z0-9]+/g, '_')}`;
+  const cacheKey = `wiki_img_v2_${name.toLowerCase().replace(/[^a-z0-9]+/g, '_')}`;
   const cached = cacheGet(cacheKey);
   if (cached) return cached === '__none__' ? null : cached;
+  let src = null;
+  // 1) Wikipedia lead image, junk-filtered.
   try {
     const title = encodeURIComponent(name.replace(/ /g, '_'));
     const r = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${title}`);
-    if (!r.ok) { cacheSet(cacheKey, '__none__'); return null; }
-    const j = await r.json();
-    let src = null;
-    if (j.type !== 'disambiguation' && j.thumbnail?.source) {
-      // The summary thumbnail is ~320px; re-request at hero width (capped at
-      // the original's own width so the thumbor service can't 404).
-      const w = Math.min(960, j.originalimage?.width || 640);
-      src = /\/\d+px-/.test(j.thumbnail.source)
-        ? j.thumbnail.source.replace(/\/\d+px-/, `/${w}px-`)
-        : j.thumbnail.source;
+    if (r.ok) {
+      const j = await r.json();
+      if (j.type !== 'disambiguation' && j.thumbnail?.source && _isPhotoFile(j.thumbnail.source)) {
+        // The summary thumbnail is ~320px; re-request at hero width (capped at
+        // the original's own width so the thumbor service can't 404).
+        const w = Math.min(960, j.originalimage?.width || 640);
+        src = /\/\d+px-/.test(j.thumbnail.source)
+          ? j.thumbnail.source.replace(/\/\d+px-/, `/${w}px-`)
+          : j.thumbnail.source;
+      }
     }
-    cacheSet(cacheKey, src ?? '__none__');
-    return src;
-  } catch { return null; }
+  } catch { /* fall through to Commons */ }
+  // 2) Commons geosearch: real photos taken AT the park.
+  if (!src && lat != null && lng != null) {
+    try {
+      const u = `https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*` +
+        `&generator=geosearch&ggscoord=${lat}%7C${lng}&ggsradius=2500&ggslimit=12&ggsnamespace=6` +
+        `&prop=imageinfo&iiprop=url&iiurlwidth=960`;
+      const r = await fetch(u);
+      if (r.ok) {
+        const j = await r.json();
+        const pages = Object.values(j?.query?.pages ?? {});
+        const cand = pages
+          .map(p => ({ title: p.title ?? '', info: p.imageinfo?.[0] }))
+          .filter(p => p.info?.thumburl && _isPhotoFile(p.info.url) && !_JUNK_IMG.test(p.title));
+        if (cand.length) src = cand[0].info.thumburl;
+      }
+    } catch { /* no hero */ }
+  }
+  cacheSet(cacheKey, src ?? '__none__');
+  return src;
 }
 
 // ── eBird notable (rare-bird alerts) ─────────────────────────────────────────

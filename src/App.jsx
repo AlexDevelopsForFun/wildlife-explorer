@@ -1218,6 +1218,23 @@ function LifeListModal({ onClose }) {
                   onClick={() => { track('lifelist_export'); exportLifeList(); }}>
                   ↓ Export JSON
                 </button>
+                <button className="lifelist-modal__export"
+                  onClick={() => {
+                    track('lifelist_export_csv');
+                    const esc = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+                    const rows = getLifeList().map(s => [
+                      esc(s.name), esc(s.scientificName),
+                      esc(s.firstParkName), esc((() => { try { return new Date(s.ts).toISOString().slice(0, 10); } catch { return ''; } })()),
+                    ].join(','));
+                    const csv = ['Species,Scientific name,First seen at,Date', ...rows].join('\r\n');
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+                    a.download = 'wildlife-life-list.csv';
+                    a.click();
+                    URL.revokeObjectURL(a.href);
+                  }}>
+                  ↓ Export CSV
+                </button>
                 <button className="lifelist-modal__export" onClick={onCopyLink}>
                   {linkCopied ? '✓ Link copied' : '🔗 Copy restore link'}
                 </button>
@@ -1351,7 +1368,7 @@ function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
   useEffect(() => {
     let alive = true;
     setWikiHero(null);
-    fetchWikiParkImage(park.name).then(src => { if (alive) setWikiHero(src); });
+    fetchWikiParkImage(park.name, park.lat, park.lng).then(src => { if (alive) setWikiHero(src); });
     return () => { alive = false; };
   }, [park.id]);
   const [seenVersion, setSeenVersion] = useState(0);
@@ -1543,9 +1560,31 @@ function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
         }
 
         if (!alive) return;
-        const animals = finalize();
+        let animals = finalize();
+        let countySeeded = false;
+        if (!animals.length && countyFreq) {
+          // Live-empty fallback — vast wilderness units (Adirondack-class) whose
+          // centroid has no geotagged observations nearby. Seed the panel from
+          // the county's eBird checklist-frequency data: same species, same
+          // rarity scale the live path would assign, clearly labelled below.
+          countySeeded = true;
+          animals = Object.entries(countyFreq)
+            .filter(([n]) => !n.startsWith('__'))
+            .sort((a, b) => (b[1].f ?? 0) - (a[1].f ?? 0))
+            .slice(0, 80)
+            .map(([n, e]) => ({
+              name: n.replace(/(^|[\s-])\w/g, c => c.toUpperCase()),
+              animalType: 'bird',
+              frequency: e.f,
+              rarity: rarityFromChecklist(e.f),
+              seasons: e.s,
+              _raritySource: 'ebird_county_freq',
+              _countySeeded: true,
+            }));
+          if (animals.length && !sources.includes('ebird')) sources.push('ebird');
+        }
         const stats = { ebirdChecklists, ebirdHistoricalSpecies: ebirdHistoricalSpecies || null, inatObservations };
-        setState({ status: animals.length ? 'ok' : 'empty', species: animals, total: animals.length, sources, stats, partial: false });
+        setState({ status: animals.length ? 'ok' : 'empty', species: animals, total: animals.length, sources, stats, partial: false, countySeeded });
       } catch {
         if (alive) setState({ status: 'error', species: [], total: 0, sources: [], stats: null });
       }
@@ -1870,12 +1909,20 @@ function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
                   <p className="statepark-modal__highlight-text">{STATE_PARK_HIGHLIGHTS[park.id]}</p>
                 </div>
               )}
-              <div className="statepark-modal__banner" role="note">
-                <strong>Live from eBird + iNaturalist.</strong> Rarity is derived the same
-                way as national parks{STATE_PARK_HIGHLIGHTS[park.id]
-                  ? '.'
-                  : '. State parks have no NPS curated species inventory, so that section isn’t shown.'}
-              </div>
+              {state.countySeeded ? (
+                <div className="statepark-modal__banner" role="note">
+                  <strong>Vast wilderness unit.</strong> Too few geotagged observations near
+                  the park's center, so this shows the birds of the surrounding county
+                  (eBird historical checklists) — the species you can expect in this area.
+                </div>
+              ) : (
+                <div className="statepark-modal__banner" role="note">
+                  <strong>Live from eBird + iNaturalist.</strong> Rarity is derived the same
+                  way as national parks{STATE_PARK_HIGHLIGHTS[park.id]
+                    ? '.'
+                    : '. State parks have no NPS curated species inventory, so that section isn’t shown.'}
+                </div>
+              )}
 
               {/* Rarity spectrum — the SAME component national parks use. */}
               <RaritySpectrumBar
@@ -4163,6 +4210,19 @@ function LocationPopup({ location, heroImage, heroAlt, effectiveAnimals, season,
   const POPUP_PROGRESS_GROUPS = ['birds', 'mammals', 'reptiles', 'amphibians', 'insects', 'marine'];
   const PROGRESS_EMOJI = { birds: '🐦', mammals: '🦌', reptiles: '🐊', amphibians: '🐸', insects: '🦋', marine: '🐋' };
 
+  // Hero fallback for units with no NPS photo (refuges, a few NPS units):
+  // the same junk-filtered Wikipedia/Commons lookup the state parks use.
+  const [wikiHero, setWikiHero] = useState(null);
+  useEffect(() => {
+    if (heroImage) { setWikiHero(null); return; }
+    let alive = true;
+    setWikiHero(null);
+    fetchWikiParkImage(location.name, location.lat, location.lng)
+      .then(src => { if (alive) setWikiHero(src); });
+    return () => { alive = false; };
+  }, [location.id, heroImage]);
+  const effectiveHero = heroImage || wikiHero;
+
   const currentMonth = new Date().getMonth() + 1; // 1-12
   const monthName    = MONTH_NAMES[currentMonth - 1];
 
@@ -4680,8 +4740,8 @@ function LocationPopup({ location, heroImage, heroAlt, effectiveAnimals, season,
   return (
     <div className="lp">
       <div className="lp__head">
-        {heroImage && (
-          <img className="lp__hero" src={heroImage} alt={heroAlt || ''} loading="lazy"
+        {effectiveHero && (
+          <img className="lp__hero" src={effectiveHero} alt={heroAlt || ''} loading="lazy"
                onError={(e) => { e.currentTarget.style.display = 'none'; }} />
         )}
         <div className="lp__name">{location.name}</div>
