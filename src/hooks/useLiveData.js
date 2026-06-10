@@ -9,6 +9,7 @@ import {
   locationCacheGet, locationCacheSet,
 } from '../services/apiService';
 import { WILDLIFE_CACHE, WILDLIFE_CACHE_BUILT_AT } from '../data/wildlifeCacheLoader.js';
+import { NATIONAL_INAT_PLACE_IDS } from '../data/nationalInatPlaces.js';
 
 // ── Weekly stale-bundle eviction ──────────────────────────────────────────────
 // If the static bundle is older than 7 days, all loc_v1_* localStorage entries
@@ -294,7 +295,14 @@ export function useLiveData(locations) {
           }
         };
 
-        const inatOptions = loc.wideNet ? { radius: 50, days: 365 } : undefined;
+        // Boundary polygon (iNat place) when the unit has one — species are then
+        // counted INSIDE the park's true shape instead of a radius circle, the
+        // same accuracy upgrade the state parks with INAT_PLACE_IDS already get.
+        // Units without a resolved place keep the radius (wideNet for remote AK).
+        const placeId = NATIONAL_INAT_PLACE_IDS[loc.id] ?? null;
+        const inatOptions = placeId
+          ? { placeId }
+          : (loc.wideNet ? { radius: 50, days: 365 } : undefined);
 
         await new Promise(resolve => {
           let remaining = INAT_TAXA.length;
