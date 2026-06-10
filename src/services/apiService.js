@@ -1799,8 +1799,14 @@ export function filterGeographicOutliers(animals, parkKey) {
 //      taken within ~2.5 km of the park's coordinates, same junk filter.
 //   3. Nothing — the panel renders without a hero (better than a wrong image).
 // Cached 7 days incl. misses (sentinel). v2 key: v1 cached the junk images.
-const _JUNK_IMG = /\b(map|locator|logo|seal|crest|coat[_ ]of[_ ]arms|flag|plaque|marker|sign|signage|diagram|chart|layout|plan|emblem|icon|banner|brochure|poster|nrhp|svg)\b|\.svg(\?|$)/i;
-const _isPhotoFile = (url) => /\.jpe?g(\?|$)/i.test(url ?? '') && !_JUNK_IMG.test(decodeURIComponent(url ?? ''));
+// Normalise _ and - to spaces FIRST — filenames use underscores, so \bword\b
+// never matches "_map_" (underscore is a regex word char). Junk = anything that
+// isn't a ground-level photo of the place: locator maps, logos/seals/flags,
+// plaques/signs, diagrams, AND aerial/satellite/space imagery (Commons
+// geosearch happily returns ISS "View of Earth" shots geotagged at a coord).
+const _JUNK_IMG = /\b(map|locator|logo|seal|crest|coat of arms|flag|plaque|marker|sign|signage|diagram|chart|layout|floor plan|site plan|emblem|icon|banner|brochure|poster|nrhp|aerial|satellite|landsat|orthophoto|topographic|topo|view of earth|space station|from space)\b|\biss\d|\.svg(\?|$)/i;
+const _normImg = (s) => decodeURIComponent(s ?? '').replace(/[_-]+/g, ' ');
+const _isPhotoFile = (url) => { const n = _normImg(url); return /\.jpe?g(\?|$)/i.test(n) && !_JUNK_IMG.test(n); };
 
 export async function fetchWikiParkImage(name, lat = null, lng = null) {
   if (!name) return null;
@@ -1836,8 +1842,13 @@ export async function fetchWikiParkImage(name, lat = null, lng = null) {
         const pages = Object.values(j?.query?.pages ?? {});
         const cand = pages
           .map(p => ({ title: p.title ?? '', info: p.imageinfo?.[0] }))
-          .filter(p => p.info?.thumburl && _isPhotoFile(p.info.url) && !_JUNK_IMG.test(p.title));
-        if (cand.length) src = cand[0].info.thumburl;
+          .filter(p => p.info?.thumburl && _isPhotoFile(p.info.url) && !_JUNK_IMG.test(_normImg(p.title)));
+        // Prefer a photo whose title actually relates to the park (shares a
+        // ≥4-char word from the name) over a random geotagged image.
+        const words = name.toLowerCase().replace(/\b(state|national|park|forest|beach|preserve|recreation|area|wildlife|management|reserve)\b/g, ' ')
+          .split(/\W+/).filter(w => w.length >= 4);
+        const related = cand.find(p => { const t = p.title.toLowerCase(); return words.some(w => t.includes(w)); });
+        src = (related ?? cand[0])?.info.thumburl ?? null;
       }
     } catch { /* no hero */ }
   }
