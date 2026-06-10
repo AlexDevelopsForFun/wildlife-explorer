@@ -1911,9 +1911,9 @@ function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
               )}
               {state.countySeeded ? (
                 <div className="statepark-modal__banner" role="note">
-                  <strong>Vast wilderness unit.</strong> Too few geotagged observations near
-                  the park's center, so this shows the birds of the surrounding county
-                  (eBird historical checklists) — the species you can expect in this area.
+                  <strong>County-level bird list.</strong> Few geotagged observations were
+                  found right at this spot, so this shows the birds of the surrounding
+                  county (eBird historical checklists) — the species you can expect in this area.
                 </div>
               ) : (
                 <div className="statepark-modal__banner" role="note">
