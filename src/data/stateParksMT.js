@@ -1,32 +1,73 @@
-// Montana state parks — wildlife units (v1).
-// Coordinates from Wikidata (P625) via scripts/fetchStateParkCandidates.mjs MT
-// (Makoshika added manually — it's filtered out but is MT's largest park).
-// The Flathead/Mission lakes (W) → the SW mountains & caverns → the Missouri
-// near Great Falls → the eastern badlands. Glacier & Yellowstone are FEDERAL
-// (excluded). category → state-park 🏞️
+/**
+ * stateParksMT.js — MT state parks & wildlife areas.
+ * Curated, coordinate-verified units PLUS catalog-expansion units appended by
+ * scripts/expandStateParks.mjs (Wikidata, civic/historic + sub-parcel filtered,
+ * de-duped against the curated set). Species are fetched LIVE (eBird + iNat).
+ * Existing curated entries are preserved; expansion only appends new units.
+ */
+
 export const STATE_PARKS_MT = [
-  // ── Flathead & northwest lakes ──────────────────────────────────────────────
-  { id: 'mt-wild-horse-island', name: 'Wild Horse Island State Park', lat: 47.8417, lng: -114.2092, radiusKm: 3, category: 'state-park' },
-  { id: 'mt-lake-mary-ronan', name: 'Lake Mary Ronan State Park',     lat: 47.9272, lng: -114.3822, radiusKm: 2, category: 'state-park' },
-  { id: 'mt-whitefish-lake', name: 'Whitefish Lake State Park',       lat: 48.4250, lng: -114.3700, radiusKm: 3, category: 'state-park' },
-  { id: 'mt-lone-pine',      name: 'Lone Pine State Park',            lat: 48.1786, lng: -114.3414, radiusKm: 2, category: 'state-park' },
-  { id: 'mt-placid-lake',    name: 'Placid Lake State Park',          lat: 47.1193, lng: -113.5030, radiusKm: 2, category: 'state-park' },
-  { id: 'mt-painted-rocks',  name: 'Painted Rocks State Park',        lat: 45.6811, lng: -114.3008, radiusKm: 3, category: 'state-park' },
-  // ── Southwest mountains, caverns & headwaters ───────────────────────────────
-  { id: 'mt-bannack',        name: 'Bannack State Park',              lat: 45.1591, lng: -112.9986, radiusKm: 3, category: 'state-park' },
-  { id: 'mt-lewis-clark-caverns', name: 'Lewis and Clark Caverns State Park', lat: 45.8341, lng: -111.8627, radiusKm: 3, category: 'state-park' },
-  { id: 'mt-lost-creek',     name: 'Lost Creek State Park',           lat: 46.2039, lng: -112.9950, radiusKm: 3, category: 'state-park' },
-  { id: 'mt-missouri-headwaters', name: 'Missouri Headwaters State Park', lat: 45.9207, lng: -111.4980, radiusKm: 3, category: 'state-park' },
-  { id: 'mt-madison-buffalo-jump', name: 'Madison Buffalo Jump State Park', lat: 45.7944, lng: -111.4625, radiusKm: 2, category: 'state-park' },
-  // ── Missouri River & Great Falls (central) ──────────────────────────────────
-  { id: 'mt-giant-springs',  name: 'Giant Springs Heritage State Park', lat: 47.5344, lng: -111.2297, radiusKm: 3, category: 'state-park' },
-  { id: 'mt-sluice-boxes',   name: 'Sluice Boxes State Park',         lat: 47.1639, lng: -110.9510, radiusKm: 4, category: 'state-park' },
-  { id: 'mt-first-peoples-buffalo-jump', name: 'First Peoples Buffalo Jump State Park', lat: 47.4897, lng: -111.5290, radiusKm: 3, category: 'state-park' },
-  { id: 'mt-tower-rock',     name: 'Tower Rock State Park',           lat: 47.1889, lng: -111.8100, radiusKm: 2, category: 'state-park' },
-  // ── Eastern badlands & plains ───────────────────────────────────────────────
-  { id: 'mt-makoshika',      name: 'Makoshika State Park',            lat: 47.0833, lng: -104.6925, radiusKm: 5, category: 'state-park' },
-  { id: 'mt-medicine-rocks', name: 'Medicine Rocks State Park',       lat: 46.0444, lng: -104.4710, radiusKm: 4, category: 'state-park' },
-  { id: 'mt-pictograph-cave', name: 'Pictograph Cave State Park',     lat: 45.7375, lng: -108.4314, radiusKm: 2, category: 'state-park' },
-  { id: 'mt-greycliff-prairie-dog', name: 'Greycliff Prairie Dog Town State Park', lat: 45.7597, lng: -109.7794, radiusKm: 2, category: 'state-park' },
-  { id: 'mt-pirogue-island', name: 'Pirogue Island State Park',       lat: 46.4417, lng: -105.8225, radiusKm: 3, category: 'state-park' },
+  { id: "mt-wild-horse-island", name: "Wild Horse Island State Park", lat: 47.8417, lng: -114.2092, radiusKm: 3, category: "state-park" },
+  { id: "mt-lake-mary-ronan", name: "Lake Mary Ronan State Park", lat: 47.9272, lng: -114.3822, radiusKm: 2, category: "state-park" },
+  { id: "mt-whitefish-lake", name: "Whitefish Lake State Park", lat: 48.425, lng: -114.37, radiusKm: 3, category: "state-park" },
+  { id: "mt-lone-pine", name: "Lone Pine State Park", lat: 48.1786, lng: -114.3414, radiusKm: 2, category: "state-park" },
+  { id: "mt-placid-lake", name: "Placid Lake State Park", lat: 47.1193, lng: -113.503, radiusKm: 2, category: "state-park" },
+  { id: "mt-painted-rocks", name: "Painted Rocks State Park", lat: 45.6811, lng: -114.3008, radiusKm: 3, category: "state-park" },
+  { id: "mt-bannack", name: "Bannack State Park", lat: 45.1591, lng: -112.9986, radiusKm: 3, category: "state-park" },
+  { id: "mt-lewis-clark-caverns", name: "Lewis and Clark Caverns State Park", lat: 45.8341, lng: -111.8627, radiusKm: 3, category: "state-park" },
+  { id: "mt-lost-creek", name: "Lost Creek State Park", lat: 46.2039, lng: -112.995, radiusKm: 3, category: "state-park" },
+  { id: "mt-missouri-headwaters", name: "Missouri Headwaters State Park", lat: 45.9207, lng: -111.498, radiusKm: 3, category: "state-park" },
+  { id: "mt-madison-buffalo-jump", name: "Madison Buffalo Jump State Park", lat: 45.7944, lng: -111.4625, radiusKm: 2, category: "state-park" },
+  { id: "mt-giant-springs", name: "Giant Springs Heritage State Park", lat: 47.5344, lng: -111.2297, radiusKm: 3, category: "state-park" },
+  { id: "mt-sluice-boxes", name: "Sluice Boxes State Park", lat: 47.1639, lng: -110.951, radiusKm: 4, category: "state-park" },
+  { id: "mt-first-peoples-buffalo-jump", name: "First Peoples Buffalo Jump State Park", lat: 47.4897, lng: -111.529, radiusKm: 3, category: "state-park" },
+  { id: "mt-tower-rock", name: "Tower Rock State Park", lat: 47.1889, lng: -111.81, radiusKm: 2, category: "state-park" },
+  { id: "mt-makoshika", name: "Makoshika State Park", lat: 47.0833, lng: -104.6925, radiusKm: 5, category: "state-park" },
+  { id: "mt-medicine-rocks", name: "Medicine Rocks State Park", lat: 46.0444, lng: -104.471, radiusKm: 4, category: "state-park" },
+  { id: "mt-pictograph-cave", name: "Pictograph Cave State Park", lat: 45.7375, lng: -108.4314, radiusKm: 2, category: "state-park" },
+  { id: "mt-greycliff-prairie-dog", name: "Greycliff Prairie Dog Town State Park", lat: 45.7597, lng: -109.7794, radiusKm: 2, category: "state-park" },
+  { id: "mt-pirogue-island", name: "Pirogue Island State Park", lat: 46.4417, lng: -105.8225, radiusKm: 3, category: "state-park" },
+  { id: "mt-logan", name: "Logan State Park", lat: 48.0331, lng: -115.0664, radiusKm: 4, category: "state-park" },
+  { id: "mt-cooney", name: "Cooney State Park", lat: 45.4403, lng: -109.2147, radiusKm: 4, category: "state-park" },
+  { id: "mt-hooper", name: "Hooper State Park", lat: 46.9544, lng: -112.6708, radiusKm: 4, category: "state-park" },
+  { id: "mt-sula", name: "Sula State Forest", lat: 45.95, lng: -113.9592, radiusKm: 4, category: "state-forest" },
+  { id: "mt-big-arm", name: "Big Arm State Park", lat: 47.813, lng: -114.31, radiusKm: 4, category: "state-park" },
+  { id: "mt-elkhorn", name: "Elkhorn State Park", lat: 46.2747, lng: -111.9458, radiusKm: 4, category: "state-park" },
+  { id: "mt-granite", name: "Granite State Park", lat: 46.3175, lng: -113.2444, radiusKm: 4, category: "state-park" },
+  { id: "mt-milltown", name: "Milltown State Park", lat: 46.8713, lng: -113.8982, radiusKm: 4, category: "state-park" },
+  { id: "mt-fort-owen", name: "Fort Owen State Park", lat: 46.5195, lng: -114.097, radiusKm: 4, category: "state-park" },
+  { id: "mt-lake-elmo", name: "Lake Elmo State Park", lat: 45.839, lng: -108.477, radiusKm: 4, category: "state-park" },
+  { id: "mt-les-mason", name: "Les Mason State Park", lat: 48.4589, lng: -114.3717, radiusKm: 4, category: "state-park" },
+  { id: "mt-lincoln", name: "Lincoln State Forest", lat: 46.9333, lng: -112.6897, radiusKm: 4, category: "state-forest" },
+  { id: "mt-wayfarers", name: "Wayfarers State Park", lat: 48.0548, lng: -114.0754, radiusKm: 4, category: "state-park" },
+  { id: "mt-brush-lake", name: "Brush Lake State Park", lat: 48.6028, lng: -104.113, radiusKm: 4, category: "state-park" },
+  { id: "mt-fish-creek", name: "Fish Creek State Park", lat: 46.99, lng: -114.7158, radiusKm: 4, category: "state-park" },
+  { id: "mt-rock-creek", name: "Rock Creek State Park", lat: 47.7658, lng: -106.2881, radiusKm: 4, category: "state-park" },
+  { id: "mt-west-shore", name: "West Shore State Park", lat: 47.9789, lng: -114.1883, radiusKm: 4, category: "state-park" },
+  { id: "mt-yellow-bay", name: "Yellow Bay State Park", lat: 47.8763, lng: -114.0329, radiusKm: 4, category: "state-park" },
+  { id: "mt-ackley-lake", name: "Ackley Lake State Park", lat: 46.9578, lng: -109.941, radiusKm: 4, category: "state-park" },
+  { id: "mt-black-sandy", name: "Black Sandy State Park", lat: 46.746, lng: -111.886, radiusKm: 4, category: "state-park" },
+  { id: "mt-salmon-lake", name: "Salmon Lake State Park", lat: 47.0944, lng: -113.398, radiusKm: 4, category: "state-park" },
+  { id: "mt-clearwater", name: "Clearwater State Forest", lat: 46.9331, lng: -113.4075, radiusKm: 4, category: "state-forest" },
+  { id: "mt-coal-creek", name: "Coal Creek State Forest", lat: 48.6936, lng: -114.2922, radiusKm: 4, category: "state-forest" },
+  { id: "mt-east-rosebud", name: "East Rosebud State Park", lat: 46.2744, lng: -106.6783, radiusKm: 4, category: "state-park" },
+  { id: "mt-finley-point", name: "Finley Point State Park", lat: 47.7553, lng: -114.0822, radiusKm: 4, category: "state-park" },
+  { id: "mt-stillwater", name: "Stillwater State Forest", lat: 48.6711, lng: -114.5825, radiusKm: 4, category: "state-forest" },
+  { id: "mt-swan-river", name: "Swan River State Forest", lat: 47.7689, lng: -113.8928, radiusKm: 4, category: "state-forest" },
+  { id: "mt-west-rosebud", name: "West Rosebud State Park", lat: 46.2633, lng: -106.695, radiusKm: 4, category: "state-park" },
+  { id: "mt-council-grove", name: "Council Grove State Park", lat: 46.913, lng: -114.155, radiusKm: 4, category: "state-park" },
+  { id: "mt-thompson-falls", name: "Thompson Falls State Park", lat: 47.6175, lng: -115.391, radiusKm: 4, category: "state-park" },
+  { id: "mt-beaverhead-rock", name: "Beaverhead Rock State Park", lat: 45.3864, lng: -112.4597, radiusKm: 4, category: "state-park" },
+  { id: "mt-beavertail-hill", name: "Beavertail Hill State Park", lat: 46.7205, lng: -113.576, radiusKm: 4, category: "state-park" },
+  { id: "mt-clarks-lookout", name: "Clark's Lookout State Park", lat: 45.2361, lng: -112.6314, radiusKm: 4, category: "state-park" },
+  { id: "mt-frenchtown-pond", name: "Frenchtown Pond State Park", lat: 47.0244, lng: -114.2578, radiusKm: 4, category: "state-park" },
+  { id: "mt-thompson-river", name: "Thompson River State Forest", lat: 47.6989, lng: -114.9747, radiusKm: 4, category: "state-forest" },
+  { id: "mt-nelson", name: "Nelson State Recreation Area", lat: 48.4906, lng: -107.5303, radiusKm: 4, category: "recreation-area" },
+  { id: "mt-chief-plenty-coups", name: "Chief Plenty Coups State Park", lat: 45.4292, lng: -108.5489, radiusKm: 4, category: "state-park" },
+  { id: "mt-spring-meadow-lake", name: "Spring Meadow Lake State Park", lat: 46.6122, lng: -112.076, radiusKm: 4, category: "state-park" },
+  { id: "mt-holter-lake", name: "Holter Lake State Recreation Area", lat: 46.9931, lng: -111.9897, radiusKm: 4, category: "recreation-area" },
+  { id: "mt-tongue-river-reservoir", name: "Tongue River Reservoir State Park", lat: 45.0998, lng: -106.795, radiusKm: 4, category: "state-park" },
+  { id: "mt-devils-creek", name: "Devils Creek State Recreation Area", lat: 47.6167, lng: -107.6547, radiusKm: 4, category: "recreation-area" },
+  { id: "mt-smith-river-state-recreational-waterway", name: "Smith River State Recreational Waterway", lat: 46.951, lng: -111.2706, radiusKm: 4, category: "recreation-area" },
+  { id: "mt-flathead-lake-west-shore-unit", name: "Flathead Lake State Park - West Shore Unit", lat: 47.9494, lng: -114.1883, radiusKm: 4, category: "state-park" },
 ];

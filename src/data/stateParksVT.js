@@ -1,85 +1,110 @@
-// Vermont state parks, forests & WMAs — wildlife units (v1).
-//
-// Coordinates verified against Wikidata (P625) via a one-shot SPARQL pull of VT
-// "State Park / State Forest / Wildlife Management Area" (165 raw units), curated
-// to the wildlife destinations across every region (Lake Champlain, the Green
-// Mountains, central VT, the Groton forest block, the Northeast Kingdom, and the
-// southern lakes). Dropped: dups (Coolidge SP/SF, Camels Hump SP/SF, Quechee ×3,
-// Emerald Lake/Molly Stark/Townshend SP+SF twins), Groton sub-campgrounds
-// (Stillwater, Big Deer, New Discovery, Ricker Pond, Boulder Beach — folded into
-// Groton SF + Kettle Pond), and small/duplicate Champlain units. Grand Isle SP,
-// Camel's Hump, and Wilgus SP were re-geocoded via Nominatim (Wikidata held
-// stray coordinates copied from Button Bay / the forest / Lake St. Catherine).
-// Dead Creek WMA — VT's premier waterfowl & snow-goose staging area — included.
-// Vermont is landlocked, so there is no beach category.
-//
-// category → map emoji: state-park 🏞️ · state-forest 🌲 · state-preserve 🦋 (WMAs)
-// radiusKm is the fallback search radius; parks with an iNat place_id query the real boundary.
+/**
+ * stateParksVT.js — VT state parks & wildlife areas.
+ * Curated, coordinate-verified units PLUS catalog-expansion units appended by
+ * scripts/expandStateParks.mjs (Wikidata, civic/historic + sub-parcel filtered,
+ * de-duped against the curated set). Species are fetched LIVE (eBird + iNat).
+ * Existing curated entries are preserved; expansion only appends new units.
+ */
 
 export const STATE_PARKS_VT = [
-  // ── Lake Champlain (waterfowl, islands, Champlain Valley) ────────────────────
-  { id: 'vt-mount-philo',        name: 'Mount Philo State Park',                 lat: 44.2786, lng: -73.2164, radiusKm: 2, category: 'state-park' },
-  { id: 'vt-button-bay',         name: 'Button Bay State Park',                  lat: 44.1830, lng: -73.3504, radiusKm: 2, category: 'state-park' },
-  { id: 'vt-kingsland-bay',      name: 'Kingsland Bay State Park',               lat: 44.2360, lng: -73.3040, radiusKm: 2, category: 'state-park' },
-  { id: 'vt-dar',                name: 'D.A.R. State Park',                      lat: 44.0534, lng: -73.4123, radiusKm: 2, category: 'state-park' },
-  { id: 'vt-sand-bar',           name: 'Sand Bar State Park',                    lat: 44.6271, lng: -73.2399, radiusKm: 2, category: 'state-park' },
-  { id: 'vt-niquette-bay',       name: 'Niquette Bay State Park',                lat: 44.5919, lng: -73.1900, radiusKm: 2, category: 'state-park' },
-  { id: 'vt-grand-isle',         name: 'Grand Isle State Park',                  lat: 44.6878, lng: -73.2953, radiusKm: 2, category: 'state-park' },
-  { id: 'vt-north-hero',         name: 'North Hero State Park',                  lat: 44.9090, lng: -73.2370, radiusKm: 3, category: 'state-park' },
-  { id: 'vt-knight-point',       name: 'Knight Point State Park',                lat: 44.7714, lng: -73.2942, radiusKm: 2, category: 'state-park' },
-  { id: 'vt-burton-island',      name: 'Burton Island State Park',              lat: 44.7725, lng: -73.2049, radiusKm: 2, category: 'state-park' },
-  { id: 'vt-alburg-dunes',       name: 'Alburg Dunes State Park',               lat: 44.8758, lng: -73.2925, radiusKm: 2, category: 'state-park' },
-  { id: 'vt-kill-kare',          name: 'Kill Kare State Park',                  lat: 44.7792, lng: -73.1826, radiusKm: 2, category: 'state-park' },
-  { id: 'vt-saint-albans-bay',   name: 'Saint Albans Bay State Park',           lat: 44.8108, lng: -73.1444, radiusKm: 2, category: 'state-park' },
-
-  // ── Green Mountains (peaks, notches, alpine) ─────────────────────────────────
-  { id: 'vt-mount-mansfield-sf', name: 'Mount Mansfield State Forest',          lat: 44.5438, lng: -72.8143, radiusKm: 7, category: 'state-forest' },
-  { id: 'vt-underhill',          name: 'Underhill State Park',                  lat: 44.5305, lng: -72.8331, radiusKm: 2, category: 'state-park' },
-  { id: 'vt-smugglers-notch',    name: "Smugglers' Notch State Park",           lat: 44.5536, lng: -72.7961, radiusKm: 3, category: 'state-park' },
-  { id: 'vt-camels-hump',        name: "Camel's Hump State Park",               lat: 44.3196, lng: -72.8863, radiusKm: 5, category: 'state-park' },
-  { id: 'vt-ascutney',           name: 'Ascutney State Park',                   lat: 43.4419, lng: -72.4392, radiusKm: 3, category: 'state-park' },
-  { id: 'vt-coolidge-sf',        name: 'Calvin Coolidge State Forest',          lat: 43.5834, lng: -72.9285, radiusKm: 6, category: 'state-forest' },
-  { id: 'vt-okemo-sf',           name: 'Okemo State Forest',                    lat: 43.3992, lng: -72.7520, radiusKm: 4, category: 'state-forest' },
-  { id: 'vt-gifford-woods',      name: 'Gifford Woods State Park',              lat: 43.6762, lng: -72.8109, radiusKm: 2, category: 'state-park' },
-  { id: 'vt-jay-sf',             name: 'Jay State Forest',                      lat: 44.9250, lng: -72.5246, radiusKm: 4, category: 'state-forest' },
-  { id: 'vt-hazens-notch',       name: "Hazen's Notch State Park",              lat: 44.8444, lng: -72.5204, radiusKm: 3, category: 'state-park' },
-
-  // ── Waterbury & central Vermont ─────────────────────────────────────────────
-  { id: 'vt-little-river',       name: 'Little River State Park',               lat: 44.3899, lng: -72.7672, radiusKm: 4, category: 'state-park' },
-  { id: 'vt-waterbury-center',   name: 'Waterbury Center State Park',           lat: 44.3818, lng: -72.7296, radiusKm: 2, category: 'state-park' },
-  { id: 'vt-elmore',            name: 'Elmore State Park',                     lat: 44.5356, lng: -72.5404, radiusKm: 3, category: 'state-park' },
-  { id: 'vt-green-river-reservoir', name: 'Green River Reservoir State Park',   lat: 44.6218, lng: -72.5268, radiusKm: 4, category: 'state-park' },
-  { id: 'vt-mollys-falls-pond',  name: "Molly's Falls Pond State Park",         lat: 44.3634, lng: -72.3036, radiusKm: 2, category: 'state-park' },
-
-  // ── Groton State Forest block ───────────────────────────────────────────────
-  { id: 'vt-groton-sf',          name: 'Groton State Forest',                   lat: 44.2758, lng: -72.2794, radiusKm: 6, category: 'state-forest' },
-  { id: 'vt-kettle-pond',        name: 'Kettle Pond State Park',                lat: 44.2944, lng: -72.3078, radiusKm: 2, category: 'state-park' },
-
-  // ── Northeast Kingdom (loons, boreal, moose) ────────────────────────────────
-  { id: 'vt-maidstone',          name: 'Maidstone State Park',                  lat: 44.6387, lng: -71.6434, radiusKm: 3, category: 'state-park' },
-  { id: 'vt-brighton',           name: 'Brighton State Park',                   lat: 44.7980, lng: -71.8550, radiusKm: 3, category: 'state-park' },
-  { id: 'vt-crystal-lake',       name: 'Crystal Lake State Park',               lat: 44.7461, lng: -72.1712, radiusKm: 2, category: 'state-park' },
-  { id: 'vt-lake-carmi',         name: 'Lake Carmi State Park',                 lat: 44.9569, lng: -72.8756, radiusKm: 3, category: 'state-park' },
-  { id: 'vt-willoughby-sf',      name: 'Willoughby State Forest',               lat: 44.7037, lng: -72.1137, radiusKm: 5, category: 'state-forest' },
-  { id: 'vt-victory-sf',         name: 'Victory State Forest',                  lat: 44.5481, lng: -71.8278, radiusKm: 6, category: 'state-forest' },
-  { id: 'vt-sentinel-rock',      name: 'Sentinel Rock State Park',              lat: 44.7935, lng: -72.0325, radiusKm: 2, category: 'state-park' },
-
-  // ── Southern Vermont ────────────────────────────────────────────────────────
-  { id: 'vt-jamaica',            name: 'Jamaica State Park',                    lat: 43.1057, lng: -72.7734, radiusKm: 3, category: 'state-park' },
-  { id: 'vt-townshend',          name: 'Townshend State Park',                  lat: 43.0409, lng: -72.6924, radiusKm: 3, category: 'state-park' },
-  { id: 'vt-molly-stark',        name: 'Molly Stark State Park',                lat: 42.8508, lng: -72.8098, radiusKm: 2, category: 'state-park' },
-  { id: 'vt-woodford',           name: 'Woodford State Park',                   lat: 42.8908, lng: -73.0375, radiusKm: 3, category: 'state-park' },
-  { id: 'vt-fort-dummer',        name: 'Fort Dummer State Park',                lat: 42.8194, lng: -72.5628, radiusKm: 2, category: 'state-park' },
-  { id: 'vt-emerald-lake',       name: 'Emerald Lake State Park',               lat: 43.2798, lng: -73.0098, radiusKm: 2, category: 'state-park' },
-  { id: 'vt-lake-shaftsbury',    name: 'Lake Shaftsbury State Park',            lat: 43.0225, lng: -73.1835, radiusKm: 2, category: 'state-park' },
-  { id: 'vt-lake-st-catherine',  name: 'Lake St. Catherine State Park',         lat: 43.4803, lng: -73.2047, radiusKm: 2, category: 'state-park' },
-  { id: 'vt-bomoseen',           name: 'Bomoseen State Park',                   lat: 43.6580, lng: -73.2290, radiusKm: 3, category: 'state-park' },
-  { id: 'vt-half-moon-pond',     name: 'Half Moon Pond State Park',             lat: 43.6990, lng: -73.2230, radiusKm: 2, category: 'state-park' },
-  { id: 'vt-branbury',           name: 'Branbury State Park',                   lat: 43.9060, lng: -73.0667, radiusKm: 2, category: 'state-park' },
-  { id: 'vt-silver-lake',        name: 'Silver Lake State Park',                lat: 43.7322, lng: -72.6167, radiusKm: 2, category: 'state-park' },
-  { id: 'vt-quechee',            name: 'Quechee State Park',                    lat: 43.6368, lng: -72.4005, radiusKm: 2, category: 'state-park' },
-  { id: 'vt-wilgus',             name: 'Wilgus State Park',                     lat: 43.3909, lng: -72.4079, radiusKm: 2, category: 'state-park' },
-
-  // ── Wildlife Management Area ────────────────────────────────────────────────
-  { id: 'vt-dead-creek',         name: 'Dead Creek Wildlife Management Area',   lat: 44.0092, lng: -73.3369, radiusKm: 4, category: 'state-preserve' },
+  { id: "vt-mount-philo", name: "Mount Philo State Park", lat: 44.2786, lng: -73.2164, radiusKm: 2, category: "state-park" },
+  { id: "vt-button-bay", name: "Button Bay State Park", lat: 44.183, lng: -73.3504, radiusKm: 2, category: "state-park" },
+  { id: "vt-kingsland-bay", name: "Kingsland Bay State Park", lat: 44.236, lng: -73.304, radiusKm: 2, category: "state-park" },
+  { id: "vt-dar", name: "D.A.R. State Park", lat: 44.0534, lng: -73.4123, radiusKm: 2, category: "state-park" },
+  { id: "vt-sand-bar", name: "Sand Bar State Park", lat: 44.6271, lng: -73.2399, radiusKm: 2, category: "state-park" },
+  { id: "vt-niquette-bay", name: "Niquette Bay State Park", lat: 44.5919, lng: -73.19, radiusKm: 2, category: "state-park" },
+  { id: "vt-grand-isle", name: "Grand Isle State Park", lat: 44.6878, lng: -73.2953, radiusKm: 2, category: "state-park" },
+  { id: "vt-north-hero", name: "North Hero State Park", lat: 44.909, lng: -73.237, radiusKm: 3, category: "state-park" },
+  { id: "vt-knight-point", name: "Knight Point State Park", lat: 44.7714, lng: -73.2942, radiusKm: 2, category: "state-park" },
+  { id: "vt-burton-island", name: "Burton Island State Park", lat: 44.7725, lng: -73.2049, radiusKm: 2, category: "state-park" },
+  { id: "vt-alburg-dunes", name: "Alburg Dunes State Park", lat: 44.8758, lng: -73.2925, radiusKm: 2, category: "state-park" },
+  { id: "vt-kill-kare", name: "Kill Kare State Park", lat: 44.7792, lng: -73.1826, radiusKm: 2, category: "state-park" },
+  { id: "vt-saint-albans-bay", name: "Saint Albans Bay State Park", lat: 44.8108, lng: -73.1444, radiusKm: 2, category: "state-park" },
+  { id: "vt-mount-mansfield-sf", name: "Mount Mansfield State Forest", lat: 44.5438, lng: -72.8143, radiusKm: 7, category: "state-forest" },
+  { id: "vt-underhill", name: "Underhill State Park", lat: 44.5305, lng: -72.8331, radiusKm: 2, category: "state-park" },
+  { id: "vt-smugglers-notch", name: "Smugglers' Notch State Park", lat: 44.5536, lng: -72.7961, radiusKm: 3, category: "state-park" },
+  { id: "vt-camels-hump", name: "Camel's Hump State Park", lat: 44.3196, lng: -72.8863, radiusKm: 5, category: "state-park" },
+  { id: "vt-ascutney", name: "Ascutney State Park", lat: 43.4419, lng: -72.4392, radiusKm: 3, category: "state-park" },
+  { id: "vt-coolidge-sf", name: "Calvin Coolidge State Forest", lat: 43.5834, lng: -72.9285, radiusKm: 6, category: "state-forest" },
+  { id: "vt-okemo-sf", name: "Okemo State Forest", lat: 43.3992, lng: -72.752, radiusKm: 4, category: "state-forest" },
+  { id: "vt-gifford-woods", name: "Gifford Woods State Park", lat: 43.6762, lng: -72.8109, radiusKm: 2, category: "state-park" },
+  { id: "vt-jay-sf", name: "Jay State Forest", lat: 44.925, lng: -72.5246, radiusKm: 4, category: "state-forest" },
+  { id: "vt-hazens-notch", name: "Hazen's Notch State Park", lat: 44.8444, lng: -72.5204, radiusKm: 3, category: "state-park" },
+  { id: "vt-little-river", name: "Little River State Park", lat: 44.3899, lng: -72.7672, radiusKm: 4, category: "state-park" },
+  { id: "vt-waterbury-center", name: "Waterbury Center State Park", lat: 44.3818, lng: -72.7296, radiusKm: 2, category: "state-park" },
+  { id: "vt-elmore", name: "Elmore State Park", lat: 44.5356, lng: -72.5404, radiusKm: 3, category: "state-park" },
+  { id: "vt-green-river-reservoir", name: "Green River Reservoir State Park", lat: 44.6218, lng: -72.5268, radiusKm: 4, category: "state-park" },
+  { id: "vt-mollys-falls-pond", name: "Molly's Falls Pond State Park", lat: 44.3634, lng: -72.3036, radiusKm: 2, category: "state-park" },
+  { id: "vt-groton-sf", name: "Groton State Forest", lat: 44.2758, lng: -72.2794, radiusKm: 6, category: "state-forest" },
+  { id: "vt-kettle-pond", name: "Kettle Pond State Park", lat: 44.2944, lng: -72.3078, radiusKm: 2, category: "state-park" },
+  { id: "vt-maidstone", name: "Maidstone State Park", lat: 44.6387, lng: -71.6434, radiusKm: 3, category: "state-park" },
+  { id: "vt-brighton", name: "Brighton State Park", lat: 44.798, lng: -71.855, radiusKm: 3, category: "state-park" },
+  { id: "vt-crystal-lake", name: "Crystal Lake State Park", lat: 44.7461, lng: -72.1712, radiusKm: 2, category: "state-park" },
+  { id: "vt-lake-carmi", name: "Lake Carmi State Park", lat: 44.9569, lng: -72.8756, radiusKm: 3, category: "state-park" },
+  { id: "vt-willoughby-sf", name: "Willoughby State Forest", lat: 44.7037, lng: -72.1137, radiusKm: 5, category: "state-forest" },
+  { id: "vt-victory-sf", name: "Victory State Forest", lat: 44.5481, lng: -71.8278, radiusKm: 6, category: "state-forest" },
+  { id: "vt-sentinel-rock", name: "Sentinel Rock State Park", lat: 44.7935, lng: -72.0325, radiusKm: 2, category: "state-park" },
+  { id: "vt-jamaica", name: "Jamaica State Park", lat: 43.1057, lng: -72.7734, radiusKm: 3, category: "state-park" },
+  { id: "vt-townshend", name: "Townshend State Park", lat: 43.0409, lng: -72.6924, radiusKm: 3, category: "state-park" },
+  { id: "vt-molly-stark", name: "Molly Stark State Park", lat: 42.8508, lng: -72.8098, radiusKm: 2, category: "state-park" },
+  { id: "vt-woodford", name: "Woodford State Park", lat: 42.8908, lng: -73.0375, radiusKm: 3, category: "state-park" },
+  { id: "vt-fort-dummer", name: "Fort Dummer State Park", lat: 42.8194, lng: -72.5628, radiusKm: 2, category: "state-park" },
+  { id: "vt-emerald-lake", name: "Emerald Lake State Park", lat: 43.2798, lng: -73.0098, radiusKm: 2, category: "state-park" },
+  { id: "vt-lake-shaftsbury", name: "Lake Shaftsbury State Park", lat: 43.0225, lng: -73.1835, radiusKm: 2, category: "state-park" },
+  { id: "vt-lake-st-catherine", name: "Lake St. Catherine State Park", lat: 43.4803, lng: -73.2047, radiusKm: 2, category: "state-park" },
+  { id: "vt-bomoseen", name: "Bomoseen State Park", lat: 43.658, lng: -73.229, radiusKm: 3, category: "state-park" },
+  { id: "vt-half-moon-pond", name: "Half Moon Pond State Park", lat: 43.699, lng: -73.223, radiusKm: 2, category: "state-park" },
+  { id: "vt-branbury", name: "Branbury State Park", lat: 43.906, lng: -73.0667, radiusKm: 2, category: "state-park" },
+  { id: "vt-silver-lake", name: "Silver Lake State Park", lat: 43.7322, lng: -72.6167, radiusKm: 2, category: "state-park" },
+  { id: "vt-quechee", name: "Quechee State Park", lat: 43.6368, lng: -72.4005, radiusKm: 2, category: "state-park" },
+  { id: "vt-wilgus", name: "Wilgus State Park", lat: 43.3909, lng: -72.4079, radiusKm: 2, category: "state-park" },
+  { id: "vt-dead-creek", name: "Dead Creek Wildlife Management Area", lat: 44.0092, lng: -73.3369, radiusKm: 4, category: "state-preserve" },
+  { id: "vt-rood", name: "Rood State Park", lat: 43.8106, lng: -72.6606, radiusKm: 4, category: "state-park" },
+  { id: "vt-allis", name: "Allis State Park", lat: 44.0483, lng: -72.635, radiusKm: 4, category: "state-park" },
+  { id: "vt-lord", name: "Lord State Forest", lat: 43.4203, lng: -72.5522, radiusKm: 4, category: "state-forest" },
+  { id: "vt-monroe", name: "Monroe State Park", lat: 44.3156, lng: -72.8514, radiusKm: 4, category: "state-park" },
+  { id: "vt-boyer", name: "Boyer State Forest", lat: 44.2042, lng: -72.6196, radiusKm: 4, category: "state-forest" },
+  { id: "vt-jones", name: "Jones State Forest", lat: 44.23, lng: -72.371, radiusKm: 4, category: "state-forest" },
+  { id: "vt-big-deer", name: "Big Deer State Park", lat: 44.2872, lng: -72.2678, radiusKm: 4, category: "state-park" },
+  { id: "vt-bradbury", name: "Bradbury State Park", lat: 43.8436, lng: -73.0747, radiusKm: 4, category: "state-park" },
+  { id: "vt-coolidge", name: "Coolidge State Park", lat: 43.5531, lng: -72.7003, radiusKm: 4, category: "state-park" },
+  { id: "vt-dorand", name: "Dorand State Forest", lat: 43.1998, lng: -72.5529, radiusKm: 4, category: "state-forest" },
+  { id: "vt-downer", name: "Downer State Forest", lat: 43.7872, lng: -72.3879, radiusKm: 4, category: "state-forest" },
+  { id: "vt-lyndon", name: "Lyndon State Forest", lat: 44.4997, lng: -71.992, radiusKm: 4, category: "state-forest" },
+  { id: "vt-putnam", name: "Putnam State Forest", lat: 44.4234, lng: -72.6228, radiusKm: 4, category: "state-forest" },
+  { id: "vt-rupert", name: "Rupert State Forest", lat: 43.2367, lng: -73.129, radiusKm: 4, category: "state-forest" },
+  { id: "vt-ainsworth", name: "Ainsworth State Park", lat: 44.0747, lng: -72.5631, radiusKm: 4, category: "state-park" },
+  { id: "vt-darling", name: "Darling State Forest", lat: 44.5672, lng: -71.8956, radiusKm: 4, category: "state-forest" },
+  { id: "vt-grafton", name: "Grafton State Forest", lat: 43.1625, lng: -72.6392, radiusKm: 4, category: "state-forest" },
+  { id: "vt-hapgood", name: "Hapgood State Forest", lat: 43.2265, lng: -72.9354, radiusKm: 4, category: "state-forest" },
+  { id: "vt-roxbury", name: "Roxbury State Forest", lat: 44.0559, lng: -72.7296, radiusKm: 4, category: "state-forest" },
+  { id: "vt-law-island", name: "Law Island State Park", lat: 44.5603, lng: -73.3115, radiusKm: 4, category: "state-park" },
+  { id: "vt-arlington", name: "Arlington State Forest", lat: 43.0311, lng: -73.2027, radiusKm: 4, category: "state-forest" },
+  { id: "vt-cambridge", name: "Cambridge State Forest", lat: 44.6528, lng: -72.8753, radiusKm: 4, category: "state-forest" },
+  { id: "vt-lowell-lake", name: "Lowell Lake State Park", lat: 43.2194, lng: -72.7614, radiusKm: 4, category: "state-park" },
+  { id: "vt-mathewson", name: "Mathewson State Forest", lat: 44.6098, lng: -72.069, radiusKm: 4, category: "state-forest" },
+  { id: "vt-ricker-pond", name: "Ricker Pond State Park", lat: 44.246, lng: -72.254, radiusKm: 4, category: "state-park" },
+  { id: "vt-seyon-lodge", name: "Seyon Lodge State Park", lat: 44.227, lng: -72.304, radiusKm: 4, category: "state-park" },
+  { id: "vt-long-trail", name: "Long Trail State Forest", lat: 44.704, lng: -72.6806, radiusKm: 4, category: "state-forest" },
+  { id: "vt-washington", name: "Washington State Forest", lat: 44.0422, lng: -72.3789, radiusKm: 4, category: "state-forest" },
+  { id: "vt-woods-island", name: "Woods Island State Park", lat: 44.803, lng: -73.208, radiusKm: 4, category: "state-park" },
+  { id: "vt-ball-mountain", name: "Ball Mountain State Park", lat: 43.1308, lng: -72.7733, radiusKm: 4, category: "state-park" },
+  { id: "vt-camp-plymouth", name: "Camp Plymouth State Park", lat: 43.4762, lng: -72.6953, radiusKm: 4, category: "state-park" },
+  { id: "vt-knight-island", name: "Knight Island State Park", lat: 44.8117, lng: -73.2536, radiusKm: 4, category: "state-park" },
+  { id: "vt-mount-cushman", name: "Mount Cushman State Park", lat: 43.8917, lng: -72.7619, radiusKm: 4, category: "state-park" },
+  { id: "vt-new-discovery", name: "New Discovery State Park", lat: 44.3206, lng: -72.2903, radiusKm: 4, category: "state-park" },
+  { id: "vt-thetford-hill", name: "Thetford Hill State Park", lat: 43.8121, lng: -72.233, radiusKm: 4, category: "state-park" },
+  { id: "vt-jim-jeffords", name: "Jim Jeffords State Forest", lat: 43.5768, lng: -72.8947, radiusKm: 4, category: "state-forest" },
+  { id: "vt-mount-carmel", name: "Mount Carmel State Forest", lat: 43.7711, lng: -72.9197, radiusKm: 4, category: "state-forest" },
+  { id: "vt-west-rutland", name: "West Rutland State Forest", lat: 43.6556, lng: -73.0973, radiusKm: 4, category: "state-forest" },
+  { id: "vt-proctor-piper", name: "Proctor Piper State Forest", lat: 43.3626, lng: -72.6316, radiusKm: 4, category: "state-forest" },
+  { id: "vt-charles-downer", name: "Charles Downer State Forest", lat: 43.8097, lng: -72.3903, radiusKm: 4, category: "state-forest" },
+  { id: "vt-granville", name: "Granville State Reservation", lat: 44.0278, lng: -72.8336, radiusKm: 4, category: "state-park" },
+  { id: "vt-morristown-bog", name: "Morristown Bog State Forest", lat: 44.5042, lng: -72.6258, radiusKm: 4, category: "state-forest" },
+  { id: "vt-williams-river", name: "Williams River State Forest", lat: 43.2333, lng: -72.6695, radiusKm: 4, category: "state-forest" },
+  { id: "vt-black-turn-brook", name: "Black Turn Brook State Forest", lat: 45.0004, lng: -71.8175, radiusKm: 4, category: "state-forest" },
+  { id: "vt-dutton-pines-park", name: "Dutton Pines State Forest Park", lat: 42.9222, lng: -72.5367, radiusKm: 4, category: "state-forest" },
+  { id: "vt-william-c-putnam", name: "William C. Putnam State Forest", lat: 43.2047, lng: -72.6224, radiusKm: 4, category: "state-forest" },
+  { id: "vt-lower-clarendon-gorge", name: "Lower Clarendon Gorge State Forest", lat: 43.516, lng: -72.964, radiusKm: 4, category: "state-forest" },
+  { id: "vt-taconic-mountains-ramble", name: "Taconic Mountains Ramble State Park", lat: 43.6855, lng: -73.1423, radiusKm: 4, category: "state-park" },
 ];

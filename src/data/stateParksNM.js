@@ -1,37 +1,58 @@
-// New Mexico state parks — wildlife units (v1).
-// Coordinates from Wikidata (P625) via scripts/fetchStateParkCandidates.mjs NM.
-// The Sangre de Cristo & San Juan high country (N) → the Rio Grande birding
-// corridor & Chihuahuan desert (S) → the Pecos sinkhole lakes (SE) → the
-// shortgrass-plains reservoirs (NE). Carlsbad Caverns & White Sands are FEDERAL
-// (excluded). category → state-park 🏞️
+/**
+ * stateParksNM.js — NM state parks & wildlife areas.
+ * Curated, coordinate-verified units PLUS catalog-expansion units appended by
+ * scripts/expandStateParks.mjs (Wikidata, civic/historic + sub-parcel filtered,
+ * de-duped against the curated set). Species are fetched LIVE (eBird + iNat).
+ * Existing curated entries are preserved; expansion only appends new units.
+ */
+
 export const STATE_PARKS_NM = [
-  // ── Northern high country (Sangre de Cristo & San Juan) ─────────────────────
-  { id: 'nm-cimarron-canyon', name: 'Cimarron Canyon State Park',    lat: 36.5378, lng: -105.1750, radiusKm: 5, category: 'state-park' },
-  { id: 'nm-eagle-nest-lake', name: 'Eagle Nest Lake State Park',    lat: 36.5333, lng: -105.2500, radiusKm: 4, category: 'state-park' },
-  { id: 'nm-heron-lake',     name: 'Heron Lake State Park',          lat: 36.6806, lng: -106.6672, radiusKm: 4, category: 'state-park' },
-  { id: 'nm-navajo-lake',    name: 'Navajo Lake State Park',         lat: 36.8011, lng: -107.6925, radiusKm: 5, category: 'state-park' },
-  { id: 'nm-hyde-memorial',  name: 'Hyde Memorial State Park',       lat: 35.7367, lng: -105.8360, radiusKm: 3, category: 'state-park' },
-  { id: 'nm-coyote-creek',   name: 'Coyote Creek State Park',        lat: 35.9200, lng: -105.1640, radiusKm: 2, category: 'state-park' },
-  { id: 'nm-fenton-lake',    name: 'Fenton Lake State Park',         lat: 35.8825, lng: -106.7260, radiusKm: 3, category: 'state-park' },
-  { id: 'nm-sugarite-canyon', name: 'Sugarite Canyon State Park',    lat: 36.9592, lng: -104.3860, radiusKm: 4, category: 'state-park' },
-  // ── Central mountains ───────────────────────────────────────────────────────
-  { id: 'nm-manzano-mountains', name: 'Manzano Mountains State Park', lat: 34.6033, lng: -106.3610, radiusKm: 3, category: 'state-park' },
-  // ── Rio Grande corridor & Chihuahuan desert (south) ─────────────────────────
-  { id: 'nm-elephant-butte', name: 'Elephant Butte Lake State Park', lat: 33.6251, lng: -107.0095, radiusKm: 6, category: 'state-park' },
-  { id: 'nm-caballo-lake',   name: 'Caballo Lake State Park',        lat: 32.9964, lng: -107.2869, radiusKm: 5, category: 'state-park' },
-  { id: 'nm-percha-dam',     name: 'Percha Dam State Park',          lat: 32.8686, lng: -107.3036, radiusKm: 2, category: 'state-park' },
-  { id: 'nm-leasburg-dam',   name: 'Leasburg Dam State Park',        lat: 32.4969, lng: -106.9228, radiusKm: 2, category: 'state-park' },
-  { id: 'nm-mesilla-valley-bosque', name: 'Mesilla Valley Bosque State Park', lat: 32.2747, lng: -106.8050, radiusKm: 3, category: 'state-park' },
-  { id: 'nm-city-of-rocks',  name: 'City of Rocks State Park',       lat: 32.5900, lng: -107.9760, radiusKm: 3, category: 'state-park' },
-  { id: 'nm-rockhound',      name: 'Rockhound State Park',           lat: 32.1000, lng: -107.3000, radiusKm: 3, category: 'state-park' },
-  { id: 'nm-oliver-lee',     name: 'Oliver Lee Memorial State Park', lat: 32.7467, lng: -105.9160, radiusKm: 3, category: 'state-park' },
-  // ── Pecos sinkhole lakes (southeast) ────────────────────────────────────────
-  { id: 'nm-bottomless-lakes', name: 'Bottomless Lakes State Park',  lat: 33.3192, lng: -104.3320, radiusKm: 3, category: 'state-park' },
-  { id: 'nm-brantley-lake',  name: 'Brantley Lake State Park',       lat: 32.5514, lng: -104.3840, radiusKm: 4, category: 'state-park' },
-  { id: 'nm-oasis',          name: 'Oasis State Park',               lat: 34.2578, lng: -103.3490, radiusKm: 2, category: 'state-park' },
-  // ── Shortgrass-plains reservoirs (northeast) ────────────────────────────────
-  { id: 'nm-clayton-lake',   name: 'Clayton Lake State Park',        lat: 36.5783, lng: -103.3060, radiusKm: 3, category: 'state-park' },
-  { id: 'nm-santa-rosa-lake', name: 'Santa Rosa Lake State Park',    lat: 35.0500, lng: -104.6670, radiusKm: 4, category: 'state-park' },
-  // ── West (Colorado Plateau edge) ────────────────────────────────────────────
-  { id: 'nm-bluewater-lake', name: 'Bluewater Lake State Park',      lat: 35.2944, lng: -108.1100, radiusKm: 4, category: 'state-park' },
+  { id: "nm-cimarron-canyon", name: "Cimarron Canyon State Park", lat: 36.5378, lng: -105.175, radiusKm: 5, category: "state-park" },
+  { id: "nm-eagle-nest-lake", name: "Eagle Nest Lake State Park", lat: 36.5333, lng: -105.25, radiusKm: 4, category: "state-park" },
+  { id: "nm-heron-lake", name: "Heron Lake State Park", lat: 36.6806, lng: -106.6672, radiusKm: 4, category: "state-park" },
+  { id: "nm-navajo-lake", name: "Navajo Lake State Park", lat: 36.8011, lng: -107.6925, radiusKm: 5, category: "state-park" },
+  { id: "nm-hyde-memorial", name: "Hyde Memorial State Park", lat: 35.7367, lng: -105.836, radiusKm: 3, category: "state-park" },
+  { id: "nm-coyote-creek", name: "Coyote Creek State Park", lat: 35.92, lng: -105.164, radiusKm: 2, category: "state-park" },
+  { id: "nm-fenton-lake", name: "Fenton Lake State Park", lat: 35.8825, lng: -106.726, radiusKm: 3, category: "state-park" },
+  { id: "nm-sugarite-canyon", name: "Sugarite Canyon State Park", lat: 36.9592, lng: -104.386, radiusKm: 4, category: "state-park" },
+  { id: "nm-manzano-mountains", name: "Manzano Mountains State Park", lat: 34.6033, lng: -106.361, radiusKm: 3, category: "state-park" },
+  { id: "nm-elephant-butte", name: "Elephant Butte Lake State Park", lat: 33.6251, lng: -107.0095, radiusKm: 6, category: "state-park" },
+  { id: "nm-caballo-lake", name: "Caballo Lake State Park", lat: 32.9964, lng: -107.2869, radiusKm: 5, category: "state-park" },
+  { id: "nm-percha-dam", name: "Percha Dam State Park", lat: 32.8686, lng: -107.3036, radiusKm: 2, category: "state-park" },
+  { id: "nm-leasburg-dam", name: "Leasburg Dam State Park", lat: 32.4969, lng: -106.9228, radiusKm: 2, category: "state-park" },
+  { id: "nm-mesilla-valley-bosque", name: "Mesilla Valley Bosque State Park", lat: 32.2747, lng: -106.805, radiusKm: 3, category: "state-park" },
+  { id: "nm-city-of-rocks", name: "City of Rocks State Park", lat: 32.59, lng: -107.976, radiusKm: 3, category: "state-park" },
+  { id: "nm-rockhound", name: "Rockhound State Park", lat: 32.1, lng: -107.3, radiusKm: 3, category: "state-park" },
+  { id: "nm-oliver-lee", name: "Oliver Lee Memorial State Park", lat: 32.7467, lng: -105.916, radiusKm: 3, category: "state-park" },
+  { id: "nm-bottomless-lakes", name: "Bottomless Lakes State Park", lat: 33.3192, lng: -104.332, radiusKm: 3, category: "state-park" },
+  { id: "nm-brantley-lake", name: "Brantley Lake State Park", lat: 32.5514, lng: -104.384, radiusKm: 4, category: "state-park" },
+  { id: "nm-oasis", name: "Oasis State Park", lat: 34.2578, lng: -103.349, radiusKm: 2, category: "state-park" },
+  { id: "nm-clayton-lake", name: "Clayton Lake State Park", lat: 36.5783, lng: -103.306, radiusKm: 3, category: "state-park" },
+  { id: "nm-santa-rosa-lake", name: "Santa Rosa Lake State Park", lat: 35.05, lng: -104.667, radiusKm: 4, category: "state-park" },
+  { id: "nm-bluewater-lake", name: "Bluewater Lake State Park", lat: 35.2944, lng: -108.11, radiusKm: 4, category: "state-park" },
+  { id: "nm-red-rock", name: "Red Rock State Park", lat: 35.5444, lng: -108.6086, radiusKm: 4, category: "state-park" },
+  { id: "nm-ute-lake", name: "Ute Lake State Park", lat: 35.3392, lng: -103.486, radiusKm: 4, category: "state-park" },
+  { id: "nm-rio-bravo", name: "Rio Bravo State Park", lat: 35.0172, lng: -106.6814, radiusKm: 4, category: "state-park" },
+  { id: "nm-villanueva", name: "Villanueva State Park", lat: 35.2569, lng: -105.367, radiusKm: 4, category: "state-park" },
+  { id: "nm-morphy-lake", name: "Morphy Lake State Park", lat: 35.9419, lng: -105.397, radiusKm: 4, category: "state-park" },
+  { id: "nm-san-gabriel", name: "San Gabriel State Park", lat: 35.0981, lng: -106.6881, radiusKm: 4, category: "state-park" },
+  { id: "nm-sumner-lake", name: "Sumner Lake State Park", lat: 34.6078, lng: -104.387, radiusKm: 4, category: "state-park" },
+  { id: "nm-chicosa-lake", name: "Chicosa Lake State Park", lat: 36.0378, lng: -104.1603, radiusKm: 4, category: "state-park" },
+  { id: "nm-conchas-lake", name: "Conchas Lake State Park", lat: 35.3942, lng: -104.1819, radiusKm: 4, category: "state-park" },
+  { id: "nm-el-vado-lake", name: "El Vado Lake State Park", lat: 36.605, lng: -106.7481, radiusKm: 4, category: "state-park" },
+  { id: "nm-pancho-villa", name: "Pancho Villa State Park", lat: 31.8244, lng: -107.6406, radiusKm: 4, category: "state-park" },
+  { id: "nm-storrie-lake", name: "Storrie Lake State Park", lat: 35.6528, lng: -105.237, radiusKm: 4, category: "state-park" },
+  { id: "nm-harry-mcadams", name: "Harry McAdams State Park", lat: 32.7742, lng: -103.2042, radiusKm: 4, category: "state-park" },
+  { id: "nm-living-desert", name: "Living Desert State Park", lat: 32.4497, lng: -104.2864, radiusKm: 4, category: "state-park" },
+  { id: "nm-spring-canyon", name: "Spring Canyon State Park", lat: 32.13, lng: -107.625, radiusKm: 4, category: "state-park" },
+  { id: "nm-santa-fe-river", name: "Santa Fe River State Park", lat: 35.685, lng: -105.9406, radiusKm: 4, category: "state-park" },
+  { id: "nm-shooting-range", name: "Shooting Range State Park", lat: 35.1525, lng: -106.8514, radiusKm: 4, category: "state-park" },
+  { id: "nm-cerrillos-hills", name: "Cerrillos Hills State Park", lat: 35.4667, lng: -106.15, radiusKm: 4, category: "state-park" },
+  { id: "nm-el-vado-airport", name: "El Vado State Park Airport", lat: 36.6334, lng: -106.7173, radiusKm: 4, category: "state-park" },
+  { id: "nm-valley-of-fires", name: "Valley of Fires State Park", lat: 33.7333, lng: -105.925, radiusKm: 4, category: "state-park" },
+  { id: "nm-rio-grande-gorge", name: "Rio Grande Gorge State Park", lat: 36.3047, lng: -105.7683, radiusKm: 4, category: "state-park" },
+  { id: "nm-rio-grande-valley", name: "Rio Grande Valley State Park", lat: 35.079, lng: -106.67, radiusKm: 4, category: "state-park" },
+  { id: "nm-eastern-new-mexico", name: "Eastern New Mexico State Park", lat: 34.2528, lng: -103.245, radiusKm: 4, category: "state-park" },
+  { id: "nm-organ-mountains", name: "Organ Mountains Wilderness Area", lat: 32.3297, lng: -106.5486, radiusKm: 4, category: "state-preserve" },
+  { id: "nm-senator-willie-m-chavez", name: "Senator Willie M Chavez State Park", lat: 34.6514, lng: -106.7436, radiusKm: 4, category: "state-park" },
 ];

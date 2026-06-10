@@ -1,40 +1,61 @@
-// Arkansas state parks & WMAs — wildlife units (v1).
-// Coordinates from Wikidata (P625) via scripts/fetchStateParkCandidates.mjs AR.
-// The Ozarks → the Arkansas River Valley peaks → the Ouachitas → the Delta &
-// Cache River swamps. category → state-park 🏞️ · state-preserve 🦋 (WMAs/natural areas)
+/**
+ * stateParksAR.js — AR state parks & wildlife areas.
+ * Curated, coordinate-verified units PLUS catalog-expansion units appended by
+ * scripts/expandStateParks.mjs (Wikidata, civic/historic + sub-parcel filtered,
+ * de-duped against the curated set). Species are fetched LIVE (eBird + iNat).
+ * Existing curated entries are preserved; expansion only appends new units.
+ */
+
 export const STATE_PARKS_AR = [
-  // ── Ozarks (northwest) ──────────────────────────────────────────────────────
-  { id: 'ar-devils-den',     name: "Devil's Den State Park",         lat: 35.7806, lng: -94.2517, radiusKm: 3, category: 'state-park' },
-  { id: 'ar-hobbs',          name: 'Hobbs State Park – Conservation Area', lat: 36.2850, lng: -93.9386, radiusKm: 5, category: 'state-park' },
-  { id: 'ar-withrow-springs', name: 'Withrow Springs State Park',     lat: 36.1660, lng: -93.7168, radiusKm: 2, category: 'state-park' },
-  { id: 'ar-lake-fort-smith', name: 'Lake Fort Smith State Park',    lat: 35.7006, lng: -94.1206, radiusKm: 3, category: 'state-park' },
-  { id: 'ar-buffalo-river',  name: 'Buffalo River State Park',       lat: 36.0781, lng: -92.5683, radiusKm: 3, category: 'state-park' },
-  { id: 'ar-bull-shoals',    name: 'Bull Shoals-White River State Park', lat: 36.3583, lng: -92.5814, radiusKm: 3, category: 'state-park' },
-  // ── Arkansas River Valley (the peaks) ───────────────────────────────────────
-  { id: 'ar-petit-jean',     name: 'Petit Jean State Park',          lat: 35.1151, lng: -92.9354, radiusKm: 3, category: 'state-park' },
-  { id: 'ar-mount-nebo',     name: 'Mount Nebo State Park',          lat: 35.2208, lng: -93.2550, radiusKm: 2, category: 'state-park' },
-  { id: 'ar-mount-magazine', name: 'Mount Magazine State Park',      lat: 35.1746, lng: -93.6189, radiusKm: 3, category: 'state-park' },
-  { id: 'ar-lake-dardanelle', name: 'Lake Dardanelle State Park',    lat: 35.2831, lng: -93.2031, radiusKm: 3, category: 'state-park' },
-  { id: 'ar-pinnacle-mountain', name: 'Pinnacle Mountain State Park', lat: 34.8414, lng: -92.4858, radiusKm: 3, category: 'state-park' },
-  // ── Ouachitas ───────────────────────────────────────────────────────────────
-  { id: 'ar-queen-wilhelmina', name: 'Queen Wilhelmina State Park',  lat: 34.6853, lng: -94.3734, radiusKm: 3, category: 'state-park' },
-  { id: 'ar-lake-ouachita',  name: 'Lake Ouachita State Park',       lat: 34.6158, lng: -93.1847, radiusKm: 4, category: 'state-park' },
-  { id: 'ar-lake-catherine', name: 'Lake Catherine State Park',      lat: 34.4379, lng: -92.9180, radiusKm: 3, category: 'state-park' },
-  { id: 'ar-degray-lake',    name: 'DeGray Lake Resort State Park',  lat: 34.2463, lng: -93.1498, radiusKm: 4, category: 'state-park' },
-  { id: 'ar-crater-of-diamonds', name: 'Crater of Diamonds State Park', lat: 34.0331, lng: -93.6703, radiusKm: 2, category: 'state-park' },
-  { id: 'ar-cossatot-river', name: 'Cossatot River State Park-Natural Area', lat: 34.2958, lng: -94.1681, radiusKm: 4, category: 'state-preserve' },
-  // ── Southwest ───────────────────────────────────────────────────────────────
-  { id: 'ar-millwood',       name: 'Millwood State Park',            lat: 33.6775, lng: -93.9872, radiusKm: 4, category: 'state-park' },
-  { id: 'ar-white-oak-lake', name: 'White Oak Lake State Park',      lat: 33.6895, lng: -93.1144, radiusKm: 3, category: 'state-park' },
-  { id: 'ar-logoly',         name: 'Logoly State Park',              lat: 33.3442, lng: -93.1869, radiusKm: 2, category: 'state-park' },
-  // ── Delta & Crowley's Ridge (east) ──────────────────────────────────────────
-  { id: 'ar-lake-chicot',    name: 'Lake Chicot State Park',         lat: 33.3711, lng: -91.1975, radiusKm: 3, category: 'state-park' },
-  { id: 'ar-village-creek',  name: 'Village Creek State Park',       lat: 35.1633, lng: -90.7186, radiusKm: 4, category: 'state-park' },
-  { id: 'ar-crowleys-ridge', name: "Crowley's Ridge State Park",     lat: 36.0443, lng: -90.6663, radiusKm: 2, category: 'state-park' },
-  { id: 'ar-delta-heritage-trail', name: 'Delta Heritage Trail State Park', lat: 34.5542, lng: -90.7586, radiusKm: 5, category: 'state-park' },
-  { id: 'ar-cane-creek',     name: 'Cane Creek State Park',          lat: 33.9127, lng: -91.7634, radiusKm: 3, category: 'state-park' },
-  // ── Premier WMAs (Cache River / Big Woods swamps) ───────────────────────────
-  { id: 'ar-dagmar-wma',     name: 'Dagmar Wildlife Management Area', lat: 34.8911, lng: -91.3122, radiusKm: 5, category: 'state-preserve' },
-  { id: 'ar-bayou-de-view-wma', name: 'Bayou De View Wildlife Management Area', lat: 35.6228, lng: -90.9467, radiusKm: 5, category: 'state-preserve' },
-  { id: 'ar-big-lake-wma',   name: 'Big Lake Wildlife Management Area', lat: 35.9389, lng: -90.0858, radiusKm: 5, category: 'state-preserve' },
+  { id: "ar-devils-den", name: "Devil's Den State Park", lat: 35.7806, lng: -94.2517, radiusKm: 3, category: "state-park" },
+  { id: "ar-hobbs", name: "Hobbs State Park – Conservation Area", lat: 36.285, lng: -93.9386, radiusKm: 5, category: "state-park" },
+  { id: "ar-withrow-springs", name: "Withrow Springs State Park", lat: 36.166, lng: -93.7168, radiusKm: 2, category: "state-park" },
+  { id: "ar-lake-fort-smith", name: "Lake Fort Smith State Park", lat: 35.7006, lng: -94.1206, radiusKm: 3, category: "state-park" },
+  { id: "ar-buffalo-river", name: "Buffalo River State Park", lat: 36.0781, lng: -92.5683, radiusKm: 3, category: "state-park" },
+  { id: "ar-bull-shoals", name: "Bull Shoals-White River State Park", lat: 36.3583, lng: -92.5814, radiusKm: 3, category: "state-park" },
+  { id: "ar-petit-jean", name: "Petit Jean State Park", lat: 35.1151, lng: -92.9354, radiusKm: 3, category: "state-park" },
+  { id: "ar-mount-nebo", name: "Mount Nebo State Park", lat: 35.2208, lng: -93.255, radiusKm: 2, category: "state-park" },
+  { id: "ar-mount-magazine", name: "Mount Magazine State Park", lat: 35.1746, lng: -93.6189, radiusKm: 3, category: "state-park" },
+  { id: "ar-lake-dardanelle", name: "Lake Dardanelle State Park", lat: 35.2831, lng: -93.2031, radiusKm: 3, category: "state-park" },
+  { id: "ar-pinnacle-mountain", name: "Pinnacle Mountain State Park", lat: 34.8414, lng: -92.4858, radiusKm: 3, category: "state-park" },
+  { id: "ar-queen-wilhelmina", name: "Queen Wilhelmina State Park", lat: 34.6853, lng: -94.3734, radiusKm: 3, category: "state-park" },
+  { id: "ar-lake-ouachita", name: "Lake Ouachita State Park", lat: 34.6158, lng: -93.1847, radiusKm: 4, category: "state-park" },
+  { id: "ar-lake-catherine", name: "Lake Catherine State Park", lat: 34.4379, lng: -92.918, radiusKm: 3, category: "state-park" },
+  { id: "ar-degray-lake", name: "DeGray Lake Resort State Park", lat: 34.2463, lng: -93.1498, radiusKm: 4, category: "state-park" },
+  { id: "ar-crater-of-diamonds", name: "Crater of Diamonds State Park", lat: 34.0331, lng: -93.6703, radiusKm: 2, category: "state-park" },
+  { id: "ar-cossatot-river", name: "Cossatot River State Park-Natural Area", lat: 34.2958, lng: -94.1681, radiusKm: 4, category: "state-preserve" },
+  { id: "ar-millwood", name: "Millwood State Park", lat: 33.6775, lng: -93.9872, radiusKm: 4, category: "state-park" },
+  { id: "ar-white-oak-lake", name: "White Oak Lake State Park", lat: 33.6895, lng: -93.1144, radiusKm: 3, category: "state-park" },
+  { id: "ar-logoly", name: "Logoly State Park", lat: 33.3442, lng: -93.1869, radiusKm: 2, category: "state-park" },
+  { id: "ar-lake-chicot", name: "Lake Chicot State Park", lat: 33.3711, lng: -91.1975, radiusKm: 3, category: "state-park" },
+  { id: "ar-village-creek", name: "Village Creek State Park", lat: 35.1633, lng: -90.7186, radiusKm: 4, category: "state-park" },
+  { id: "ar-crowleys-ridge", name: "Crowley's Ridge State Park", lat: 36.0443, lng: -90.6663, radiusKm: 2, category: "state-park" },
+  { id: "ar-delta-heritage-trail", name: "Delta Heritage Trail State Park", lat: 34.5542, lng: -90.7586, radiusKm: 5, category: "state-park" },
+  { id: "ar-cane-creek", name: "Cane Creek State Park", lat: 33.9127, lng: -91.7634, radiusKm: 3, category: "state-park" },
+  { id: "ar-dagmar-wma", name: "Dagmar Wildlife Management Area", lat: 34.8911, lng: -91.3122, radiusKm: 5, category: "state-preserve" },
+  { id: "ar-bayou-de-view-wma", name: "Bayou De View Wildlife Management Area", lat: 35.6228, lng: -90.9467, radiusKm: 5, category: "state-preserve" },
+  { id: "ar-big-lake-wma", name: "Big Lake Wildlife Management Area", lat: 35.9389, lng: -90.0858, radiusKm: 5, category: "state-preserve" },
+  { id: "ar-daisy", name: "Daisy State Park", lat: 34.2337, lng: -93.741, radiusKm: 4, category: "state-park" },
+  { id: "ar-donaghey", name: "Donaghey State Park", lat: 33.0108, lng: -92.3675, radiusKm: 4, category: "state-park" },
+  { id: "ar-moro-bay", name: "Moro Bay State Park", lat: 33.3011, lng: -92.3464, radiusKm: 4, category: "state-park" },
+  { id: "ar-jacksonport", name: "Jacksonport State Park", lat: 35.6389, lng: -91.3111, radiusKm: 4, category: "state-park" },
+  { id: "ar-lost-valley", name: "Lost Valley State Park", lat: 36.0103, lng: -93.3744, radiusKm: 4, category: "state-park" },
+  { id: "ar-herman-davis", name: "Herman Davis State Park", lat: 35.8731, lng: -90.1661, radiusKm: 4, category: "state-park" },
+  { id: "ar-lake-charles", name: "Lake Charles State Park", lat: 36.0656, lng: -91.1528, radiusKm: 4, category: "state-park" },
+  { id: "ar-lake-frierson", name: "Lake Frierson State Park", lat: 35.9726, lng: -90.7162, radiusKm: 4, category: "state-park" },
+  { id: "ar-lake-poinsett", name: "Lake Poinsett State Park", lat: 35.5325, lng: -90.6872, radiusKm: 4, category: "state-park" },
+  { id: "ar-toltec-mounds", name: "Toltec Mounds State Park", lat: 34.6458, lng: -92.0642, radiusKm: 4, category: "state-park" },
+  { id: "ar-woolly-hollow", name: "Woolly Hollow State Park", lat: 35.2875, lng: -92.2869, radiusKm: 4, category: "state-park" },
+  { id: "ar-mammoth-spring", name: "Mammoth Spring State Park", lat: 36.4955, lng: -91.5354, radiusKm: 4, category: "state-park" },
+  { id: "ar-poison-springs", name: "Poison Springs State Park", lat: 33.6375, lng: -93.0061, radiusKm: 4, category: "state-park" },
+  { id: "ar-powhatan-historic", name: "Powhatan Historic State Park", lat: 36.0989, lng: -91.1194, radiusKm: 4, category: "state-park" },
+  { id: "ar-louisiana-purchase", name: "Louisiana Purchase State Park", lat: 34.6457, lng: -91.054, radiusKm: 4, category: "state-park" },
+  { id: "ar-historic-washington", name: "Historic Washington State Park", lat: 33.7739, lng: -93.6833, radiusKm: 4, category: "state-park" },
+  { id: "ar-parkin-archeological", name: "Parkin Archeological State Park", lat: 35.2771, lng: -90.5574, radiusKm: 4, category: "state-park" },
+  { id: "ar-davidsonville-historic", name: "Davidsonville Historic State Park", lat: 36.1564, lng: -91.0564, radiusKm: 4, category: "state-park" },
+  { id: "ar-marks-mills-battleground", name: "Marks’ Mills Battleground State Park", lat: 33.7812, lng: -92.2549, radiusKm: 4, category: "state-park" },
+  { id: "ar-parkin-mound-archeological", name: "Parkin Mound Archeological State Park", lat: 35.2736, lng: -90.5989, radiusKm: 4, category: "state-park" },
+  { id: "ar-jenkins-ferry-battleground", name: "Jenkins' Ferry Battleground State Park", lat: 34.2131, lng: -92.5475, radiusKm: 4, category: "state-park" },
+  { id: "ar-lake-dardanelle-ouita-area", name: "Lake Dardanelle State Park - Ouita Area", lat: 35.3039, lng: -93.1681, radiusKm: 4, category: "state-park" },
+  { id: "ar-ccc-architecture-of-petit-jean", name: "CCC architecture of Petit Jean State Park", lat: 35.1275, lng: -92.9192, radiusKm: 4, category: "state-park" },
 ];
