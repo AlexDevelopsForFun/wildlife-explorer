@@ -1,0 +1,53 @@
+/**
+ * stateParksHI.js — HI state parks & wildlife areas.
+ * Curated, coordinate-verified units PLUS catalog-expansion units appended by
+ * scripts/expandStateParks.mjs (Wikidata, civic/historic + sub-parcel filtered,
+ * de-duped against the curated set). Species are fetched LIVE (eBird + iNat).
+ * Existing curated entries are preserved; expansion only appends new units.
+ */
+
+export const STATE_PARKS_HI = [
+  { id: "hi-na-pali-coast", name: "Nā Pali Coast State Park", lat: 22.1833, lng: -159.6417, radiusKm: 5, category: "state-park" },
+  { id: "hi-kokee", name: "Koke'e State Park", lat: 22.1303, lng: -159.659, radiusKm: 5, category: "state-park" },
+  { id: "hi-waimea-canyon", name: "Waimea Canyon State Park", lat: 22.0964, lng: -159.6628, radiusKm: 4, category: "state-park" },
+  { id: "hi-haena", name: "Haʻena State Park", lat: 22.2247, lng: -159.5836, radiusKm: 2, category: "state-park" },
+  { id: "hi-kahana", name: "Ahupua'a 'O Kahana State Park", lat: 21.535, lng: -157.872, radiusKm: 3, category: "state-park" },
+  { id: "hi-kaena-point", name: "Kaʻena Point State Park", lat: 21.5742, lng: -158.2761, radiusKm: 3, category: "state-park" },
+  { id: "hi-malaekahana", name: "Mālaekahana State Recreation Area", lat: 21.6617, lng: -157.9328, radiusKm: 2, category: "recreation-area" },
+  { id: "hi-iao-valley", name: "ʻĪao Valley State Park", lat: 20.8809, lng: -156.5446, radiusKm: 2, category: "state-park" },
+  { id: "hi-makena", name: "Mākena State Park", lat: 20.6575, lng: -156.4442, radiusKm: 2, category: "state-park" },
+  { id: "hi-waianapanapa", name: "Waiʻanapanapa State Park", lat: 20.7869, lng: -156.0033, radiusKm: 2, category: "state-park" },
+  { id: "hi-akaka-falls", name: "Akaka Falls State Park", lat: 19.8542, lng: -155.1525, radiusKm: 2, category: "state-park" },
+  { id: "hi-kekaha-kai", name: "Kekaha Kai State Park", lat: 19.7922, lng: -156.025, radiusKm: 3, category: "state-park" },
+  { id: "hi-hapuna-beach", name: "Hapuna Beach State Recreation Area", lat: 19.9913, lng: -155.823, radiusKm: 2, category: "recreation-area" },
+  { id: "hi-kalopa", name: "Kalopa State Recreation Area", lat: 20.0386, lng: -155.439, radiusKm: 3, category: "recreation-area" },
+  { id: "hi-mauna-kea", name: "Mauna Kea State Recreation Area", lat: 19.7524, lng: -155.524, radiusKm: 3, category: "recreation-area" },
+  { id: "hi-heeia", name: "Heʻeia State Park", lat: 21.4397, lng: -157.8089, radiusKm: 2, category: "state-park" },
+  { id: "hi-diamond-head", name: "Diamond Head State Monument", lat: 21.262, lng: -157.8067, radiusKm: 2, category: "state-park" },
+  { id: "hi-palaau", name: "Palaʻau State Park", lat: 21.175, lng: -157.0069, radiusKm: 3, category: "state-park" },
+  { id: "hi-lydgate", name: "Lydgate State Park", lat: 22.0381, lng: -159.3365, radiusKm: 4, category: "state-park" },
+  { id: "hi-milolii", name: "Miloliʻi State Park", lat: 22.1561, lng: -159.7178, radiusKm: 4, category: "state-park" },
+  { id: "hi-polihale", name: "Polihale State Park", lat: 22.0925, lng: -159.75, radiusKm: 4, category: "state-park" },
+  { id: "hi-puaakaa", name: "Puaʻakaʻa State Park", lat: 20.82, lng: -156.1289, radiusKm: 4, category: "state-park" },
+  { id: "hi-launiu-poko", name: "Launiu Poko State Park", lat: 20.8483, lng: -156.6569, radiusKm: 4, category: "state-park" },
+  { id: "hi-nualolokai", name: "Nuʻalolokai State Park", lat: 22.1617, lng: -159.7031, radiusKm: 4, category: "state-park" },
+  { id: "hi-sand-island", name: "Sand Island State Park", lat: 21.3021, lng: -157.8799, radiusKm: 4, category: "state-park" },
+  { id: "hi-sacred-falls", name: "Sacred Falls State Park", lat: 21.5733, lng: -157.914, radiusKm: 4, category: "state-park" },
+  { id: "hi-wailoa-river", name: "Wailoa River State Park", lat: 19.7208, lng: -155.0779, radiusKm: 4, category: "state-park" },
+  { id: "hi-wailuku-river", name: "Wailuku River State Park", lat: 19.7181, lng: -155.1048, radiusKm: 4, category: "state-park" },
+  { id: "hi-ukumehame-beach", name: "Ukumehame Beach State Park", lat: 20.7978, lng: -156.5839, radiusKm: 4, category: "state-park" },
+  { id: "hi-honolulu-stadium", name: "Honolulu Stadium State Park", lat: 21.2936, lng: -157.827, radiusKm: 4, category: "state-park" },
+  { id: "hi-kaiaka", name: "Kaiaka State Recreation Area", lat: 21.5868, lng: -158.115, radiusKm: 4, category: "recreation-area" },
+  { id: "hi-kiluea", name: "Kiluea State Recreation Area", lat: 19.4317, lng: -155.248, radiusKm: 4, category: "recreation-area" },
+  { id: "hi-ahukini-pier", name: "Ahukini State Recreation Pier", lat: 21.9926, lng: -159.332, radiusKm: 4, category: "recreation-area" },
+  { id: "hi-mackenzie", name: "MacKenzie State Recreation Area", lat: 19.4391, lng: -154.8641, radiusKm: 4, category: "recreation-area" },
+  { id: "hi-puu-waawaa-cinder-cone", name: "Puu Waawaa Cinder Cone State Park", lat: 19.7803, lng: -155.8293, radiusKm: 4, category: "state-park" },
+  { id: "hi-keawa-heiau", name: "Keaīwa Heiau State Recreation Area", lat: 21.4022, lng: -157.8997, radiusKm: 4, category: "recreation-area" },
+  { id: "hi-sans-souci-state-recreational-park", name: "Sans Souci State Recreational Park", lat: 21.2681, lng: -157.8223, radiusKm: 4, category: "recreation-area" },
+  { id: "hi-waahila-ridge", name: "Waahila Ridge State Recreation Area", lat: 21.3064, lng: -157.8011, radiusKm: 4, category: "recreation-area" },
+  { id: "hi-waimea-recreational-pier", name: "Waimea Recreational Pier State Park", lat: 21.9578, lng: -159.6733, radiusKm: 4, category: "recreation-area" },
+  { id: "hi-makiki-valley-state-recreational-area", name: "Makiki Valley State Recreational Area", lat: 21.3134, lng: -157.8304, radiusKm: 4, category: "recreation-area" },
+  { id: "hi-mauna-kea-halephaku-area", name: "Mauna Kea State Park - Halepōhaku Area", lat: 19.7639, lng: -155.4583, radiusKm: 4, category: "state-park" },
+  { id: "hi-old-kona-airport", name: "Old Kona Airport State Recreation Area", lat: 19.6425, lng: -156.005, radiusKm: 4, category: "recreation-area" },
+  { id: "hi-polipoli-springs", name: "Polipoli Springs State Recreation Area", lat: 20.6806, lng: -156.3325, radiusKm: 4, category: "recreation-area" },
+];

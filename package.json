@@ -16,6 +16,7 @@
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
     "geotiff": "^3.0.5",
+    "ioredis": "^5.11.0",
     "leaflet": "^1.9.4",
     "leaflet.markercluster": "^1.5.3",
     "proj4": "^2.20.4",

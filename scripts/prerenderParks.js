@@ -22,6 +22,16 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 import sharp from 'sharp';
 import { wildlifeLocations } from '../src/wildlifeData.js';
+import { STATE_PARKS_BY_STATE } from '../src/data/stateParksNJ.js';
+
+// State-code → full name, for prerendered titles/copy. Extend as states ship.
+const STATE_NAMES = { NJ: 'New Jersey', DE: 'Delaware', CT: 'Connecticut', RI: 'Rhode Island', MA: 'Massachusetts', NH: 'New Hampshire', VT: 'Vermont', ME: 'Maine', NY: 'New York', PA: 'Pennsylvania', MD: 'Maryland', VA: 'Virginia', WV: 'West Virginia', NC: 'North Carolina', SC: 'South Carolina', GA: 'Georgia', TN: 'Tennessee', KY: 'Kentucky', OH: 'Ohio', MI: 'Michigan', IN: 'Indiana', IL: 'Illinois', WI: 'Wisconsin', MN: 'Minnesota', FL: 'Florida', AL: 'Alabama', MS: 'Mississippi', LA: 'Louisiana', AR: 'Arkansas', IA: 'Iowa', MO: 'Missouri', ND: 'North Dakota', SD: 'South Dakota', NE: 'Nebraska', KS: 'Kansas', OK: 'Oklahoma', MT: 'Montana', WY: 'Wyoming', CO: 'Colorado', ID: 'Idaho', UT: 'Utah', NV: 'Nevada', AZ: 'Arizona', NM: 'New Mexico', CA: 'California', OR: 'Oregon', WA: 'Washington', TX: 'Texas', AK: 'Alaska', HI: 'Hawaii' };
+
+// Category → human label, for state-park prerender copy.
+const CAT_LABEL = {
+  'state-park': 'State Park', 'state-forest': 'State Forest',
+  'recreation-area': 'Recreation Area', 'state-preserve': 'State Preserve',
+};
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
@@ -167,6 +177,131 @@ async function main() {
     }
   }
 
+  // ── State parks ──────────────────────────────────────────────────────
+  // Same treatment as national parks: a static index page per state +
+  // a static page per state park, so deep links (/state/<st>, /state-park/
+  // <st>/<id>) resolve natively instead of 404ing, and each gets unique SEO
+  // metadata. Species lists aren't bundled (fetched live), so the crawlable
+  // body carries location + "live data" copy rather than a species list.
+  const stateParkUrls = [];
+  for (const [code, parks] of Object.entries(STATE_PARKS_BY_STATE)) {
+    const stName = STATE_NAMES[code] || code;
+    const list = Array.isArray(parks) ? parks : [];
+
+    // Internal link graph for this state's parks (every page links to all).
+    const spLinks = list
+      .map(p => `<li><a href="/state-park/${code.toLowerCase()}/${encodeURIComponent(p.id)}">`
+        + `Wildlife at ${esc(p.name)}</a></li>`)
+      .join('');
+    const spNav =
+      `<nav class="seo-parklinks" aria-label="All ${esc(stName)} state parks">` +
+      `<h2>Explore wildlife by ${esc(stName)} state park</h2><ul>${spLinks}</ul></nav>`;
+
+    // Per state-park page.
+    for (const park of list) {
+      try {
+        const url = `${ORIGIN}/state-park/${code.toLowerCase()}/${park.id}`;
+        const catLabel = CAT_LABEL[park.category] || 'State Park';
+        const title = `Wildlife at ${park.name} — what to see & when | US Wildlife Explorer`;
+        const desc = `See wildlife at ${park.name}, a ${stName} ${catLabel.toLowerCase()}: `
+          + `birds, mammals, reptiles and more — live sighting odds from eBird and `
+          + `iNaturalist, with the best time to visit.`;
+        const descClamped = desc.length > 158 ? desc.slice(0, 155) + '…' : desc;
+
+        const seoBlock =
+          `<article class="seo-prerender">` +
+          `<h1>Wildlife at ${esc(park.name)}</h1>` +
+          `<p>${esc(park.name)} is a ${esc(catLabel.toLowerCase())} in ${esc(stName)} — ` +
+          `which animals you can see, how likely each sighting is, and the best time to ` +
+          `visit. Live data from eBird and iNaturalist.</p>` +
+          `<p>Loading the interactive map…</p>` +
+          spNav +
+          `</article>`;
+
+        const jsonLd = {
+          '@context': 'https://schema.org',
+          '@type': 'TouristAttraction',
+          name: park.name,
+          description: descClamped,
+          url,
+          ...(Number.isFinite(park.lat) && Number.isFinite(park.lng) ? {
+            geo: { '@type': 'GeoCoordinates', latitude: park.lat, longitude: park.lng },
+          } : {}),
+          isAccessibleForFree: true,
+          touristType: 'Wildlife watching',
+        };
+
+        let ogImg = `${ORIGIN}/og-image.png`;
+        try {
+          const ogDir = path.join(DIST, 'og');
+          mkdirSync(ogDir, { recursive: true });
+          await sharp(Buffer.from(ogSvg({ name: park.name, state: stName })))
+            .png().toFile(path.join(ogDir, `sp-${code.toLowerCase()}-${park.id}.png`));
+          ogImg = `${ORIGIN}/og/sp-${code.toLowerCase()}-${park.id}.png`;
+        } catch (e) {
+          console.warn(`⚠  og image fell back for ${park.id}: ${e.message}`);
+        }
+
+        let html = baseHtml
+          .replace(/<title>[\s\S]*?<\/title>/, `<title>${esc(title)}</title>`)
+          .replace(/(<meta name="description" content=")[^"]*(")/, `$1${esc(descClamped)}$2`)
+          .replace(/(<link rel="canonical" href=")[^"]*(")/, `$1${url}$2`)
+          .replace(/(<meta property="og:url" content=")[^"]*(")/, `$1${url}$2`)
+          .replace(/(<meta property="og:title" content=")[^"]*(")/, `$1${esc(title)}$2`)
+          .replace(/(<meta property="og:description" content=")[^"]*(")/, `$1${esc(descClamped)}$2`)
+          .replace(/(<meta property="og:image" content=")[^"]*(")/, `$1${ogImg}$2`)
+          .replace(/(<meta name="twitter:title" content=")[^"]*(")/, `$1${esc(title)}$2`)
+          .replace(/(<meta name="twitter:description" content=")[^"]*(")/, `$1${esc(descClamped)}$2`)
+          .replace(/(<meta name="twitter:image" content=")[^"]*(")/, `$1${ogImg}$2`)
+          .replace(/(<div id="root">)(<\/div>)/, `$1${seoBlock}$2`);
+        html = html.replace(/<\/head>/,
+          `  <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>\n  </head>`);
+
+        const dir = path.join(DIST, 'state-park', code.toLowerCase(), park.id);
+        mkdirSync(dir, { recursive: true });
+        writeFileSync(path.join(dir, 'index.html'), html, 'utf8');
+        stateParkUrls.push(url);
+        written++;
+      } catch (e) {
+        console.warn(`⚠  prerender skipped ${park.id}: ${e.message}`);
+      }
+    }
+
+    // State index page (/state/<code>) — the hub linking all of that state's parks.
+    try {
+      const url = `${ORIGIN}/state/${code.toLowerCase()}`;
+      const title = `${stName} State Parks — wildlife guide | US Wildlife Explorer`;
+      const desc = `Explore wildlife across ${list.length} ${stName} state parks, forests `
+        + `and recreation areas — live sighting odds from eBird and iNaturalist.`;
+      const descClamped = desc.length > 158 ? desc.slice(0, 155) + '…' : desc;
+      const seoBlock =
+        `<article class="seo-prerender">` +
+        `<h1>${esc(stName)} state parks — wildlife guide</h1>` +
+        `<p>Discover which animals you can see across ${list.length} ${esc(stName)} state ` +
+        `parks, forests and recreation areas, how likely each sighting is, and the best ` +
+        `time to visit — with live data from eBird and iNaturalist.</p>` +
+        spNav +
+        `<p>Loading the interactive map…</p></article>`;
+      let html = baseHtml
+        .replace(/<title>[\s\S]*?<\/title>/, `<title>${esc(title)}</title>`)
+        .replace(/(<meta name="description" content=")[^"]*(")/, `$1${esc(descClamped)}$2`)
+        .replace(/(<link rel="canonical" href=")[^"]*(")/, `$1${url}$2`)
+        .replace(/(<meta property="og:url" content=")[^"]*(")/, `$1${url}$2`)
+        .replace(/(<meta property="og:title" content=")[^"]*(")/, `$1${esc(title)}$2`)
+        .replace(/(<meta property="og:description" content=")[^"]*(")/, `$1${esc(descClamped)}$2`)
+        .replace(/(<meta name="twitter:title" content=")[^"]*(")/, `$1${esc(title)}$2`)
+        .replace(/(<meta name="twitter:description" content=")[^"]*(")/, `$1${esc(descClamped)}$2`)
+        .replace(/(<div id="root">)(<\/div>)/, `$1${seoBlock}$2`);
+      const dir = path.join(DIST, 'state', code.toLowerCase());
+      mkdirSync(dir, { recursive: true });
+      writeFileSync(path.join(dir, 'index.html'), html, 'utf8');
+      stateParkUrls.push(url);
+      written++;
+    } catch (e) {
+      console.warn(`⚠  state index prerender skipped ${code}: ${e.message}`);
+    }
+  }
+
   // Homepage: inject a crawlable park index into #root (React replaces it
   // on mount). This makes the homepage the hub that links to all 63 park
   // pages — the primary crawl entry point. Keeps the original generic
@@ -188,15 +323,17 @@ async function main() {
 
   // Sitemap — homepage + every park.
   const now = new Date().toISOString().slice(0, 10);
-  const urls = [`${ORIGIN}/`, ...wildlifeLocations.map(p => `${ORIGIN}/park/${p.id}`)];
+  const urls = [`${ORIGIN}/`, ...wildlifeLocations.map(p => `${ORIGIN}/park/${p.id}`),
+    ...stateParkUrls];
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n`
     + `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`
     + urls.map(u => `  <url><loc>${u}</loc><lastmod>${now}</lastmod></url>`).join('\n')
     + `\n</urlset>\n`;
   writeFileSync(path.join(DIST, 'sitemap.xml'), sitemap, 'utf8');
 
-  console.log(`✅ Prerendered ${written}/${wildlifeLocations.length} park pages `
-    + `+ per-park OG images + sitemap (${urls.length} URLs).`);
+  console.log(`✅ Prerendered ${written} pages `
+    + `(${wildlifeLocations.length} national parks + ${stateParkUrls.length} state) `
+    + `+ OG images + sitemap (${urls.length} URLs).`);
 }
 
 main().catch(err => { console.error(err); process.exit(1); });

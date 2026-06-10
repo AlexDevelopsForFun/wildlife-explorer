@@ -136,6 +136,11 @@ export function rarityFromFreq(freq) {
   return 'exceptional';
 }
 
+// Minimum iNaturalist research-grade observation count for a non-bird species to
+// be shown. Single-observation species are the weakest, noisiest signal (one-off
+// vagrants, escapes, misIDs); requiring ≥2 cuts that noise across every park.
+const MIN_INAT_OBS = 2;
+
 // ── Charisma correction for iNat mammal observation counts ───────────────────
 // Over-reported charismatic species inflate raw counts; divide to normalise.
 // Under-reported small/cryptic species deflate counts; multiply to compensate.
@@ -625,8 +630,14 @@ export async function fetchEbirdHotspot(lat, lng) {
 //
 // Returns { animals, _stats } | null.
 // ─────────────────────────────────────────────────────────────────────────────
-export async function fetchEbird(lat, lng, locId, hotspotCode = null) {
-  const cacheKey = `ebird_v8_${locId}`;
+export async function fetchEbird(lat, lng, locId, hotspotCode = null, { dist = 25 } = {}) {
+  // `dist` (km) is the eBird geo/recent + iNat-bird search radius. National
+  // parks use the historic 25 km default (large parks span many hotspots);
+  // small state parks pass their own park-sized radius so the bird list
+  // reflects the PARK, not a ~1,960 km² circle around it. Non-default radii
+  // get their own cache key so a tighter state-park query never reads a wide
+  // national-park-style cached result for the same coords.
+  const cacheKey = `ebird_v8_${locId}${dist !== 25 ? `_d${dist}` : ''}`;
   const cached = cacheGet(cacheKey);
   if (cached) return cached;
 
@@ -656,11 +667,11 @@ export async function fetchEbird(lat, lng, locId, hotspotCode = null) {
     const [geoRes, inatRes] = await Promise.all([
       fetch(
         `/api/ebird-proxy/data/obs/geo/recent` +
-        `?lat=${lat}&lng=${lng}&dist=25&back=30&maxResults=500&includeProvisional=true`
+        `?lat=${lat}&lng=${lng}&dist=${dist}&back=30&maxResults=500&includeProvisional=true`
       ),
       fetch(
         `/api/inat-proxy/observations/species_counts` +
-        `?lat=${lat}&lng=${lng}&radius=25&iconic_taxa[]=Aves` +
+        `?lat=${lat}&lng=${lng}&radius=${dist}&iconic_taxa[]=Aves` +
         `&quality_grade=research,needs_id&d1=${d1str}&d2=${d2str}&per_page=200`
       ).catch(() => null),
     ]);
@@ -728,7 +739,7 @@ export async function fetchEbird(lat, lng, locId, hotspotCode = null) {
           seasons:        ['spring', 'summer', 'fall', 'winter'],
           bestSeason:     'spring',
           rarity:         rarityFromChecklist(freq),
-          funFact:        `Last reported ${ageLabel} within 15 km (eBird).`,
+          funFact:        `Last reported ${ageLabel} within ${dist} km (eBird).`,
           source:         'ebird',
           frequency:      freq,
           _ageDays:       ageDays,
@@ -787,8 +798,13 @@ const INAT_SUBGROUP_IDS = {
 // iNaturalist — research-grade observations near a lat/lng, by taxon.
 // Uses order_by=votes so the most community-verified species surface first.
 // Returns { animals, _stats } | null.
-export async function fetchINat(lat, lng, locId, taxonKey = null, { radius = 20, days = 0 } = {}) {
-  const extraKey = radius !== 20 || days ? `_r${radius}${days ? `_d${days}` : ''}` : '';
+export async function fetchINat(lat, lng, locId, taxonKey = null, { radius = 20, days = 0, placeId = null } = {}) {
+  // placeId (iNat curated boundary polygon) takes precedence over lat/lng+radius
+  // when provided: species are then counted INSIDE the park boundary rather than
+  // a circle, excluding neighbouring-area observations. Falls back to radius when
+  // a park has no iNat place.
+  const extraKey = placeId ? `_pl${placeId}${days ? `_d${days}` : ''}`
+    : (radius !== 20 || days ? `_r${radius}${days ? `_d${days}` : ''}` : '');
   const cacheKey = `inat_v6_${locId}_${taxonKey ?? 'all'}${extraKey}`;
   const cached = cacheGet(cacheKey);
   if (cached) return cached;
@@ -811,17 +827,30 @@ export async function fetchINat(lat, lng, locId, taxonKey = null, { radius = 20,
     // until a page comes back with <200 results (last page) or we reach the 5-page cap
     // (1 000 species max per group). Each page is a non-overlapping slice sorted by
     // observation count, so concatenation produces a clean deduplicated ranked list.
+    // Boundary query (place_id) when available; otherwise the lat/lng circle.
+    const geoParam = placeId ? `place_id=${placeId}` : `lat=${lat}&lng=${lng}&radius=${radius}`;
     const baseUrl =
       `https://api.inaturalist.org/v1/observations/species_counts` +
-      `?lat=${lat}&lng=${lng}&radius=${radius}&per_page=200` +
+      `?${geoParam}&per_page=200` +
       `&quality_grade=research&order_by=observations_count&order=desc&locale=en&preferred_place_id=1${taxonParam}${dateParam}`;
 
-    const firstRes = await fetch(baseUrl);
+    // iNaturalist intermittently returns 503/429 under load. One short
+    // backoff-retry rides out brief blips before we give up — benefits every
+    // caller (national parks + state parks) and turns transient "birds only"
+    // gaps (when non-bird taxa happened to hit a 503) back into full results.
+    let firstRes = await fetch(baseUrl);
+    if (!firstRes.ok && (firstRes.status >= 500 || firstRes.status === 429)) {
+      await new Promise(r => setTimeout(r, 700));
+      firstRes = await fetch(baseUrl);
+    }
     if (!firstRes.ok) throw new Error(`iNat ${firstRes.status}`);
     const firstJson = await firstRes.json();
     const total_results = firstJson.total_results;
     let results = firstJson.results ?? [];
-    if (!results.length) return null;
+    // Genuine empty (200 OK, 0 results) — distinct from a hard error (null
+    // below). Returning an empty-but-valid object lets callers tell "no
+    // species here" from "the API failed" and avoid retrying into an outage.
+    if (!results.length) return { animals: [], _stats: { taxonKey, totalObsCount: 0 }, _empty: true };
 
     // Paginate when the first page is full (200 = per_page cap hit)
     if (results.length === 200) {
@@ -841,6 +870,11 @@ export async function fetchINat(lat, lng, locId, taxonKey = null, { radius = 20,
     const animals = results
       .filter(r => {
         const rank = r.taxon?.rank;
+        // Accuracy threshold: drop single-observation species. A lone research-grade
+        // record is the weakest, most error-prone signal (one-off vagrants, escapes,
+        // misIDs); genuine residents accumulate ≥2. Cuts noise without touching the
+        // dense, well-attested species. (eBird birds use checklist frequency, not this.)
+        if ((r.count ?? 0) < MIN_INAT_OBS) return false;
         return (rank === 'species' || rank === 'subspecies') && r.taxon?.preferred_common_name;
       })
       .map(r => {
@@ -1712,21 +1746,26 @@ const _HAWAII = new Set(['haleakala','hawaiivolcanoes']);
 const _FLORIDA = new Set(['everglades','biscayne','drytortugas']);
 // Species → set of park keys where they are BLOCKED (never show)
 // Format: lowercase animal name → function(parkKey) returning true if BLOCKED
+// Predicates take a `region` object ({alaska,hawaii,tropical,florida}) so the
+// same rules work for national parks (matched by key) AND state parks (matched
+// by the two-letter id prefix, e.g. "ak-chugach" → Alaska). This keeps Dall
+// sheep at Alaska state parks and monk seals/nēnē at Hawaii ones, while still
+// blocking the truly-impossible (polar bear anywhere, snowy owl in the tropics).
 const _GEO_BLOCKS = [
   { names: ['arctic wolf','arctic fox','arctic hare','muskox','musk ox','walrus','pacific walrus'],
-    blocked: p => !_ALASKA.has(p) },
+    blocked: r => !r.alaska },
   { names: ['polar bear'],
     blocked: () => true },
   { names: ['dall sheep',"dall's sheep"],
-    blocked: p => !_ALASKA.has(p) },
+    blocked: r => !r.alaska },
   { names: ['caribou','reindeer'],
-    blocked: p => !_ALASKA.has(p) },
+    blocked: r => !r.alaska },
   { names: ['marine iguana'],
     blocked: () => true },
   { names: ['snowy owl'],
-    blocked: p => _TROPICAL.has(p) },
+    blocked: r => r.tropical },
   { names: ['hawaiian monk seal','nene','hawaiian goose','hawaiian hoary bat'],
-    blocked: p => !_HAWAII.has(p) },
+    blocked: r => !r.hawaii },
 ];
 const _GEO_MAP = new Map();
 for (const rule of _GEO_BLOCKS) {
@@ -1735,9 +1774,116 @@ for (const rule of _GEO_BLOCKS) {
 
 export function filterGeographicOutliers(animals, parkKey) {
   if (!parkKey) return animals;
-  const key = parkKey.toLowerCase().replace(/[^a-z]/g, '');
+  const raw = String(parkKey).toLowerCase();
+  const st = (raw.match(/^([a-z]{2})-/) || [])[1] || null;  // state-park ids: "ak-…", "hi-…"
+  const key = raw.replace(/[^a-z]/g, '');
+  const region = {
+    alaska:   _ALASKA.has(key)   || st === 'ak',
+    hawaii:   _HAWAII.has(key)   || st === 'hi',
+    tropical: _TROPICAL.has(key) || st === 'hi' || st === 'fl',
+    florida:  _FLORIDA.has(key)  || st === 'fl',
+  };
   return animals.filter(a => {
     const check = _GEO_MAP.get(a.name.toLowerCase());
-    return !check || !check(key);
+    return !check || !check(region);
   });
+}
+
+// ── Park hero photo (Wikipedia + Wikimedia Commons) ─────────────────────────
+// State parks (and refuges) have no NPS photo source. Strategy, accuracy-first:
+//   1. The park's Wikipedia lead image — but REJECTED when it isn't an actual
+//      photo of the place (locator maps, logos, seals, plaques, highway signs,
+//      diagrams, SVG/graphics — common as infobox images and they look awful
+//      as heroes; that was the "photos suck" bug).
+//   2. Fallback: Wikimedia Commons GEOSEARCH — openly-licensed photos actually
+//      taken within ~2.5 km of the park's coordinates, same junk filter.
+//   3. Nothing — the panel renders without a hero (better than a wrong image).
+// Cached 7 days incl. misses (sentinel). v2 key: v1 cached the junk images.
+// Normalise _ and - to spaces FIRST — filenames use underscores, so \bword\b
+// never matches "_map_" (underscore is a regex word char). Junk = anything that
+// isn't a ground-level photo of the place: locator maps, logos/seals/flags,
+// plaques/signs, diagrams, AND aerial/satellite/space imagery (Commons
+// geosearch happily returns ISS "View of Earth" shots geotagged at a coord).
+const _JUNK_IMG = /\b(map|locator|logo|seal|crest|coat of arms|flag|plaque|marker|sign|signage|diagram|chart|layout|floor plan|site plan|emblem|icon|banner|brochure|poster|nrhp|aerial|satellite|landsat|orthophoto|topographic|topo|view of earth|space station|from space)\b|\biss\d|\.svg(\?|$)/i;
+const _normImg = (s) => decodeURIComponent(s ?? '').replace(/[_-]+/g, ' ');
+const _isPhotoFile = (url) => { const n = _normImg(url); return /\.jpe?g(\?|$)/i.test(n) && !_JUNK_IMG.test(n); };
+
+export async function fetchWikiParkImage(name, lat = null, lng = null) {
+  if (!name) return null;
+  const cacheKey = `wiki_img_v2_${name.toLowerCase().replace(/[^a-z0-9]+/g, '_')}`;
+  const cached = cacheGet(cacheKey);
+  if (cached) return cached === '__none__' ? null : cached;
+  let src = null;
+  // 1) Wikipedia lead image, junk-filtered.
+  try {
+    const title = encodeURIComponent(name.replace(/ /g, '_'));
+    const r = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${title}`);
+    if (r.ok) {
+      const j = await r.json();
+      if (j.type !== 'disambiguation' && j.thumbnail?.source && _isPhotoFile(j.thumbnail.source)) {
+        // The summary thumbnail is ~320px; re-request at hero width (capped at
+        // the original's own width so the thumbor service can't 404).
+        const w = Math.min(960, j.originalimage?.width || 640);
+        src = /\/\d+px-/.test(j.thumbnail.source)
+          ? j.thumbnail.source.replace(/\/\d+px-/, `/${w}px-`)
+          : j.thumbnail.source;
+      }
+    }
+  } catch { /* fall through to Commons */ }
+  // 2) Commons geosearch: real photos taken AT the park.
+  if (!src && lat != null && lng != null) {
+    try {
+      const u = `https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*` +
+        `&generator=geosearch&ggscoord=${lat}%7C${lng}&ggsradius=2500&ggslimit=12&ggsnamespace=6` +
+        `&prop=imageinfo&iiprop=url&iiurlwidth=960`;
+      const r = await fetch(u);
+      if (r.ok) {
+        const j = await r.json();
+        const pages = Object.values(j?.query?.pages ?? {});
+        const cand = pages
+          .map(p => ({ title: p.title ?? '', info: p.imageinfo?.[0] }))
+          .filter(p => p.info?.thumburl && _isPhotoFile(p.info.url) && !_JUNK_IMG.test(_normImg(p.title)));
+        // Prefer a photo whose title actually relates to the park (shares a
+        // ≥4-char word from the name) over a random geotagged image.
+        const words = name.toLowerCase().replace(/\b(state|national|park|forest|beach|preserve|recreation|area|wildlife|management|reserve)\b/g, ' ')
+          .split(/\W+/).filter(w => w.length >= 4);
+        const related = cand.find(p => { const t = p.title.toLowerCase(); return words.some(w => t.includes(w)); });
+        src = (related ?? cand[0])?.info.thumburl ?? null;
+      }
+    } catch { /* no hero */ }
+  }
+  cacheSet(cacheKey, src ?? '__none__');
+  return src;
+}
+
+// ── eBird notable (rare-bird alerts) ─────────────────────────────────────────
+// "Notable" = sightings flagged locally rare/unusual by eBird's own review
+// rules — the same feed birders watch for chases. Session-cached only (an
+// alert feed must not live for the 7-day localStorage TTL). Deduped to the
+// most recent report per species.
+const _notableCache = new Map();
+export async function fetchEbirdNotable(lat, lng, { dist = 50, back = 7, max = 12 } = {}) {
+  const key = `${lat.toFixed(2)},${lng.toFixed(2)},${dist},${back}`;
+  if (_notableCache.has(key)) return _notableCache.get(key);
+  try {
+    const r = await fetch(
+      `/api/ebird-proxy/data/obs/geo/recent/notable?lat=${lat.toFixed(4)}&lng=${lng.toFixed(4)}&dist=${dist}&back=${back}&detail=simple`,
+      { signal: AbortSignal.timeout(15000) },
+    );
+    if (!r.ok) return null;
+    const rows = await r.json();
+    if (!Array.isArray(rows)) return null;
+    const bySpecies = new Map();
+    for (const o of rows) {
+      if (!o?.comName) continue;
+      const prev = bySpecies.get(o.comName);
+      if (!prev || (o.obsDt ?? '') > (prev.obsDt ?? '')) bySpecies.set(o.comName, o);
+    }
+    const out = [...bySpecies.values()]
+      .sort((a, b) => (b.obsDt ?? '').localeCompare(a.obsDt ?? ''))
+      .slice(0, max)
+      .map(o => ({ name: o.comName, sci: o.sciName, lat: o.lat, lng: o.lng, locName: o.locName, obsDt: o.obsDt }));
+    _notableCache.set(key, out);
+    return out;
+  } catch { return null; }
 }

@@ -848,6 +848,18 @@ body, #root {
   position: relative;   /* enables absolute-positioned pill + button */
 }
 
+/* Hero photo of the place (NPS image), shown at the top of the popup. */
+.lp__hero {
+  display: block;
+  width: 100%;
+  height: 132px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
 .lp__name {
   font-size: 15px;
   font-weight: 700;
@@ -1896,6 +1908,14 @@ body, #root {
   color: var(--text-muted, #6b7280);
   margin-right: 2px;
 }
+/* Cross-visitor ground-truth count (community sightings backend). */
+.sighting-community {
+  margin-top: 5px;
+  font-size: 12px;
+  color: var(--text-secondary, #8aa);
+}
+.sighting-community strong { color: var(--text-primary, #eaf4ee); font-weight: 700; }
+.sighting-community__adj { color: var(--accent-green, #5fd38a); font-weight: 600; }
 .sighting-feedback__btn {
   appearance: none;
   border: 1px solid var(--border-tip, #d1eddb);
@@ -2394,17 +2414,55 @@ body, #root {
   bottom: 32px;
   left: 12px;
   z-index: 1000;
-  background: rgba(255, 255, 255, 0.93);
+  max-width: 340px;
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(8px);
   border-radius: 12px;
-  padding: 10px 14px;
+  padding: 9px 11px;
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.14);
   border: 1px solid rgba(0, 0, 0, 0.07);
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  pointer-events: none;
+  gap: 7px;
+  pointer-events: auto;   /* chips are interactive now */
 }
+.map-legend__title {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+  color: #6b7280; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+/* Title doubles as the expand/collapse toggle (esp. phones). */
+.map-legend__toggle {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  width: 100%; padding: 0; background: none; border: 0; cursor: pointer; text-align: left;
+}
+.map-legend__toggle:focus-visible { outline: 2px solid #1d4ed8; outline-offset: 2px; border-radius: 4px; }
+.map-legend__caret { font-size: 10px; color: #2f7d4f; font-weight: 700; white-space: nowrap; }
+@media (max-width: 640px) {
+  .map-legend { max-width: calc(100vw - 24px); bottom: 24px; }
+}
+.map-legend__chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.map-legend__chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 8px; border-radius: 999px; cursor: pointer;
+  font-size: 11px; font-weight: 600; line-height: 1; white-space: nowrap;
+  background: #f1f3f5; border: 1px solid rgba(0,0,0,0.1); color: #6b7280;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  transition: background 0.12s, color 0.12s, opacity 0.12s;
+}
+.map-legend__chip.is-active { background: #2f7d4f; border-color: #2f7d4f; color: #fff; }
+.map-legend__chip:not(.is-active) { opacity: 0.55; }
+.map-legend__chip:hover { filter: brightness(0.97); }
+.map-legend__chip:focus-visible { outline: 2px solid #1d4ed8; outline-offset: 1px; }
+.map-legend__chip-count { font-size: 10px; opacity: 0.85; }
+.map-legend__statelink {
+  margin-top: 1px; padding: 6px 8px; border-radius: 8px; cursor: pointer; text-align: left;
+  font-size: 11.5px; line-height: 1.35; color: #1f513a;
+  background: rgba(47,125,79,0.10); border: 1px solid rgba(47,125,79,0.25);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.map-legend__statelink strong { color: #2f7d4f; }
+.map-legend__statelink:hover { background: rgba(47,125,79,0.18); }
+.map-legend__statelink:focus-visible { outline: 2px solid #1d4ed8; outline-offset: 1px; }
 
 .map-legend__item {
   display: flex;
@@ -3664,6 +3722,17 @@ body, #root {
 }
 
 /* ── Species filter pill on map ─────────────────────────────────────────── */
+/* "also in N state parks →" pill — a clickable cross-link under the species
+   pill, opening the matching-state-parks list (universal species search). */
+.species-pill--statelink {
+  border: 1px solid rgba(95, 211, 138, 0.5); cursor: pointer;
+  background: rgba(20, 56, 34, 0.94); color: #d9efe1; font-weight: 500;
+}
+.species-pill--statelink strong { color: #7fe3a4; }
+.species-pill--statelink:hover { background: rgba(31, 122, 71, 0.95); color: #fff; }
+.species-no-results--statelink { cursor: pointer; border: 1px solid rgba(95,211,138,0.45); }
+.species-no-results--statelink strong { color: #7fe3a4; }
+
 .species-pill {
   position:      relative; /* inside stack wrapper */
   background:    rgba(15, 40, 25, 0.92);
@@ -4069,6 +4138,13 @@ textarea:focus-visible,
 .lifelist-bar__next { color: #9ca3af; }
 
 /* Share-this-park (deep link) — sits left of the refresh button */
+/* Directions: an <a> reusing the share-pill look. In the national popup it
+   sits left of Share (absolute, like its siblings); inside a .lp__meta row
+   (state-park panel) it flows inline at the row's end. */
+.lp__directions-btn { right: 174px; text-decoration: none; }
+.lp__directions-btn:hover { background: rgba(255,255,255,0.24); color: #fff; }
+.lp__meta .lp__directions-btn { position: static; margin-left: auto; }
+
 .lp__share-btn {
   position: absolute; top: 12px; right: 84px;
   height: 24px; padding: 0 10px;
@@ -4196,3 +4272,306 @@ textarea:focus-visible,
   margin: 10px 20px 22px; font-size: 12px; line-height: 1.5;
   color: #8fb3a1; text-align: center;
 }
+
+/* ── State-parks browser subtitle ────────────────────────────────────────── */
+.parklist-modal__subtitle {
+  margin: -4px 0 12px; font-size: 12px; color: #8fb3a1; line-height: 1.45;
+}
+
+/* ── State-park panel (community-observation-derived) ───────────────────── */
+.statepark-modal {
+  position: fixed; inset: 0; z-index: 3101;
+  display: flex; flex-direction: column;
+  max-width: 760px; max-height: calc(100vh - 40px);
+  margin: 20px auto; border-radius: 22px; overflow: hidden;
+  background: linear-gradient(145deg, #071a0d 0%, #0d3824 45%, #0a2540 100%);
+  box-shadow: 0 24px 70px rgba(0,0,0,0.45);
+  animation: aboutSlideUp 0.3s ease;
+}
+/* 2-col card grid (reuses national-park .animal-card visuals). */
+.statepark-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: start;
+}
+@media (max-width: 680px) { .statepark-grid { grid-template-columns: 1fr; } }
+.statepark-modal__head { padding: 30px 24px 16px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.statepark-modal__title { font-size: 24px; font-weight: 800; color: #fff; margin: 0 0 4px; }
+.statepark-modal__sub   { font-size: 12px; color: #9bbcab; margin: 0 0 12px; text-transform: capitalize; }
+.statepark-modal__banner {
+  padding: 10px 12px; border-radius: 8px; font-size: 12px; line-height: 1.5;
+  color: #d8efd8; background: rgba(255,193,7,0.08); border: 1px solid #c4942055;
+}
+.statepark-modal__banner strong { color: #fff; }
+/* In-panel park switcher (jump to another park in the same state). */
+.statepark-modal__switch { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 4px 0 10px; }
+.statepark-modal__switch-label { font-size: 12px; color: #9bbcab; }
+.statepark-modal__switch-select {
+  flex: 1; min-width: 180px; max-width: 100%; padding: 7px 10px; border-radius: 8px;
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2);
+  color: #eaf4ee; font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.statepark-modal__switch-select:focus-visible { outline: 2px solid #1d4ed8; outline-offset: 1px; }
+.statepark-modal__switch-select option { background: #15321f; color: #eaf4ee; }
+/* Curated naturalist highlight (flagship parks). */
+.statepark-modal__highlight {
+  margin-bottom: 8px; padding: 10px 12px; border-radius: 8px;
+  background: rgba(95,211,138,0.10); border: 1px solid #5fd38a55;
+}
+.statepark-modal__highlight-label {
+  display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.3px;
+  text-transform: uppercase; color: #5fd38a; margin-bottom: 3px;
+}
+.statepark-modal__highlight-text { margin: 0; font-size: 12.5px; line-height: 1.5; color: #eaf4ee; }
+.statepark-modal__loading-more { color: #8fb3a1; font-style: italic; }
+.statepark-modal__body { overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 12px 18px 24px; }
+.statepark-modal__count { font-size: 12px; color: #8fb3a1; margin: 4px 0 10px; }
+.statepark-modal__empty { color: #9bbcab; padding: 24px 12px; text-align: center; font-size: 14px; }
+.statepark-modal__list { list-style: none; margin: 0; padding: 0; }
+/* Species card with photo (mirrors the national-park card layout). */
+.statepark-card {
+  display: flex; align-items: center; gap: 12px;
+  padding: 8px 10px; border-radius: 10px; margin-bottom: 6px;
+  background: rgba(255,255,255,0.04);
+}
+.statepark-card__photo {
+  flex-shrink: 0; width: 56px; height: 56px; border-radius: 8px;
+  overflow: hidden; background: rgba(255,255,255,0.06);
+  display: flex; align-items: center; justify-content: center;
+}
+.statepark-card__photo img { width: 100%; height: 100%; object-fit: cover; }
+.statepark-card__ph { font-size: 26px; }
+.statepark-card__meta { flex: 1; min-width: 0; }
+.statepark-card__name { font-size: 14px; font-weight: 600; color: #eaf4ee; }
+.statepark-card__sci  { font-size: 12px; font-style: italic; color: #9bbcab; margin-bottom: 4px; }
+.statepark-card .seen-toggle { margin-left: auto; flex-shrink: 0; }
+.statepark-modal__more {
+  display: block; width: 100%; margin: 10px 0 4px; padding: 10px;
+  font-size: 13px; font-weight: 600; color: #eaf4ee; cursor: pointer;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 8px;
+}
+.statepark-modal__more:hover { background: rgba(255,255,255,0.16); }
+@media (max-width: 640px) {
+  .statepark-modal { margin: 0; border-radius: 0; max-height: 100vh; inset: 0; max-width: none; }
+}
+
+/* ── State selector modal ────────────────────────────────────────────────── */
+.stateselect-modal {
+  position: fixed; inset: 0; z-index: 3101;
+  display: flex; flex-direction: column;
+  max-width: 480px; max-height: calc(100vh - 40px);
+  margin: 20px auto; border-radius: 22px; overflow: hidden;
+  background: linear-gradient(145deg, #071a0d 0%, #0d3824 45%, #0a2540 100%);
+  box-shadow: 0 24px 70px rgba(0,0,0,0.45);
+  animation: aboutSlideUp 0.3s ease;
+}
+.stateselect-modal__head { padding: 36px 24px 14px; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: center; }
+.stateselect-modal__title { font-size: 24px; font-weight: 800; color: #fff; margin: 0 0 4px; }
+.stateselect-modal__sub   { font-size: 13px; color: #9bbcab; margin: 0; }
+.stateselect-modal__list  { list-style: none; margin: 0; padding: 16px 18px 24px; overflow-y: auto; }
+.stateselect-modal__item {
+  display: flex; align-items: baseline; gap: 10px; width: 100%;
+  padding: 14px 16px; margin-bottom: 8px; border-radius: 10px;
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15);
+  color: #eaf4ee; cursor: pointer; text-align: left;
+}
+.stateselect-modal__item:hover { background: rgba(255,255,255,0.14); }
+.stateselect-modal__item:focus-visible { outline: 3px solid #1d4ed8; outline-offset: 2px; }
+.stateselect-modal__item-name  { flex: 1; min-width: 0; font-size: 16px; font-weight: 600; }
+.stateselect-modal__item-region { font-size: 10px; letter-spacing: 0.04em; text-transform: uppercase; color: #6f9a82; white-space: nowrap; }
+.stateselect-modal__item-count { font-size: 13px; color: #9bbcab; min-width: 62px; text-align: right; }
+.stateselect-modal__region-head {
+  list-style: none; margin: 14px 4px 6px; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase; color: #5fd38a;
+}
+.stateselect-modal__region-head:first-child { margin-top: 2px; }
+.stateselect-modal__empty { list-style: none; padding: 24px 8px; text-align: center; color: #9bbcab; font-size: 14px; }
+
+/* Selector controls: search + region filter chips */
+.stateselect-modal__controls { padding: 12px 18px 4px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.stateselect-modal__search {
+  width: 100%; box-sizing: border-box; padding: 10px 14px; margin-bottom: 10px;
+  border-radius: 10px; border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.06); color: #eaf4ee; font-size: 14px;
+}
+.stateselect-modal__search::placeholder { color: #7f9c8d; }
+.stateselect-modal__search:focus-visible { outline: 2px solid #1d4ed8; outline-offset: 1px; }
+.stateselect-modal__regions { display: flex; flex-wrap: wrap; gap: 6px; }
+.stateselect-modal__region {
+  padding: 5px 11px; border-radius: 999px; cursor: pointer;
+  font-size: 12px; font-weight: 600; white-space: nowrap;
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.16); color: #c8ddd0;
+}
+.stateselect-modal__region:hover { background: rgba(255,255,255,0.13); }
+.stateselect-modal__region.is-active { background: #2f7d4f; border-color: #2f7d4f; color: #fff; }
+.stateselect-modal__region:focus-visible { outline: 2px solid #1d4ed8; outline-offset: 1px; }
+
+/* ── "Parks near me" modal ──────────────────────────────────────────────── */
+.nearme-modal {
+  position: fixed; inset: 0; z-index: 3101;
+  display: flex; flex-direction: column;
+  max-width: 460px; max-height: calc(100vh - 40px);
+  margin: 20px auto; border-radius: 22px; overflow: hidden;
+  background: linear-gradient(145deg, #071a0d 0%, #0d3824 45%, #0a2540 100%);
+  box-shadow: 0 24px 70px rgba(0,0,0,0.45);
+  animation: aboutSlideUp 0.3s ease;
+}
+.nearme-modal__head { padding: 34px 24px 14px; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: center; }
+.nearme-modal__title { font-size: 23px; font-weight: 800; color: #fff; margin: 0 0 4px; }
+.nearme-modal__sub   { font-size: 13px; color: #9bbcab; margin: 0; }
+.nearme-modal__msg   { padding: 28px 24px; text-align: center; color: #c8ddd0; font-size: 14px; line-height: 1.5; }
+/* Rare-bird alerts strip (eBird notable feed) above the parks list. */
+.nearme-modal__rare {
+  margin: 12px 16px 0; padding: 10px 12px; border-radius: 12px;
+  background: rgba(214,107,40,0.10); border: 1px solid rgba(214,107,40,0.35);
+}
+.nearme-modal__rare-title {
+  font-size: 12px; font-weight: 800; color: #f0b06b; letter-spacing: 0.02em;
+  display: flex; align-items: baseline; gap: 8px;
+}
+.nearme-modal__rare-title span { font-weight: 500; font-size: 10.5px; color: #c79a72; text-transform: none; }
+.nearme-modal__rare-list { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.nearme-modal__rare-item { display: flex; flex-direction: column; gap: 1px; }
+.nearme-modal__rare-name { font-size: 13px; font-weight: 700; color: #f3e8d8; }
+.nearme-modal__rare-meta { font-size: 11px; color: #c4b49e; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.nearme-modal__list  { list-style: none; margin: 0; padding: 14px 16px 22px; overflow-y: auto; }
+.nearme-modal__item {
+  display: flex; align-items: center; gap: 12px; width: 100%;
+  padding: 11px 14px; margin-bottom: 7px; border-radius: 10px;
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14);
+  color: #eaf4ee; cursor: pointer; text-align: left;
+}
+.nearme-modal__item:hover { background: rgba(255,255,255,0.14); }
+.nearme-modal__item:focus-visible { outline: 3px solid #1d4ed8; outline-offset: 2px; }
+.nearme-modal__emoji { font-size: 20px; flex-shrink: 0; }
+.nearme-modal__text  { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.nearme-modal__name  { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nearme-modal__metaline { font-size: 11.5px; color: #9bbcab; }
+.nearme-modal__dist  { margin-left: auto; flex-shrink: 0; font-size: 13px; font-weight: 700; color: #5fd38a; }
+
+/* ── State-park interactive map (full-screen overlay) ───────────────────── */
+.statemap-overlay {
+  position: fixed; inset: 0; z-index: 3050;
+  display: flex; flex-direction: column;
+  background: #0c1c17;
+}
+.statemap-overlay__bar {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.1);
+  background: rgba(7,26,13,0.95);
+  flex-shrink: 0;
+}
+.statemap-overlay__title { font-size: 18px; font-weight: 700; color: #fff; }
+.statemap-overlay__count { margin-left: 8px; font-size: 14px; color: #9bbcab; font-weight: 500; }
+.statemap-overlay__stateswitch {
+  margin-left: 12px; padding: 7px 12px; border-radius: 999px; max-width: 210px;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2);
+  color: #eaf4ee; font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.statemap-overlay__stateswitch:focus-visible { outline: 2px solid #1d4ed8; outline-offset: 1px; }
+.statemap-overlay__stateswitch option { background: #15321f; color: #eaf4ee; }
+.statemap-overlay__close {
+  margin-left: auto; padding: 11px 18px; font-size: 15px; font-weight: 600;
+  background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.28);
+  color: #eaf4ee; border-radius: 999px; cursor: pointer;
+}
+.statemap-overlay__close:hover { background: rgba(255,255,255,0.28); }
+.statemap-overlay__map { flex: 1; position: relative; }
+.statemap-overlay__hint {
+  position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%);
+  margin: 0; padding: 7px 14px; font-size: 12px; color: #d8efd8;
+  background: rgba(7,26,13,0.88); border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 999px; pointer-events: none; z-index: 1000;
+}
+
+/* State-park pin */
+/* State-park pin — circular emoji badge (mirrors national-park pin style).
+   Distinct emoji per category is its own colour-independent cue.       */
+.state-park-pin { background: transparent; border: 0; }
+.state-park-pin__badge {
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  background: rgba(7, 26, 13, 0.78);
+  border: 2px solid #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.55);
+  font-size: 15px; line-height: 1;
+  /* Render emoji crisply, preserve native colour glyphs. */
+  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
+}
+
+/* Legend in the state-map top bar */
+.statemap-overlay__legend {
+  display: flex; flex-wrap: wrap; gap: 6px 18px;
+  margin-left: 22px; font-size: 14px; color: #eaf4ee; font-weight: 500;
+}
+.statemap-overlay__legend-item {
+  display: inline-flex; align-items: center; gap: 7px; white-space: nowrap;
+}
+.statemap-overlay__legend-item > span[aria-hidden] { font-size: 18px; line-height: 1; }
+@media (max-width: 720px) {
+  .statemap-overlay__legend { width: 100%; margin-left: 0; order: 3; }
+}
+
+/* Clickable category filter chips (replaces the passive legend). */
+.statemap-overlay__filters {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-left: 22px; align-items: center;
+}
+.statemap-filter-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 11px; border-radius: 999px; cursor: pointer;
+  font-size: 13px; font-weight: 600; color: #9bbcab;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.14);
+  transition: background .12s, border-color .12s, color .12s, opacity .12s;
+}
+.statemap-filter-chip > span[aria-hidden] { font-size: 15px; line-height: 1; }
+.statemap-filter-chip:hover { background: rgba(255,255,255,0.10); }
+.statemap-filter-chip.is-active { background: #1f7a47; border-color: #5fd38a; color: #eaf4ee; }
+.statemap-filter-chip:not(.is-active) { opacity: 0.55; }
+.statemap-filter-chip__count {
+  font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 999px;
+  background: rgba(0,0,0,0.28); color: inherit;
+}
+/* Park-name search box in the map bar. */
+.statemap-overlay__search {
+  display: inline-flex; align-items: center; gap: 6px; margin-left: auto; margin-right: 12px;
+  padding: 6px 10px; border-radius: 999px;
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.16);
+}
+.statemap-overlay__search > span[aria-hidden] { font-size: 13px; opacity: 0.7; }
+.statemap-overlay__search input {
+  background: transparent; border: 0; outline: none; color: #eaf4ee;
+  font-size: 13px; width: 150px;
+}
+.statemap-overlay__search input::placeholder { color: #7f9b8c; }
+.statemap-overlay__search-clear {
+  background: none; border: 0; color: #9bbcab; cursor: pointer; font-size: 13px; padding: 0 2px;
+}
+@media (max-width: 720px) {
+  /* The bar must WRAP on phones — without this the orders below do nothing
+     and the title gets crushed into a one-word-per-line column. */
+  .statemap-overlay__bar { flex-wrap: wrap; gap: 8px; padding: 10px 12px; }
+  .statemap-overlay__title { order: 1; flex: 1 1 auto; min-width: 0; font-size: 15px; }
+  .statemap-overlay__count { font-size: 12px; margin-left: 6px; }
+  .statemap-overlay__close { order: 2; margin-left: auto; padding: 8px 12px; font-size: 13px; white-space: nowrap; }
+  .statemap-overlay__close .full { display: none; }   /* "← Back" instead of the long label */
+  .statemap-overlay__stateswitch { order: 3; margin-left: 0; flex: 1 1 100%; max-width: none; }
+  /* Category chips: one horizontally-scrollable row instead of a tall wrap. */
+  .statemap-overlay__filters {
+    width: 100%; margin-left: 0; order: 4;
+    flex-wrap: nowrap; overflow-x: auto; padding-bottom: 2px;
+    -webkit-overflow-scrolling: touch; scrollbar-width: none;
+  }
+  .statemap-overlay__filters::-webkit-scrollbar { display: none; }
+  .statemap-filter-chip { flex: 0 0 auto; }
+  .statemap-overlay__search { margin-left: 0; order: 5; width: 100%; }
+  .statemap-overlay__search input { width: 100%; flex: 1; }
+}
+@media (min-width: 721px) {
+  .statemap-overlay__close .short { display: none; }
+}
+
+/* The state-park panel's header chrome (spectrum, tabs, controls, seen filter)
+   reuses the national-park .lp__* / .rarity-spectrum / .lifelist-bar classes
+   verbatim, so there are no state-park-specific styles for those — parity is
+   inherited, not re-implemented. */

@@ -9,12 +9,329 @@ import { SpeedInsights } from '@vercel/speed-insights/react';
 import { track } from '@vercel/analytics';
 
 import { wildlifeLocations, SEASONS, RARITY, ANIMAL_TYPES, STATE_NAMES } from './wildlifeData';
+import { NATIONAL_WILDLIFE_REFUGES } from './data/nationalWildlifeRefuges.js';
+import { STATE_PARKS_NJ, STATE_PARKS_BY_STATE, findStatePark, INAT_PLACE_IDS, STATE_PARK_HIGHLIGHTS } from './data/stateParksNJ';
+// County bird-frequency dataset (~13MB source) — lazy chunk, NOT in the main
+// bundle, so first paint stays fast on phones. Loaded once on the first
+// state-park panel open, then reused.
+let _birdFreqMod = null;
+const loadBirdFreq = () => (_birdFreqMod ??= import('./data/stateParkBirdFreq').catch(() => { _birdFreqMod = null; return null; }));
+
+// States we have curated park data for. Add a new state's entry here +
+// extend STATE_PARKS_BY_STATE — the selector + map handle it automatically.
+// `view` (center + zoom) gives a tight, hand-tuned framing per state;
+// `bounds` is the maxBounds (panning fence) so the user can't drift far.
+const STATE_PARK_STATES = [
+  {
+    code: 'NJ',
+    name: 'New Jersey',
+    view: { center: [40.18, -74.55], zoom: 8 },
+    bounds: [[38.60, -75.90], [41.70, -73.60]],
+  },
+  {
+    code: 'DE',
+    name: 'Delaware',
+    view: { center: [39.00, -75.50], zoom: 9 },
+    bounds: [[38.30, -75.90], [39.95, -75.00]],
+  },
+  {
+    code: 'CT',
+    name: 'Connecticut',
+    view: { center: [41.55, -72.70], zoom: 9 },
+    bounds: [[40.85, -73.95], [42.20, -71.65]],
+  },
+  {
+    code: 'RI',
+    name: 'Rhode Island',
+    view: { center: [41.62, -71.55], zoom: 9 },
+    bounds: [[41.05, -72.00], [42.10, -71.05]],
+  },
+  {
+    code: 'MA',
+    name: 'Massachusetts',
+    view: { center: [42.20, -71.80], zoom: 8 },
+    bounds: [[41.10, -73.65], [42.95, -69.80]],
+  },
+  {
+    code: 'NH',
+    name: 'New Hampshire',
+    view: { center: [43.70, -71.55], zoom: 7 },
+    bounds: [[42.50, -72.70], [45.40, -70.45]],
+  },
+  {
+    code: 'VT',
+    name: 'Vermont',
+    view: { center: [44.00, -72.70], zoom: 7 },
+    bounds: [[42.60, -73.55], [45.10, -71.40]],
+  },
+  {
+    code: 'ME',
+    name: 'Maine',
+    view: { center: [45.30, -69.20], zoom: 7 },
+    bounds: [[42.90, -71.20], [47.60, -66.80]],
+  },
+  {
+    code: 'NY',
+    name: 'New York',
+    view: { center: [43.00, -75.50], zoom: 6 },
+    bounds: [[40.40, -79.90], [45.10, -71.80]],
+  },
+  {
+    code: 'PA',
+    name: 'Pennsylvania',
+    view: { center: [41.00, -77.60], zoom: 7 },
+    bounds: [[39.60, -80.65], [42.40, -74.60]],
+  },
+  {
+    code: 'MD',
+    name: 'Maryland',
+    view: { center: [39.00, -77.00], zoom: 7 },
+    bounds: [[37.80, -79.60], [39.80, -74.90]],
+  },
+  {
+    code: 'VA',
+    name: 'Virginia',
+    view: { center: [37.70, -79.00], zoom: 6 },
+    bounds: [[36.40, -83.80], [39.60, -75.10]],
+  },
+  {
+    code: 'WV',
+    name: 'West Virginia',
+    view: { center: [38.80, -80.50], zoom: 7 },
+    bounds: [[37.10, -82.80], [40.70, -77.60]],
+  },
+  {
+    code: 'NC',
+    name: 'North Carolina',
+    view: { center: [35.50, -79.50], zoom: 6 },
+    bounds: [[33.70, -84.40], [36.70, -75.30]],
+  },
+  {
+    code: 'SC',
+    name: 'South Carolina',
+    view: { center: [33.90, -80.90], zoom: 7 },
+    bounds: [[31.95, -83.45], [35.30, -78.40]],
+  },
+  {
+    code: 'GA',
+    name: 'Georgia',
+    view: { center: [32.90, -83.30], zoom: 6 },
+    bounds: [[30.30, -85.70], [35.10, -80.80]],
+  },
+  {
+    code: 'TN',
+    name: 'Tennessee',
+    view: { center: [35.80, -86.40], zoom: 6 },
+    bounds: [[34.90, -90.40], [36.75, -81.55]],
+  },
+  {
+    code: 'KY',
+    name: 'Kentucky',
+    view: { center: [37.60, -85.80], zoom: 6 },
+    bounds: [[36.40, -89.70], [39.25, -81.85]],
+  },
+  {
+    code: 'OH',
+    name: 'Ohio',
+    view: { center: [40.20, -82.80], zoom: 7 },
+    bounds: [[38.30, -84.90], [42.10, -80.40]],
+  },
+  {
+    code: 'MI',
+    name: 'Michigan',
+    view: { center: [44.80, -85.60], zoom: 6 },
+    bounds: [[41.60, -90.50], [47.60, -82.30]],
+  },
+  {
+    code: 'IN',
+    name: 'Indiana',
+    view: { center: [39.90, -86.30], zoom: 7 },
+    bounds: [[37.70, -88.20], [41.85, -84.70]],
+  },
+  {
+    code: 'IL',
+    name: 'Illinois',
+    view: { center: [40.00, -89.20], zoom: 6 },
+    bounds: [[36.90, -91.60], [42.60, -87.00]],
+  },
+  {
+    code: 'WI',
+    name: 'Wisconsin',
+    view: { center: [44.50, -89.90], zoom: 6 },
+    bounds: [[42.40, -93.00], [47.20, -86.70]],
+  },
+  {
+    code: 'MN',
+    name: 'Minnesota',
+    view: { center: [46.30, -94.30], zoom: 6 },
+    bounds: [[43.40, -97.30], [49.45, -89.40]],
+  },
+  {
+    code: 'FL',
+    name: 'Florida',
+    view: { center: [28.00, -82.50], zoom: 6 },
+    bounds: [[24.40, -87.70], [31.10, -79.90]],
+  },
+  {
+    code: 'AL',
+    name: 'Alabama',
+    view: { center: [32.80, -86.80], zoom: 7 },
+    bounds: [[30.10, -88.60], [35.10, -84.80]],
+  },
+  {
+    code: 'MS',
+    name: 'Mississippi',
+    view: { center: [32.70, -89.70], zoom: 7 },
+    bounds: [[30.00, -91.80], [35.10, -88.00]],
+  },
+  {
+    code: 'LA',
+    name: 'Louisiana',
+    view: { center: [31.00, -92.00], zoom: 7 },
+    bounds: [[28.90, -94.10], [33.10, -88.90]],
+  },
+  {
+    code: 'AR',
+    name: 'Arkansas',
+    view: { center: [34.80, -92.40], zoom: 7 },
+    bounds: [[32.90, -94.70], [36.60, -89.50]],
+  },
+  {
+    code: 'IA',
+    name: 'Iowa',
+    view: { center: [42.00, -93.50], zoom: 7 },
+    bounds: [[40.30, -96.80], [43.60, -90.00]],
+  },
+  {
+    code: 'MO',
+    name: 'Missouri',
+    view: { center: [38.40, -92.50], zoom: 6 },
+    bounds: [[35.90, -95.90], [40.70, -89.00]],
+  },
+  {
+    code: 'ND',
+    name: 'North Dakota',
+    view: { center: [47.45, -100.40], zoom: 6 },
+    bounds: [[45.85, -104.15], [49.05, -96.45]],
+  },
+  {
+    code: 'SD',
+    name: 'South Dakota',
+    view: { center: [44.40, -100.20], zoom: 6 },
+    bounds: [[42.40, -104.15], [45.99, -96.40]],
+  },
+  {
+    code: 'NE',
+    name: 'Nebraska',
+    view: { center: [41.50, -99.70], zoom: 6 },
+    bounds: [[39.95, -104.10], [43.05, -95.25]],
+  },
+  {
+    code: 'KS',
+    name: 'Kansas',
+    view: { center: [38.50, -98.30], zoom: 6 },
+    bounds: [[36.95, -102.10], [40.05, -94.55]],
+  },
+  {
+    code: 'OK',
+    name: 'Oklahoma',
+    view: { center: [35.50, -97.50], zoom: 6 },
+    bounds: [[33.60, -103.05], [37.05, -94.40]],
+  },
+  {
+    code: 'MT',
+    name: 'Montana',
+    view: { center: [47.00, -109.60], zoom: 6 },
+    bounds: [[44.30, -116.10], [49.05, -104.00]],
+  },
+  {
+    code: 'WY',
+    name: 'Wyoming',
+    view: { center: [43.00, -107.55], zoom: 6 },
+    bounds: [[40.95, -111.10], [45.05, -104.00]],
+  },
+  {
+    code: 'CO',
+    name: 'Colorado',
+    view: { center: [39.00, -105.55], zoom: 6 },
+    bounds: [[36.95, -109.10], [41.05, -102.00]],
+  },
+  {
+    code: 'ID',
+    name: 'Idaho',
+    view: { center: [44.40, -114.50], zoom: 6 },
+    bounds: [[41.95, -117.30], [49.05, -111.00]],
+  },
+  {
+    code: 'UT',
+    name: 'Utah',
+    view: { center: [39.30, -111.70], zoom: 6 },
+    bounds: [[36.95, -114.10], [42.05, -109.00]],
+  },
+  {
+    code: 'NV',
+    name: 'Nevada',
+    view: { center: [39.30, -116.90], zoom: 6 },
+    bounds: [[35.00, -120.05], [42.05, -114.00]],
+  },
+  {
+    code: 'AZ',
+    name: 'Arizona',
+    view: { center: [34.20, -111.70], zoom: 6 },
+    bounds: [[31.30, -114.90], [37.05, -109.00]],
+  },
+  {
+    code: 'NM',
+    name: 'New Mexico',
+    view: { center: [34.40, -106.10], zoom: 6 },
+    bounds: [[31.30, -109.10], [37.05, -103.00]],
+  },
+  {
+    code: 'CA',
+    name: 'California',
+    view: { center: [37.20, -119.40], zoom: 5 },
+    bounds: [[32.50, -124.50], [42.05, -114.10]],
+  },
+  {
+    code: 'OR',
+    name: 'Oregon',
+    view: { center: [44.00, -120.50], zoom: 6 },
+    bounds: [[41.95, -124.60], [46.30, -116.40]],
+  },
+  {
+    code: 'WA',
+    name: 'Washington',
+    view: { center: [47.40, -120.50], zoom: 6 },
+    bounds: [[45.50, -124.80], [49.05, -116.90]],
+  },
+  {
+    code: 'TX',
+    name: 'Texas',
+    view: { center: [31.30, -99.30], zoom: 5 },
+    bounds: [[25.80, -106.70], [36.55, -93.50]],
+  },
+  {
+    code: 'AK',
+    name: 'Alaska',
+    view: { center: [61.50, -149.00], zoom: 4 },
+    bounds: [[57.50, -160.00], [65.50, -134.00]],
+  },
+  {
+    code: 'HI',
+    name: 'Hawaii',
+    view: { center: [20.70, -157.00], zoom: 6 },
+    bounds: [[18.90, -159.80], [22.30, -154.80]],
+  },
+];
 import { classifyAnimalSubtype, getSubtypeDefs } from './utils/subcategories';
+import { findStateParksWithBird } from './utils/birdParkSearch';
 import {
   mergeAnimals, balanceAnimals, filterGeographicOutliers, NEVER_EXCEPTIONAL_BIRDS,
   getCorrectionFactor, getMonthlyFrequency,
   rarityFromChecklist, applyRarityOverride,
   fetchInatMonthlyHist, fetchInatParkMonthlyEffort,
+  fetchEbird, fetchINat, fetchEbirdHotspot, deduplicateAnimals,
+  fetchWikiParkImage, fetchEbirdNotable,
 } from './services/apiService';
 import { useLiveData } from './hooks/useLiveData';
 import { useNpsParks } from './hooks/useNpsParks';
@@ -22,7 +339,7 @@ import { WILDLIFE_CACHE, WILDLIFE_CACHE_BUILT_AT } from './data/wildlifeCacheLoa
 import { useSecondaryCache } from './hooks/useSecondaryCache.js';
 import { fetchAnimalPhoto } from './services/photoService';
 import { BUNDLED_PHOTOS } from './data/photoCache.js';
-import { needsGeneratedDescription } from './services/descriptionService';
+import { needsGeneratedDescription, fetchAnimalDescription } from './services/descriptionService';
 import {
   toggleSeen, getSeenKeySet, parkProgress, speciesKey,
   getSeenCount, exportLifeList, getMilestone, getLifeList, clearAll,
@@ -36,14 +353,41 @@ import {
 import { getParkZones } from './data/parkZones.js';
 import { detectabilityCeiling, classifyDetectability, DETECTABILITY_LEVELS } from './data/detectability.js';
 import { recordSighting, clearSighting, getSightingVerdict, exportSightings, getAllSightings } from './data/sightingFeedback.js';
+import { fetchParkSightings, postSighting, sightingsBucketKey } from './services/sightingsService.js';
 
 // ── Park type colors & icons ──────────────────────────────────────────────────
-const PARK_COLORS = { nationalPark: '#7B5B2E' };
-const PARK_ICONS  = { nationalPark: '⛰️' };
+const PARK_COLORS = { nationalPark: '#7B5B2E', wildlifeRefuge: '#1f6f6f' };
+const PARK_ICONS  = { nationalPark: '⛰️', wildlifeRefuge: '🦆' };
+
+// Per-NPS-kind marker emoji (national map). A distinct emoji per designation is
+// a colour-independent cue, mirroring the state-park category markers. Order
+// here also drives the legend/filter chips.
+const NPS_KIND_EMOJI = {
+  'National Park':            '🏔️',
+  'National Monument':        '🗿',
+  'National Preserve':        '🌲',
+  'National Seashore':        '🏖️',
+  'National Lakeshore':       '⛵',
+  'National Recreation Area': '🛶',
+  'National Reserve':         '🌾',
+  'National River':           '🏞️',
+  'National Park Unit':       '⛰️',
+  'Wildlife Refuge':          '🦆',   // USFWS — opt-in layer, off by default
+};
+const NPS_KIND_ORDER = Object.keys(NPS_KIND_EMOJI);
+const npsKindOf  = (loc) => loc?.npsKind || 'National Park';   // static 63 have no npsKind → all are NPs
+const npsEmojiOf = (loc) => NPS_KIND_EMOJI[npsKindOf(loc)] ?? '⛰️';
+
+// State-park category → emoji (for the mixed "near me" results list).
+const STATE_CAT_EMOJI = {
+  'state-park': '🏞️', 'state-forest': '🌲', 'recreation-area': '🛶',
+  'state-beach': '🏖️', 'state-preserve': '🦋',
+};
 
 // ── Park type badge styles (used in popup header) ─────────────────────────────
 const PARK_TYPE_STYLES = {
-  nationalPark: { bg: '#7B5B2E', label: '🏔️ National Park' },
+  nationalPark:   { bg: '#7B5B2E', label: '🏔️ National Park' },
+  wildlifeRefuge: { bg: '#1f6f6f', label: '🦆 Wildlife Refuge' },
 };
 
 // ── Circular marker icon factory ──────────────────────────────────────────────
@@ -51,9 +395,9 @@ const PARK_TYPE_STYLES = {
 //   Tier 1 (zoom ≤ 4): 12 px colored dot — no icon, no badge, no pulse
 //   Tier 2 (zoom 5-6): 24 px circle with park emoji — no badge, no pulse
 //   Tier 3 (zoom ≥ 7): full 48 px — icon + LIVE badge + pulse animation
-function createPinIcon(locationType, isLive = false, isLoading = false, zoomTier = 3) {
+function createPinIcon(locationType, isLive = false, isLoading = false, zoomTier = 3, emoji = null) {
   const bg   = PARK_COLORS[locationType] ?? '#1a6640';
-  const icon = PARK_ICONS[locationType]  ?? '📍';
+  const icon = emoji ?? PARK_ICONS[locationType] ?? '📍';
 
   if (zoomTier === 1) {
     return L.divIcon({
@@ -229,9 +573,17 @@ function MarkerLayer({ locations, icons, onPopupOpen, onPopupClose }) {
     // the click-to-open-popup behavior. Skip binding on touch-only devices.
     const isTouchOnly = window.matchMedia?.('(hover: none)').matches ?? false;
 
+    // locations changed (e.g. the async NPS units just loaded, growing the list
+    // well past the icon snapshot captured at mount) — refresh the icon map so
+    // every current id resolves to a real icon. Effect 2 then applies the
+    // zoom-tier visuals. The `?? createPinIcon(...)` is a belt-and-suspenders
+    // guard so a marker can never be created with an undefined icon (Leaflet
+    // throws on createIcon of undefined).
+    iconsRef.current = icons;
+
     const newMarkers = {};
     locations.forEach(loc => {
-      const marker = L.marker([loc.lat, loc.lng], { icon: iconsRef.current[loc.id] });
+      const marker = L.marker([loc.lat, loc.lng], { icon: iconsRef.current[loc.id] ?? createPinIcon(loc.locationType, false, false, 3, npsEmojiOf(loc)) });
       marker.on('click', () => onOpenRef.current(loc));
       if (!isTouchOnly) {
         marker.bindTooltip(loc.name, {
@@ -866,6 +1218,23 @@ function LifeListModal({ onClose }) {
                   onClick={() => { track('lifelist_export'); exportLifeList(); }}>
                   ↓ Export JSON
                 </button>
+                <button className="lifelist-modal__export"
+                  onClick={() => {
+                    track('lifelist_export_csv');
+                    const esc = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+                    const rows = getLifeList().map(s => [
+                      esc(s.name), esc(s.scientificName),
+                      esc(s.firstParkName), esc((() => { try { return new Date(s.ts).toISOString().slice(0, 10); } catch { return ''; } })()),
+                    ].join(','));
+                    const csv = ['Species,Scientific name,First seen at,Date', ...rows].join('\r\n');
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+                    a.download = 'wildlife-life-list.csv';
+                    a.click();
+                    URL.revokeObjectURL(a.href);
+                  }}>
+                  ↓ Export CSV
+                </button>
                 <button className="lifelist-modal__export" onClick={onCopyLink}>
                   {linkCopied ? '✓ Link copied' : '🔗 Copy restore link'}
                 </button>
@@ -900,7 +1269,7 @@ function LifeListModal({ onClose }) {
 // keyboard / screen-reader user cannot open ANY park — the core function of
 // the site (WCAG 2.1.1). This dialog lists every park as a real button with
 // a type-ahead filter; picking one opens the same panel a marker click does.
-function ParkListModal({ parks, onPick, onClose }) {
+function ParkListModal({ parks, onPick, onClose, title = 'Browse parks', subtitle = null, ariaLabel = 'Browse national parks' }) {
   const [q, setQ] = useState('');
   const inputRef = useRef(null);
   useEffect(() => {
@@ -921,10 +1290,11 @@ function ParkListModal({ parks, onPick, onClose }) {
   return (
     <>
       <div className="about-overlay" onClick={onClose} />
-      <div className="parklist-modal" role="dialog" aria-modal="true" aria-label="Browse national parks">
+      <div className="parklist-modal" role="dialog" aria-modal="true" aria-label={ariaLabel}>
         <button className="about-modal__close" onClick={onClose} aria-label="Close">X</button>
         <div className="parklist-modal__head">
-          <h2 className="parklist-modal__title">Browse parks</h2>
+          <h2 className="parklist-modal__title">{title}</h2>
+          {subtitle && <p className="parklist-modal__subtitle">{subtitle}</p>}
           <input
             ref={inputRef}
             type="search"
@@ -950,6 +1320,1212 @@ function ParkListModal({ parks, onPick, onClose }) {
         </ul>
       </div>
     </>
+  );
+}
+
+// ── State-park panel ───────────────────────────────────────────────────────
+// State parks have NO bundled species cache and NO NPS Species API. This
+// panel fetches species LIVE from iNaturalist (community observations) for
+// the park's lat/lng/radius via the existing /api/inat-proxy. Rough rarity
+// tier is derived from observation count within the radius (less precise
+// than the calibrated national-park model — banner makes that explicit).
+//
+// Reuses the seenList engine so the user's life list spans both park
+// types automatically.
+// Fallback emoji (no photo) keyed by iNaturalist iconic taxon.
+const STATE_ICONIC_EMOJI = {
+  Aves: '🐦', Mammalia: '🦌', Reptilia: '🦎', Amphibia: '🐸',
+  Actinopterygii: '🐟', Insecta: '🦋', Arachnida: '🕷️', Mollusca: '🐌',
+  Animalia: '🐾',
+};
+
+// iNat iconic taxon → UI category group.
+const STATE_GROUP_OF = (ic) => ({
+  Aves: 'birds', Mammalia: 'mammals', Reptilia: 'reptiles', Amphibia: 'amphibians',
+  Actinopterygii: 'fish', Insecta: 'insects', Arachnida: 'insects', Mollusca: 'other',
+}[ic] || 'other');
+const STATE_GROUP_META = {
+  birds: { label: 'Birds', emoji: '🐦' }, mammals: { label: 'Mammals', emoji: '🦌' },
+  reptiles: { label: 'Reptiles', emoji: '🦎' }, amphibians: { label: 'Amphibians', emoji: '🐸' },
+  fish: { label: 'Fish', emoji: '🐟' }, insects: { label: 'Insects', emoji: '🦋' },
+  other: { label: 'Other', emoji: '🐾' },
+};
+const STATE_GROUP_ORDER = ['birds', 'mammals', 'reptiles', 'amphibians', 'fish', 'insects', 'other'];
+// Map our category group → the app's animalType, so the SAME name-based
+// subtype classifier the national parks use (raptor / songbird / …) works
+// on state-park species too.
+const STATE_GROUP_TO_TYPE = {
+  birds: 'bird', mammals: 'mammal', reptiles: 'reptile',
+  amphibians: 'amphibian', fish: 'fish', insects: 'insect', other: null,
+};
+
+function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
+  const [state, setState] = useState({ status: 'loading', species: [], total: 0, sources: [], stats: null });
+  // Hero photo — state parks have no NPS image source, so use the park's
+  // Wikipedia lead image (cached; null when no article/image — header
+  // simply renders without a hero, as before).
+  const [wikiHero, setWikiHero] = useState(null);
+  useEffect(() => {
+    let alive = true;
+    setWikiHero(null);
+    fetchWikiParkImage(park.name, park.lat, park.lng).then(src => { if (alive) setWikiHero(src); });
+    return () => { alive = false; };
+  }, [park.id]);
+  const [seenVersion, setSeenVersion] = useState(0);
+  const [displayLimit, setDisplayLimit] = useState(40);
+  // Multi-select animal-type filter, identical to national parks: defaults to
+  // birds/mammals/reptiles/amphibians/marine (insects opt-in). Clicking a tab
+  // focuses just that type (enabling its subtype bar); "All" re-selects every
+  // type present in the data.
+  const [activeTypes, setActiveTypes] = useState(() => new Set(DEFAULT_ACTIVE_TYPES));
+  const [subtypeFilter, setSubtypeFilter] = useState('all'); // e.g. raptor (Birds of Prey)
+  const [sortBy, setSortBy]         = useState('iconic-first'); // iconic-first | common-first | rarest-first | a-z
+  const [season, setSeason]         = useState(currentSeasonKey); // default to current season, like national parks
+  const [query, setQuery]           = useState('');
+  const [seenFilter, setSeenFilter] = useState('all');      // all | unseen | seen
+  const [rarityFilter, setRarityFilter] = useState('all');  // spectrum bar / rarity dropdown
+  // Per-point search radius (km): the park's own radiusKm, floored at 3 km so
+  // even tiny/urban parks (Liberty, Barnegat Lighthouse) don't inherit a whole
+  // city's species, capped at 20 km. For multi-point parks (large forests,
+  // linear canals) this is the radius around EACH sample point — coverage
+  // comes from the points, so the per-point radius stays tight.
+  const searchRadiusKm = Math.min(Math.max(park.radiusKm ?? 5, 3), 20);
+  // iNaturalist non-bird taxa (mammals, reptiles, amphibians) are FAR more
+  // sparsely sampled than birds and range more widely, so a tight radius
+  // returns almost none — a park looks "birds only" purely as a sampling
+  // artifact. Give iNat a wider net (≥15 km, ≤25 km) so those species actually
+  // surface, while birds stay park-tight on the dense eBird data. Research-grade
+  // filtering still guards against misidentified species, so completeness rises
+  // without accuracy loss. The fetch also retries at the 25 km cap if a taxon
+  // still comes back empty, so even isolated parks surface vertebrates.
+  const inatRadiusKm = Math.min(Math.max(park.radiusKm ?? 8, 15), 25);
+  // Sample points: most parks use their single center; large/linear parks
+  // (see stateParksNJ.js `points`) sample several spots so one off-centre
+  // point can't misrepresent a 100k-acre forest or a 70 km linear canal.
+  const samplePoints = useMemo(
+    () => (Array.isArray(park.points) && park.points.length ? park.points : [[park.lat, park.lng]]),
+    [park.points, park.lat, park.lng],
+  );
+  // Per-species iNat seasonal histograms + park-wide observer-effort baseline —
+  // the SAME ancillary inputs national parks fetch (fetchInatMonthlyHist /
+  // fetchInatParkMonthlyEffort). Feeding these into the identical
+  // computeEffectiveRarity / AnimalCard turns the flat season chips into real
+  // per-season encounter probabilities and makes rarity season-aware — without
+  // touching any national-park code (purely additive, location-based).
+  const [seasonalFreqs, setSeasonalFreqs] = useState({});
+  const [parkEffort, setParkEffort] = useState(null);
+  const freqFetchedRef = useRef(new Set());
+  useEffect(() => {
+    setDisplayLimit(24); setActiveTypes(new Set(DEFAULT_ACTIVE_TYPES)); setSubtypeFilter('all'); setQuery(''); setSeenFilter('all'); setSortBy('iconic-first'); setSeason(currentSeasonKey()); setRarityFilter('all');
+    freqFetchedRef.current = new Set(); setSeasonalFreqs({}); setParkEffort(null);
+  }, [park.id]);
+  // Fire-and-forget park-wide effort baseline (90-day cached, once per park).
+  useEffect(() => {
+    let alive = true;
+    fetchInatParkMonthlyEffort(park.lat, park.lng, park.id).then(eff => { if (alive) setParkEffort(eff); });
+    return () => { alive = false; };
+  }, [park.id, park.lat, park.lng]);
+  // focusedType = the single selected type (drives the subtype bar); null when
+  // multiple types are active.
+  const focusedType = activeTypes.size === 1 ? [...activeTypes][0] : null;
+  useEffect(() => { setSubtypeFilter('all'); setRarityFilter('all'); }, [focusedType]); // reset subtype + rarity when focus changes
+  useEffect(() => {
+    const h = e => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, [onClose]);
+
+  // Derive species + rarity the SAME way national parks do: eBird checklist
+  // frequency (birds) + iNaturalist density (other taxa), via the shared
+  // apiService engine. The resulting animals carry .frequency + .animalType,
+  // so computeEffectiveRarity (the calibrated model) and AnimalCard work
+  // identically — no offline cache, all runtime.
+  const SP_TAXA = ['bird', 'mammal', 'reptile', 'amphibian', 'insect', 'marine'];
+  useEffect(() => {
+    let alive = true;
+    setState({ status: 'loading', species: [], total: 0, sources: [], stats: null });
+    (async () => {
+      try {
+        const birdDist = searchRadiusKm;       // tight — dense eBird data
+        const inatRadius = inatRadiusKm;        // wider — sparse non-bird taxa
+        const pool = [];
+        const sources = [];
+        let ebirdChecklists = null, ebirdHistoricalSpecies = 0, inatObservations = 0;
+
+        // Run up to `conc` async tasks at a time (gentle on the APIs).
+        const runQueue = (tasks, conc = 2) => new Promise(resolve => {
+          let i = 0, running = 0, done = 0;
+          if (!tasks.length) return resolve();
+          const next = () => {
+            while (running < conc && i < tasks.length) {
+              const task = tasks[i++]; running++;
+              task().finally(() => { running--; if (++done === tasks.length) resolve(); else next(); });
+            }
+          };
+          next();
+        });
+
+        // ── eBird birds: per sample point (radius). eBird has no boundary
+        //    query, so multi-point sampling stays the way large/linear parks
+        //    get full coverage. ──
+        const fetchEbirdAt = async ([lat, lng], idx) => {
+          const pointId = samplePoints.length > 1 ? `${park.id}-p${idx}` : park.id;
+          const hotspot = await fetchEbirdHotspot(lat, lng);
+          const eb = await fetchEbird(lat, lng, pointId, hotspot, { dist: birdDist });
+          if (eb?.animals?.length) {
+            pool.push(...eb.animals);
+            if (!sources.includes('ebird')) sources.push('ebird');
+            ebirdHistoricalSpecies = Math.max(ebirdHistoricalSpecies, eb._stats?.historicalSpeciesCount ?? 0);
+          }
+        };
+        for (let i = 0; i < samplePoints.length; i++) {
+          if (!alive) return;
+          await fetchEbirdAt(samplePoints[i], i);
+        }
+        if (!alive) return;
+
+        // Dedupe + re-rate birds with eBird county-level peak-season checklist
+        // frequency (build-time cache, scripts/buildStateParkBirdFreqNJ.js) —
+        // the gold-standard signal national parks use, far better than the
+        // geo/recent recency proxy. Only re-rates birds ALREADY in the list
+        // (keeps the species set park-specific); birds absent from the cache
+        // keep their existing rarity (graceful — e.g. Salem-county parks).
+        // Factored into finalize() so we can emit birds first, then the full set.
+        const birdFreqMod = await loadBirdFreq();
+        if (!alive) return;
+        const countyFreq = birdFreqMod
+          ? (birdFreqMod.COUNTY_BIRD_FREQ[birdFreqMod.PARK_COUNTY[park.id]] ?? null)
+          : null;
+        const finalize = () => {
+          // Drop clear out-of-range live-API artifacts (state-aware: keeps Dall
+          // sheep at AK parks, monk seals at HI parks; blocks polar bears etc.).
+          const animals = filterGeographicOutliers(deduplicateAnimals(pool), park.id);
+          if (countyFreq) {
+            for (const a of animals) {
+              if (a.animalType !== 'bird' || !a.name) continue;
+              const e = countyFreq[a.name.toLowerCase()];
+              if (!e) continue;
+              a.frequency = e.f;
+              a.rarity = rarityFromChecklist(e.f);
+              a.seasons = e.s;        // real per-species seasonality (migrants ≠ year-round)
+              a._raritySource = 'ebird_county_freq';
+            }
+          }
+          return animals;
+        };
+
+        // ── Phase 1: render birds (eBird) immediately so the panel populates
+        //    fast, while the slower iNat non-bird taxa stream in below. ──
+        const birds = finalize();
+        if (alive && birds.length) {
+          setState({
+            status: 'ok', species: birds, total: birds.length, sources: [...sources],
+            stats: { ebirdChecklists, ebirdHistoricalSpecies: ebirdHistoricalSpecies || null, inatObservations },
+            partial: true,
+          });
+        }
+
+        // ── Phase 2: iNaturalist. Boundary query (place_id) when the park has a
+        //    verified iNat polygon — ONE query per taxon counts species INSIDE
+        //    the park; parks without one use the radius path (per-point +
+        //    adaptive widen for sparse non-bird taxa). ──
+        const placeId = INAT_PLACE_IDS[park.id] ?? null;
+        const takeInat = (r) => {
+          if (r?.animals?.length) { pool.push(...r.animals); if (!sources.includes('inaturalist')) sources.push('inaturalist'); }
+          inatObservations += r?._stats?.totalObsCount ?? 0;
+        };
+        if (placeId) {
+          await runQueue(SP_TAXA.map(taxon => async () => {
+            try { takeInat(await fetchINat(park.lat, park.lng, park.id, taxon, { placeId })); }
+            catch { /* non-fatal */ }
+          }), 2);
+        } else {
+          for (let idx = 0; idx < samplePoints.length; idx++) {
+            if (!alive) return;
+            const [lat, lng] = samplePoints[idx];
+            const pointId = samplePoints.length > 1 ? `${park.id}-p${idx}` : park.id;
+            await runQueue(SP_TAXA.map(taxon => async () => {
+              const taxonRadius = taxon === 'bird' ? birdDist : inatRadius;
+              try {
+                let r = await fetchINat(lat, lng, pointId, taxon, { radius: taxonRadius, days: 0 });
+                // Widen to the 25 km cap only on a genuine empty (not a 503).
+                if (taxon !== 'bird' && r && r.animals.length === 0 && taxonRadius < 25) {
+                  const wide = await fetchINat(lat, lng, `${pointId}-wide`, taxon, { radius: 25, days: 0 });
+                  if (wide) r = wide;
+                }
+                takeInat(r);
+              } catch { /* non-fatal — other taxa still load */ }
+            }), 2);
+          }
+        }
+
+        if (!alive) return;
+        let animals = finalize();
+        let countySeeded = false;
+        if (!animals.length && countyFreq) {
+          // Live-empty fallback — vast wilderness units (Adirondack-class) whose
+          // centroid has no geotagged observations nearby. Seed the panel from
+          // the county's eBird checklist-frequency data: same species, same
+          // rarity scale the live path would assign, clearly labelled below.
+          countySeeded = true;
+          animals = Object.entries(countyFreq)
+            .filter(([n]) => !n.startsWith('__'))
+            .sort((a, b) => (b[1].f ?? 0) - (a[1].f ?? 0))
+            .slice(0, 80)
+            .map(([n, e]) => ({
+              name: n.replace(/(^|[\s-])\w/g, c => c.toUpperCase()),
+              animalType: 'bird',
+              frequency: e.f,
+              rarity: rarityFromChecklist(e.f),
+              seasons: e.s,
+              _raritySource: 'ebird_county_freq',
+              _countySeeded: true,
+            }));
+          if (animals.length && !sources.includes('ebird')) sources.push('ebird');
+        }
+        const stats = { ebirdChecklists, ebirdHistoricalSpecies: ebirdHistoricalSpecies || null, inatObservations };
+        setState({ status: animals.length ? 'ok' : 'empty', species: animals, total: animals.length, sources, stats, partial: false, countySeeded });
+      } catch {
+        if (alive) setState({ status: 'error', species: [], total: 0, sources: [], stats: null });
+      }
+    })();
+    return () => { alive = false; };
+  }, [park.id, park.lat, park.lng, park.radiusKm, samplePoints]);
+
+  const spLocation = useMemo(() => ({ id: park.id, name: park.name, lat: park.lat, lng: park.lng }), [park.id, park.name, park.lat, park.lng]);
+
+  // Enrich each live species EXACTLY as national parks do (App's `enriched`):
+  // apply the county→park correction factor, cap live-only (non-curated)
+  // species at `rare` (only hand-curated entries can be Exceptional), apply
+  // any rarity override, and clamp frequency to the resulting tier's ceiling.
+  // Without this, computeEffectiveRarity reads the raw iNat frequency proxy and
+  // mislabels hundreds of one-off sightings as "Exceptional" — national parks
+  // never show that for live-only species. This makes the rarity derivation
+  // identical and keeps the spectrum, sort, and card badges in agreement.
+  const enrichedSpecies = useMemo(() => {
+    const clampFreq = (freq, rarity) => {
+      if (freq == null || rarity == null) return freq;
+      const ceiling = TIER_CEILING[rarity];
+      return ceiling != null ? Math.min(freq, ceiling) : freq;
+    };
+    return state.species.map(a => {
+      const factor = getCorrectionFactor(a.name);
+      if (a.frequency != null && factor !== 1) {
+        const correctedFreq = Math.min(1, a.frequency * factor);
+        let ebirdRarity = rarityFromChecklist(correctedFreq);
+        if (!a._curated && ebirdRarity === 'exceptional') ebirdRarity = 'rare';
+        const computedRarity = applyRarityOverride(park.id, a.name, ebirdRarity);
+        return { ...a, rarity: computedRarity, frequency: clampFreq(correctedFreq, computedRarity) };
+      }
+      const baseRarity = (!a._curated && a.rarity === 'exceptional') ? 'rare' : a.rarity;
+      const overridden = applyRarityOverride(park.id, a.name, baseRarity);
+      const clamped = clampFreq(a.frequency, overridden);
+      return { ...a, rarity: overridden, ...(clamped !== a.frequency ? { frequency: clamped } : {}) };
+    });
+  }, [state.species, park.id]);
+
+  // Active season for rarity (null when "All Seasons" selected).
+  const activeSeasonForRarity = season === 'all' ? null : season;
+
+  // Cross-visitor sighting aggregates for this park (api/sightings). Fetched
+  // once per park open; empty + no-op until the datastore is connected.
+  const [community, setCommunity] = useState({ buckets: {}, configured: false });
+  useEffect(() => {
+    let alive = true;
+    setCommunity({ buckets: {}, configured: false });
+    fetchParkSightings(park.id).then(r => { if (alive) setCommunity(r); });
+    return () => { alive = false; };
+  }, [park.id]);
+  // Optimistic local bump so a card's "N of M" updates instantly on vote.
+  const bumpCommunity = useCallback((species, season, verdict) => {
+    setCommunity(prev => {
+      const bk = sightingsBucketKey(species, season);
+      const cur = prev.buckets[bk] ?? { seen: 0, missed: 0 };
+      return { ...prev, buckets: { ...prev.buckets, [bk]: { ...cur, [verdict]: (cur[verdict] ?? 0) + 1 } } };
+    });
+  }, []);
+  const communityFor = useCallback((species) => {
+    const b = community.buckets[sightingsBucketKey(species, activeSeasonForRarity ?? 'any')];
+    if (!b) return null;
+    const n = (b.seen ?? 0) + (b.missed ?? 0);
+    return n > 0 ? { seen: b.seen ?? 0, n } : null;
+  }, [community, activeSeasonForRarity]);
+
+  // Effective rarity per (enriched) animal — the SAME function + inputs national
+  // parks use: season-aware, using the live iNat seasonal histograms
+  // (seasonalFreqs) effort-corrected by parkEffort, then the conservative
+  // community nudge. Drives the spectrum, sort, and rarity-dropdown filter so
+  // they all agree with the (also-nudged) card pills.
+  const effRarity = useMemo(() => {
+    const m = new Map();
+    for (const a of enrichedSpecies) {
+      const base = computeEffectiveRarity(a, {
+        activeSeason: activeSeasonForRarity, activeZone: null, seasonalFreqs,
+        parkEffort, parkZones: null, effortRescaler: 1, visitTime: 'any',
+      });
+      m.set(a, nudgeRarityWithCommunity(base, communityFor(a.name)));
+    }
+    return m;
+  }, [enrichedSpecies, activeSeasonForRarity, seasonalFreqs, parkEffort, communityFor]);
+
+  // Lazy-fetch iNat seasonal histograms for the most-likely species first
+  // (same throttle/ordering as national parks). Each result streams into
+  // seasonalFreqs, which re-derives rarity + season chips for that species.
+  useEffect(() => {
+    if (!enrichedSpecies?.length) return;
+    const withSci = enrichedSpecies.filter(a => a.scientificName);
+    const sorted = [...withSci].sort((a, b) =>
+      (Math.max(b.frequency ?? 0, RARITY_FREQ_FALLBACK[b.rarity] ?? 0)) -
+      (Math.max(a.frequency ?? 0, RARITY_FREQ_FALLBACK[a.rarity] ?? 0)));
+    const queue = sorted.slice(0, 300).filter(b => !freqFetchedRef.current.has(b.scientificName.toLowerCase()));
+    if (!queue.length) return;
+    let alive = true, cursor = 0;
+    const worker = async () => {
+      while (alive) {
+        const idx = cursor++;
+        if (idx >= queue.length) return;
+        const sp = queue[idx];
+        const key = sp.scientificName.toLowerCase();
+        if (freqFetchedRef.current.has(key)) continue;
+        freqFetchedRef.current.add(key);
+        const result = await fetchInatMonthlyHist(park.lat, park.lng, park.id, sp.scientificName);
+        if (!alive) return;
+        setSeasonalFreqs(prev => ({ ...prev, [key]: result }));
+      }
+    };
+    Promise.all(Array.from({ length: 6 }, worker));
+    return () => { alive = false; };
+  }, [enrichedSpecies, park.id, park.lat, park.lng]);
+
+  const seenKeys = useMemo(() => getSeenKeySet(), [seenVersion]);
+  const spProgress = useMemo(() => parkProgress(enrichedSpecies), [enrichedSpecies, seenVersion]);
+  const onToggleSeen = (s) => {
+    const added = !seenKeys.has(speciesKey(s));
+    toggleSeen(s, { parkId: park.id, parkName: park.name });
+    setSeenVersion(v => v + 1);
+    track('seen_toggle', { added, animal: s.name, park: park.name });
+  };
+
+  // Season-filtered pool (mirrors national parks' seasonFiltered) — applies
+  // ONLY the season filter, so tab/breakdown counts are season-aware. Live
+  // eBird/iNat species carry year-round seasons, so this rarely narrows, but
+  // the control + behaviour match national parks exactly.
+  const seasonSpecies = useMemo(() => {
+    if (season === 'all') return enrichedSpecies;
+    return enrichedSpecies.filter(s => {
+      const segs = s.seasons ?? [];
+      return segs.includes('year-round') || segs.includes('year_round') || segs.includes(season);
+    });
+  }, [enrichedSpecies, season]);
+
+  // Category tab counts by the app's native animalType (same as national parks).
+  const typeCounts = useMemo(() => {
+    const m = {};
+    for (const s of seasonSpecies) { const t = s.animalType || 'other'; m[t] = (m[t] || 0) + 1; }
+    return m;
+  }, [seasonSpecies]);
+
+  // Type breakdown row (🐦 184 chips) — same order/markup as national parks.
+  const typeBreakdown = useMemo(() => {
+    const m = {};
+    for (const s of seasonSpecies) { const t = s.animalType; if (t) m[t] = (m[t] || 0) + 1; }
+    return m;
+  }, [seasonSpecies]);
+
+  // Live data attribution (e.g. "Cornell Lab of Ornithology · iNaturalist").
+  const sourceAttr = useMemo(() => {
+    const live = [...new Set((state.sources || []).filter(s => s !== 'static' && s !== 'estimated'))];
+    return live.length ? live.map(s => SOURCE_LONG[s] ?? s).join(' · ') : 'eBird · iNaturalist';
+  }, [state.sources]);
+
+  // All animal-type keys actually present in this park's data — drives the
+  // tab list and the "All" selection target.
+  const presentTypeKeys = useMemo(
+    () => ['bird', 'mammal', 'reptile', 'amphibian', 'insect', 'marine', 'fish', 'other'].filter(t => typeCounts[t]),
+    [typeCounts],
+  );
+  const allTypesActive = presentTypeKeys.length > 0 && presentTypeKeys.every(t => activeTypes.has(t));
+
+  // Subtype tabs (Birds of Prey, Songbirds, …) — only when exactly one type is
+  // focused (same rule as national parks).
+  const subtypeDefs = focusedType ? getSubtypeDefs(focusedType) : null;
+
+  // Species after season + (multi-select) type + subtype filters — drives
+  // spectrum + list. Mirrors national parks: filter to active types unless all
+  // present types are selected.
+  const inCategory = useMemo(() => {
+    let list = allTypesActive ? seasonSpecies : seasonSpecies.filter(s => activeTypes.has(s.animalType));
+    if (subtypeFilter !== 'all' && subtypeDefs) {
+      list = list.filter(s => classifyAnimalSubtype(s) === subtypeFilter);
+    }
+    return list;
+  }, [seasonSpecies, activeTypes, allTypesActive, subtypeFilter, subtypeDefs]);
+
+  // Copies with `.rarity` set to the calibrated effective tier, so the SAME
+  // RaritySpectrumBar national parks use renders the correct composition,
+  // and so the spectrum click-to-filter highlights the right segment.
+  const spectrumAnimals = useMemo(
+    () => inCategory.map(s => ({ ...s, rarity: effRarity.get(s) || s.rarity })),
+    [inCategory, effRarity],
+  );
+
+  const visible = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    let list = inCategory.filter(s => {
+      if (q && !((s.name || '').toLowerCase().includes(q) || (s.scientificName || '').toLowerCase().includes(q))) return false;
+      if (rarityFilter !== 'all' && effRarity.get(s) !== rarityFilter) return false;
+      if (seenFilter !== 'all') {
+        const seen = seenKeys.has(speciesKey(s));
+        if (seenFilter === 'seen' ? !seen : seen) return false;
+      }
+      return true;
+    });
+    // Same four sort modes as national parks. For iconic, reuse the shared
+    // iconicSortFn on copies whose `.rarity` is the calibrated effective tier
+    // (state-park species have no curated funFact, so they sort by charisma +
+    // rarity — exactly national parks' behaviour for live-only species).
+    if (sortBy === 'a-z') {
+      list = [...list].sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+    } else if (sortBy === 'iconic-first') {
+      list = [...list]
+        .map(s => ({ s, k: { ...s, rarity: effRarity.get(s) || s.rarity } }))
+        .sort((a, b) => iconicSortFn(a.k, b.k))
+        .map(x => x.s);
+    } else {
+      const dir = sortBy === 'common-first' ? 1 : -1; // rarest-first = -1
+      list = [...list].sort((a, b) =>
+        ((_RARITY_ORDER[effRarity.get(a)] ?? 5) - (_RARITY_ORDER[effRarity.get(b)] ?? 5)) * dir
+        || (a.name || '').localeCompare(b.name || ''));
+    }
+    return list;
+  }, [inCategory, query, seenFilter, seenKeys, sortBy, effRarity, rarityFilter]);
+
+  // Same-state siblings, for the in-panel park switcher (jump to another park
+  // without returning to the state map). Derived from the id prefix so it also
+  // works on a direct deep-link landing.
+  const stateInfo = STATE_PARK_STATES.find(s => park.id?.startsWith(s.code.toLowerCase() + '-'));
+  const siblingParks = useMemo(
+    () => (stateInfo ? (STATE_PARKS_BY_STATE[stateInfo.code] || []).slice().sort((a, b) => a.name.localeCompare(b.name)) : []),
+    [stateInfo?.code],
+  );
+
+  return (
+    <>
+      <div className="about-overlay" onClick={onClose} />
+      <div className="statepark-modal" role="dialog" aria-modal="true" aria-label={`Wildlife at ${park.name}`}>
+        <button className="about-modal__close" onClick={onClose} aria-label="Close">X</button>
+        <div className="statepark-modal__head">
+          {wikiHero && (
+            <img
+              className="lp__hero"
+              src={wikiHero}
+              alt={`${park.name} scenery`}
+              loading="lazy"
+              onError={() => setWikiHero(null)}
+            />
+          )}
+          <h2 className="statepark-modal__title">{park.name}</h2>
+          {/* Meta row — state + park-type badge, mirroring national parks.
+              State name is derived from the park id prefix (nj-/de-/…) so it's
+              correct for every wired state, not hardcoded. */}
+          <div className="lp__meta">
+            <span className="lp__state">{stateInfo?.name ?? ''}</span>
+            <span className="lp__park-badge" style={{ background: '#2f7d4f' }}>
+              {(park.category?.replace('-', ' ') ?? 'state park').replace(/\b\w/g, c => c.toUpperCase())}
+            </span>
+            <a
+              className="lp__share-btn lp__directions-btn"
+              href={`https://www.google.com/maps/dir/?api=1&destination=${park.lat},${park.lng}`}
+              target="_blank" rel="noopener noreferrer"
+              aria-label={`Get directions to ${park.name}`}
+              title="Open directions in your maps app"
+            >
+              🧭 Directions
+            </a>
+          </div>
+          {/* In-panel park switcher — jump to another park in the same state
+              without closing back to the state map. */}
+          {onSwitchPark && siblingParks.length > 1 && (
+            <div className="statepark-modal__switch">
+              <span className="statepark-modal__switch-label" aria-hidden="true">↔ Jump to another {stateInfo?.name ?? ''} park:</span>
+              <select
+                className="statepark-modal__switch-select"
+                aria-label={`Jump to another park in ${stateInfo?.name ?? 'this state'}`}
+                value={park.id}
+                onChange={e => {
+                  const next = siblingParks.find(p => p.id === e.target.value);
+                  if (next && next.id !== park.id) onSwitchPark(next);
+                }}
+              >
+                {siblingParks.map(p => (
+                  <option key={p.id} value={p.id}>{p.name}</option>
+                ))}
+              </select>
+            </div>
+          )}
+          {/* Data attribution line — same format as national parks. */}
+          {state.status === 'ok' && state.species.length > 0 && (
+            <div className="lp__source-attr"><span title="Live data">● Live · </span>{sourceAttr}</div>
+          )}
+
+          {state.status === 'ok' && state.species.length > 0 && (
+            <>
+              {/* Species type breakdown row (🐦 184 …) — same as national parks. */}
+              {Object.keys(typeBreakdown).length > 0 && (
+                <div className="lp__breakdown">
+                  {Object.entries(ANIMAL_TYPES)
+                    .filter(([k]) => k !== 'all' && typeBreakdown[k])
+                    .map(([k, { emoji, label }]) => (
+                      <span key={k} className="breakdown-chip" title={label}>{emoji} {typeBreakdown[k]}</span>
+                    ))}
+                  {season !== 'all' && (
+                    <span className="breakdown-chip breakdown-chip--season" title="Active season filter">
+                      {SEASONS[season]?.emoji ?? '📅'} {SEASONS[season]?.label ?? season}
+                    </span>
+                  )}
+                </div>
+              )}
+              {/* API data note — eBird checklist + iNat observation + historical-spp counts. */}
+              {state.stats && (state.stats.ebirdChecklists || state.stats.inatObservations > 0) && (
+                <div className="lp__api-note">
+                  📊{' '}
+                  {[
+                    state.stats.ebirdChecklists
+                      ? `${state.stats.ebirdChecklists} eBird checklist${state.stats.ebirdChecklists !== 1 ? 's' : ''}`
+                      : null,
+                    state.stats.inatObservations
+                      ? `${state.stats.inatObservations.toLocaleString()} iNat obs`
+                      : null,
+                  ].filter(Boolean).join(' · ')}
+                  {state.stats.ebirdHistoricalSpecies
+                    ? ` · ${state.stats.ebirdHistoricalSpecies} historical spp`
+                    : null}
+                </div>
+              )}
+              {/* Curated naturalist highlight (flagship parks only). */}
+              {STATE_PARK_HIGHLIGHTS[park.id] && (
+                <div className="statepark-modal__highlight" role="note">
+                  <span className="statepark-modal__highlight-label">🌟 Park highlight</span>
+                  <p className="statepark-modal__highlight-text">{STATE_PARK_HIGHLIGHTS[park.id]}</p>
+                </div>
+              )}
+              {state.countySeeded ? (
+                <div className="statepark-modal__banner" role="note">
+                  <strong>County-level bird list.</strong> Few geotagged observations were
+                  found right at this spot, so this shows the birds of the surrounding
+                  county (eBird historical checklists) — the species you can expect in this area.
+                </div>
+              ) : (
+                <div className="statepark-modal__banner" role="note">
+                  <strong>Live from eBird + iNaturalist.</strong> Rarity is derived the same
+                  way as national parks{STATE_PARK_HIGHLIGHTS[park.id]
+                    ? '.'
+                    : '. State parks have no NPS curated species inventory, so that section isn’t shown.'}
+                </div>
+              )}
+
+              {/* Rarity spectrum — the SAME component national parks use. */}
+              <RaritySpectrumBar
+                animals={spectrumAnimals}
+                activeRarity={rarityFilter}
+                onSelectRarity={setRarityFilter}
+              />
+
+              {/* Category tabs — multi-select, national-park behaviour: the
+                  default preset highlights several types at once; clicking one
+                  focuses it; "All" re-selects every present type. */}
+              <div className="lp__tabs-wrapper">
+                <div className="lp__tabs" role="tablist">
+                  {presentTypeKeys.map(t => {
+                    const isActive = activeTypes.has(t);
+                    return (
+                      <button
+                        key={t}
+                        role="tab"
+                        aria-selected={isActive}
+                        className={`lp__tab${isActive ? ' lp__tab--active' : ''}`}
+                        onClick={() => { setActiveTypes(new Set([t])); setDisplayLimit(24); track('state_park_filter', { group: t }); }}
+                        title={`Show ${ANIMAL_TYPES[t]?.label ?? t}`}
+                      >
+                        <span aria-hidden="true">{ANIMAL_TYPES[t]?.emoji ?? '🐾'}</span>
+                        <span className="lp__tab-label">{ANIMAL_TYPES[t]?.label ?? t}</span>
+                        <span className="lp__tab-count">{typeCounts[t]}</span>
+                      </button>
+                    );
+                  })}
+                  {!allTypesActive && (
+                    <button
+                      className="lp__tab lp__tab--show-all"
+                      onClick={() => { setActiveTypes(new Set(presentTypeKeys)); setDisplayLimit(24); }}
+                      title="Show all animal types"
+                    >
+                      <span className="lp__tab-label">All</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Subtype filter bar — national-park styling (.lp__subtype*). */}
+              {subtypeDefs && (
+                <div className="lp__subtypes-wrapper">
+                  <div className="lp__subtypes" role="group" aria-label="Animal subcategory">
+                    <button
+                      className={`lp__subtype-btn${subtypeFilter === 'all' ? ' lp__subtype-btn--active' : ''}`}
+                      onClick={() => { setSubtypeFilter('all'); setDisplayLimit(24); }}
+                      aria-pressed={subtypeFilter === 'all'}
+                    >
+                      <span className="lp__subtype-label">All {ANIMAL_TYPES[focusedType]?.label ?? ''}</span>
+                    </button>
+                    {subtypeDefs.map(({ key, emoji, label }) => {
+                      const count = inCategory.filter(s => classifyAnimalSubtype(s) === key).length;
+                      const isEmpty = count === 0;
+                      return (
+                        <button
+                          key={key}
+                          className={`lp__subtype-btn${subtypeFilter === key ? ' lp__subtype-btn--active' : ''}${isEmpty ? ' lp__subtype-btn--empty' : ''}`}
+                          onClick={() => { if (!isEmpty) { setSubtypeFilter(key); setDisplayLimit(24); track('state_park_subtype', { type: focusedType, subtype: key }); } }}
+                          disabled={isEmpty}
+                          aria-pressed={subtypeFilter === key}
+                          title={label}
+                        >
+                          <span aria-hidden="true">{emoji}</span>
+                          <span className="lp__subtype-label">{label}</span>
+                          {count > 0 && <span className="lp__subtype-count">{count}</span>}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Controls — sort + season + rarity + search, identical to national parks. */}
+              <div className="lp__controls">
+                <div className="lp__controls-row">
+                  <select className="lp__select" value={sortBy} onChange={e => { setSortBy(e.target.value); setDisplayLimit(24); }}
+                    aria-label="Sort order">
+                    <option value="iconic-first">Most Iconic</option>
+                    <option value="common-first">Most Common</option>
+                    <option value="rarest-first">Rarest First</option>
+                    <option value="a-z">A–Z</option>
+                  </select>
+                  <select className="lp__select" value={season} onChange={e => { setSeason(e.target.value); setDisplayLimit(24); }}
+                    aria-label="Season filter">
+                    {Object.entries(SEASONS).map(([k, { emoji, label }]) => (
+                      <option key={k} value={k}>{emoji} {label}</option>
+                    ))}
+                  </select>
+                </div>
+                <select className="lp__select lp__select--full" value={rarityFilter}
+                  onChange={e => { setRarityFilter(e.target.value); setDisplayLimit(24); }}
+                  aria-label="Likelihood filter">
+                  {Object.entries(RARITY).map(([k, { emoji, label }]) => (
+                    <option key={k} value={k}>{emoji} {label}</option>
+                  ))}
+                </select>
+                <div className="lp__search">
+                  <span className="lp__search-icon" aria-hidden="true">🔍</span>
+                  <input className="lp__search-input" type="search" placeholder="Search species…"
+                    value={query} onChange={e => { setQuery(e.target.value); setDisplayLimit(24); }}
+                    aria-label="Search species" />
+                  {query && (
+                    <button className="lp__search-clear" onClick={() => { setQuery(''); setDisplayLimit(24); }} aria-label="Clear search">✕</button>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+
+        <div className="statepark-modal__body">
+          {state.status === 'loading' && <p className="statepark-modal__empty">Loading wildlife from eBird + iNaturalist…</p>}
+          {state.status === 'error' && <p className="statepark-modal__empty">Could not load live data right now. Try again in a moment.</p>}
+          {state.status === 'empty' && (
+            <p className="statepark-modal__empty">No recent eBird/iNaturalist observations found within {searchRadiusKm} km.</p>
+          )}
+          {state.status === 'ok' && state.species.length > 0 && (
+            <>
+              <div className="lp__showing-count">
+                Showing {Math.min(displayLimit, visible.length)} of {visible.length} species
+                {state.partial && <span className="statepark-modal__loading-more"> · loading mammals, reptiles &amp; more…</span>}
+              </div>
+
+              {/* Same rating key + seen-filter bar as national parks. */}
+              <div className="lp__legend" aria-label="Rating key">
+                <span><span className="lp__legend-dot lp__legend-dot--high">●</span> strong data</span>
+                <span><span className="lp__legend-dot lp__legend-dot--med">◐</span> moderate</span>
+                <span><span className="lp__legend-dot lp__legend-dot--low">○</span> thin — approximate</span>
+                <span><span className="lp__legend-tilde">~</span> observability, not a per-visit %</span>
+              </div>
+
+              <div className="lifelist-bar">
+                <span className="lifelist-bar__progress" title={`${spProgress.seen} seen at ${park.name}`}>
+                  🏅 <strong>{spProgress.seen}</strong> seen here
+                </span>
+                <span className="lifelist-bar__seg" role="group" aria-label="Filter by seen status">
+                  {[['all', 'All'], ['unseen', 'To find'], ['seen', 'Seen']].map(([v, lbl]) => (
+                    <button
+                      key={v}
+                      type="button"
+                      className={`lifelist-bar__seg-btn${seenFilter === v ? ' is-active' : ''}`}
+                      aria-pressed={seenFilter === v}
+                      onClick={() => { setSeenFilter(v); setDisplayLimit(24); }}
+                    >
+                      {lbl}
+                    </button>
+                  ))}
+                </span>
+              </div>
+
+              {visible.length === 0 && <p className="statepark-modal__empty">No species match the current filters.</p>}
+              {/* The REAL national-park AnimalCard — same component, same
+                  rarity model + ancillary inputs (live iNat seasonal
+                  histograms + park effort), photos, badges. State parks just
+                  lack zones + NPS curated descriptions. */}
+              <div className="statepark-grid">
+                {visible.slice(0, displayLimit).map(a => (
+                  <AnimalCard
+                    key={(a.scientificName || a.name) + '-' + (a.animalType || '')}
+                    animal={a}
+                    location={spLocation}
+                    debugMode={false}
+                    seasonalFreqs={seasonalFreqs}
+                    parkEffort={parkEffort}
+                    activeSeason={activeSeasonForRarity}
+                    activeZone={null}
+                    parkZones={null}
+                    onSelectZone={null}
+                    effortRescaler={1}
+                    visitTime="any"
+                    effortLabel="casual"
+                    openAbout={openAbout}
+                    highlightSpecies={null}
+                    seen={seenKeys.has(speciesKey(a))}
+                    onToggleSeen={onToggleSeen}
+                    communitySightings={community.buckets}
+                    onCommunityVote={bumpCommunity}
+                  />
+                ))}
+              </div>
+              {visible.length > displayLimit && (
+                <button className="statepark-modal__more" onClick={() => setDisplayLimit(d => d + 24)}>
+                  Show more ({visible.length - displayLimit} remaining)
+                </button>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+    </>
+  );
+}
+
+// ── "Parks near me" ─────────────────────────────────────────────────────────
+// Requests the browser geolocation (client-side only — the coordinate is never
+// sent anywhere) and lists the nearest wildlife sites, national + state, by
+// great-circle distance. Works wherever you are in the US.
+function NearMeModal({ index, onPick, onClose }) {
+  const [status, setStatus]   = useState('locating'); // locating | ok | denied | error | unsupported
+  const [results, setResults] = useState([]);
+  const [notable, setNotable] = useState(null);       // rare-bird alerts (eBird notable feed)
+  useEffect(() => {
+    const h = e => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, [onClose]);
+  useEffect(() => {
+    if (!('geolocation' in navigator)) { setStatus('unsupported'); return; }
+    let alive = true;
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        if (!alive) return;
+        const { latitude, longitude } = pos.coords;
+        const R = 3958.8, toRad = d => d * Math.PI / 180;            // miles
+        const miFrom = (la, lo) => {
+          const dLa = toRad(la - latitude), dLo = toRad(lo - longitude);
+          const a = Math.sin(dLa / 2) ** 2 + Math.cos(toRad(latitude)) * Math.cos(toRad(la)) * Math.sin(dLo / 2) ** 2;
+          return 2 * R * Math.asin(Math.sqrt(a));
+        };
+        setResults(index.map(it => ({ ...it, miles: miFrom(it.lat, it.lng) }))
+          .sort((a, b) => a.miles - b.miles).slice(0, 20));
+        setStatus('ok');
+        // Rare-bird alerts (eBird's locally-notable feed). The coordinate is
+        // ROUNDED to ~1 km before the query so the precise location still
+        // never leaves the device.
+        fetchEbirdNotable(+latitude.toFixed(2), +longitude.toFixed(2)).then(list => {
+          if (!alive) return;
+          setNotable((list ?? []).map(o => ({ ...o, miles: miFrom(o.lat, o.lng) })));
+        });
+      },
+      err => { if (alive) setStatus(err?.code === 1 ? 'denied' : 'error'); },
+      { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 },
+    );
+    return () => { alive = false; };
+  }, [index]);
+
+  const MSG = {
+    locating:    'Finding your location…',
+    denied:      'Location permission was denied. Enable location access in your browser to see the parks nearest you.',
+    error:       'Couldn’t get your location — please try again.',
+    unsupported: 'Your browser doesn’t support location.',
+  };
+  return (
+    <>
+      <div className="about-overlay" onClick={onClose} />
+      <div className="nearme-modal" role="dialog" aria-modal="true" aria-label="Parks near me">
+        <button className="about-modal__close" onClick={onClose} aria-label="Close">X</button>
+        <div className="nearme-modal__head">
+          <h2 className="nearme-modal__title">📍 Parks near you</h2>
+          <p className="nearme-modal__sub">Nearest national &amp; state wildlife sites</p>
+        </div>
+        {status === 'ok' && notable?.length > 0 && (
+          <div className="nearme-modal__rare">
+            <div className="nearme-modal__rare-title">🔥 Rare nearby <span>recent notable birds · eBird</span></div>
+            <ul className="nearme-modal__rare-list">
+              {notable.slice(0, 6).map(o => {
+                let when = '';
+                try { when = new Date(o.obsDt.replace(' ', 'T')).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }); } catch {}
+                return (
+                  <li key={`${o.name}-${o.obsDt}`} className="nearme-modal__rare-item">
+                    <span className="nearme-modal__rare-name">{o.name}</span>
+                    <span className="nearme-modal__rare-meta">{Math.round(o.miles)} mi · {o.locName}{when ? ` · ${when}` : ''}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        )}
+        {status !== 'ok'
+          ? <p className="nearme-modal__msg">{MSG[status]}</p>
+          : (
+            <ul className="nearme-modal__list" aria-label="Nearest parks">
+              {results.map(it => (
+                <li key={`${it.kind}-${it.id}`}>
+                  <button className="nearme-modal__item" onClick={() => onPick(it)}>
+                    <span className="nearme-modal__emoji" aria-hidden="true">{it.emoji}</span>
+                    <span className="nearme-modal__text">
+                      <span className="nearme-modal__name">{it.name}</span>
+                      <span className="nearme-modal__metaline">{it.kind === 'national' ? it.sub : `${it.sub} · State Park`}</span>
+                    </span>
+                    <span className="nearme-modal__dist">{Math.round(it.miles)} mi</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+      </div>
+    </>
+  );
+}
+
+// ── State selector ─────────────────────────────────────────────────────────
+// "🗺️ State Parks" header button opens this. All 50 states are wired; the list
+// is alphabetical with a search box and region filter so 50 entries stay
+// browsable. Add a state to STATE_PARK_STATES + STATE_PARKS_BY_STATE and it
+// appears automatically (give it a STATE_REGION entry too).
+const STATE_REGION = {
+  CT:'Northeast', ME:'Northeast', MA:'Northeast', NH:'Northeast', RI:'Northeast', VT:'Northeast', NJ:'Northeast', NY:'Northeast', PA:'Northeast',
+  DE:'Southeast', MD:'Southeast', VA:'Southeast', WV:'Southeast', NC:'Southeast', SC:'Southeast', GA:'Southeast', FL:'Southeast', KY:'Southeast', TN:'Southeast', AL:'Southeast', MS:'Southeast',
+  OH:'Midwest', MI:'Midwest', IN:'Midwest', IL:'Midwest', WI:'Midwest', MN:'Midwest', IA:'Midwest', MO:'Midwest', KS:'Midwest', NE:'Midwest', ND:'Midwest', SD:'Midwest',
+  AR:'South Central', LA:'South Central', OK:'South Central', TX:'South Central',
+  MT:'Mountain', WY:'Mountain', CO:'Mountain', ID:'Mountain', UT:'Mountain', NV:'Mountain', AZ:'Mountain', NM:'Mountain',
+  CA:'Pacific', OR:'Pacific', WA:'Pacific', AK:'Pacific', HI:'Pacific',
+};
+const REGION_ORDER = ['Northeast', 'Southeast', 'Midwest', 'South Central', 'Mountain', 'Pacific'];
+
+function StateSelectorModal({ states, onPick, onClose }) {
+  const [region, setRegion] = useState('All');
+  const [query, setQuery] = useState('');
+  useEffect(() => {
+    const h = e => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, [onClose]);
+
+  const totalParks = useMemo(
+    () => Object.values(STATE_PARKS_BY_STATE).reduce((n, l) => n + l.length, 0),
+    [],
+  );
+  const q = query.trim().toLowerCase();
+  const visible = useMemo(() => (
+    states
+      .filter(s => region === 'All' || STATE_REGION[s.code] === region)
+      .filter(s => !q || s.name.toLowerCase().includes(q) || s.code.toLowerCase() === q)
+      .slice()
+      .sort((a, b) => a.name.localeCompare(b.name))
+  ), [states, region, q]);
+
+  const renderStateItem = (s, showRegion) => {
+    const count = (STATE_PARKS_BY_STATE[s.code] || []).length;
+    return (
+      <li key={s.code}>
+        <button className="stateselect-modal__item" onClick={() => onPick(s)}>
+          <span className="stateselect-modal__item-name">{s.name}</span>
+          {showRegion && <span className="stateselect-modal__item-region">{STATE_REGION[s.code]}</span>}
+          <span className="stateselect-modal__item-count">{count} parks</span>
+        </button>
+      </li>
+    );
+  };
+
+  return (
+    <>
+      <div className="about-overlay" onClick={onClose} />
+      <div className="stateselect-modal" role="dialog" aria-modal="true" aria-label="Choose a state">
+        <button className="about-modal__close" onClick={onClose} aria-label="Close">X</button>
+        <div className="stateselect-modal__head">
+          <h2 className="stateselect-modal__title">State Parks</h2>
+          <p className="stateselect-modal__sub">All 50 states · {totalParks.toLocaleString()} parks &amp; preserves</p>
+        </div>
+        <div className="stateselect-modal__controls">
+          <input
+            className="stateselect-modal__search"
+            type="search"
+            placeholder="Search states…"
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            aria-label="Search states"
+          />
+          <div className="stateselect-modal__regions" role="tablist" aria-label="Filter by region">
+            {['All', ...REGION_ORDER].map(r => (
+              <button
+                key={r}
+                role="tab"
+                aria-selected={region === r}
+                className={`stateselect-modal__region${region === r ? ' is-active' : ''}`}
+                onClick={() => setRegion(r)}
+              >{r}</button>
+            ))}
+          </div>
+        </div>
+        <ul className="stateselect-modal__list" aria-label="Available states">
+          {visible.length === 0 && (
+            <li className="stateselect-modal__empty">No states match “{query}”.</li>
+          )}
+          {/* When browsing everything, group under region headers; when a region
+              chip or search is active, show a flat alphabetical list. */}
+          {(region === 'All' && !q)
+            ? REGION_ORDER.flatMap(rg => {
+                const inRg = visible.filter(s => STATE_REGION[s.code] === rg);
+                if (!inRg.length) return [];
+                return [
+                  <li key={`head-${rg}`} className="stateselect-modal__region-head" aria-hidden="true">{rg}</li>,
+                  ...inRg.map(s => renderStateItem(s, false)),
+                ];
+              })
+            : visible.map(s => renderStateItem(s, true))}
+        </ul>
+      </div>
+    </>
+  );
+}
+
+// ── State-park interactive map ─────────────────────────────────────────────
+// Full-screen overlay containing a Leaflet map zoomed to the selected
+// state's bounds with a pin per park. Mirrors the national-park flow:
+// pin → click → opens StateParkPanel (which stacks above this overlay).
+// Renders its own MapContainer so the main national-park map is untouched.
+function StateParkMap({ state, parks, stateGeo, onPickPark, onClose, onSwitchState }) {
+  useEffect(() => {
+    const h = e => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, [onClose]);
+
+  // The selected state's boundary polygon (from the shared US-states
+  // GeoJSON the national map already loads) — highlighted so the state
+  // stands out from its dark neighbours, and used to frame the map tightly.
+  const stateFeature = useMemo(
+    () => stateGeo?.features?.find(f => f.properties?.name === state.name) || null,
+    [stateGeo, state.name],
+  );
+
+  // Category-aware pins — circular emoji badge mirroring the national-park
+  // pin style. Distinct emoji is itself a colour-independent cue, so this
+  // remains accessible without the earlier shape variants.
+  const CAT_EMOJI = {
+    'state-park':       '🏞️',   // landscape — the iconic "park"
+    'state-forest':     '🌲',   // evergreen — forest
+    'recreation-area':  '🛶',   // canoe — NJ rec areas are reservoirs/lakes
+    'state-beach':      '🏖️',   // beach — RI (Ocean State) coastal state beaches
+    'state-preserve':   '🦋',   // butterfly — wildlife preserve / management area
+  };
+  const CAT_LABEL = {
+    'state-park':       'Park',
+    'state-forest':     'Forest',
+    'recreation-area':  'Recreation',
+    'state-beach':      'Beach',
+    'state-preserve':   'Preserve',
+  };
+  const pinFor = (park) => {
+    const cat = park.category || 'state-park';
+    const emoji = CAT_EMOJI[cat] || '🏞️';
+    return L.divIcon({
+      className: 'state-park-pin',
+      html: `<div class="state-park-pin__badge" aria-hidden="true">${emoji}</div>`,
+      iconSize: [28, 28], iconAnchor: [14, 14],
+    });
+  };
+
+  // Distinct categories present in this state's park list — drives the filter.
+  const legendCats = [...new Set(parks.map(p => p.category || 'state-park'))];
+  const catCount = (c) => parks.filter(p => (p.category || 'state-park') === c).length;
+
+  // Category + name filtering (mirrors the national map's filter bar). Default:
+  // all categories on. Clicking a category chip toggles it; the search box
+  // narrows by park name.
+  const [activeCats, setActiveCats] = useState(() => new Set(legendCats));
+  const [query, setQuery] = useState('');
+  const toggleCat = (c) => setActiveCats(prev => {
+    const next = new Set(prev);
+    if (next.has(c)) next.delete(c); else next.add(c);
+    return next.size ? next : new Set(legendCats); // never allow an empty (all-off) map
+  });
+  const visibleParks = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return parks.filter(p =>
+      activeCats.has(p.category || 'state-park') &&
+      (!q || (p.name || '').toLowerCase().includes(q))
+    );
+  }, [parks, activeCats, query]);
+
+  // Frame the state tightly: fit to the actual boundary polygon when we
+  // have it (snug, regardless of viewport), else the hand-tuned view, else
+  // the bounds fence.
+  function FrameState({ state, feature }) {
+    const map = useMap();
+    useEffect(() => {
+      if (feature) {
+        try { map.fitBounds(L.geoJSON(feature).getBounds(), { padding: [18, 18] }); return; }
+        catch { /* fall through */ }
+      }
+      if (state.view) map.setView(state.view.center, state.view.zoom);
+      else if (state.bounds) map.fitBounds(state.bounds, { padding: [12, 12] });
+    }, [map, state, feature]);
+    return null;
+  }
+
+  // Bind markers imperatively into a marker-cluster group — parity with the
+  // national map (which clusters), and it declutters the crowded northern-NJ
+  // pins. Clusters use the existing .wm-cluster--nj green badge; at close zoom
+  // (≥11) clustering disables so individual category-emoji pins show, and
+  // overlapping pins spiderfy at max zoom.
+  function StateMarkers({ parks, onPick }) {
+    const map = useMap();
+    useEffect(() => {
+      const group = L.markerClusterGroup({
+        maxClusterRadius: 44,
+        showCoverageOnHover: false,
+        spiderfyOnMaxZoom: true,
+        disableClusteringAtZoom: 11,
+        iconCreateFunction: (cluster) => L.divIcon({
+          html: `<div class="wm-cluster--nj">${cluster.getChildCount()}</div>`,
+          className: '',
+          iconSize: [38, 38],
+        }),
+      });
+      parks.forEach(p => {
+        const m = L.marker([p.lat, p.lng], { icon: pinFor(p) });
+        m.bindTooltip(p.name, { direction: 'top', opacity: 0.95, className: 'park-tooltip' });
+        m.on('click', () => onPick(p));
+        group.addLayer(m);
+      });
+      group.addTo(map);
+      return () => { map.removeLayer(group); };
+    }, [map, parks, onPick]);
+    return null;
+  }
+
+  return (
+    <div className="statemap-overlay" role="dialog" aria-modal="true" aria-label={`${state.name} state parks map`}>
+      <div className="statemap-overlay__bar">
+        <div className="statemap-overlay__title">
+          🗺️ {state.name} State Parks
+          <span className="statemap-overlay__count">
+            · {visibleParks.length === parks.length ? `${parks.length} parks` : `${visibleParks.length} of ${parks.length}`}
+          </span>
+        </div>
+        {/* Switch to another state's map without returning to the national map. */}
+        {onSwitchState && (
+          <select
+            className="statemap-overlay__stateswitch"
+            aria-label="Switch to another state"
+            value={state.code}
+            onChange={e => { if (e.target.value !== state.code) onSwitchState(e.target.value); }}
+          >
+            {STATE_PARK_STATES.slice().sort((a, b) => a.name.localeCompare(b.name)).map(s => (
+              <option key={s.code} value={s.code}>{s.name}</option>
+            ))}
+          </select>
+        )}
+        {/* Clickable category filter (Park / Forest / Recreation / Preserve). */}
+        <div className="statemap-overlay__filters" role="group" aria-label="Filter by park type">
+          {legendCats.map(c => {
+            const on = activeCats.has(c);
+            return (
+              <button
+                key={c}
+                type="button"
+                className={`statemap-filter-chip${on ? ' is-active' : ''}`}
+                aria-pressed={on}
+                onClick={() => toggleCat(c)}
+                title={`${on ? 'Hide' : 'Show'} ${CAT_LABEL[c] ?? c}`}
+              >
+                <span aria-hidden="true">{CAT_EMOJI[c] ?? '🏞️'}</span>
+                <span>{CAT_LABEL[c] ?? c}</span>
+                <span className="statemap-filter-chip__count">{catCount(c)}</span>
+              </button>
+            );
+          })}
+        </div>
+        {/* Park-name search (the national map's "find parks" equivalent). */}
+        <div className="statemap-overlay__search">
+          <span aria-hidden="true">🔍</span>
+          <input
+            type="search"
+            placeholder="Find a park…"
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            aria-label="Search parks by name"
+          />
+          {query && (
+            <button className="statemap-overlay__search-clear" onClick={() => setQuery('')} aria-label="Clear search">✕</button>
+          )}
+        </div>
+        <button className="statemap-overlay__close" onClick={onClose} aria-label="Back to main map">
+          <span className="full">← Back to national map</span>
+          <span className="short">← Back</span>
+        </button>
+      </div>
+      <div className="statemap-overlay__map">
+        <MapContainer
+          center={state.view?.center || [40, -74]}
+          zoom={state.view?.zoom || 7}
+          minZoom={6}
+          maxBounds={state.bounds}
+          maxBoundsViscosity={0.85}
+          scrollWheelZoom
+          style={{ width: '100%', height: '100%' }}
+          attributionControl={false}
+        >
+          <TileLayer
+            url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+          />
+          {stateFeature && (
+            <GeoJSON
+              key={state.code}
+              data={stateFeature}
+              interactive={false}
+              style={{ color: '#5fd38a', weight: 3, opacity: 0.95, fillColor: '#4caf50', fillOpacity: 0.12 }}
+            />
+          )}
+          <FrameState state={state} feature={stateFeature} />
+          <StateMarkers parks={visibleParks} onPick={onPickPark} />
+        </MapContainer>
+      </div>
+      <p className="statemap-overlay__hint">
+        Tap any pin to see the wildlife at that park. Data is community-observed via iNaturalist.
+      </p>
+    </div>
   );
 }
 
@@ -1079,6 +2655,37 @@ function getCharismaScore(name, animalType) {
 }
 
 const _RARITY_ORDER = { guaranteed: 0, very_likely: 1, likely: 2, unlikely: 3, rare: 4, exceptional: 5 };
+const _RARITY_BY_INDEX = ['guaranteed', 'very_likely', 'likely', 'unlikely', 'rare', 'exceptional'];
+
+// ── Community ground-truth rarity nudge ─────────────────────────────────────
+// Blend the cross-visitor seen-rate (api/sightings) into the model's tier —
+// CONSERVATIVELY, so thin or noisy votes can never hijack the calibrated
+// eBird/iNaturalist model:
+//   • requires a real consensus sample (≥ COMMUNITY_MIN_N votes in the bucket)
+//   • moves the tier AT MOST one step, and ONLY toward the empirical signal
+//   • only fires when the community CLEARLY disagrees with the model (the
+//     empirical band differs by ≥ 2 tiers); near-agreement leaves it untouched
+// The card always shows the underlying "N of M saw this here" count, so the
+// adjustment is transparent and auditable. Returns the (possibly) shifted tier.
+const COMMUNITY_MIN_N = 12;
+function _communityBandTier(rate) {
+  if (rate >= 0.75) return 'guaranteed';
+  if (rate >= 0.55) return 'very_likely';
+  if (rate >= 0.30) return 'likely';
+  if (rate >= 0.12) return 'unlikely';
+  if (rate >= 0.03) return 'rare';
+  return 'exceptional';
+}
+function nudgeRarityWithCommunity(baseTier, community) {
+  if (!community || (community.n ?? 0) < COMMUNITY_MIN_N) return baseTier;
+  const rate = community.seen / community.n;
+  const bi = _RARITY_ORDER[baseTier];
+  const ti = _RARITY_ORDER[_communityBandTier(rate)];
+  if (bi == null || ti == null) return baseTier;
+  // Only act on a clear disagreement (≥2 tiers apart); then step exactly one.
+  if (Math.abs(ti - bi) < 2) return baseTier;
+  return _RARITY_BY_INDEX[bi + (ti > bi ? 1 : -1)];
+}
 
 function iconicSortFn(a, b) {
   // Tier 1: curated Park Naturalist animals (real funFact, not a placeholder)
@@ -1144,6 +2751,16 @@ function iconicSortFn(a, b) {
 // one click away. Hoisted to module scope so it's a stable reference for
 // useState init and useCallback closures.
 const DEFAULT_ACTIVE_TYPES = ['bird', 'mammal', 'reptile', 'amphibian', 'marine'];
+
+// Current meteorological season key — shared so national parks and state parks
+// both default their season filter to "now".
+function currentSeasonKey() {
+  const m = new Date().getMonth() + 1;
+  if (m >= 3 && m <= 5) return 'spring';
+  if (m >= 6 && m <= 8) return 'summer';
+  if (m >= 9 && m <= 11) return 'fall';
+  return 'winter';
+}
 
 const RARITY_FREQ_FALLBACK = {
   guaranteed: 0.92, very_likely: 0.70, likely: 0.40,
@@ -1684,6 +3301,35 @@ const TYPE_HABITAT_HINT = {
   marine:    'shorelines, tide pools, and offshore waters',
 };
 
+// Keyword → habitat phrase. More specific than the per-type default, so the
+// auto-composed tip names where to actually look (raptors over ridgelines,
+// waterfowl on ponds, woodpeckers on snags…). Purely associative — general
+// habitat knowledge, no park-specific claims to get wrong. Checked in order;
+// first match wins. Benefits national + state parks alike.
+const HABITAT_KEYWORDS = [
+  [/\b(hawk|eagle|falcon|osprey|owl|vulture|kite|harrier|merlin|kestrel|condor|caracara|goshawk)\b/, 'ridgelines, open fields, and tall bare perches'],
+  [/\b(duck|goose|geese|swan|merganser|teal|widgeon|wigeon|bufflehead|loon|grebe|cormorant|coot|gallinule|pintail|mallard|gadwall)\b/, 'lakes, ponds, and quiet marshes'],
+  [/\b(heron|egret|ibis|bittern|crane|stork|rail|sora|spoonbill)\b/, 'shorelines, mudflats, and marsh edges'],
+  [/\b(gull|tern|sandpiper|plover|sanderling|dunlin|yellowlegs|willet|dowitcher|oystercatcher|skimmer|turnstone)\b/, 'beaches, tidal flats, and jetties'],
+  [/\b(woodpecker|flicker|sapsucker|nuthatch)\b/, 'mature trees, dead snags, and woodland edges'],
+  [/\b(warbler|sparrow|finch|wren|thrush|vireo|chickadee|titmouse|kinglet|gnatcatcher|bunting|tanager|oriole|grosbeak|catbird|towhee)\b/, 'shrubby edges, thickets, and treetops'],
+  [/\b(turtle|terrapin|tortoise)\b/, 'basking logs, pond banks, and slow water'],
+  [/\b(snake|rattlesnake|copperhead|racer|watersnake)\b/, 'sunny rock piles, logs, and trail edges'],
+  [/\b(frog|toad|spring peeper|bullfrog)\b/, 'ponds, vernal pools, and damp leaf litter'],
+  [/\b(salamander|newt|mudpuppy)\b/, 'streambeds, springs, and damp logs'],
+  [/\b(squirrel|chipmunk|woodchuck|groundhog|marmot)\b/, 'oak woods, stone walls, and trail edges'],
+  [/\b(deer|elk|moose|pronghorn)\b/, 'forest edges and meadows at dawn and dusk'],
+  [/\b(bat)\b/, 'open water and clearings at dusk'],
+  [/\b(fox|coyote|bobcat|otter|mink|weasel|raccoon|opossum|skunk|beaver|muskrat)\b/, 'water edges, field margins, and quiet trails'],
+  [/\b(butterfly|skipper|swallowtail|monarch|fritillary|dragonfly|damselfly)\b/, 'sunny wildflower meadows and pond edges'],
+];
+
+function resolveHabitatHint(animal) {
+  const n = (animal.name ?? '').toLowerCase();
+  for (const [re, phrase] of HABITAT_KEYWORDS) if (re.test(n)) return phrase;
+  return TYPE_HABITAT_HINT[animal.animalType] ?? 'trails and quiet overlooks';
+}
+
 function composeFallbackTip(animal, period) {
   const seasons = animal.displaySeasons ?? animal.seasons ?? [];
   const yearRound = seasons.includes('year-round') || seasons.includes('year_round') || seasons.length >= 4;
@@ -1699,25 +3345,42 @@ function composeFallbackTip(animal, period) {
                        : period === 'crepuscular' ? 'at dawn and dusk'
                        : period === 'nocturnal'   ? 'after dark'
                        :                            'any time of day';
-  const habitat = TYPE_HABITAT_HINT[animal.animalType] ?? 'trails and quiet overlooks';
+  const habitat = resolveHabitatHint(animal);
   const scan = seasonPhrase === 'year-round' ? 'Scan' : `Visit ${seasonPhrase} and scan`;
   return `${scan} ${habitat} — most active ${activityPhrase}. Binoculars help.`;
 }
 
 // ── Animal card ───────────────────────────────────────────────────────────────
-function AnimalCard({ animal, debugMode, seasonalFreqs, parkEffort = null, location, openAbout, highlightSpecies, activeSeason, activeZone, parkZones = null, onSelectZone = null, effortRescaler = 1, visitTime = 'any', effortLabel = 'casual', seen = false, onToggleSeen = null }) {
+function AnimalCard({ animal, debugMode, seasonalFreqs, parkEffort = null, location, openAbout, highlightSpecies, activeSeason, activeZone, parkZones = null, onSelectZone = null, effortRescaler = 1, visitTime = 'any', effortLabel = 'casual', seen = false, onToggleSeen = null, communitySightings = null, onCommunityVote = null }) {
   // Combined zone- + season- + effort- + time-of-day-aware rarity.
   //   1. Pick base frequency: zone freq > season freq > park freq.
   //   2. Rescale by effort multiplier (expert=1.54, casual=1.0, drive=0.54 —
   //      relative to the casual baseline baked into the stored frequency).
   //   3. Rescale by activity-period × time-of-day multiplier.
   //   4. Re-map to tier.
-  const displayRarity = useMemo(
+  // Community ground-truth count for THIS card's (species, season) bucket.
+  const community = useMemo(() => {
+    if (!communitySightings) return null;
+    const b = communitySightings[sightingsBucketKey(animal.name, activeSeason ?? 'any')];
+    if (!b) return null;
+    const n = (b.seen ?? 0) + (b.missed ?? 0);
+    return n > 0 ? { seen: b.seen ?? 0, n } : null;
+  }, [communitySightings, animal.name, activeSeason]);
+
+  const modelRarity = useMemo(
     () => computeEffectiveRarity(animal, {
       activeSeason, activeZone, seasonalFreqs, parkEffort, parkZones, effortRescaler, visitTime,
     }),
     [animal, activeSeason, activeZone, seasonalFreqs, parkEffort, parkZones, effortRescaler, visitTime],
   );
+  // Conservatively blend cross-visitor ground truth into the displayed tier
+  // (gated by sample size, bounded to ±1 tier). No-op until a bucket has
+  // ≥ COMMUNITY_MIN_N votes, so this is dormant until real data accumulates.
+  const displayRarity = useMemo(
+    () => nudgeRarityWithCommunity(modelRarity, community),
+    [modelRarity, community],
+  );
+  const rarityNudged = displayRarity !== modelRarity;
 
   const r = RARITY[displayRarity] ?? RARITY.rare;
   const t = ANIMAL_TYPES[animal.animalType];
@@ -1734,6 +3397,11 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, parkEffort = null, locat
   // Photo state: undefined = loading, null = not found, object = loaded
   const [photo,    setPhoto]    = useState(undefined);
   const [expanded, setExpanded] = useState(false);
+  // Runtime species description — only fetched when the animal has no curated
+  // funFact AND no build-time `description` (i.e. live state-park species and
+  // non-enriched national-park species). { text, source } | null.
+  const [fetchedDesc, setFetchedDesc] = useState(null);
+  const wantsRuntimeDesc = needsGeneratedDescription(animal.funFact) && !animal.description;
 
   // Ground-truth sighting feedback (see src/data/sightingFeedback.js).
   // The context tuple is exactly what makes a verdict useful for
@@ -1754,7 +3422,17 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, parkEffort = null, locat
   useEffect(() => { setVerdict(getSightingVerdict(sightingCtx)); }, [sightingCtx]);
   const submitVerdict = (v) => {
     if (verdict === v) { clearSighting(sightingCtx); setVerdict(null); }      // toggle off
-    else { recordSighting(sightingCtx, v); setVerdict(v); }
+    else {
+      recordSighting(sightingCtx, v); setVerdict(v);
+      // Cross-visitor aggregation (state parks): post the vote + optimistically
+      // bump the panel's community count. localStorage de-dupes per device, so
+      // we only post when SETTING a verdict, not on toggle-off.
+      if (onCommunityVote) {
+        const seasonBk = activeSeason ?? 'any';
+        postSighting({ parkId: location?.id, species: animal.name, season: seasonBk, verdict: v });
+        onCommunityVote(animal.name, seasonBk, v);
+      }
+    }
   };
 
   // Fetch photo lazily when the card mounts (i.e. when the popup opens)
@@ -1763,6 +3441,16 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, parkEffort = null, locat
     fetchAnimalPhoto(animal.name, animal.scientificName).then(p => { if (alive) setPhoto(p); });
     return () => { alive = false; };
   }, [animal.name, animal.scientificName]);
+
+  // Fetch a sourced species description lazily, but only when the card would
+  // otherwise show the dry observation-record placeholder. Reuses the cached,
+  // species-keyed service so each species is fetched once per device.
+  useEffect(() => {
+    if (!wantsRuntimeDesc) { setFetchedDesc(null); return; }
+    let alive = true;
+    fetchAnimalDescription(animal.name, animal.scientificName).then(d => { if (alive) setFetchedDesc(d); });
+    return () => { alive = false; };
+  }, [animal.name, animal.scientificName, wantsRuntimeDesc]);
 
   // Generic per-type placeholder — avoids showing 🦌 deer for every mammal
   const placeholderEmoji = PHOTO_PLACEHOLDER[animal.animalType] ?? '🐾';
@@ -2017,17 +3705,25 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, parkEffort = null, locat
                 </span>
               )}
             </>
-          : animal.funFact
+          : fetchedDesc?.text
             ? <>
-                <p className="animal-card__fact animal-card__fact--placeholder">{animal.funFact}</p>
-                <span className="description-source">📊 Observation record</span>
+                <p className="animal-card__fact">{fetchedDesc.text}</p>
+                <span className="description-source">
+                  {DESC_SOURCE_ICON[fetchedDesc.source] ?? '📖'}{' '}
+                  {DESC_SOURCE_LABEL[fetchedDesc.source] ?? fetchedDesc.source}
+                </span>
               </>
-            : <>
-                <p className="animal-card__fact animal-card__fact--placeholder">
-                  Documented presence at {location?.name ?? 'this park'} — species description coming soon.
-                </p>
-                <span className="description-source">📊 Park record</span>
-              </>
+            : animal.funFact
+              ? <>
+                  <p className="animal-card__fact animal-card__fact--placeholder">{animal.funFact}</p>
+                  <span className="description-source">📊 Observation record</span>
+                </>
+              : <>
+                  <p className="animal-card__fact animal-card__fact--placeholder">
+                    Documented presence at {location?.name ?? 'this park'} — species description coming soon.
+                  </p>
+                  <span className="description-source">📊 Park record</span>
+                </>
       ) : (
         <>
           <p className="animal-card__fact">{animal.funFact}</p>
@@ -2097,6 +3793,16 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, parkEffort = null, locat
         >👎 Didn’t</button>
         {verdict && <span className="sighting-feedback__thanks">✓ thanks</span>}
       </div>
+
+      {/* Cross-visitor ground truth — real seen-rate from other visitors'
+          votes for this species + season at this park. Once a bucket has
+          enough votes it conservatively refines the odds above (±1 tier). */}
+      {community && (
+        <div className="sighting-community" title="Anonymous community reports for this species and season at this park.">
+          🧭 <strong>{community.seen}</strong> of <strong>{community.n}</strong> visitor{community.n === 1 ? '' : 's'} saw this here
+          {rarityNudged && <span className="sighting-community__adj"> · refining the odds</span>}
+        </div>
+      )}
 
       {(() => {
         const segments = [];
@@ -2492,7 +4198,7 @@ function RaritySpectrumBar({ animals, activeRarity, onSelectRarity }) {
   );
 }
 
-function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
+function LocationPopup({ location, heroImage, heroAlt, effectiveAnimals, season, rarity, animalType,
   isLive, sources, isLoading, debugMode, stats, cacheTs,
   loadingProgress, refreshLocation,
   popupType, setPopupType, popupSort, setPopupSort,
@@ -2503,6 +4209,19 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
   visitTime, setVisitTime }) {
   const POPUP_PROGRESS_GROUPS = ['birds', 'mammals', 'reptiles', 'amphibians', 'insects', 'marine'];
   const PROGRESS_EMOJI = { birds: '🐦', mammals: '🦌', reptiles: '🐊', amphibians: '🐸', insects: '🦋', marine: '🐋' };
+
+  // Hero fallback for units with no NPS photo (refuges, a few NPS units):
+  // the same junk-filtered Wikipedia/Commons lookup the state parks use.
+  const [wikiHero, setWikiHero] = useState(null);
+  useEffect(() => {
+    if (heroImage) { setWikiHero(null); return; }
+    let alive = true;
+    setWikiHero(null);
+    fetchWikiParkImage(location.name, location.lat, location.lng)
+      .then(src => { if (alive) setWikiHero(src); });
+    return () => { alive = false; };
+  }, [location.id, heroImage]);
+  const effectiveHero = heroImage || wikiHero;
 
   const currentMonth = new Date().getMonth() + 1; // 1-12
   const monthName    = MONTH_NAMES[currentMonth - 1];
@@ -2660,6 +4379,23 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
     });
     return () => { alive = false; };
   }, [location.id, location.lat, location.lng]);
+
+  // Cross-visitor sighting aggregates for this park (api/sightings) — same
+  // backend as state parks; empty + no-op until the datastore is connected.
+  const [npCommunity, setNpCommunity] = useState({ buckets: {}, configured: false });
+  useEffect(() => {
+    let alive = true;
+    setNpCommunity({ buckets: {}, configured: false });
+    fetchParkSightings(location.id).then(r => { if (alive) setNpCommunity(r); });
+    return () => { alive = false; };
+  }, [location.id]);
+  const bumpNpCommunity = useCallback((species, season, verdict) => {
+    setNpCommunity(prev => {
+      const bk = sightingsBucketKey(species, season);
+      const cur = prev.buckets[bk] ?? { seen: 0, missed: 0 };
+      return { ...prev, buckets: { ...prev.buckets, [bk]: { ...cur, [verdict]: (cur[verdict] ?? 0) + 1 } } };
+    });
+  }, []);
 
   // Lazy-fetch iNat histograms for every bird in the visible list.
   // • Sorted by frequency desc so the most-likely-seen birds load first.
@@ -3004,12 +4740,16 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
   return (
     <div className="lp">
       <div className="lp__head">
+        {effectiveHero && (
+          <img className="lp__hero" src={effectiveHero} alt={heroAlt || ''} loading="lazy"
+               onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+        )}
         <div className="lp__name">{location.name}</div>
         <div className="lp__meta">
           <span className="lp__state">{location.state}</span>
           {parkStyle && (
             <span className="lp__park-badge" style={{ background: parkStyle.bg }}>
-              {parkStyle.label}
+              {location.npsKind ? `${NPS_KIND_EMOJI[location.npsKind] ?? '🏔️'} ${location.npsKind}` : parkStyle.label}
             </span>
           )}
         </div>
@@ -3073,6 +4813,16 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
         >
           {shareCopied ? '✓ Link copied' : '🔗 Share'}
         </button>
+        {/* Directions — opens the device's maps app at the park */}
+        <a
+          className="lp__share-btn lp__directions-btn"
+          href={`https://www.google.com/maps/dir/?api=1&destination=${location.lat},${location.lng}`}
+          target="_blank" rel="noopener noreferrer"
+          aria-label={`Get directions to ${location.name}`}
+          title="Open directions in your maps app"
+        >
+          🧭 Directions
+        </a>
         {/* Species type breakdown row */}
         {Object.keys(typeBreakdown).length > 0 && (
           <div className="lp__breakdown">
@@ -3398,7 +5148,7 @@ function LocationPopup({ location, effectiveAnimals, season, rarity, animalType,
                   )}
                 </div>
 
-                {visibleList.map((a, i) => <AnimalCard key={`${a.name}-${i}`} animal={a} debugMode={debugMode} seasonalFreqs={seasonalFreqs} parkEffort={parkEffort} location={location} openAbout={openAbout} highlightSpecies={highlightSpecies} activeSeason={popupSeason !== 'all' ? popupSeason : null} activeZone={popupZone !== 'all' ? popupZone : null} parkZones={availableZones} onSelectZone={setPopupZone} effortRescaler={effortRescaler} visitTime={visitTime} effortLabel={effectiveEffort} seen={seenKeys.has(speciesKey(a))} onToggleSeen={markSeenToggle} />)}
+                {visibleList.map((a, i) => <AnimalCard key={`${a.name}-${i}`} animal={a} debugMode={debugMode} seasonalFreqs={seasonalFreqs} parkEffort={parkEffort} location={location} openAbout={openAbout} highlightSpecies={highlightSpecies} activeSeason={popupSeason !== 'all' ? popupSeason : null} activeZone={popupZone !== 'all' ? popupZone : null} parkZones={availableZones} onSelectZone={setPopupZone} effortRescaler={effortRescaler} visitTime={visitTime} effortLabel={effectiveEffort} seen={seenKeys.has(speciesKey(a))} onToggleSeen={markSeenToggle} communitySightings={npCommunity.buckets} onCommunityVote={bumpNpCommunity} />)}
                 {hasMore && (
                   <div className="lp__load-more-row">
                     <button className="lp__load-more-btn" onClick={() => setDisplayLimit(d => d + 50)}>
@@ -3546,13 +5296,51 @@ function FilterBtn({ active, onClick, emoji, label, activeColor, title }) {
 }
 
 // ── Map legend ─────────────────────────────────────────────────────────────────
-function MapLegend() {
+function MapLegend({ kinds, hiddenKinds, onToggle, onBrowseStateParks }) {
+  // Collapsed by default on phones — the full chip set eats ~15% of a small
+  // screen. The title row toggles it; desktop starts open as before.
+  const [open, setOpen] = useState(() => (typeof window === 'undefined' ? true : window.innerWidth > 640));
+  if (!kinds?.length) return null;
+  const activeCount = kinds.filter(({ kind }) => !hiddenKinds.has(kind)).length;
   return (
     <div className="map-legend">
-      <div className="map-legend__item">
-        <div className="map-legend__swatch" style={{ borderColor: PARK_COLORS.nationalPark }}>🏔️</div>
-        <span className="map-legend__label">National Park</span>
-      </div>
+      <button
+        type="button"
+        className="map-legend__title map-legend__toggle"
+        aria-expanded={open}
+        onClick={() => setOpen(o => !o)}
+      >
+        Federal lands — tap a type to filter
+        <span className="map-legend__caret" aria-hidden="true">{open ? '▾' : `▸ ${activeCount}/${kinds.length} shown`}</span>
+      </button>
+      {open && (
+        <>
+          <div className="map-legend__chips" role="group" aria-label="Filter by park type">
+            {kinds.map(({ kind, emoji, count }) => {
+              const on = !hiddenKinds.has(kind);
+              return (
+                <button
+                  key={kind}
+                  type="button"
+                  className={`map-legend__chip${on ? ' is-active' : ''}`}
+                  aria-pressed={on}
+                  onClick={() => onToggle(kind)}
+                  title={`${on ? 'Hide' : 'Show'} ${kind}s`}
+                >
+                  <span aria-hidden="true">{emoji}</span>
+                  <span className="map-legend__chip-label">{kind.replace('National ', '')}</span>
+                  <span className="map-legend__chip-count">{count}</span>
+                </button>
+              );
+            })}
+          </div>
+          {onBrowseStateParks && (
+            <button type="button" className="map-legend__statelink" onClick={onBrowseStateParks}>
+              This isn’t everything — also browse <strong>4,000+ State Parks</strong> in all 50 states →
+            </button>
+          )}
+        </>
+      )}
     </div>
   );
 }
@@ -3589,6 +5377,9 @@ function AppInner() {
   const [rarity,       setRarity]       = useState('all');
   const [animalType,   setAnimalType]   = useState('all');
   const [selectedState, setSelectedState] = useState('all');
+  // Default to National Parks only — every other NPS kind (Monument, Preserve,
+  // Seashore, …) starts hidden, and viewers opt in via the legend filter chips.
+  const [hiddenKinds,  setHiddenKinds]  = useState(() => new Set(NPS_KIND_ORDER.filter(k => k !== 'National Park')));
   const [debugMode,    setDebugMode]    = useState(false);
 
   // Popup-local filter preferences (persist across popup open/close)
@@ -3698,6 +5489,11 @@ function AppInner() {
   const [showAbout, setShowAbout] = useState(false);
   const [showLifeList, setShowLifeList] = useState(false);
   const [showParkList, setShowParkList] = useState(false);
+  // State Parks: state selector → state-zoomed map → click pin → park panel.
+  const [showStateSelector, setShowStateSelector] = useState(false);
+  const [showNearMe, setShowNearMe] = useState(false);
+  const [selectedStateForMap, setSelectedStateForMap] = useState(null); // state code, e.g. 'NJ'
+  const [activeStatePark, setActiveStatePark] = useState(null);         // park entry
   const [aboutScrollTo, setAboutScrollTo] = useState(null);
   const openAbout = useCallback((section = null) => { track('about_open'); setAboutScrollTo(section); setShowAbout(true); }, []);
   const closeAbout = useCallback(() => { setShowAbout(false); setAboutScrollTo(null); }, []);
@@ -3711,14 +5507,9 @@ function AppInner() {
     setShowSplash(false);
   }, []);
 
-  // Park count per state code — used by StateParkCounts badges.
-  const locationsByState = useMemo(() => {
-    const counts = {};
-    wildlifeLocations.forEach(loc => {
-      (loc.stateCodes ?? []).forEach(code => { counts[code] = (counts[code] ?? 0) + 1; });
-    });
-    return counts;
-  }, []);
+  // (locationsByState — the per-state count for the StateParkCounts badges — is
+  // declared below, after allVisibleLocations, so it reflects the SAME filtered
+  // set the markers do.)
 
   // Toggle debug mode with D key; Escape closes the popup
   useEffect(() => {
@@ -3754,8 +5545,21 @@ function AppInner() {
   // the React popup content via createPortal so it stays in the React tree
   // and receives live state updates (popupType, popupSort, etc.)
   const [openPopup, setOpenPopup] = useState(null); // { loc }
-  // Fetch live data from all four APIs in the background
-  const { liveData, loading, loadingProgress, refreshLocation } = useLiveData(wildlifeLocations);
+
+  // NPS codes already in the static wildlifeLocations — dedupe so a park never
+  // appears twice. Then fetch the whole natural NPS system (Monuments, Seashores,
+  // Preserves, NRAs, Rivers); these load async and are wildlife-fetched on demand.
+  const existingNpsCodes = useMemo(() =>
+    new Set(wildlifeLocations.filter(l => l.npsCode).map(l => l.npsCode)),
+    []
+  );
+  const { parks: npsParks, npsImages } = useNpsParks(existingNpsCodes);
+
+  // Fetch live data in the background. The combined list lets refreshLocation
+  // resolve NPS units for on-demand fetch; npsParks is empty at mount, so the
+  // once-only bulk warm-up still only touches the static parks.
+  const liveLocations = useMemo(() => [...wildlifeLocations, ...npsParks, ...NATIONAL_WILDLIFE_REFUGES], [npsParks]);
+  const { liveData, loading, loadingProgress, refreshLocation } = useLiveData(liveLocations);
 
   const liveDataRef = useRef(liveData);
   const loadingRef  = useRef(loading);
@@ -3833,24 +5637,46 @@ function AppInner() {
     } catch { /* non-fatal */ }
   }, []);
 
-  // Restore a shared deep link (?park=<id>) once on first mount.
-  const deepLinkDone = useRef(false);
-  useEffect(() => {
-    if (deepLinkDone.current) return;
-    deepLinkDone.current = true;
-    // Restore a shared life-list (#list=<token>) if present, then strip it.
-    try { applyShareTokenFromUrl(); } catch { /* non-fatal */ }
-    try {
-      const u = new URL(window.location.href);
-      // Accept both the share form (?park=<id>) and the SEO-prerendered
-      // clean path (/park/<id>).
-      const pathMatch = u.pathname.match(/^\/park\/([^/]+)\/?$/);
-      const id = u.searchParams.get('park') || (pathMatch && decodeURIComponent(pathMatch[1]));
-      if (!id) return;
-      const loc = wildlifeLocations.find(l => l.id === id);
-      if (loc) handlePopupOpen(loc);
-    } catch { /* non-fatal */ }
+  // Combined national + state index for "parks near me" (all kinds, regardless
+  // of the current map filter — you want the genuinely nearest site).
+  const nearMeIndex = useMemo(() => {
+    const nat = [...wildlifeLocations, ...npsParks, ...NATIONAL_WILDLIFE_REFUGES].map(l => ({
+      id: l.id, name: l.name, lat: l.lat, lng: l.lng, kind: 'national',
+      emoji: npsEmojiOf(l), sub: npsKindOf(l), loc: l,
+    }));
+    const st = [];
+    for (const [code, list] of Object.entries(STATE_PARKS_BY_STATE)) {
+      const stName = STATE_PARK_STATES.find(s => s.code === code)?.name ?? code;
+      for (const p of list) st.push({
+        id: p.id, name: p.name, lat: p.lat, lng: p.lng, kind: 'state',
+        emoji: STATE_CAT_EMOJI[p.category] ?? '🏞️', sub: stName, state: code, park: p,
+      });
+    }
+    return [...nat, ...st].filter(it => typeof it.lat === 'number' && typeof it.lng === 'number');
+  }, [npsParks]);
+
+  const handleNearMePick = useCallback((item) => {
+    setShowNearMe(false);
+    if (item.kind === 'national') {
+      handlePopupOpen(item.loc);
+    } else {
+      setActiveStatePark(item.park);
+      setSelectedStateForMap(item.state);
+      track('near_me_pick', { park: item.name, kind: 'state', state: item.state });
+      try { window.history.replaceState(null, '', `/state-park/${item.state.toLowerCase()}/${encodeURIComponent(item.id)}`); } catch {}
+    }
   }, [handlePopupOpen]);
+
+  // Restore a shared life-list (#list=<token>) once on mount, then strip it.
+  const shareTokenDone = useRef(false);
+  useEffect(() => {
+    if (shareTokenDone.current) return;
+    shareTokenDone.current = true;
+    try { applyShareTokenFromUrl(); } catch { /* non-fatal */ }
+  }, []);
+
+  // (The shared-deep-link restore lives just below the npsParks declaration —
+  // it reads npsParks, so it must be defined after that const to avoid a TDZ.)
 
   const handleSpeciesSelect = useCallback((s) => {
     setSpeciesFilter(s.name);
@@ -3860,23 +5686,72 @@ function AppInner() {
   const handleSpeciesClear = useCallback(() => {
     setSpeciesFilter(null);
     setSpeciesQuery('');
+    setStateParkMatches(null);
+    setShowStateMatches(false);
   }, []);
+
+  // ── Universal species search: state-park matches ──────────────────────────
+  // When a species is selected, also look it up across all 4,000+ state parks
+  // via the county bird-frequency index (lazy chunk; birds only — iNat species
+  // for state parks are live-fetched and have no static index).
+  const allStateParksFlat = useMemo(() => {
+    const m = new Map();
+    for (const [code, arr] of Object.entries(STATE_PARKS_BY_STATE))
+      for (const p of arr) m.set(p.id, { ...p, state: code });
+    return m;
+  }, []);
+  const [stateParkMatches, setStateParkMatches] = useState(null);
+  const [showStateMatches, setShowStateMatches] = useState(false);
+  useEffect(() => {
+    if (!speciesFilter) { setStateParkMatches(null); return; }
+    let alive = true;
+    findStateParksWithBird(speciesFilter).then(ids => {
+      if (!alive) return;
+      const parks = ids.map(id => allStateParksFlat.get(id)).filter(Boolean)
+        .sort((a, b) => a.state.localeCompare(b.state) || a.name.localeCompare(b.name));
+      setStateParkMatches(parks);
+    });
+    return () => { alive = false; };
+  }, [speciesFilter, allStateParksFlat]);
   const handleCategoryReset = useCallback(() => {
     setCategoryType('all');
     setCategorySubtype('all');
   }, []);
 
-  // NPS codes already covered by hardcoded wildlifeLocations — used to
-  // deduplicate so the same park doesn't appear twice on the map.
-  const existingNpsCodes = useMemo(() =>
-    new Set(wildlifeLocations.filter(l => l.npsCode).map(l => l.npsCode)),
-    []
-  );
+  // (existingNpsCodes + npsParks are declared above, just before useLiveData.)
 
-  // Fetch all NPS park units; deduplication against existingNpsCodes is done
-  // inside the hook. useLiveData is NOT called for these parks (wildlife data
-  // is fetched on demand when a park is opened, per the user's plan).
-  const { parks: npsParks } = useNpsParks(existingNpsCodes);
+  // Restore a shared deep link. Re-runs
+  // until resolved because NPS units load async — a /park/nps_<code> link can
+  // arrive before npsParks is populated, so we search both the static set and
+  // npsParks and wait for the latter if needed (guarded so it opens once).
+  const deepLinkDone = useRef(false);
+  useEffect(() => {
+    if (deepLinkDone.current) return;
+    try {
+      const u = new URL(window.location.href);
+      const spMatch  = u.pathname.match(/^\/state-park\/([a-z]{2})\/([^/]+)\/?$/i);
+      const stMatch  = u.pathname.match(/^\/state\/([a-z]{2})\/?$/i);
+      if (spMatch) {
+        deepLinkDone.current = true;
+        const sp = findStatePark(spMatch[1], decodeURIComponent(spMatch[2]));
+        if (sp) { setSelectedStateForMap(spMatch[1].toUpperCase()); setActiveStatePark(sp); }
+        return;
+      }
+      if (stMatch) {
+        deepLinkDone.current = true;
+        const code = stMatch[1].toUpperCase();
+        if (STATE_PARK_STATES.some(s => s.code === code)) setSelectedStateForMap(code);
+        return;
+      }
+      const pathMatch = u.pathname.match(/^\/park\/([^/]+)\/?$/);
+      const id = u.searchParams.get('park') || (pathMatch && decodeURIComponent(pathMatch[1]));
+      if (!id) { deepLinkDone.current = true; return; }
+      const loc = wildlifeLocations.find(l => l.id === id) || npsParks.find(l => l.id === id) || NATIONAL_WILDLIFE_REFUGES.find(l => l.id === id);
+      if (loc) { deepLinkDone.current = true; handlePopupOpen(loc); return; }
+      if (npsParks.length === 0) return;  // NPS data not loaded yet — wait & retry
+      deepLinkDone.current = true;        // unknown id — give up gracefully
+    } catch { deepLinkDone.current = true; }
+  }, [handlePopupOpen, npsParks]);
 
   // Build effective (hardcoded + live) animal list for each location,
   // then apply per-type caps so no single group dominates the popup.
@@ -3888,6 +5763,17 @@ function AppInner() {
     });
     return out;
   }, [liveData]);
+
+  // Effective animals for the currently-open park. Static parks come from the
+  // map above; NPS units (not in wildlifeLocations) derive from their live data
+  // as it streams in on demand, processed through the identical pipeline.
+  const openPopupAnimals = useMemo(() => {
+    const loc = openPopup?.loc;
+    if (!loc) return [];
+    if (effectiveAnimalsByLoc[loc.id]) return effectiveAnimalsByLoc[loc.id];
+    const live = liveData[loc.id]?.animals ?? null;
+    return balanceAnimals(filterGeographicOutliers(mergeAnimals(loc.animals ?? [], live), loc.id));
+  }, [openPopup, effectiveAnimalsByLoc, liveData]);
 
   // ── Species → parks reverse index ────────────────────────────────────────
   const allSpeciesList = useMemo(() => {
@@ -4004,14 +5890,15 @@ function AppInner() {
   // on all 63 markers → Leaflet removes/inserts DOM nodes → visible flicker on every park.
   // Live/loading status is shown in the popup header instead (● Live / ↻ Refreshing…).
   const icons = useMemo(() => {
-    const allLocs = [...wildlifeLocations, ...npsParks];
+    const allLocs = [...wildlifeLocations, ...npsParks, ...NATIONAL_WILDLIFE_REFUGES];
     return Object.fromEntries(
       allLocs.map(loc => [
         loc.id,
         createPinIcon(
           loc.locationType, false,
           !secondaryReady && !WILDLIFE_CACHE[loc.id],  // show loading dot for unpopulated parks
-          zoomTier
+          zoomTier,
+          npsEmojiOf(loc),
         ),
       ])
     );
@@ -4042,11 +5929,13 @@ function AppInner() {
     });
   }, [season, rarity, animalType, selectedState]);
 
-  // NPS API parks filtered by state (no animal filter — they
-  // have no animals array yet, so animal/season/rarity filters don't apply).
+  // NPS units + National Wildlife Refuges, filtered by state (no animal filter —
+  // they have no animals array yet, so animal/season/rarity filters don't apply).
+  // The NPS-kind filter (hiddenKinds, incl. 'Wildlife Refuge' off by default) is
+  // applied downstream in allVisibleLocations.
   const visibleNpsParks = useMemo(() =>
-    npsParks.filter(loc => {
-      if (selectedState !== 'all' && !loc.stateCodes.includes(selectedState)) return false;
+    [...npsParks, ...NATIONAL_WILDLIFE_REFUGES].filter(loc => {
+      if (selectedState !== 'all' && !(loc.stateCodes ?? []).includes(selectedState)) return false;
       return true;
     }),
     [npsParks, selectedState]
@@ -4057,8 +5946,40 @@ function AppInner() {
     let all = [...visibleLocations, ...visibleNpsParks];
     if (speciesFilteredParkIds)  all = all.filter(loc => speciesFilteredParkIds.has(loc.id));
     if (categoryFilteredParkIds) all = all.filter(loc => categoryFilteredParkIds.has(loc.id));
+    if (hiddenKinds.size)        all = all.filter(loc => !hiddenKinds.has(npsKindOf(loc)));
     return all;
-  }, [visibleLocations, visibleNpsParks, speciesFilteredParkIds, categoryFilteredParkIds]);
+  }, [visibleLocations, visibleNpsParks, speciesFilteredParkIds, categoryFilteredParkIds, hiddenKinds]);
+
+  // Per-state count for the StateParkCounts badges — derived from the SAME
+  // filtered set as the markers so a state's badge always matches the pins you
+  // see when you zoom in (previously this counted only the static parks and
+  // ignored every filter, so e.g. a "Preserve" filter still showed a state's
+  // park count).
+  const locationsByState = useMemo(() => {
+    const counts = {};
+    for (const loc of allVisibleLocations) {
+      (loc.stateCodes ?? []).forEach(code => { counts[code] = (counts[code] ?? 0) + 1; });
+    }
+    return counts;
+  }, [allVisibleLocations]);
+
+  // Per-NPS-kind counts for the legend/filter chips (before the kind filter, so
+  // toggling one kind doesn't change the others' counts). Ordered by NPS_KIND_ORDER.
+  const npsKindCounts = useMemo(() => {
+    const counts = {};
+    for (const loc of [...visibleLocations, ...visibleNpsParks]) {
+      const k = npsKindOf(loc);
+      counts[k] = (counts[k] ?? 0) + 1;
+    }
+    return NPS_KIND_ORDER.filter(k => counts[k]).map(k => ({ kind: k, emoji: NPS_KIND_EMOJI[k], count: counts[k] }));
+  }, [visibleLocations, visibleNpsParks]);
+  const toggleKind = useCallback((kind) => {
+    setHiddenKinds(prev => {
+      const next = new Set(prev);
+      next.has(kind) ? next.delete(kind) : next.add(kind);
+      return next;
+    });
+  }, []);
 
   const liveCount  = Object.keys(liveData).length;
 
@@ -4170,8 +6091,14 @@ function AppInner() {
 
             {/* Right actions: About + theme toggle + mobile filter toggle */}
             <div className="hdr__actions">
-              <button className="hdr__about-btn" onClick={() => setShowParkList(true)} title="Browse all parks (keyboard accessible)" aria-label="Browse all parks">
-                <span className="hdr__about-icon" aria-hidden="true">⌖</span> Parks
+              <button className="hdr__about-btn" onClick={() => { track('near_me_open'); setShowNearMe(true); }} title="Find wildlife sites near you" aria-label="Parks near me">
+                <span className="hdr__about-icon" aria-hidden="true">📍</span> Near me
+              </button>
+              <button className="hdr__about-btn" onClick={() => setShowParkList(true)} title="Browse all national parks (keyboard accessible)" aria-label="Browse national parks">
+                <span className="hdr__about-icon" aria-hidden="true">⌖</span> National Parks
+              </button>
+              <button className="hdr__about-btn" onClick={() => setShowStateSelector(true)} title="Browse state parks by state" aria-label="Browse state parks">
+                <span className="hdr__about-icon" aria-hidden="true">🗺️</span> State Parks
               </button>
               <button className="hdr__about-btn" onClick={() => openAbout()} title="About this project" aria-label="About">
                 <span className="hdr__about-icon">i</span> About
@@ -4364,7 +6291,9 @@ function AppInner() {
               >×</button>
               <LocationPopup
                 location={openPopup.loc}
-                effectiveAnimals={effectiveAnimalsByLoc[openPopup.loc.id] ?? openPopup.loc.animals}
+                heroImage={openPopup.loc.image || npsImages[openPopup.loc.npsCode] || null}
+                heroAlt={openPopup.loc.imageAlt || openPopup.loc.name}
+                effectiveAnimals={openPopupAnimals}
                 season={season}
                 rarity={rarity}
                 animalType={animalType}
@@ -4408,7 +6337,12 @@ function AppInner() {
         )}
 
         {/* Map legend — bottom-left corner */}
-        <MapLegend />
+        <MapLegend
+          kinds={npsKindCounts}
+          hiddenKinds={hiddenKinds}
+          onToggle={toggleKind}
+          onBrowseStateParks={() => setShowStateSelector(true)}
+        />
 
         {/* Species + category filter pills — stacked vertically in the centre */}
         {(speciesFilter || categoryType !== 'all') && (
@@ -4419,6 +6353,16 @@ function AppInner() {
                 <span className="species-pill__count">{allVisibleLocations.length} park{allVisibleLocations.length !== 1 ? 's' : ''}</span>
                 <button className="species-pill__clear" onClick={handleSpeciesClear} aria-label="Clear species filter">✕</button>
               </div>
+            )}
+            {speciesFilter && stateParkMatches?.length > 0 && (
+              <button
+                type="button"
+                className="species-pill species-pill--statelink"
+                onClick={() => setShowStateMatches(true)}
+                title={`Browse the state parks where ${speciesFilter} is found`}
+              >
+                🌲 also in <strong>{stateParkMatches.length} state parks</strong> →
+              </button>
             )}
             {categoryType !== 'all' && (
               <div className="species-pill species-pill--category">
@@ -4434,7 +6378,13 @@ function AppInner() {
           </div>
         )}
         {speciesFilter && allVisibleLocations.length === 0 && (
-          <div className="species-no-results">No parks found with "{speciesFilter}"</div>
+          stateParkMatches?.length > 0 ? (
+            <button type="button" className="species-no-results species-no-results--statelink" onClick={() => setShowStateMatches(true)}>
+              Not in any national park here — but found in <strong>{stateParkMatches.length} state parks</strong> →
+            </button>
+          ) : (
+            <div className="species-no-results">No parks found with "{speciesFilter}"</div>
+          )
         )}
 
       </main>
@@ -4445,8 +6395,91 @@ function AppInner() {
       {showParkList && (
         <ParkListModal
           parks={wildlifeLocations}
+          title="National Parks"
           onPick={(loc) => { setShowParkList(false); handlePopupOpen(loc); }}
           onClose={() => setShowParkList(false)}
+        />
+      )}
+      {showNearMe && (
+        <NearMeModal
+          index={nearMeIndex}
+          onPick={handleNearMePick}
+          onClose={() => setShowNearMe(false)}
+        />
+      )}
+      {showStateMatches && stateParkMatches?.length > 0 && (
+        <ParkListModal
+          parks={stateParkMatches}
+          title={`State parks with ${speciesFilter}`}
+          subtitle="Regularly recorded in the park's county (eBird) — tap a park for its full wildlife panel"
+          ariaLabel={`State parks with ${speciesFilter}`}
+          onPick={(p) => {
+            setShowStateMatches(false);
+            handleNearMePick({ kind: 'state', park: p, state: p.state, id: p.id, name: p.name });
+          }}
+          onClose={() => setShowStateMatches(false)}
+        />
+      )}
+      {showStateSelector && (
+        <StateSelectorModal
+          states={STATE_PARK_STATES}
+          onPick={(s) => {
+            setShowStateSelector(false);
+            setSelectedStateForMap(s.code);
+            track('state_select', { state: s.code });
+            try { window.history.replaceState(null, '', `/state/${s.code.toLowerCase()}`); } catch {}
+          }}
+          onClose={() => setShowStateSelector(false)}
+        />
+      )}
+      {selectedStateForMap && (() => {
+        const s = STATE_PARK_STATES.find(x => x.code === selectedStateForMap);
+        if (!s) return null;
+        return (
+          <StateParkMap
+            state={s}
+            parks={STATE_PARKS_BY_STATE[s.code] || []}
+            stateGeo={stateGeoData}
+            onSwitchState={(code) => {
+              setActiveStatePark(null);   // close any open panel
+              setSelectedStateForMap(code);
+              track('state_switch', { state: code });
+              try { window.history.replaceState(null, '', `/state/${code.toLowerCase()}`); } catch {}
+            }}
+            onPickPark={(p) => {
+              setActiveStatePark(p);
+              track('state_park_open', { park: p.name, state: s.code });
+              try { window.history.replaceState(null, '', `/state-park/${s.code.toLowerCase()}/${encodeURIComponent(p.id)}`); } catch {}
+            }}
+            onClose={() => {
+              setSelectedStateForMap(null);
+              setActiveStatePark(null);
+              try { window.history.replaceState(null, '', '/'); } catch {}
+            }}
+          />
+        );
+      })()}
+      {activeStatePark && (
+        <StateParkPanel
+          park={activeStatePark}
+          openAbout={openAbout}
+          onSwitchPark={(p) => {
+            setActiveStatePark(p);
+            const sc = STATE_PARK_STATES.find(s => p.id?.startsWith(s.code.toLowerCase() + '-'))?.code;
+            // Keep the map underneath in sync (matters on a deep-link landing).
+            if (sc && sc !== selectedStateForMap) setSelectedStateForMap(sc);
+            track('state_park_switch', { park: p.name, state: sc });
+            try { window.history.replaceState(null, '', `/state-park/${(sc || '').toLowerCase()}/${encodeURIComponent(p.id)}`); } catch {}
+          }}
+          onClose={() => {
+            setActiveStatePark(null);
+            // Don't drop the state map underneath — close panel returns to the map.
+            try {
+              const s = STATE_PARK_STATES.find(x => x.code === selectedStateForMap);
+              if (s) window.history.replaceState(null, '', `/state/${s.code.toLowerCase()}`);
+              else   window.history.replaceState(null, '', '/');
+            } catch {}
+          }}
         />
       )}
 

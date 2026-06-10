@@ -34,11 +34,123 @@ const PLACEHOLDER_PATTERNS = [
   /^Appears on \d+% of .+ eBird checklists/i,
   /^Verified in \d+ iNaturalist research-grade observations/i,
   /^Officially documented in the NPS wildlife registry/i,
+  // Live runtime formats (state-park + live national-park species):
+  /^Last reported .+ \(eBird\)\.?$/i,                 // eBird geo/recent birds
+  /^Verified in \d+ iNaturalist research-grade observations near this location/i,
 ];
 
 export function needsGeneratedDescription(funFact) {
   if (!funFact) return true;
   return PLACEHOLDER_PATTERNS.some(p => p.test(funFact.trim()));
+}
+
+// ── Runtime factual species descriptions ────────────────────────────────────
+// Fetches a real, SOURCED natural-history summary for a species — the same
+// content national parks bake in at build time via scripts/enrichDescriptions.js
+// (iNaturalist's wikipedia_summary, falling back to the Wikipedia REST summary).
+// Species-keyed (reusable across every park) and cached in memory + localStorage,
+// so each species is fetched at most once per device. Returns { text, source }
+// | null. No fabrication: if no sourced summary matches, returns null and the
+// card keeps its factual observation-record line.
+const _factCache    = new Map();
+const _factPending  = new Map();
+const FACT_PREFIX   = 'wm_factdesc_v2_'; // v2: sci-name-first lookup (fixes common-name collisions e.g. "Merlin")
+const FACT_TTL      = 30 * 24 * 60 * 60 * 1000; // 30 days
+const FACT_NEG_TTL  = 3  * 24 * 60 * 60 * 1000; // 3 days for null (let new sources fill in)
+
+function speciesKeyFor(name, sci) {
+  return (sci || name || '').toLowerCase().trim().replace(/\s+/g, '_');
+}
+
+function firstNSentences(text, n = 2) {
+  const parts = text.replace(/\s+/g, ' ').trim().match(/[^.!?]+[.!?]+/g);
+  if (!parts) return text.trim();
+  return parts.slice(0, n).join(' ').trim();
+}
+
+// iNaturalist taxon → wikipedia_summary, with a name-match guard so a fuzzy
+// query can't attach the wrong species' description.
+async function factFromInat(name, sci) {
+  try {
+    const query = sci || name;
+    const res = await fetch(
+      `/api/inat-proxy/taxa?q=${encodeURIComponent(query)}&per_page=1&locale=en&is_active=true`
+    );
+    if (!res.ok) return null;
+    const data = await res.json();
+    const taxon = data?.results?.[0];
+    const summary = taxon?.wikipedia_summary?.replace(/<[^>]+>/g, '').trim();
+    if (!summary || summary.length < 30) return null;
+    const common  = name.toLowerCase();
+    const rCommon = (taxon.preferred_common_name ?? '').toLowerCase();
+    const rSci    = (taxon.name ?? '').toLowerCase();
+    const sciL    = (sci ?? '').toLowerCase();
+    const matches =
+      (rCommon && (rCommon.includes(common.split(' ').pop()) || common.includes(rCommon.split(' ').pop()))) ||
+      (sciL && rSci.startsWith(sciL.split(' ')[0]));
+    if (!matches) return null;
+    return { text: firstNSentences(summary, 2), source: 'iNaturalist' };
+  } catch { return null; }
+}
+
+// Wikipedia REST summary (CORS-enabled, called direct — same as photoService).
+// Rejects non-animal disambiguation pages (city/river/etc.).
+async function factFromWikipedia(name) {
+  try {
+    const url = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(name.replace(/ /g, '_'))}`;
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (!data?.extract || data.type === 'disambiguation' || data.extract.length < 30) return null;
+    const desc = (data.description ?? '').toLowerCase();
+    const bad = ['city', 'town', 'county', 'region', 'river', 'mountain', 'lake',
+                 'disambiguation', 'village', 'municipality',
+                 // non-animal common-name collisions (Merlin the wizard, Robin the name…)
+                 'legendary', 'mythical', 'fictional', 'wizard', 'magician', 'deity',
+                 'given name', 'surname', 'film', 'song', 'album', 'band', 'novel',
+                 'video game', 'character', 'company', 'musician', 'singer', 'actor'];
+    if (bad.some(t => desc.includes(t))) return null;
+    return { text: firstNSentences(data.extract, 2), source: 'Wikipedia' };
+  } catch { return null; }
+}
+
+export async function fetchAnimalDescription(animalName, scientificName) {
+  if (!animalName && !scientificName) return null;
+  const key = speciesKeyFor(animalName, scientificName);
+
+  if (_factCache.has(key)) return _factCache.get(key);
+  if (_factPending.has(key)) return _factPending.get(key);
+
+  try {
+    const raw = localStorage.getItem(FACT_PREFIX + key);
+    if (raw !== null) {
+      const { data, ts } = JSON.parse(raw);
+      const ttl = data ? FACT_TTL : FACT_NEG_TTL;
+      if (ts && Date.now() - ts < ttl) { _factCache.set(key, data); return data; }
+      localStorage.removeItem(FACT_PREFIX + key);
+    }
+  } catch { /* storage unavailable */ }
+
+  const promise = (async () => {
+    // 1. iNaturalist taxon summary (taxon-aware + name-match guarded).
+    // 2. Wikipedia by SCIENTIFIC name — unambiguous, so it can't match a
+    //    same-named non-animal (e.g. "Merlin" the falcon vs the wizard).
+    // 3. Wikipedia by common name ONLY as a last resort when there is no
+    //    scientific name (with the bad-type guard in factFromWikipedia).
+    let result = await factFromInat(animalName, scientificName);
+    if (!result && scientificName) result = await factFromWikipedia(scientificName);
+    if (!result && !scientificName) result = await factFromWikipedia(animalName);
+    result = result ?? null;
+    _factCache.set(key, result);
+    _factPending.delete(key);
+    try {
+      localStorage.setItem(FACT_PREFIX + key, JSON.stringify({ data: result, ts: Date.now() }));
+    } catch { /* quota */ }
+    return result;
+  })();
+
+  _factPending.set(key, promise);
+  return promise;
 }
 
 // ── Main public API ────────────────────────────────────────────────────────────

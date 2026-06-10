@@ -1,7 +1,7 @@
 {
   "name": "US Wildlife Explorer",
   "short_name": "Wildlife",
-  "description": "Find wildlife in America's 63 national parks — rarity, best timing, and your personal life list. Works offline.",
+  "description": "Find wildlife at 4,000+ US parks — national parks, state parks, and wildlife refuges. Rarity, best timing, rare-bird alerts, and your personal life list. Works offline.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
