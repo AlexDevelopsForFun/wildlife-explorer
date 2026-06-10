@@ -21,6 +21,7 @@ const ALLOW = [
   /^ref\/hotspot\/geo(\?|$)/,
   /^product\/spplist\/[A-Za-z0-9]+(\?|$)/,
   /^data\/obs\/geo\/recent(\?|$)/,
+  /^data\/obs\/geo\/recent\/notable(\?|$)/,   // rare-bird alerts ("Rare nearby")
 ];
 
 export default async function handler(req, res) {
@@ -56,7 +57,11 @@ export default async function handler(req, res) {
       .setHeader('content-type', r.headers.get('content-type') || 'application/json')
       // Edge-cache successful responses 6h — eBird hotspot/obs data is slow-moving
       // and this keeps function invocations (and upstream key usage) low.
-      .setHeader('cache-control', r.ok ? 'public, max-age=21600, s-maxage=21600' : 'no-store')
+      // Exception: the notable (rare-bird alert) feed gets 30min — birders act
+      // on it same-day, so 6h-stale alerts would defeat the feature.
+      .setHeader('cache-control', !r.ok ? 'no-store'
+        : suffix.startsWith('data/obs/geo/recent/notable') ? 'public, max-age=1800, s-maxage=1800'
+        : 'public, max-age=21600, s-maxage=21600')
       .send(body);
   } catch {
     res.status(502).json({ error: 'eBird upstream fetch failed' });
