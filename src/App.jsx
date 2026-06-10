@@ -11,7 +11,11 @@ import { track } from '@vercel/analytics';
 import { wildlifeLocations, SEASONS, RARITY, ANIMAL_TYPES, STATE_NAMES } from './wildlifeData';
 import { NATIONAL_WILDLIFE_REFUGES } from './data/nationalWildlifeRefuges.js';
 import { STATE_PARKS_NJ, STATE_PARKS_BY_STATE, findStatePark, INAT_PLACE_IDS, STATE_PARK_HIGHLIGHTS } from './data/stateParksNJ';
-import { PARK_COUNTY, COUNTY_BIRD_FREQ } from './data/stateParkBirdFreq';
+// County bird-frequency dataset (~13MB source) — lazy chunk, NOT in the main
+// bundle, so first paint stays fast on phones. Loaded once on the first
+// state-park panel open, then reused.
+let _birdFreqMod = null;
+const loadBirdFreq = () => (_birdFreqMod ??= import('./data/stateParkBirdFreq').catch(() => { _birdFreqMod = null; return null; }));
 
 // States we have curated park data for. Add a new state's entry here +
 // extend STATE_PARKS_BY_STATE — the selector + map handle it automatically.
@@ -320,12 +324,14 @@ const STATE_PARK_STATES = [
   },
 ];
 import { classifyAnimalSubtype, getSubtypeDefs } from './utils/subcategories';
+import { findStateParksWithBird } from './utils/birdParkSearch';
 import {
   mergeAnimals, balanceAnimals, filterGeographicOutliers, NEVER_EXCEPTIONAL_BIRDS,
   getCorrectionFactor, getMonthlyFrequency,
   rarityFromChecklist, applyRarityOverride,
   fetchInatMonthlyHist, fetchInatParkMonthlyEffort,
   fetchEbird, fetchINat, fetchEbirdHotspot, deduplicateAnimals,
+  fetchWikiParkImage, fetchEbirdNotable,
 } from './services/apiService';
 import { useLiveData } from './hooks/useLiveData';
 import { useNpsParks } from './hooks/useNpsParks';
@@ -1338,6 +1344,16 @@ const STATE_GROUP_TO_TYPE = {
 
 function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
   const [state, setState] = useState({ status: 'loading', species: [], total: 0, sources: [], stats: null });
+  // Hero photo — state parks have no NPS image source, so use the park's
+  // Wikipedia lead image (cached; null when no article/image — header
+  // simply renders without a hero, as before).
+  const [wikiHero, setWikiHero] = useState(null);
+  useEffect(() => {
+    let alive = true;
+    setWikiHero(null);
+    fetchWikiParkImage(park.name).then(src => { if (alive) setWikiHero(src); });
+    return () => { alive = false; };
+  }, [park.id]);
   const [seenVersion, setSeenVersion] = useState(0);
   const [displayLimit, setDisplayLimit] = useState(40);
   // Multi-select animal-type filter, identical to national parks: defaults to
@@ -1458,7 +1474,11 @@ function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
         // (keeps the species set park-specific); birds absent from the cache
         // keep their existing rarity (graceful — e.g. Salem-county parks).
         // Factored into finalize() so we can emit birds first, then the full set.
-        const countyFreq = COUNTY_BIRD_FREQ[PARK_COUNTY[park.id]] ?? null;
+        const birdFreqMod = await loadBirdFreq();
+        if (!alive) return;
+        const countyFreq = birdFreqMod
+          ? (birdFreqMod.COUNTY_BIRD_FREQ[birdFreqMod.PARK_COUNTY[park.id]] ?? null)
+          : null;
         const finalize = () => {
           // Drop clear out-of-range live-API artifacts (state-aware: keeps Dall
           // sheep at AK parks, monk seals at HI parks; blocks polar bears etc.).
@@ -1756,6 +1776,15 @@ function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
       <div className="statepark-modal" role="dialog" aria-modal="true" aria-label={`Wildlife at ${park.name}`}>
         <button className="about-modal__close" onClick={onClose} aria-label="Close">X</button>
         <div className="statepark-modal__head">
+          {wikiHero && (
+            <img
+              className="lp__hero"
+              src={wikiHero}
+              alt={`${park.name} scenery`}
+              loading="lazy"
+              onError={() => setWikiHero(null)}
+            />
+          )}
           <h2 className="statepark-modal__title">{park.name}</h2>
           {/* Meta row — state + park-type badge, mirroring national parks.
               State name is derived from the park id prefix (nj-/de-/…) so it's
@@ -1765,6 +1794,15 @@ function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
             <span className="lp__park-badge" style={{ background: '#2f7d4f' }}>
               {(park.category?.replace('-', ' ') ?? 'state park').replace(/\b\w/g, c => c.toUpperCase())}
             </span>
+            <a
+              className="lp__share-btn lp__directions-btn"
+              href={`https://www.google.com/maps/dir/?api=1&destination=${park.lat},${park.lng}`}
+              target="_blank" rel="noopener noreferrer"
+              aria-label={`Get directions to ${park.name}`}
+              title="Open directions in your maps app"
+            >
+              🧭 Directions
+            </a>
           </div>
           {/* In-panel park switcher — jump to another park in the same state
               without closing back to the state map. */}
@@ -2041,6 +2079,7 @@ function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
 function NearMeModal({ index, onPick, onClose }) {
   const [status, setStatus]   = useState('locating'); // locating | ok | denied | error | unsupported
   const [results, setResults] = useState([]);
+  const [notable, setNotable] = useState(null);       // rare-bird alerts (eBird notable feed)
   useEffect(() => {
     const h = e => { if (e.key === 'Escape') onClose(); };
     window.addEventListener('keydown', h);
@@ -2062,6 +2101,13 @@ function NearMeModal({ index, onPick, onClose }) {
         setResults(index.map(it => ({ ...it, miles: miFrom(it.lat, it.lng) }))
           .sort((a, b) => a.miles - b.miles).slice(0, 20));
         setStatus('ok');
+        // Rare-bird alerts (eBird's locally-notable feed). The coordinate is
+        // ROUNDED to ~1 km before the query so the precise location still
+        // never leaves the device.
+        fetchEbirdNotable(+latitude.toFixed(2), +longitude.toFixed(2)).then(list => {
+          if (!alive) return;
+          setNotable((list ?? []).map(o => ({ ...o, miles: miFrom(o.lat, o.lng) })));
+        });
       },
       err => { if (alive) setStatus(err?.code === 1 ? 'denied' : 'error'); },
       { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 },
@@ -2084,6 +2130,23 @@ function NearMeModal({ index, onPick, onClose }) {
           <h2 className="nearme-modal__title">📍 Parks near you</h2>
           <p className="nearme-modal__sub">Nearest national &amp; state wildlife sites</p>
         </div>
+        {status === 'ok' && notable?.length > 0 && (
+          <div className="nearme-modal__rare">
+            <div className="nearme-modal__rare-title">🔥 Rare nearby <span>recent notable birds · eBird</span></div>
+            <ul className="nearme-modal__rare-list">
+              {notable.slice(0, 6).map(o => {
+                let when = '';
+                try { when = new Date(o.obsDt.replace(' ', 'T')).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }); } catch {}
+                return (
+                  <li key={`${o.name}-${o.obsDt}`} className="nearme-modal__rare-item">
+                    <span className="nearme-modal__rare-name">{o.name}</span>
+                    <span className="nearme-modal__rare-meta">{Math.round(o.miles)} mi · {o.locName}{when ? ` · ${when}` : ''}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        )}
         {status !== 'ok'
           ? <p className="nearme-modal__msg">{MSG[status]}</p>
           : (
@@ -2382,7 +2445,8 @@ function StateParkMap({ state, parks, stateGeo, onPickPark, onClose, onSwitchSta
           )}
         </div>
         <button className="statemap-overlay__close" onClick={onClose} aria-label="Back to main map">
-          ← Back to national map
+          <span className="full">← Back to national map</span>
+          <span className="short">← Back</span>
         </button>
       </div>
       <div className="statemap-overlay__map">
@@ -4689,6 +4753,16 @@ function LocationPopup({ location, heroImage, heroAlt, effectiveAnimals, season,
         >
           {shareCopied ? '✓ Link copied' : '🔗 Share'}
         </button>
+        {/* Directions — opens the device's maps app at the park */}
+        <a
+          className="lp__share-btn lp__directions-btn"
+          href={`https://www.google.com/maps/dir/?api=1&destination=${location.lat},${location.lng}`}
+          target="_blank" rel="noopener noreferrer"
+          aria-label={`Get directions to ${location.name}`}
+          title="Open directions in your maps app"
+        >
+          🧭 Directions
+        </a>
         {/* Species type breakdown row */}
         {Object.keys(typeBreakdown).length > 0 && (
           <div className="lp__breakdown">
@@ -5163,33 +5237,49 @@ function FilterBtn({ active, onClick, emoji, label, activeColor, title }) {
 
 // ── Map legend ─────────────────────────────────────────────────────────────────
 function MapLegend({ kinds, hiddenKinds, onToggle, onBrowseStateParks }) {
+  // Collapsed by default on phones — the full chip set eats ~15% of a small
+  // screen. The title row toggles it; desktop starts open as before.
+  const [open, setOpen] = useState(() => (typeof window === 'undefined' ? true : window.innerWidth > 640));
   if (!kinds?.length) return null;
+  const activeCount = kinds.filter(({ kind }) => !hiddenKinds.has(kind)).length;
   return (
     <div className="map-legend">
-      <div className="map-legend__title">Federal lands — tap a type to filter</div>
-      <div className="map-legend__chips" role="group" aria-label="Filter by park type">
-        {kinds.map(({ kind, emoji, count }) => {
-          const on = !hiddenKinds.has(kind);
-          return (
-            <button
-              key={kind}
-              type="button"
-              className={`map-legend__chip${on ? ' is-active' : ''}`}
-              aria-pressed={on}
-              onClick={() => onToggle(kind)}
-              title={`${on ? 'Hide' : 'Show'} ${kind}s`}
-            >
-              <span aria-hidden="true">{emoji}</span>
-              <span className="map-legend__chip-label">{kind.replace('National ', '')}</span>
-              <span className="map-legend__chip-count">{count}</span>
+      <button
+        type="button"
+        className="map-legend__title map-legend__toggle"
+        aria-expanded={open}
+        onClick={() => setOpen(o => !o)}
+      >
+        Federal lands — tap a type to filter
+        <span className="map-legend__caret" aria-hidden="true">{open ? '▾' : `▸ ${activeCount}/${kinds.length} shown`}</span>
+      </button>
+      {open && (
+        <>
+          <div className="map-legend__chips" role="group" aria-label="Filter by park type">
+            {kinds.map(({ kind, emoji, count }) => {
+              const on = !hiddenKinds.has(kind);
+              return (
+                <button
+                  key={kind}
+                  type="button"
+                  className={`map-legend__chip${on ? ' is-active' : ''}`}
+                  aria-pressed={on}
+                  onClick={() => onToggle(kind)}
+                  title={`${on ? 'Hide' : 'Show'} ${kind}s`}
+                >
+                  <span aria-hidden="true">{emoji}</span>
+                  <span className="map-legend__chip-label">{kind.replace('National ', '')}</span>
+                  <span className="map-legend__chip-count">{count}</span>
+                </button>
+              );
+            })}
+          </div>
+          {onBrowseStateParks && (
+            <button type="button" className="map-legend__statelink" onClick={onBrowseStateParks}>
+              This isn’t everything — also browse <strong>4,000+ State Parks</strong> in all 50 states →
             </button>
-          );
-        })}
-      </div>
-      {onBrowseStateParks && (
-        <button type="button" className="map-legend__statelink" onClick={onBrowseStateParks}>
-          This isn’t everything — also browse <strong>1,600+ State Parks</strong> in all 50 states →
-        </button>
+          )}
+        </>
       )}
     </div>
   );
@@ -5536,7 +5626,33 @@ function AppInner() {
   const handleSpeciesClear = useCallback(() => {
     setSpeciesFilter(null);
     setSpeciesQuery('');
+    setStateParkMatches(null);
+    setShowStateMatches(false);
   }, []);
+
+  // ── Universal species search: state-park matches ──────────────────────────
+  // When a species is selected, also look it up across all 4,000+ state parks
+  // via the county bird-frequency index (lazy chunk; birds only — iNat species
+  // for state parks are live-fetched and have no static index).
+  const allStateParksFlat = useMemo(() => {
+    const m = new Map();
+    for (const [code, arr] of Object.entries(STATE_PARKS_BY_STATE))
+      for (const p of arr) m.set(p.id, { ...p, state: code });
+    return m;
+  }, []);
+  const [stateParkMatches, setStateParkMatches] = useState(null);
+  const [showStateMatches, setShowStateMatches] = useState(false);
+  useEffect(() => {
+    if (!speciesFilter) { setStateParkMatches(null); return; }
+    let alive = true;
+    findStateParksWithBird(speciesFilter).then(ids => {
+      if (!alive) return;
+      const parks = ids.map(id => allStateParksFlat.get(id)).filter(Boolean)
+        .sort((a, b) => a.state.localeCompare(b.state) || a.name.localeCompare(b.name));
+      setStateParkMatches(parks);
+    });
+    return () => { alive = false; };
+  }, [speciesFilter, allStateParksFlat]);
   const handleCategoryReset = useCallback(() => {
     setCategoryType('all');
     setCategorySubtype('all');
@@ -5918,8 +6034,8 @@ function AppInner() {
               <button className="hdr__about-btn" onClick={() => { track('near_me_open'); setShowNearMe(true); }} title="Find wildlife sites near you" aria-label="Parks near me">
                 <span className="hdr__about-icon" aria-hidden="true">📍</span> Near me
               </button>
-              <button className="hdr__about-btn" onClick={() => setShowParkList(true)} title="Browse all national parks (keyboard accessible)" aria-label="Browse all parks">
-                <span className="hdr__about-icon" aria-hidden="true">⌖</span> Parks
+              <button className="hdr__about-btn" onClick={() => setShowParkList(true)} title="Browse all national parks (keyboard accessible)" aria-label="Browse national parks">
+                <span className="hdr__about-icon" aria-hidden="true">⌖</span> National Parks
               </button>
               <button className="hdr__about-btn" onClick={() => setShowStateSelector(true)} title="Browse state parks by state" aria-label="Browse state parks">
                 <span className="hdr__about-icon" aria-hidden="true">🗺️</span> State Parks
@@ -6178,6 +6294,16 @@ function AppInner() {
                 <button className="species-pill__clear" onClick={handleSpeciesClear} aria-label="Clear species filter">✕</button>
               </div>
             )}
+            {speciesFilter && stateParkMatches?.length > 0 && (
+              <button
+                type="button"
+                className="species-pill species-pill--statelink"
+                onClick={() => setShowStateMatches(true)}
+                title={`Browse the state parks where ${speciesFilter} is found`}
+              >
+                🌲 also in <strong>{stateParkMatches.length} state parks</strong> →
+              </button>
+            )}
             {categoryType !== 'all' && (
               <div className="species-pill species-pill--category">
                 <span className="species-pill__label">
@@ -6192,7 +6318,13 @@ function AppInner() {
           </div>
         )}
         {speciesFilter && allVisibleLocations.length === 0 && (
-          <div className="species-no-results">No parks found with "{speciesFilter}"</div>
+          stateParkMatches?.length > 0 ? (
+            <button type="button" className="species-no-results species-no-results--statelink" onClick={() => setShowStateMatches(true)}>
+              Not in any national park here — but found in <strong>{stateParkMatches.length} state parks</strong> →
+            </button>
+          ) : (
+            <div className="species-no-results">No parks found with "{speciesFilter}"</div>
+          )
         )}
 
       </main>
@@ -6203,6 +6335,7 @@ function AppInner() {
       {showParkList && (
         <ParkListModal
           parks={wildlifeLocations}
+          title="National Parks"
           onPick={(loc) => { setShowParkList(false); handlePopupOpen(loc); }}
           onClose={() => setShowParkList(false)}
         />
@@ -6212,6 +6345,19 @@ function AppInner() {
           index={nearMeIndex}
           onPick={handleNearMePick}
           onClose={() => setShowNearMe(false)}
+        />
+      )}
+      {showStateMatches && stateParkMatches?.length > 0 && (
+        <ParkListModal
+          parks={stateParkMatches}
+          title={`State parks with ${speciesFilter}`}
+          subtitle="Regularly recorded in the park's county (eBird) — tap a park for its full wildlife panel"
+          ariaLabel={`State parks with ${speciesFilter}`}
+          onPick={(p) => {
+            setShowStateMatches(false);
+            handleNearMePick({ kind: 'state', park: p, state: p.state, id: p.id, name: p.name });
+          }}
+          onClose={() => setShowStateMatches(false)}
         />
       )}
       {showStateSelector && (

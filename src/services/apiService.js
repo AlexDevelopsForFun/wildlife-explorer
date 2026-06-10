@@ -1788,3 +1788,64 @@ export function filterGeographicOutliers(animals, parkKey) {
     return !check || !check(region);
   });
 }
+
+// ── Wikipedia lead image for a park ──────────────────────────────────────────
+// State parks (and refuges) have no NPS photo source, but most have a Wikipedia
+// article with a lead image. One summary call, cached 7 days; "no article /
+// no image" is cached too (sentinel) so we never re-hit misses. Disambiguation
+// pages are rejected — better no photo than the wrong one.
+export async function fetchWikiParkImage(name) {
+  if (!name) return null;
+  const cacheKey = `wiki_img_v1_${name.toLowerCase().replace(/[^a-z0-9]+/g, '_')}`;
+  const cached = cacheGet(cacheKey);
+  if (cached) return cached === '__none__' ? null : cached;
+  try {
+    const title = encodeURIComponent(name.replace(/ /g, '_'));
+    const r = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${title}`);
+    if (!r.ok) { cacheSet(cacheKey, '__none__'); return null; }
+    const j = await r.json();
+    let src = null;
+    if (j.type !== 'disambiguation' && j.thumbnail?.source) {
+      // The summary thumbnail is ~320px; re-request at hero width (capped at
+      // the original's own width so the thumbor service can't 404).
+      const w = Math.min(960, j.originalimage?.width || 640);
+      src = /\/\d+px-/.test(j.thumbnail.source)
+        ? j.thumbnail.source.replace(/\/\d+px-/, `/${w}px-`)
+        : j.thumbnail.source;
+    }
+    cacheSet(cacheKey, src ?? '__none__');
+    return src;
+  } catch { return null; }
+}
+
+// ── eBird notable (rare-bird alerts) ─────────────────────────────────────────
+// "Notable" = sightings flagged locally rare/unusual by eBird's own review
+// rules — the same feed birders watch for chases. Session-cached only (an
+// alert feed must not live for the 7-day localStorage TTL). Deduped to the
+// most recent report per species.
+const _notableCache = new Map();
+export async function fetchEbirdNotable(lat, lng, { dist = 50, back = 7, max = 12 } = {}) {
+  const key = `${lat.toFixed(2)},${lng.toFixed(2)},${dist},${back}`;
+  if (_notableCache.has(key)) return _notableCache.get(key);
+  try {
+    const r = await fetch(
+      `/api/ebird-proxy/data/obs/geo/recent/notable?lat=${lat.toFixed(4)}&lng=${lng.toFixed(4)}&dist=${dist}&back=${back}&detail=simple`,
+      { signal: AbortSignal.timeout(15000) },
+    );
+    if (!r.ok) return null;
+    const rows = await r.json();
+    if (!Array.isArray(rows)) return null;
+    const bySpecies = new Map();
+    for (const o of rows) {
+      if (!o?.comName) continue;
+      const prev = bySpecies.get(o.comName);
+      if (!prev || (o.obsDt ?? '') > (prev.obsDt ?? '')) bySpecies.set(o.comName, o);
+    }
+    const out = [...bySpecies.values()]
+      .sort((a, b) => (b.obsDt ?? '').localeCompare(a.obsDt ?? ''))
+      .slice(0, max)
+      .map(o => ({ name: o.comName, sci: o.sciName, lat: o.lat, lng: o.lng, locName: o.locName, obsDt: o.obsDt }));
+    _notableCache.set(key, out);
+    return out;
+  } catch { return null; }
+}

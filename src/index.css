@@ -2430,6 +2430,16 @@ body, #root {
   font-size: 10px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
   color: #6b7280; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
+/* Title doubles as the expand/collapse toggle (esp. phones). */
+.map-legend__toggle {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  width: 100%; padding: 0; background: none; border: 0; cursor: pointer; text-align: left;
+}
+.map-legend__toggle:focus-visible { outline: 2px solid #1d4ed8; outline-offset: 2px; border-radius: 4px; }
+.map-legend__caret { font-size: 10px; color: #2f7d4f; font-weight: 700; white-space: nowrap; }
+@media (max-width: 640px) {
+  .map-legend { max-width: calc(100vw - 24px); bottom: 24px; }
+}
 .map-legend__chips { display: flex; flex-wrap: wrap; gap: 5px; }
 .map-legend__chip {
   display: inline-flex; align-items: center; gap: 5px;
@@ -3712,6 +3722,17 @@ body, #root {
 }
 
 /* ── Species filter pill on map ─────────────────────────────────────────── */
+/* "also in N state parks →" pill — a clickable cross-link under the species
+   pill, opening the matching-state-parks list (universal species search). */
+.species-pill--statelink {
+  border: 1px solid rgba(95, 211, 138, 0.5); cursor: pointer;
+  background: rgba(20, 56, 34, 0.94); color: #d9efe1; font-weight: 500;
+}
+.species-pill--statelink strong { color: #7fe3a4; }
+.species-pill--statelink:hover { background: rgba(31, 122, 71, 0.95); color: #fff; }
+.species-no-results--statelink { cursor: pointer; border: 1px solid rgba(95,211,138,0.45); }
+.species-no-results--statelink strong { color: #7fe3a4; }
+
 .species-pill {
   position:      relative; /* inside stack wrapper */
   background:    rgba(15, 40, 25, 0.92);
@@ -4117,6 +4138,13 @@ textarea:focus-visible,
 .lifelist-bar__next { color: #9ca3af; }
 
 /* Share-this-park (deep link) — sits left of the refresh button */
+/* Directions: an <a> reusing the share-pill look. In the national popup it
+   sits left of Share (absolute, like its siblings); inside a .lp__meta row
+   (state-park panel) it flows inline at the row's end. */
+.lp__directions-btn { right: 174px; text-decoration: none; }
+.lp__directions-btn:hover { background: rgba(255,255,255,0.24); color: #fff; }
+.lp__meta .lp__directions-btn { position: static; margin-left: auto; }
+
 .lp__share-btn {
   position: absolute; top: 12px; right: 84px;
   height: 24px; padding: 0 10px;
@@ -4391,6 +4419,21 @@ textarea:focus-visible,
 .nearme-modal__title { font-size: 23px; font-weight: 800; color: #fff; margin: 0 0 4px; }
 .nearme-modal__sub   { font-size: 13px; color: #9bbcab; margin: 0; }
 .nearme-modal__msg   { padding: 28px 24px; text-align: center; color: #c8ddd0; font-size: 14px; line-height: 1.5; }
+/* Rare-bird alerts strip (eBird notable feed) above the parks list. */
+.nearme-modal__rare {
+  margin: 12px 16px 0; padding: 10px 12px; border-radius: 12px;
+  background: rgba(214,107,40,0.10); border: 1px solid rgba(214,107,40,0.35);
+}
+.nearme-modal__rare-title {
+  font-size: 12px; font-weight: 800; color: #f0b06b; letter-spacing: 0.02em;
+  display: flex; align-items: baseline; gap: 8px;
+}
+.nearme-modal__rare-title span { font-weight: 500; font-size: 10.5px; color: #c79a72; text-transform: none; }
+.nearme-modal__rare-list { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.nearme-modal__rare-item { display: flex; flex-direction: column; gap: 1px; }
+.nearme-modal__rare-name { font-size: 13px; font-weight: 700; color: #f3e8d8; }
+.nearme-modal__rare-meta { font-size: 11px; color: #c4b49e; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
 .nearme-modal__list  { list-style: none; margin: 0; padding: 14px 16px 22px; overflow-y: auto; }
 .nearme-modal__item {
   display: flex; align-items: center; gap: 12px; width: 100%;
@@ -4505,9 +4548,27 @@ textarea:focus-visible,
   background: none; border: 0; color: #9bbcab; cursor: pointer; font-size: 13px; padding: 0 2px;
 }
 @media (max-width: 720px) {
-  .statemap-overlay__filters { width: 100%; margin-left: 0; order: 3; }
-  .statemap-overlay__search { margin-left: 0; order: 4; width: 100%; }
+  /* The bar must WRAP on phones — without this the orders below do nothing
+     and the title gets crushed into a one-word-per-line column. */
+  .statemap-overlay__bar { flex-wrap: wrap; gap: 8px; padding: 10px 12px; }
+  .statemap-overlay__title { order: 1; flex: 1 1 auto; min-width: 0; font-size: 15px; }
+  .statemap-overlay__count { font-size: 12px; margin-left: 6px; }
+  .statemap-overlay__close { order: 2; margin-left: auto; padding: 8px 12px; font-size: 13px; white-space: nowrap; }
+  .statemap-overlay__close .full { display: none; }   /* "← Back" instead of the long label */
+  .statemap-overlay__stateswitch { order: 3; margin-left: 0; flex: 1 1 100%; max-width: none; }
+  /* Category chips: one horizontally-scrollable row instead of a tall wrap. */
+  .statemap-overlay__filters {
+    width: 100%; margin-left: 0; order: 4;
+    flex-wrap: nowrap; overflow-x: auto; padding-bottom: 2px;
+    -webkit-overflow-scrolling: touch; scrollbar-width: none;
+  }
+  .statemap-overlay__filters::-webkit-scrollbar { display: none; }
+  .statemap-filter-chip { flex: 0 0 auto; }
+  .statemap-overlay__search { margin-left: 0; order: 5; width: 100%; }
   .statemap-overlay__search input { width: 100%; flex: 1; }
+}
+@media (min-width: 721px) {
+  .statemap-overlay__close .short { display: none; }
 }
 
 /* The state-park panel's header chrome (spectrum, tabs, controls, seen filter)
