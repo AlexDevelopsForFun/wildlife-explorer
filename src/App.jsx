@@ -11,11 +11,10 @@ import { track } from '@vercel/analytics';
 import { wildlifeLocations, SEASONS, RARITY, ANIMAL_TYPES, STATE_NAMES } from './wildlifeData';
 import { NATIONAL_WILDLIFE_REFUGES } from './data/nationalWildlifeRefuges.js';
 import { STATE_PARKS_NJ, STATE_PARKS_BY_STATE, findStatePark, INAT_PLACE_IDS, STATE_PARK_HIGHLIGHTS } from './data/stateParksNJ';
-// County bird-frequency dataset (~13MB source) — lazy chunk, NOT in the main
-// bundle, so first paint stays fast on phones. Loaded once on the first
-// state-park panel open, then reused.
-let _birdFreqMod = null;
-const loadBirdFreq = () => (_birdFreqMod ??= import('./data/stateParkBirdFreq').catch(() => { _birdFreqMod = null; return null; }));
+// County bird-frequency data — PER-STATE lazy chunks (~25KB each), never in
+// the main bundle. Opening a park fetches only its own state's data; the old
+// all-states monolith (12MB) is split by scripts/splitBirdFreq.mjs.
+import { loadStateBirdFreq } from './data/birdFreq/loader.js';
 
 // States we have curated park data for. Add a new state's entry here +
 // extend STATE_PARKS_BY_STATE — the selector + map handle it automatically.
@@ -335,7 +334,7 @@ import {
 } from './services/apiService';
 import { useLiveData } from './hooks/useLiveData';
 import { useNpsParks } from './hooks/useNpsParks';
-import { WILDLIFE_CACHE, WILDLIFE_CACHE_BUILT_AT } from './data/wildlifeCacheLoader.js';
+import { WILDLIFE_CACHE, WILDLIFE_CACHE_BUILT_AT, loadSecondaryCache } from './data/wildlifeCacheLoader.js';
 import { useSecondaryCache } from './hooks/useSecondaryCache.js';
 import { fetchAnimalPhoto } from './services/photoService';
 import { BUNDLED_PHOTOS } from './data/photoCache.js';
@@ -1494,7 +1493,7 @@ function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
         // (keeps the species set park-specific); birds absent from the cache
         // keep their existing rarity (graceful — e.g. Salem-county parks).
         // Factored into finalize() so we can emit birds first, then the full set.
-        const birdFreqMod = await loadBirdFreq();
+        const birdFreqMod = await loadStateBirdFreq(park.id.slice(0, 2));
         if (!alive) return;
         const countyFreq = birdFreqMod
           ? (birdFreqMod.COUNTY_BIRD_FREQ[birdFreqMod.PARK_COUNTY[park.id]] ?? null)
@@ -5606,6 +5605,10 @@ function AppInner() {
 
   const handlePopupOpen = useCallback((loc) => {
     track('park_click', { park: loc.name, state: loc.stateCodes?.[0] ?? 'unknown' });
+    // On-demand cache trigger: Data-Saver users skip the idle warm-up
+    // (useSecondaryCache), so make sure the tier caches load the moment any
+    // park is actually opened. Idempotent — a no-op once loaded.
+    loadSecondaryCache();
     setOpenPopup({ loc });
     // Shareable deep link: reflect the open park as the clean prerendered
     // path /park/<id> (replaceState — no history/back entanglement). Shared

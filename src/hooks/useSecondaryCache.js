@@ -20,6 +20,16 @@ export function useSecondaryCache() {
     if (isSecondaryLoaded()) { setReady(true); return; }
     const unsub = onSecondaryLoaded(() => setReady(true));
 
+    // Respect Data Saver / very slow connections: skip the automatic ~660KB
+    // (gzip) warm-up entirely. The caches still load on demand the moment a
+    // park that needs them is opened (loadSecondaryCache is also called from
+    // the open path), so nothing breaks — it just stops charging metered
+    // users for parks they never open.
+    const conn = typeof navigator !== 'undefined' ? navigator.connection : undefined;
+    if (conn && (conn.saveData || /(^|\b)(slow-2g|2g)$/.test(conn.effectiveType ?? ''))) {
+      return () => unsub();
+    }
+
     // Defer the heavy import until the browser is idle. This keeps first
     // interaction responsive — the primary cache (5 parks) is already loaded
     // eagerly, so nothing the user can immediately see is delayed.

@@ -4,12 +4,14 @@
 // recorded in every park's county (eBird checklist sampling, the same signal
 // that drives state-park rarity). Inverting it answers "which of the 4,000+
 // state parks have species X?" with NO new data file: the heavy ~12MB chunk is
-// dynamically imported on first use (it's already lazy for the panels), and the
-// inverted index is memoized for the session.
+// dynamically imported on first use (per-state chunks via the shared loader —
+// search needs all states by design, and each chunk lands in the module cache
+// so later panel opens are free), and the inverted index is memoized.
+import { loadAllBirdFreq } from '../data/birdFreq/loader.js';
 let _indexPromise = null;
 
 async function buildIndex() {
-  const m = await import('../data/stateParkBirdFreq');
+  const m = await loadAllBirdFreq();
   const byCounty = new Map();                       // county → [parkId]
   for (const [pid, county] of Object.entries(m.PARK_COUNTY)) {
     let arr = byCounty.get(county);
