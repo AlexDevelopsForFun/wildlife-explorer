@@ -1,0 +1,76 @@
+name: Monthly State-Park Bird Refresh
+
+# Re-samples the county bird-frequency dataset (eBird historical checklists)
+# that powers state-park rarity, then regenerates the per-state lazy chunks.
+#
+# The county cache (scripts/_nj_county_cache/) has NO TTL — the build treats
+# cached counties as final — so a genuine refresh must clear it first. A full
+# re-sample of ~1,400 counties runs ~3-5h, inside the 6h job budget. Previously
+# this only ever ran manually on a laptop (with a sleep-suppressor wrapper);
+# this workflow removes that bottleneck.
+#
+# Manual trigger: Actions tab → "Run workflow".
+
+on:
+  schedule:
+    - cron: "0 4 1 * *"   # 04:00 UTC on the 1st of each month
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Clear county cache (no TTL — clearing IS the refresh)
+        run: rm -rf scripts/_nj_county_cache && mkdir -p scripts/_nj_county_cache
+
+      - name: Rebuild county bird frequencies
+        env:
+          VITE_EBIRD_API_KEY: ${{ secrets.EBIRD_KEY }}
+          EBIRD_KEY:          ${{ secrets.EBIRD_KEY }}
+        run: node --max-old-space-size=6144 scripts/buildStateParkBirdFreq.js
+
+      - name: Split into per-state chunks
+        run: node scripts/splitBirdFreq.mjs
+
+      - name: Sanity check (refuse to ship a broken/empty dataset)
+        run: |
+          node --input-type=module -e "
+            import('./src/data/stateParkBirdFreq.js').then(m => {
+              const counties = Object.keys(m.COUNTY_BIRD_FREQ).length;
+              const parks = Object.keys(m.PARK_COUNTY).length;
+              console.log(\`parks=\${parks} counties=\${counties}\`);
+              if (parks < 3500 || counties < 1100) { console.error('Dataset suspiciously small — aborting'); process.exit(1); }
+            });
+          "
+          test "$(ls src/data/birdFreq/freq_*.js | wc -l)" = "50" || { echo "Expected 50 state chunks"; exit 1; }
+
+      - name: Build (must pass before pushing)
+        env:
+          VITE_EBIRD_API_KEY: ${{ secrets.EBIRD_KEY }}
+          VITE_NPS_API_KEY:   ${{ secrets.NPS_KEY }}
+        run: npm run build
+
+      - name: Commit & push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/data/stateParkBirdFreq.js src/data/birdFreq/ scripts/_nj_county_cache/
+          if git diff --cached --quiet; then
+            echo "No changes — skipping commit."
+          else
+            git commit -m "chore(data): monthly state-park bird-frequency refresh"
+            git push
+          fi

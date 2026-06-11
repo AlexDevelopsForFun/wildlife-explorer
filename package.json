@@ -12,7 +12,7 @@
     "test:descriptions": "node scripts/testDescriptions.js"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.82.0",
+    "@anthropic-ai/sdk": "^0.104.1",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
     "geotiff": "^3.0.5",
