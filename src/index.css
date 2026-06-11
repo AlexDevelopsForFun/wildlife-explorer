@@ -859,6 +859,22 @@ body, #root {
   background: rgba(255, 255, 255, 0.08);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
+/* Hero + attribution overlay. Wikimedia images (CC-BY/CC-BY-SA) carry a small
+   credit link to the file page (author + license); NPS photos are public
+   domain and render without one. The wrap owns the bottom margin so the badge
+   sits ON the photo. */
+.lp__hero-wrap { position: relative; margin-bottom: 12px; }
+.lp__hero-wrap .lp__hero { margin-bottom: 0; }
+.lp__hero-credit {
+  position: absolute; right: 6px; bottom: 6px;
+  font-size: 9.5px; line-height: 1; padding: 3px 8px; border-radius: 999px;
+  background: rgba(0,0,0,0.55); color: rgba(255,255,255,0.92);
+  text-decoration: none; backdrop-filter: blur(2px);
+}
+.lp__hero-credit:hover { background: rgba(0,0,0,0.75); color: #fff; }
+@media (max-width: 768px) {
+  .lp__hero-wrap { margin-bottom: 8px; }
+}
 
 .lp__name {
   font-size: 15px;
