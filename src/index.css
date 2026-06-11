@@ -4294,6 +4294,29 @@ textarea:focus-visible,
 }
 @media (max-width: 680px) { .statepark-grid { grid-template-columns: 1fr; } }
 .statepark-modal__head { padding: 30px 24px 16px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+
+/* ── Phones: the panel head was eating ~70% of the viewport (599px of 838 —
+   hero 128 + switcher 55 + highlight 93 + banner 56 + spectrum 68 + tabs 61),
+   burying the animals. Compact everything so species cards are visible on
+   open: short hero, clamped highlight, no boilerplate banner, label-less
+   switcher, tight paddings. The sort/season/search controls stay collapsed
+   behind the ⚙️ Filter & Search toggle (now present in BOTH panels). ── */
+@media (max-width: 768px) {
+  .lp__hero { height: 84px; margin-bottom: 8px; }
+  .statepark-modal__head { padding: 16px 14px 8px; }
+  .statepark-modal__title { font-size: 19px; }
+  .statepark-modal__switch { margin: 4px 0 6px; }
+  .statepark-modal__switch-label { display: none; }      /* the select explains itself */
+  .statepark-modal__switch-select { max-width: 100%; }
+  .statepark-modal__banner { display: none; }            /* boilerplate data note */
+  .statepark-modal__highlight { padding: 7px 10px; }
+  .statepark-modal__highlight-text {
+    font-size: 12px; line-height: 1.4;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden;                                    /* clamp to 2 lines */
+  }
+  .rarity-spectrum__legend { display: none; }            /* the bar stays tappable */
+}
 .statepark-modal__title { font-size: 24px; font-weight: 800; color: #fff; margin: 0 0 4px; }
 .statepark-modal__sub   { font-size: 12px; color: #9bbcab; margin: 0 0 12px; text-transform: capitalize; }
 .statepark-modal__banner {
