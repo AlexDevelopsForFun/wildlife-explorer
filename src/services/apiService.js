@@ -1808,12 +1808,29 @@ const _JUNK_IMG = /\b(map|locator|logo|seal|crest|coat of arms|flag|plaque|marke
 const _normImg = (s) => decodeURIComponent(s ?? '').replace(/[_-]+/g, ' ');
 const _isPhotoFile = (url) => { const n = _normImg(url); return /\.jpe?g(\?|$)/i.test(n) && !_JUNK_IMG.test(n); };
 
+// Wikimedia images require attribution (CC-BY/CC-BY-SA). We link each hero to
+// its file-description page, which carries the author + license — the standard
+// "reasonable to the medium" credit for a thumbnail. Derives the File: page
+// URL from an upload.wikimedia.org image URL.
+function _wikiFilePage(imgUrl) {
+  try {
+    const parts = new URL(imgUrl).pathname.split('/');
+    // thumb URLs: …/thumb/6/6c/<File>/960px-<File>; originals end at <File>.
+    const i = parts.indexOf('thumb');
+    const file = i >= 0 ? parts[i + 3] : parts[parts.length - 1];
+    if (!file) return null;
+    const host = imgUrl.includes('/wikipedia/en/') ? 'en.wikipedia.org' : 'commons.wikimedia.org';
+    return `https://${host}/wiki/File:${file}`;
+  } catch { return null; }
+}
+
+// Returns { src, credit } (credit = the image's file-description page) or null.
 export async function fetchWikiParkImage(name, lat = null, lng = null) {
   if (!name) return null;
-  const cacheKey = `wiki_img_v2_${name.toLowerCase().replace(/[^a-z0-9]+/g, '_')}`;
+  const cacheKey = `wiki_img_v3_${name.toLowerCase().replace(/[^a-z0-9]+/g, '_')}`;
   const cached = cacheGet(cacheKey);
   if (cached) return cached === '__none__' ? null : cached;
-  let src = null;
+  let src = null, credit = null;
   // 1) Wikipedia lead image, junk-filtered.
   try {
     const title = encodeURIComponent(name.replace(/ /g, '_'));
@@ -1827,6 +1844,7 @@ export async function fetchWikiParkImage(name, lat = null, lng = null) {
         src = /\/\d+px-/.test(j.thumbnail.source)
           ? j.thumbnail.source.replace(/\/\d+px-/, `/${w}px-`)
           : j.thumbnail.source;
+        credit = _wikiFilePage(j.thumbnail.source);
       }
     }
   } catch { /* fall through to Commons */ }
@@ -1848,12 +1866,17 @@ export async function fetchWikiParkImage(name, lat = null, lng = null) {
         const words = name.toLowerCase().replace(/\b(state|national|park|forest|beach|preserve|recreation|area|wildlife|management|reserve)\b/g, ' ')
           .split(/\W+/).filter(w => w.length >= 4);
         const related = cand.find(p => { const t = p.title.toLowerCase(); return words.some(w => t.includes(w)); });
-        src = (related ?? cand[0])?.info.thumburl ?? null;
+        const pick = related ?? cand[0];
+        if (pick) {
+          src = pick.info.thumburl;
+          credit = `https://commons.wikimedia.org/wiki/${encodeURIComponent(pick.title.replace(/ /g, '_')).replace(/%3A/gi, ':')}`;
+        }
       }
     } catch { /* no hero */ }
   }
-  cacheSet(cacheKey, src ?? '__none__');
-  return src;
+  const result = src ? { src, credit } : null;
+  cacheSet(cacheKey, result ?? '__none__');
+  return result;
 }
 
 // ── eBird notable (rare-bird alerts) ─────────────────────────────────────────

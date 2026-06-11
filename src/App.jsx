@@ -1361,13 +1361,14 @@ const STATE_GROUP_TO_TYPE = {
 function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
   const [state, setState] = useState({ status: 'loading', species: [], total: 0, sources: [], stats: null });
   // Hero photo — state parks have no NPS image source, so use the park's
-  // Wikipedia lead image (cached; null when no article/image — header
-  // simply renders without a hero, as before).
+  // Wikipedia/Commons image ({ src, credit }; cached; null when none — the
+  // header simply renders without a hero). The credit link satisfies the
+  // CC-BY/CC-BY-SA attribution requirement for Wikimedia images.
   const [wikiHero, setWikiHero] = useState(null);
   useEffect(() => {
     let alive = true;
     setWikiHero(null);
-    fetchWikiParkImage(park.name, park.lat, park.lng).then(src => { if (alive) setWikiHero(src); });
+    fetchWikiParkImage(park.name, park.lat, park.lng).then(img => { if (alive) setWikiHero(img); });
     return () => { alive = false; };
   }, [park.id]);
   const [seenVersion, setSeenVersion] = useState(0);
@@ -1817,14 +1818,20 @@ function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
       <div className="statepark-modal" role="dialog" aria-modal="true" aria-label={`Wildlife at ${park.name}`}>
         <button className="about-modal__close" onClick={onClose} aria-label="Close">X</button>
         <div className="statepark-modal__head">
-          {wikiHero && (
-            <img
-              className="lp__hero"
-              src={wikiHero}
-              alt={`${park.name} scenery`}
-              loading="lazy"
-              onError={() => setWikiHero(null)}
-            />
+          {wikiHero?.src && (
+            <div className="lp__hero-wrap">
+              <img
+                className="lp__hero"
+                src={wikiHero.src}
+                alt={`${park.name} scenery`}
+                loading="lazy"
+                onError={() => setWikiHero(null)}
+              />
+              {wikiHero.credit && (
+                <a className="lp__hero-credit" href={wikiHero.credit} target="_blank" rel="noopener noreferrer"
+                   title="Photo source & license (Wikimedia)">📷 Wikimedia</a>
+              )}
+            </div>
           )}
           <h2 className="statepark-modal__title">{park.name}</h2>
           {/* Meta row — state + park-type badge, mirroring national parks.
@@ -4236,16 +4243,18 @@ function LocationPopup({ location, heroImage, heroAlt, effectiveAnimals, season,
 
   // Hero fallback for units with no NPS photo (refuges, a few NPS units):
   // the same junk-filtered Wikipedia/Commons lookup the state parks use.
+  // NPS photos are public domain (no credit line); Wikimedia ones get the
+  // attribution link required by their CC licenses.
   const [wikiHero, setWikiHero] = useState(null);
   useEffect(() => {
     if (heroImage) { setWikiHero(null); return; }
     let alive = true;
     setWikiHero(null);
     fetchWikiParkImage(location.name, location.lat, location.lng)
-      .then(src => { if (alive) setWikiHero(src); });
+      .then(img => { if (alive) setWikiHero(img); });
     return () => { alive = false; };
   }, [location.id, heroImage]);
-  const effectiveHero = heroImage || wikiHero;
+  const effectiveHero = heroImage ? { src: heroImage, credit: null } : wikiHero;
 
   const currentMonth = new Date().getMonth() + 1; // 1-12
   const monthName    = MONTH_NAMES[currentMonth - 1];
@@ -4764,9 +4773,15 @@ function LocationPopup({ location, heroImage, heroAlt, effectiveAnimals, season,
   return (
     <div className="lp">
       <div className="lp__head">
-        {effectiveHero && (
-          <img className="lp__hero" src={effectiveHero} alt={heroAlt || ''} loading="lazy"
-               onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+        {effectiveHero?.src && (
+          <div className="lp__hero-wrap">
+            <img className="lp__hero" src={effectiveHero.src} alt={heroAlt || `${location.name} scenery`} loading="lazy"
+                 onError={(e) => { e.currentTarget.parentElement.style.display = 'none'; }} />
+            {effectiveHero.credit && (
+              <a className="lp__hero-credit" href={effectiveHero.credit} target="_blank" rel="noopener noreferrer"
+                 title="Photo source & license (Wikimedia)">📷 Wikimedia</a>
+            )}
+          </div>
         )}
         <div className="lp__name">{location.name}</div>
         <div className="lp__meta">
@@ -5759,6 +5774,21 @@ function AppInner() {
       const u = new URL(window.location.href);
       const spMatch  = u.pathname.match(/^\/state-park\/([a-z]{2})\/([^/]+)\/?$/i);
       const stMatch  = u.pathname.match(/^\/state\/([a-z]{2})\/?$/i);
+      // Species landing pages (/species/<slug>[/<state>]) — prerendered for
+      // SEO; on mount, apply the species filter so the page is the live app
+      // already searching that bird. Slug → proper name via the species list
+      // (slug-equality), falling back to a title-cased de-slug.
+      const sppMatch = u.pathname.match(/^\/species\/([a-z0-9-]+)(?:\/([a-z]{2}))?\/?$/i);
+      if (sppMatch && sppMatch[1]) {
+        deepLinkDone.current = true;
+        const slug = sppMatch[1].toLowerCase();
+        const slugOf = (n) => n.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+        const known = allSpeciesList.find(s => slugOf(s.name) === slug);
+        const name = known?.name ?? slug.replace(/-/g, ' ').replace(/(^|[\s])\w/g, c => c.toUpperCase());
+        setSpeciesFilter(name);
+        setSpeciesQuery(name);
+        return;
+      }
       if (spMatch) {
         deepLinkDone.current = true;
         const sp = findStatePark(spMatch[1], decodeURIComponent(spMatch[2]));
