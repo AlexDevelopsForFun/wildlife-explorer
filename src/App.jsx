@@ -1384,6 +1384,9 @@ function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
   const [query, setQuery]           = useState('');
   const [seenFilter, setSeenFilter] = useState('all');      // all | unseen | seen
   const [rarityFilter, setRarityFilter] = useState('all');  // spectrum bar / rarity dropdown
+  // Phones collapse .lp__controls via CSS (≤768px) — without this toggle the
+  // sort/season/search controls were simply unreachable on mobile.
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   // Per-point search radius (km): the park's own radiusKm, floored at 3 km so
   // even tiny/urban parks (Liberty, Barnegat Lighthouse) don't inherit a whole
   // city's species, capped at 20 km. For multi-point parks (large forests,
@@ -1998,8 +2001,30 @@ function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
                 </div>
               )}
 
+              {/* Mobile-only filter toggle — same pattern as the national popup.
+                  CSS hides .lp__controls on phones; this is the way back in. */}
+              {(() => {
+                const activeCount = [
+                  sortBy !== 'iconic-first',
+                  rarityFilter !== 'all',
+                  season !== currentSeasonKey,
+                  !!query.trim(),
+                ].filter(Boolean).length;
+                return (
+                  <button
+                    className={`lp__mobile-filter-toggle${mobileFiltersOpen ? ' lp__mobile-filter-toggle--open' : ''}`}
+                    onClick={() => setMobileFiltersOpen(v => !v)}
+                    aria-expanded={mobileFiltersOpen}
+                  >
+                    {mobileFiltersOpen
+                      ? '✕ Close Filters'
+                      : `⚙️ Filter & Search${activeCount > 0 ? ` (${activeCount})` : ''}`}
+                  </button>
+                );
+              })()}
+
               {/* Controls — sort + season + rarity + search, identical to national parks. */}
-              <div className="lp__controls">
+              <div className={`lp__controls${mobileFiltersOpen ? ' lp__controls--mobile-open' : ''}`}>
                 <div className="lp__controls-row">
                   <select className="lp__select" value={sortBy} onChange={e => { setSortBy(e.target.value); setDisplayLimit(24); }}
                     aria-label="Sort order">
