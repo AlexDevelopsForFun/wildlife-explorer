@@ -1415,7 +1415,7 @@ function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
   useEffect(() => {
     let alive = true;
     setWikiHero(null);
-    fetchWikiParkImage(park.name, park.lat, park.lng).then(img => { if (alive) setWikiHero(img); });
+    fetchWikiParkImage(park.name, park.lat, park.lng, park.id).then(img => { if (alive) setWikiHero(img); });
     return () => { alive = false; };
   }, [park.id]);
   const [seenVersion, setSeenVersion] = useState(0);
@@ -4284,7 +4284,7 @@ function LocationPopup({ location, heroImage, heroAlt, effectiveAnimals, season,
     if (heroImage) { setWikiHero(null); return; }
     let alive = true;
     setWikiHero(null);
-    fetchWikiParkImage(location.name, location.lat, location.lng)
+    fetchWikiParkImage(location.name, location.lat, location.lng, location.id)
       .then(img => { if (alive) setWikiHero(img); });
     return () => { alive = false; };
   }, [location.id, heroImage]);
