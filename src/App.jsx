@@ -16,6 +16,49 @@ import { STATE_PARKS_NJ, STATE_PARKS_BY_STATE, findStatePark, INAT_PLACE_IDS, ST
 // all-states monolith (12MB) is split by scripts/splitBirdFreq.mjs.
 import { loadStateBirdFreq } from './data/birdFreq/loader.js';
 
+// Park hero photos are opt-in: collapsed behind a pill by default (the species
+// are the point; the photo is a peek), and the visitor's last choice is
+// remembered — open it once and parks keep showing photos, close it and they
+// stay closed. Shared by the national popup and the state-park panel.
+const HERO_PREF_KEY = 'wm_show_park_photo';
+function useHeroPreference() {
+  const [showHero, setShowHero] = useState(() => {
+    try { return localStorage.getItem(HERO_PREF_KEY) === '1'; } catch { return false; }
+  });
+  const toggleHero = useCallback(() => {
+    setShowHero(v => {
+      const next = !v;
+      try { localStorage.setItem(HERO_PREF_KEY, next ? '1' : '0'); } catch { /* private mode */ }
+      return next;
+    });
+  }, []);
+  return [showHero, toggleHero];
+}
+
+// Hero block: collapsed pill ⇄ uncropped photo (+ Wikimedia credit when the
+// image isn't public-domain NPS) with a close control.
+function ParkHero({ hero, parkName, showHero, onToggle }) {
+  if (!hero?.src) return null;
+  if (!showHero) {
+    return (
+      <button type="button" className="lp__hero-toggle" onClick={onToggle}>
+        📷 See what this park looks like
+      </button>
+    );
+  }
+  return (
+    <div className="lp__hero-wrap">
+      <img className="lp__hero lp__hero--natural" src={hero.src} alt={`${parkName} scenery`} loading="lazy"
+           onError={(e) => { e.currentTarget.parentElement.style.display = 'none'; }} />
+      {hero.credit && (
+        <a className="lp__hero-credit" href={hero.credit} target="_blank" rel="noopener noreferrer"
+           title="Photo source & license (Wikimedia)">📷 Wikimedia</a>
+      )}
+      <button type="button" className="lp__hero-close" onClick={onToggle} aria-label="Hide park photo" title="Hide photo">✕</button>
+    </div>
+  );
+}
+
 // States we have curated park data for. Add a new state's entry here +
 // extend STATE_PARKS_BY_STATE — the selector + map handle it automatically.
 // `view` (center + zoom) gives a tight, hand-tuned framing per state;
@@ -1365,6 +1408,7 @@ function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
   // header simply renders without a hero). The credit link satisfies the
   // CC-BY/CC-BY-SA attribution requirement for Wikimedia images.
   const [wikiHero, setWikiHero] = useState(null);
+  const [showHero, toggleHero] = useHeroPreference();
   useEffect(() => {
     let alive = true;
     setWikiHero(null);
@@ -1818,21 +1862,7 @@ function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
       <div className="statepark-modal" role="dialog" aria-modal="true" aria-label={`Wildlife at ${park.name}`}>
         <button className="about-modal__close" onClick={onClose} aria-label="Close">X</button>
         <div className="statepark-modal__head">
-          {wikiHero?.src && (
-            <div className="lp__hero-wrap">
-              <img
-                className="lp__hero"
-                src={wikiHero.src}
-                alt={`${park.name} scenery`}
-                loading="lazy"
-                onError={() => setWikiHero(null)}
-              />
-              {wikiHero.credit && (
-                <a className="lp__hero-credit" href={wikiHero.credit} target="_blank" rel="noopener noreferrer"
-                   title="Photo source & license (Wikimedia)">📷 Wikimedia</a>
-              )}
-            </div>
-          )}
+          <ParkHero hero={wikiHero} parkName={park.name} showHero={showHero} onToggle={toggleHero} />
           <h2 className="statepark-modal__title">{park.name}</h2>
           {/* Meta row — state + park-type badge, mirroring national parks.
               State name is derived from the park id prefix (nj-/de-/…) so it's
@@ -4246,6 +4276,7 @@ function LocationPopup({ location, heroImage, heroAlt, effectiveAnimals, season,
   // NPS photos are public domain (no credit line); Wikimedia ones get the
   // attribution link required by their CC licenses.
   const [wikiHero, setWikiHero] = useState(null);
+  const [showHero, toggleHero] = useHeroPreference();
   useEffect(() => {
     if (heroImage) { setWikiHero(null); return; }
     let alive = true;
@@ -4773,16 +4804,7 @@ function LocationPopup({ location, heroImage, heroAlt, effectiveAnimals, season,
   return (
     <div className="lp">
       <div className="lp__head">
-        {effectiveHero?.src && (
-          <div className="lp__hero-wrap">
-            <img className="lp__hero" src={effectiveHero.src} alt={heroAlt || `${location.name} scenery`} loading="lazy"
-                 onError={(e) => { e.currentTarget.parentElement.style.display = 'none'; }} />
-            {effectiveHero.credit && (
-              <a className="lp__hero-credit" href={effectiveHero.credit} target="_blank" rel="noopener noreferrer"
-                 title="Photo source & license (Wikimedia)">📷 Wikimedia</a>
-            )}
-          </div>
-        )}
+        <ParkHero hero={effectiveHero} parkName={location.name} showHero={showHero} onToggle={toggleHero} />
         <div className="lp__name">{location.name}</div>
         <div className="lp__meta">
           <span className="lp__state">{location.state}</span>
