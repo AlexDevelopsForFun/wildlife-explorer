@@ -39,8 +39,11 @@ function useHeroPreference() {
 }
 
 // Hero block: collapsed pill ⇄ uncropped photo (+ Wikimedia credit when the
-// image isn't public-domain NPS) with a close control.
-function ParkHero({ hero, parkName, showHero, onToggle }) {
+// image isn't public-domain NPS) with a close control. Wiki-sourced photos
+// also get a "🚩 Wrong photo" flag — reports land in the runtime error log
+// (filter "photo-flag") for periodic review → PHOTO_BLOCKLIST. Free
+// crowd-sourced audit of 4,000+ park photos.
+function ParkHero({ hero, parkId, parkName, showHero, onToggle, onFlag }) {
   if (!hero?.src) return null;
   if (!showHero) {
     return (
@@ -49,13 +52,26 @@ function ParkHero({ hero, parkName, showHero, onToggle }) {
       </button>
     );
   }
+  const flag = () => {
+    try {
+      const body = JSON.stringify({ msg: 'photo-flag', src: `${parkId} ${hero.src.split('/').pop()}`.slice(0, 200), line: 0 });
+      if (!(navigator.sendBeacon && navigator.sendBeacon('/api/log-error', body))) {
+        fetch('/api/log-error', { method: 'POST', body, keepalive: true }).catch(() => {});
+      }
+    } catch { /* best effort */ }
+    onFlag?.();
+  };
   return (
     <div className="lp__hero-wrap">
       <img className="lp__hero lp__hero--natural" src={hero.src} alt={`${parkName} scenery`} loading="lazy"
            onError={(e) => { e.currentTarget.parentElement.style.display = 'none'; }} />
       {hero.credit && (
-        <a className="lp__hero-credit" href={hero.credit} target="_blank" rel="noopener noreferrer"
-           title="Photo source & license (Wikimedia)">📷 Wikimedia</a>
+        <>
+          <a className="lp__hero-credit" href={hero.credit} target="_blank" rel="noopener noreferrer"
+             title="Photo source & license (Wikimedia)">📷 Wikimedia</a>
+          <button type="button" className="lp__hero-flag" onClick={flag}
+                  title="Report: this photo doesn't represent the park">🚩 Wrong photo</button>
+        </>
       )}
       <button type="button" className="lp__hero-close" onClick={onToggle} aria-label="Hide park photo" title="Hide photo">✕</button>
     </div>
@@ -1865,7 +1881,8 @@ function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
       <div className="statepark-modal" role="dialog" aria-modal="true" aria-label={`Wildlife at ${park.name}`}>
         <button className="about-modal__close" onClick={onClose} aria-label="Close">X</button>
         <div className="statepark-modal__head">
-          <ParkHero hero={wikiHero} parkName={park.name} showHero={showHero} onToggle={toggleHero} />
+          <ParkHero hero={wikiHero} parkId={park.id} parkName={park.name} showHero={showHero} onToggle={toggleHero}
+                    onFlag={() => setWikiHero(null)} />
           <h2 className="statepark-modal__title">{park.name}</h2>
           {/* Meta row — state + park-type badge, mirroring national parks.
               State name is derived from the park id prefix (nj-/de-/…) so it's
@@ -4807,7 +4824,8 @@ function LocationPopup({ location, heroImage, heroAlt, effectiveAnimals, season,
   return (
     <div className="lp">
       <div className="lp__head">
-        <ParkHero hero={effectiveHero} parkName={location.name} showHero={showHero} onToggle={toggleHero} />
+        <ParkHero hero={effectiveHero} parkId={location.id} parkName={location.name} showHero={showHero} onToggle={toggleHero}
+                  onFlag={() => setWikiHero(null)} />
         <div className="lp__name">{location.name}</div>
         <div className="lp__meta">
           <span className="lp__state">{location.state}</span>

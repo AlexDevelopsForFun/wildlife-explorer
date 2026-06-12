@@ -1824,6 +1824,18 @@ function _wikiFilePage(imgUrl) {
   } catch { return null; }
 }
 
+// Visitor-flagged photos ("🚩 Wrong photo" reports land in the Vercel runtime
+// logs as photo-flag entries; reviewed periodically and blocklisted here by
+// image filename substring). Free crowd-sourced audit — no vision API spend.
+const PHOTO_BLOCKLIST = [
+  // e.g. 'FLT_M24_3.2_mi_-_Register_in_Bowman' (register photos now also
+  // caught by the junk regex; list reserved for one-off visitor reports)
+];
+const _isBlockedPhoto = (src) => {
+  try { const f = decodeURIComponent(String(src ?? '')); return PHOTO_BLOCKLIST.some(b => f.includes(b)); }
+  catch { return false; }
+};
+
 // Vision-audited photo map (scripts/auditParkPhotos.mjs): id → [src, credit]
 // or 0 = audited with NO representative photo found. Curated entries beat the
 // runtime lookup; curated-none means show nothing (the runtime lookup would
@@ -1842,7 +1854,10 @@ export async function fetchWikiParkImage(name, lat = null, lng = null, parkId = 
   }
   const cacheKey = `wiki_img_v6_${name.toLowerCase().replace(/[^a-z0-9]+/g, '_')}`;
   const cached = cacheGet(cacheKey);
-  if (cached) return cached === '__none__' ? null : cached;
+  if (cached) {
+    if (cached === '__none__') return null;
+    return _isBlockedPhoto(cached.src) ? null : cached;   // honor new blocklist entries
+  }
   let src = null, credit = null;
   // 1) Wikipedia lead image, junk-filtered.
   try {
@@ -1877,10 +1892,14 @@ export async function fetchWikiParkImage(name, lat = null, lng = null, parkId = 
         // The photo must actually RELATE to the park (title shares a ≥4-char
         // word from the park's name) — a random geotagged image near the
         // coordinate is worse than no photo at all, so there is no fallback
-        // to unrelated candidates.
+        // to unrelated candidates. Among the related ones, PREFER titles that
+        // sound like scenery ("falls", "overlook", "vista"…) over neutral
+        // ones — a free quality ranking, no vision API needed.
         const words = name.toLowerCase().replace(/\b(state|national|park|forest|beach|preserve|recreation|area|wildlife|management|reserve)\b/g, ' ')
           .split(/\W+/).filter(w => w.length >= 4);
-        const pick = cand.find(p => { const t = p.title.toLowerCase(); return words.some(w => t.includes(w)); }) ?? null;
+        const related = cand.filter(p => { const t = p.title.toLowerCase(); return words.some(w => t.includes(w)); });
+        const SCENERY = /\b(view|vista|overlook|panorama|landscape|scenic|falls|waterfall|gorge|canyon|shore|shoreline|summit|meadow|sunset|sunrise|cliffs?|dunes?|marsh|wetland)\b/i;
+        const pick = related.find(p => SCENERY.test(_normImg(p.title))) ?? related[0] ?? null;
         if (pick) {
           src = pick.info.thumburl;
           credit = `https://commons.wikimedia.org/wiki/${encodeURIComponent(pick.title.replace(/ /g, '_')).replace(/%3A/gi, ':')}`;
@@ -1888,6 +1907,7 @@ export async function fetchWikiParkImage(name, lat = null, lng = null, parkId = 
       }
     } catch { /* no hero */ }
   }
+  if (src && _isBlockedPhoto(src)) { src = null; credit = null; }   // visitor-flagged
   const result = src ? { src, credit } : null;
   cacheSet(cacheKey, result ?? '__none__');
   return result;
