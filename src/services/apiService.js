@@ -1827,7 +1827,7 @@ function _wikiFilePage(imgUrl) {
 // Returns { src, credit } (credit = the image's file-description page) or null.
 export async function fetchWikiParkImage(name, lat = null, lng = null) {
   if (!name) return null;
-  const cacheKey = `wiki_img_v3_${name.toLowerCase().replace(/[^a-z0-9]+/g, '_')}`;
+  const cacheKey = `wiki_img_v4_${name.toLowerCase().replace(/[^a-z0-9]+/g, '_')}`;
   const cached = cacheGet(cacheKey);
   if (cached) return cached === '__none__' ? null : cached;
   let src = null, credit = null;
@@ -1861,12 +1861,13 @@ export async function fetchWikiParkImage(name, lat = null, lng = null) {
         const cand = pages
           .map(p => ({ title: p.title ?? '', info: p.imageinfo?.[0] }))
           .filter(p => p.info?.thumburl && _isPhotoFile(p.info.url) && !_JUNK_IMG.test(_normImg(p.title)));
-        // Prefer a photo whose title actually relates to the park (shares a
-        // ≥4-char word from the name) over a random geotagged image.
+        // The photo must actually RELATE to the park (title shares a ≥4-char
+        // word from the park's name) — a random geotagged image near the
+        // coordinate is worse than no photo at all, so there is no fallback
+        // to unrelated candidates.
         const words = name.toLowerCase().replace(/\b(state|national|park|forest|beach|preserve|recreation|area|wildlife|management|reserve)\b/g, ' ')
           .split(/\W+/).filter(w => w.length >= 4);
-        const related = cand.find(p => { const t = p.title.toLowerCase(); return words.some(w => t.includes(w)); });
-        const pick = related ?? cand[0];
+        const pick = cand.find(p => { const t = p.title.toLowerCase(); return words.some(w => t.includes(w)); }) ?? null;
         if (pick) {
           src = pick.info.thumburl;
           credit = `https://commons.wikimedia.org/wiki/${encodeURIComponent(pick.title.replace(/ /g, '_')).replace(/%3A/gi, ':')}`;

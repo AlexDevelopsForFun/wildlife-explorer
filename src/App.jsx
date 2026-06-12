@@ -15,11 +15,14 @@ import { STATE_PARKS_NJ, STATE_PARKS_BY_STATE, findStatePark, INAT_PLACE_IDS, ST
 // the main bundle. Opening a park fetches only its own state's data; the old
 // all-states monolith (12MB) is split by scripts/splitBirdFreq.mjs.
 import { loadStateBirdFreq } from './data/birdFreq/loader.js';
+import { safeSetItem } from './utils/safeStorage.js';
 
 // Park hero photos are opt-in: collapsed behind a pill by default (the species
 // are the point; the photo is a peek), and the visitor's last choice is
 // remembered — open it once and parks keep showing photos, close it and they
 // stay closed. Shared by the national popup and the state-park panel.
+// Persisted via safeSetItem: engaged sessions FILL the localStorage quota with
+// API caches, after which plain setItem throws QuotaExceededError silently.
 const HERO_PREF_KEY = 'wm_show_park_photo';
 function useHeroPreference() {
   const [showHero, setShowHero] = useState(() => {
@@ -28,7 +31,7 @@ function useHeroPreference() {
   const toggleHero = useCallback(() => {
     setShowHero(v => {
       const next = !v;
-      try { localStorage.setItem(HERO_PREF_KEY, next ? '1' : '0'); } catch { /* private mode */ }
+      safeSetItem(HERO_PREF_KEY, next ? '1' : '0');
       return next;
     });
   }, []);

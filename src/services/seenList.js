@@ -24,6 +24,8 @@
  * a park's animal list with the seen set.
  */
 
+import { safeSetItem } from '../utils/safeStorage.js';
+
 const STORAGE_KEY = 'wm_seen_v1';
 const MAX_SPECIES  = 10000; // a real life list never approaches this
 
@@ -39,12 +41,11 @@ function _safeRead() {
 }
 
 function _safeWrite(obj) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
-    return true;
-  } catch {
-    return false; // quota / private mode / disabled — silently no-op
-  }
+  // safeSetItem evicts API-cache entries on QuotaExceededError — an engaged
+  // session fills the ~10MB origin quota with caches, and a plain setItem
+  // would make "Mark seen" silently stop persisting. The life list ALWAYS
+  // outranks cached API responses.
+  return safeSetItem(STORAGE_KEY, JSON.stringify(obj));
 }
 
 /** Stable per-species identity. scientificName wins; else common name. */
