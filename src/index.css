@@ -865,6 +865,28 @@ body, #root {
    sits ON the photo. */
 .lp__hero-wrap { position: relative; margin-bottom: 12px; }
 .lp__hero-wrap .lp__hero { margin-bottom: 0; }
+/* Opt-in photo: collapsed pill by default; when opened the image shows at its
+   NATURAL aspect (no more cut-off crops), capped so panoramas don't take over. */
+.lp__hero-toggle {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin: 0 0 10px; padding: 6px 12px; border-radius: 999px; cursor: pointer;
+  font-size: 12px; font-weight: 600;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18);
+  color: rgba(255,255,255,0.85);
+  transition: background 0.15s, color 0.15s;
+}
+.lp__hero-toggle:hover { background: rgba(255,255,255,0.16); color: #fff; }
+.lp__hero--natural { height: auto !important; max-height: 340px; object-fit: cover; }
+.lp__hero-close {
+  position: absolute; top: 6px; right: 6px;
+  width: 24px; height: 24px; border-radius: 50%; border: 0; cursor: pointer;
+  font-size: 12px; line-height: 1; display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.55); color: rgba(255,255,255,0.92);
+}
+.lp__hero-close:hover { background: rgba(0,0,0,0.78); color: #fff; }
+@media (max-width: 768px) {
+  .lp__hero--natural { max-height: 260px; }
+}
 .lp__hero-credit {
   position: absolute; right: 6px; bottom: 6px;
   font-size: 9.5px; line-height: 1; padding: 3px 8px; border-radius: 999px;
