@@ -1804,7 +1804,7 @@ export function filterGeographicOutliers(animals, parkKey) {
 // isn't a ground-level photo of the place: locator maps, logos/seals/flags,
 // plaques/signs, diagrams, AND aerial/satellite/space imagery (Commons
 // geosearch happily returns ISS "View of Earth" shots geotagged at a coord).
-const _JUNK_IMG = /\b(map|locator|logo|seal|crest|coat of arms|flag|plaque|marker|sign|signage|diagram|chart|layout|floor plan|site plan|emblem|icon|banner|brochure|poster|nrhp|aerial|satellite|landsat|orthophoto|topographic|topo|view of earth|space station|from space)\b|\biss\d|\.svg(\?|$)/i;
+const _JUNK_IMG = /\b(map|locator|logo|seal|crest|coat of arms|flag|plaque|marker|sign|signage|diagram|chart|layout|floor plan|site plan|emblem|icon|banner|brochure|poster|nrhp|aerial|satellite|landsat|orthophoto|topographic|topo|view of earth|space station|from space|register|kiosk|puncheon|privy|outhouse|lean-to|restroom|toilet|parking)\b|\biss\d|\.svg(\?|$)/i;
 const _normImg = (s) => decodeURIComponent(s ?? '').replace(/[_-]+/g, ' ');
 const _isPhotoFile = (url) => { const n = _normImg(url); return /\.jpe?g(\?|$)/i.test(n) && !_JUNK_IMG.test(n); };
 
@@ -1824,10 +1824,23 @@ function _wikiFilePage(imgUrl) {
   } catch { return null; }
 }
 
+// Vision-audited photo map (scripts/auditParkPhotos.mjs): id → [src, credit]
+// or 0 = audited with NO representative photo found. Curated entries beat the
+// runtime lookup; curated-none means show nothing (the runtime lookup would
+// just re-find the bad photo the audit rejected). Lazy chunk, memoized.
+let _curatedPhotos = null;
+const _loadCurated = () =>
+  (_curatedPhotos ??= import('../data/parkPhotos.js').then(m => m.PARK_PHOTOS).catch(() => ({})));
+
 // Returns { src, credit } (credit = the image's file-description page) or null.
-export async function fetchWikiParkImage(name, lat = null, lng = null) {
+export async function fetchWikiParkImage(name, lat = null, lng = null, parkId = null) {
   if (!name) return null;
-  const cacheKey = `wiki_img_v4_${name.toLowerCase().replace(/[^a-z0-9]+/g, '_')}`;
+  if (parkId != null) {
+    const cur = (await _loadCurated())[parkId];
+    if (Array.isArray(cur)) return { src: cur[0], credit: cur[1] ?? null };
+    if (cur === 0) return null;          // audited: nothing representative exists
+  }
+  const cacheKey = `wiki_img_v6_${name.toLowerCase().replace(/[^a-z0-9]+/g, '_')}`;
   const cached = cacheGet(cacheKey);
   if (cached) return cached === '__none__' ? null : cached;
   let src = null, credit = null;
