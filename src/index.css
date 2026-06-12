@@ -884,6 +884,14 @@ body, #root {
   background: rgba(0,0,0,0.55); color: rgba(255,255,255,0.92);
 }
 .lp__hero-close:hover { background: rgba(0,0,0,0.78); color: #fff; }
+/* "Wrong photo" report — bottom-left, mirrors the credit pill. */
+.lp__hero-flag {
+  position: absolute; left: 6px; bottom: 6px;
+  font-size: 9.5px; line-height: 1; padding: 3px 8px; border-radius: 999px; border: 0;
+  background: rgba(0,0,0,0.55); color: rgba(255,255,255,0.85); cursor: pointer;
+  backdrop-filter: blur(2px);
+}
+.lp__hero-flag:hover { background: rgba(140,30,30,0.8); color: #fff; }
 @media (max-width: 768px) {
   .lp__hero--natural { max-height: 260px; }
 }
