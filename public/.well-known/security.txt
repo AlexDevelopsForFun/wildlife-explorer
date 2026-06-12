@@ -1,0 +1,5 @@
+# Security contact for wildlifeexplorer.us (RFC 9116)
+Contact: https://github.com/AlexDevelopsForFun/wildlife-explorer/issues
+Expires: 2027-06-12T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://wildlifeexplorer.us/.well-known/security.txt
