@@ -1,0 +1,22 @@
+<svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#0c3823"/>
+<stop offset="1" stop-color="#1e6b40"/>
+</linearGradient>
+<clipPath id="disc"><circle cx="200" cy="200" r="190"/></clipPath>
+</defs>
+<circle cx="200" cy="200" r="198" fill="#0a2e1c"/>
+<g clip-path="url(#disc)">
+<rect x="10" y="10" width="380" height="380" fill="url(#sky)"/>
+<circle cx="200" cy="168" r="62" fill="#e8c879" opacity="0.92"/>
+<circle cx="200" cy="168" r="62" fill="none" stroke="#f3d89a" stroke-width="2" opacity="0.5"/>
+<path d="M10 300 Q120 250 210 292 T390 286 L390 400 L10 400 Z" fill="#15512f"/>
+<path d="M10 332 Q140 300 250 336 T390 330 L390 400 L10 400 Z" fill="#0f3f25"/>
+<path d="M118 150 Q165 120 200 158 Q235 120 282 150 Q235 138 200 178 Q165 138 118 150 Z" fill="#f7eedd"/>
+<ellipse cx="200" cy="168" rx="8.5" ry="11" fill="#f7eedd"/>
+<path d="M300 235 q22 -15 40 -4 q-18 1 -27 12 q-7 -9 -13 -8 Z" fill="#f7eedd" opacity="0.85"/>
+</g>
+<circle cx="200" cy="200" r="190" fill="none" stroke="#e8c879" stroke-width="5" opacity="0.85"/>
+<circle cx="200" cy="200" r="181" fill="none" stroke="#0a2e1c" stroke-width="2" opacity="0.4"/>
+</svg>

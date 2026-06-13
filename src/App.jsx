@@ -527,15 +527,43 @@ const SOURCE_LABELS = {
   estimated:   'Park Records',
 };
 
-// Long institutional names used in the popup header attribution line
+// Long institutional names used in the popup header attribution line.
+// eBird's API Terms §3 require attributing "eBird.org as the source of the
+// data ... with a link back to eBird.org" — so the eBird label names eBird
+// explicitly and SOURCE_URL links it. (iNat/NPS/GBIF linked too — good
+// practice and their terms.)
 const SOURCE_LONG = {
-  ebird:       'Cornell Lab of Ornithology',
+  ebird:       'eBird (Cornell Lab of Ornithology)',
   inaturalist: 'iNaturalist',
   nps:         'National Park Service',
   gbif:        'GBIF',
   static:      'Park Records',
   estimated:   'Park Records',
 };
+
+const SOURCE_URL = {
+  ebird:       'https://ebird.org',
+  inaturalist: 'https://www.inaturalist.org',
+  nps:         'https://www.nps.gov',
+  gbif:        'https://www.gbif.org',
+};
+
+// Render the live-data attribution as linked source names joined by " · ".
+// Used by both the national popup and the state-park panel so the eBird.org
+// link (API Terms §3) is present wherever bird data is displayed.
+function renderSourceAttr(sources) {
+  const live = [...new Set((sources || []).filter(s => s !== 'static' && s !== 'estimated'))];
+  const list = live.length ? live : ['ebird', 'inaturalist'];
+  const nodes = [];
+  list.forEach((s, i) => {
+    if (i > 0) nodes.push(<span key={`sep-${i}`}> · </span>);
+    const name = SOURCE_LONG[s] ?? s;
+    nodes.push(SOURCE_URL[s]
+      ? <a key={s} className="lp__source-link" href={SOURCE_URL[s]} target="_blank" rel="noopener noreferrer">{name}</a>
+      : <span key={s}>{name}</span>);
+  });
+  return nodes;
+}
 
 // Source attribution — quiet tint + small glyph so provenance is legible but
 // doesn't compete with the rarity signal for attention.
@@ -1798,12 +1826,6 @@ function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
     return m;
   }, [seasonSpecies]);
 
-  // Live data attribution (e.g. "Cornell Lab of Ornithology · iNaturalist").
-  const sourceAttr = useMemo(() => {
-    const live = [...new Set((state.sources || []).filter(s => s !== 'static' && s !== 'estimated'))];
-    return live.length ? live.map(s => SOURCE_LONG[s] ?? s).join(' · ') : 'eBird · iNaturalist';
-  }, [state.sources]);
-
   // All animal-type keys actually present in this park's data — drives the
   // tab list and the "All" selection target.
   const presentTypeKeys = useMemo(
@@ -1924,7 +1946,7 @@ function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
           )}
           {/* Data attribution line — same format as national parks. */}
           {state.status === 'ok' && state.species.length > 0 && (
-            <div className="lp__source-attr"><span title="Live data">● Live · </span>{sourceAttr}</div>
+            <div className="lp__source-attr"><span title="Live data">● Live · </span>{renderSourceAttr(state.sources)}</div>
           )}
 
           {state.status === 'ok' && state.species.length > 0 && (
@@ -2195,6 +2217,120 @@ function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
             </>
           )}
         </div>
+      </div>
+    </>
+  );
+}
+
+// ── Contact / Feedback ──────────────────────────────────────────────────────
+// Lets visitors report bugs, suggest features, and — importantly for data
+// quality — confirm or correct what they actually saw at a park. Posts to
+// /api/feedback (relayed to email server-side; no third-party script on the
+// page). A mailto fallback is always shown so it works even if the POST fails.
+const FEEDBACK_CATEGORIES = [
+  { key: 'data', emoji: '📍', label: 'Correct park data', hint: 'A species is wrong/missing, or the rarity looks off' },
+  { key: 'bug', emoji: '🐛', label: 'Report a problem', hint: 'Something is broken or behaving oddly' },
+  { key: 'idea', emoji: '💡', label: 'Suggest an idea', hint: 'A feature or improvement you’d like' },
+  { key: 'other', emoji: '💬', label: 'Something else', hint: '' },
+];
+function ContactModal({ onClose, presetPark = '' }) {
+  const [category, setCategory] = useState('data');
+  const [park, setPark] = useState(presetPark);
+  const [message, setMessage] = useState('');
+  const [email, setEmail] = useState('');
+  const [company, setCompany] = useState('');           // honeypot
+  const [status, setStatus] = useState('idle');         // idle | sending | sent | error
+  useEffect(() => {
+    const h = e => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, [onClose]);
+
+  const submit = async (e) => {
+    e.preventDefault();
+    if (message.trim().length < 3 || status === 'sending') return;
+    setStatus('sending');
+    try {
+      const r = await fetch('/api/feedback', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ category, park, message, email, company }),
+      });
+      setStatus(r.ok ? 'sent' : 'error');
+      if (r.ok) track('feedback_sent', { category });
+    } catch { setStatus('error'); }
+  };
+
+  const cat = FEEDBACK_CATEGORIES.find(c => c.key === category);
+  const mailto = `mailto:contact@wildlifeexplorer.us?subject=${encodeURIComponent(`[Wildlife Explorer] ${cat?.label ?? 'Feedback'}`)}`
+    + `&body=${encodeURIComponent(`${park ? `Park: ${park}\n` : ''}\n${message}`)}`;
+
+  return (
+    <>
+      <div className="about-overlay" onClick={onClose} />
+      <div className="contact-modal" role="dialog" aria-modal="true" aria-label="Send feedback">
+        <button className="about-modal__close" onClick={onClose} aria-label="Close">X</button>
+        {status === 'sent' ? (
+          <div className="contact-modal__sent">
+            <div className="contact-modal__sent-icon" aria-hidden="true">✅</div>
+            <h2 className="contact-modal__title">Thank you!</h2>
+            <p>Your message was sent. Real reports like yours are how the park data gets more accurate — I read every one.</p>
+            <button className="contact-modal__submit" onClick={onClose}>Done</button>
+          </div>
+        ) : (
+          <form className="contact-modal__body" onSubmit={submit}>
+            <h2 className="contact-modal__title">💬 Feedback &amp; corrections</h2>
+            <p className="contact-modal__sub">
+              Spotted wrong data, hit a bug, or have an idea? Tell me — your reports keep
+              {' '}4,000+ parks accurate.
+            </p>
+
+            <div className="contact-modal__cats" role="radiogroup" aria-label="What's this about?">
+              {FEEDBACK_CATEGORIES.map(c => (
+                <button key={c.key} type="button" role="radio" aria-checked={category === c.key}
+                  className={`contact-modal__cat${category === c.key ? ' contact-modal__cat--on' : ''}`}
+                  onClick={() => setCategory(c.key)}>
+                  <span aria-hidden="true">{c.emoji}</span> {c.label}
+                </button>
+              ))}
+            </div>
+            {cat?.hint && <p className="contact-modal__hint">{cat.hint}</p>}
+
+            {(category === 'data' || category === 'bug') && (
+              <input className="contact-modal__input" type="text" value={park}
+                onChange={e => setPark(e.target.value)} maxLength={120}
+                placeholder="Which park? (optional)" aria-label="Which park" />
+            )}
+
+            <textarea className="contact-modal__textarea" value={message}
+              onChange={e => setMessage(e.target.value)} maxLength={4000} rows={5} required
+              placeholder={category === 'data'
+                ? 'e.g. “Bald Eagle is listed as Rare at this park but they nest here year-round.”'
+                : 'Your message…'} aria-label="Your message" />
+
+            <input className="contact-modal__input" type="email" value={email}
+              onChange={e => setEmail(e.target.value)} maxLength={160}
+              placeholder="Your email (optional — only if you'd like a reply)" aria-label="Your email" />
+
+            {/* Honeypot — hidden from real users */}
+            <input className="contact-modal__hp" tabIndex={-1} autoComplete="off" aria-hidden="true"
+              value={company} onChange={e => setCompany(e.target.value)} placeholder="Company" />
+
+            {status === 'error' && (
+              <p className="contact-modal__error">
+                Couldn’t send just now. You can <a href={mailto}>email me directly</a> instead.
+              </p>
+            )}
+
+            <div className="contact-modal__actions">
+              <button type="submit" className="contact-modal__submit"
+                disabled={message.trim().length < 3 || status === 'sending'}>
+                {status === 'sending' ? 'Sending…' : 'Send'}
+              </button>
+              <a className="contact-modal__mailto" href={mailto}>or email directly</a>
+            </div>
+            <p className="contact-modal__privacy">No account needed. Your message goes straight to the site owner; nothing is shared or sold.</p>
+          </form>
+        )}
       </div>
     </>
   );
@@ -4837,18 +4973,16 @@ function LocationPopup({ location, heroImage, heroAlt, effectiveAnimals, season,
         </div>
         {/* ── Data attribution line ─────────────────────────────────────── */}
         {isLive && (() => {
-          // Build unique institutional names from live sources (skip static/estimated)
           const liveSrcs = [...new Set(sources.filter(s => s !== 'static' && s !== 'estimated'))];
-          const attrs = liveSrcs.length
-            ? liveSrcs.map(s => SOURCE_LONG[s] ?? SOURCE_LABELS[s]).join(' · ')
-            : 'National Park Service · Park Records';
           return (
             <div className="lp__source-attr">
               {cacheTs && !isLoading
                 ? <span title="Data loaded from local cache">◉ {formatCacheAge(cacheTs)} · </span>
                 : <span title="Live data">● Live · </span>
               }
-              {attrs}
+              {liveSrcs.length
+                ? renderSourceAttr(sources)
+                : <><a className="lp__source-link" href="https://www.nps.gov" target="_blank" rel="noopener noreferrer">National Park Service</a> · Park Records</>}
             </div>
           );
         })()}
@@ -5574,6 +5708,7 @@ function AppInner() {
   // State Parks: state selector → state-zoomed map → click pin → park panel.
   const [showStateSelector, setShowStateSelector] = useState(false);
   const [showNearMe, setShowNearMe] = useState(false);
+  const [showContact, setShowContact] = useState(false);
   const [selectedStateForMap, setSelectedStateForMap] = useState(null); // state code, e.g. 'NJ'
   const [activeStatePark, setActiveStatePark] = useState(null);         // park entry
   const [aboutScrollTo, setAboutScrollTo] = useState(null);
@@ -6204,6 +6339,9 @@ function AppInner() {
               <button className="hdr__about-btn" onClick={() => openAbout()} title="About this project" aria-label="About">
                 <span className="hdr__about-icon">i</span> About
               </button>
+              <button className="hdr__about-btn" onClick={() => { track('contact_open'); setShowContact(true); }} title="Report an issue, suggest a feature, or correct park data" aria-label="Send feedback">
+                <span className="hdr__about-icon" aria-hidden="true">💬</span> Feedback
+              </button>
               <button
                 className="hdr__theme-btn"
                 onClick={() => { track('theme_toggle', { theme: darkMode ? 'light' : 'dark' }); setDarkMode(d => !d); }}
@@ -6492,6 +6630,7 @@ function AppInner() {
 
       {/* ── About modal ── */}
       {showAbout && <AboutModal onClose={closeAbout} scrollTo={aboutScrollTo} />}
+      {showContact && <ContactModal onClose={() => setShowContact(false)} />}
       {showLifeList && <LifeListModal onClose={() => setShowLifeList(false)} />}
       {showParkList && (
         <ParkListModal
