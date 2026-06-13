@@ -2227,12 +2227,6 @@ function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
 // quality — confirm or correct what they actually saw at a park. Posts to
 // /api/feedback (relayed to email server-side; no third-party script on the
 // page). A mailto fallback is always shown so it works even if the POST fails.
-// Web3Forms public access key (a form ID, NOT a secret — Web3Forms explicitly
-// says it's safe in client-side code). Submissions go straight from the
-// visitor's browser to Web3Forms, which emails them to contact@wildlifeexplorer.us.
-// Spam is mitigated by the honeypot (botcheck) + Web3Forms' own filtering.
-const WEB3FORMS_ACCESS_KEY = '6c5c24a7-500a-49fd-8bd0-98ab6944bb68';
-
 const FEEDBACK_CATEGORIES = [
   { key: 'data', emoji: '📍', label: 'Correct park data', hint: 'A species is wrong/missing, or the rarity looks off' },
   { key: 'bug', emoji: '🐛', label: 'Report a problem', hint: 'Something is broken or behaving oddly' },
@@ -2252,40 +2246,33 @@ function ContactModal({ onClose, presetPark = '' }) {
     return () => window.removeEventListener('keydown', h);
   }, [onClose]);
 
-  const submit = async (e) => {
+  const cat = FEEDBACK_CATEGORIES.find(c => c.key === category);
+  const mailto = `mailto:contact@wildlifeexplorer.us`
+    + `?subject=${encodeURIComponent(`[Wildlife Explorer] ${cat?.label ?? 'Feedback'}${park ? ` — ${park}` : ''}`)}`
+    + `&body=${encodeURIComponent(
+        `Category: ${cat?.label ?? category}\n`
+        + (park ? `Park: ${park}\n` : '')
+        + (email ? `Reply to: ${email}\n` : '')
+        + `\n${message}\n`)}`;
+
+  const submit = (e) => {
     e.preventDefault();
-    if (message.trim().length < 3 || status === 'sending') return;
-    setStatus('sending');
-    const cat = FEEDBACK_CATEGORIES.find(c => c.key === category);
+    if (message.trim().length < 3) return;
+    // Send via the visitor's own email app — pre-addressed to
+    // contact@wildlifeexplorer.us, which Cloudflare routes to the owner's
+    // inbox. No sending service to break. (A static site can't send email
+    // itself, and Cloudflare email routing only RECEIVES/forwards.)
+    window.location.href = mailto;
+    track('feedback_sent', { category });
+    // Best-effort backup copy in the runtime logs, harmless if it fails.
     try {
-      // Submit DIRECTLY to Web3Forms from the browser as FormData — Web3Forms'
-      // canonical method (matches their HTML <form> example). FormData is a
-      // CORS "simple request" (no preflight), the most universally-reliable
-      // path. The access key is public/safe for client code; a server relay
-      // would get 403'd from a datacenter IP. Honeypot via `botcheck`.
-      const fd = new FormData();
-      fd.append('access_key', WEB3FORMS_ACCESS_KEY);
-      fd.append('subject', `[Wildlife Explorer] ${cat?.label ?? 'Feedback'}${park ? ` — ${park}` : ''}`);
-      fd.append('from_name', 'Wildlife Explorer feedback');
-      fd.append('email', email || 'no-reply@wildlifeexplorer.us');
-      if (company) fd.append('botcheck', 'true');
-      fd.append('message', `Category: ${cat?.label ?? category}\nPark: ${park || '(none)'}\nReply-to: ${email || '(none)'}\n\n${message}`);
-      const r = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: fd });
-      const j = await r.json().catch(() => ({}));
-      const ok = r.ok && j.success === true;
-      setStatus(ok ? 'sent' : 'error');
-      if (ok) track('feedback_sent', { category });
-      // Fire-and-forget backup log to our own runtime logs (never blocks UX).
       fetch('/api/feedback', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ category, park, message, email, company }), keepalive: true,
       }).catch(() => {});
-    } catch { setStatus('error'); }
+    } catch { /* ignore */ }
+    setStatus('sent');
   };
-
-  const cat = FEEDBACK_CATEGORIES.find(c => c.key === category);
-  const mailto = `mailto:contact@wildlifeexplorer.us?subject=${encodeURIComponent(`[Wildlife Explorer] ${cat?.label ?? 'Feedback'}`)}`
-    + `&body=${encodeURIComponent(`${park ? `Park: ${park}\n` : ''}\n${message}`)}`;
 
   return (
     <>
@@ -2294,9 +2281,13 @@ function ContactModal({ onClose, presetPark = '' }) {
         <button className="about-modal__close" onClick={onClose} aria-label="Close">X</button>
         {status === 'sent' ? (
           <div className="contact-modal__sent">
-            <div className="contact-modal__sent-icon" aria-hidden="true">✅</div>
-            <h2 className="contact-modal__title">Thank you!</h2>
-            <p>Your message was sent. Real reports like yours are how the park data gets more accurate — I read every one.</p>
+            <div className="contact-modal__sent-icon" aria-hidden="true">📧</div>
+            <h2 className="contact-modal__title">Almost there!</h2>
+            <p>Your email app should have opened with your message ready — just hit <strong>send</strong> there and it’s on its way to me.</p>
+            <p className="contact-modal__sent-fallback">
+              Didn’t open? Email me directly at{' '}
+              <a href={mailto}>contact@wildlifeexplorer.us</a>.
+            </p>
             <button className="contact-modal__submit" onClick={onClose}>Done</button>
           </div>
         ) : (
@@ -2338,20 +2329,15 @@ function ContactModal({ onClose, presetPark = '' }) {
             <input className="contact-modal__hp" tabIndex={-1} autoComplete="off" aria-hidden="true"
               value={company} onChange={e => setCompany(e.target.value)} placeholder="Company" />
 
-            {status === 'error' && (
-              <p className="contact-modal__error">
-                Couldn’t send just now. You can <a href={mailto}>email me directly</a> instead.
-              </p>
-            )}
-
             <div className="contact-modal__actions">
               <button type="submit" className="contact-modal__submit"
-                disabled={message.trim().length < 3 || status === 'sending'}>
-                {status === 'sending' ? 'Sending…' : 'Send'}
+                disabled={message.trim().length < 3}>
+                📧 Send
               </button>
-              <a className="contact-modal__mailto" href={mailto}>or email directly</a>
             </div>
-            <p className="contact-modal__privacy">No account needed. Your message goes straight to the site owner; nothing is shared or sold.</p>
+            <p className="contact-modal__privacy">
+              Opens your email app to send your message to me directly — no account, nothing shared or sold.
+            </p>
           </form>
         )}
       </div>
