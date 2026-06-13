@@ -810,15 +810,18 @@ body, #root {
   position:        absolute;
   top:             10px;
   right:           10px;
-  color:           rgba(255, 255, 255, 0.85);
+  color:           #fff;
   font-size:       22px;
   font-weight:     300;
   line-height:     1;
   width:           28px;
   height:          28px;
   border-radius:   50%;
-  background:      rgba(255, 255, 255, 0.15);
+  /* Dark, opaque pill + shadow so the × stays visible even when it sits over a
+     bright hero photo (e.g. Wind Cave). */
+  background:      rgba(0, 0, 0, 0.5);
   border:          none;
+  box-shadow:      0 1px 5px rgba(0, 0, 0, 0.45);
   cursor:          pointer;
   display:         flex;
   align-items:     center;
@@ -827,7 +830,7 @@ body, #root {
   z-index:         10;
 }
 .popup-panel__close:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.72);
   color: #fff;
 }
 
@@ -843,7 +846,7 @@ body, #root {
 .lp__head {
   background: linear-gradient(135deg, #0c3823 0%, #1e6840 100%);
   color: #fff;
-  padding: 18px 52px 16px 22px;
+  padding: 18px 22px 16px 22px;
   flex-shrink: 0;
   position: relative;   /* enables absolute-positioned pill + button */
 }
@@ -877,19 +880,22 @@ body, #root {
 }
 .lp__hero-toggle:hover { background: rgba(255,255,255,0.16); color: #fff; }
 .lp__hero--natural { height: auto !important; max-height: 340px; object-fit: cover; }
+/* Photo's own close ✕ — top-LEFT so it never overlaps the refresh / panel-close
+   controls on the right. Extra-opaque + shadow to read on bright images. */
 .lp__hero-close {
-  position: absolute; top: 6px; right: 6px;
+  position: absolute; top: 6px; left: 6px;
   width: 24px; height: 24px; border-radius: 50%; border: 0; cursor: pointer;
   font-size: 12px; line-height: 1; display: flex; align-items: center; justify-content: center;
-  background: rgba(0,0,0,0.55); color: rgba(255,255,255,0.92);
+  background: rgba(0,0,0,0.6); color: #fff;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.45); backdrop-filter: blur(2px);
 }
-.lp__hero-close:hover { background: rgba(0,0,0,0.78); color: #fff; }
+.lp__hero-close:hover { background: rgba(0,0,0,0.82); color: #fff; }
 /* "Wrong photo" report — bottom-left, mirrors the credit pill. */
 .lp__hero-flag {
   position: absolute; left: 6px; bottom: 6px;
   font-size: 9.5px; line-height: 1; padding: 3px 8px; border-radius: 999px; border: 0;
-  background: rgba(0,0,0,0.55); color: rgba(255,255,255,0.85); cursor: pointer;
-  backdrop-filter: blur(2px);
+  background: rgba(0,0,0,0.6); color: rgba(255,255,255,0.9); cursor: pointer;
+  backdrop-filter: blur(2px); box-shadow: 0 1px 4px rgba(0,0,0,0.35);
 }
 .lp__hero-flag:hover { background: rgba(140,30,30,0.8); color: #fff; }
 @media (max-width: 768px) {
@@ -906,11 +912,30 @@ body, #root {
   .lp__hero-wrap { margin-bottom: 8px; }
 }
 
+/* Park action row (national popup) — directions / share / refresh as pills on
+   the dark header, below the hero so they never overlap the photo controls. */
+.lp__actions {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
+  margin: 10px 0 2px;
+}
+.lp__action-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  height: 26px; padding: 0 11px;
+  font-size: 11px; font-weight: 600; line-height: 1; white-space: nowrap;
+  border-radius: 999px; cursor: pointer; text-decoration: none;
+  background: rgba(255,255,255,0.14);
+  border: 1px solid rgba(255,255,255,0.24);
+  color: rgba(255,255,255,0.88);
+  transition: background 0.15s, color 0.15s;
+}
+.lp__action-btn:hover { background: rgba(255,255,255,0.26); color: #fff; }
+
 .lp__name {
   font-size: 15px;
   font-weight: 700;
   line-height: 1.3;
   letter-spacing: -0.2px;
+  padding-right: 34px;   /* clear the top-right close × */
 }
 
 .lp__meta {

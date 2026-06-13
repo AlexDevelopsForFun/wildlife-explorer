@@ -17,7 +17,7 @@ import { useState, useEffect } from 'react';
 // (Statue of Liberty, pueblo ruins, forts) — so monuments are included ONLY via
 // a curated allow-list of genuinely-natural ones. This keeps the wildlife
 // habitats and drops the landmarks-to-people. Busts v4 cache.
-const CACHE_KEY = 'wm_nps_parks_v6';  // v6 adds hero image url to each unit
+const CACHE_KEY = 'wm_nps_parks_v7';  // v7 picks the best scenery image (not images[0])
 const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
 
 // Inherently-natural designations — always wildlife-relevant.
@@ -64,6 +64,28 @@ function npsQualifies(park) {
   return false;
 }
 
+// NPS gives an ordered `images` array, but images[0] is frequently a wildlife
+// close-up (e.g. Wind Cave's lead photo is a bison, not the park). Prefer a
+// landscape/scenery shot: reward scenery words, penalise animal close-ups, and
+// fall back to NPS's own ordering on ties.
+const HERO_ANIMAL  = /\b(bison|buffalo|elk|deer|moose|bear|wolf|coyote|fox|bobcat|cougar|lynx|bird|eagle|hawk|falcon|owl|duck|goose|heron|crane|pelican|gull|snake|lizard|turtle|tortoise|frog|toad|fish|salmon|trout|insect|butterfly|dragonfly|bee|beetle|bug|bat|prairie dog|ferret|sheep|goat|pronghorn|antelope|elephant seal|seal|otter|squirrel|chipmunk|rabbit|marmot|portrait|close-?up|wildlife|critter|mammal|reptile|amphibian)\b/i;
+const HERO_SCENERY = /\b(landscape|scenic|scenery|vista|overlook|panorama|sunset|sunrise|skyline|canyon|valley|mountain|peak|ridge|cliff|butte|mesa|prairie|grassland|meadow|forest|woods|river|creek|lake|pond|waterfall|falls|gorge|shore|coast|coastline|beach|dune|desert|cave|cavern|formation|boxwork|rock|badland|hill|view|trail|aerial|night sky|stars|milky way|wetland|marsh|spring|geyser)\b/i;
+
+function pickHeroImage(images) {
+  if (!Array.isArray(images) || images.length === 0) return null;
+  let best = images[0], bestScore = -Infinity;
+  images.forEach((img, i) => {
+    const hay = `${img.title || ''} ${img.altText || ''} ${img.caption || ''}`.toLowerCase();
+    // Scenery wins outright (a landscape word means it's a place shot, even if a
+    // place NAME like "Eagle Peak" also trips the animal list). Only penalise an
+    // animal word when there's NO scenery context — that's the tight-portrait case.
+    let score = HERO_SCENERY.test(hay) ? 3 : (HERO_ANIMAL.test(hay) ? -3 : 0);
+    score -= i * 0.01;                 // gentle tiebreak toward NPS's own order
+    if (score > bestScore) { bestScore = score; best = img; }
+  });
+  return best;
+}
+
 /**
  * Convert one NPS API park record into the app's location shape.
  * Returns null for non-natural designations or missing coordinates.
@@ -80,6 +102,8 @@ function parkToLocation(park) {
     ? park.states.split(',').map(s => s.trim()).filter(Boolean)
     : [];
 
+  const hero = pickHeroImage(park.images);
+
   return {
     id:          `nps_${park.parkCode}`,
     name:        park.fullName ?? park.name,
@@ -92,8 +116,8 @@ function parkToLocation(park) {
     designation: park.designation ?? '',
     npsKind:     NP_KIND(park.designation),  // short type for UI (Monument/Seashore/…)
     url:         park.url ?? '',
-    image:       park.images?.[0]?.url ?? null,   // hero photo of the place (NPS)
-    imageAlt:    park.images?.[0]?.altText ?? park.images?.[0]?.caption ?? '',
+    image:       hero?.url ?? null,   // best scenery photo (NPS, not just images[0])
+    imageAlt:    hero?.altText ?? hero?.caption ?? '',
     animals:     [],    // populated by useLiveData if this park is opened
     _fromNpsApi: true,  // marker flag so App can distinguish these entries
   };

@@ -2224,9 +2224,14 @@ function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
 
 // ── Contact / Feedback ──────────────────────────────────────────────────────
 // Lets visitors report bugs, suggest features, and — importantly for data
-// quality — confirm or correct what they actually saw at a park. Posts to
-// /api/feedback (relayed to email server-side; no third-party script on the
-// page). A mailto fallback is always shown so it works even if the POST fails.
+// quality — confirm or correct what they actually saw at a park.
+//
+// Delivery: the visitor's browser POSTs directly to Web3Forms (FormData, which
+// is a CORS "simple request" — no preflight), and Web3Forms emails it to
+// contact@wildlifeexplorer.us. No email app, account, or sign-up needed on the
+// visitor's side — they just type and hit Send. The access key is public by
+// design (safe in client code). A same-origin backup copy is logged to
+// /api/feedback, and a mailto fallback is offered only if the send fails.
 const FEEDBACK_CATEGORIES = [
   { key: 'data', emoji: '📍', label: 'Correct park data', hint: 'A species is wrong/missing, or the rarity looks off' },
   { key: 'bug', emoji: '🐛', label: 'Report a problem', hint: 'Something is broken or behaving oddly' },
@@ -2246,7 +2251,12 @@ function ContactModal({ onClose, presetPark = '' }) {
     return () => window.removeEventListener('keydown', h);
   }, [onClose]);
 
+  // Public Web3Forms access key (safe in client code — it only authorises
+  // posting to the inbox it's bound to: contact@wildlifeexplorer.us).
+  const WEB3FORMS_ACCESS_KEY = '6c5c24a7-500a-49fd-8bd0-98ab6944bb68';
+
   const cat = FEEDBACK_CATEGORIES.find(c => c.key === category);
+  // Only used if the direct send fails — lets the visitor email it themselves.
   const mailto = `mailto:contact@wildlifeexplorer.us`
     + `?subject=${encodeURIComponent(`[Wildlife Explorer] ${cat?.label ?? 'Feedback'}${park ? ` — ${park}` : ''}`)}`
     + `&body=${encodeURIComponent(
@@ -2255,23 +2265,40 @@ function ContactModal({ onClose, presetPark = '' }) {
         + (email ? `Reply to: ${email}\n` : '')
         + `\n${message}\n`)}`;
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault();
-    if (message.trim().length < 3) return;
-    // Send via the visitor's own email app — pre-addressed to
-    // contact@wildlifeexplorer.us, which Cloudflare routes to the owner's
-    // inbox. No sending service to break. (A static site can't send email
-    // itself, and Cloudflare email routing only RECEIVES/forwards.)
-    window.location.href = mailto;
+    if (message.trim().length < 3 || status === 'sending') return;
+    if (company) { setStatus('sent'); return; }   // honeypot tripped — fake success
+    setStatus('sending');
     track('feedback_sent', { category });
-    // Best-effort backup copy in the runtime logs, harmless if it fails.
+
+    // Send straight from the visitor's browser to Web3Forms. FormData keeps it a
+    // CORS "simple request" (no preflight), the canonical Web3Forms method.
+    const fd = new FormData();
+    fd.append('access_key', WEB3FORMS_ACCESS_KEY);
+    fd.append('subject', `[Wildlife Explorer] ${cat?.label ?? 'Feedback'}${park ? ` — ${park}` : ''}`);
+    fd.append('from_name', 'US Wildlife Explorer');
+    fd.append('Category', cat?.label ?? category);
+    if (park) fd.append('Park', park);
+    fd.append('message', message);
+    if (email) fd.append('replyto', email);
+    fd.append('botcheck', '');
+
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: fd });
+      const json = await res.json().catch(() => ({}));
+      setStatus(res.ok && json.success ? 'sent' : 'error');
+    } catch {
+      setStatus('error');
+    }
+
+    // Best-effort backup copy in our own runtime logs (same-origin, no preflight).
     try {
       fetch('/api/feedback', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ category, park, message, email, company }), keepalive: true,
       }).catch(() => {});
     } catch { /* ignore */ }
-    setStatus('sent');
   };
 
   return (
@@ -2281,14 +2308,27 @@ function ContactModal({ onClose, presetPark = '' }) {
         <button className="about-modal__close" onClick={onClose} aria-label="Close">X</button>
         {status === 'sent' ? (
           <div className="contact-modal__sent">
-            <div className="contact-modal__sent-icon" aria-hidden="true">📧</div>
-            <h2 className="contact-modal__title">Almost there!</h2>
-            <p>Your email app should have opened with your message ready — just hit <strong>send</strong> there and it’s on its way to me.</p>
-            <p className="contact-modal__sent-fallback">
-              Didn’t open? Email me directly at{' '}
-              <a href={mailto}>contact@wildlifeexplorer.us</a>.
-            </p>
+            <div className="contact-modal__sent-icon" aria-hidden="true">✅</div>
+            <h2 className="contact-modal__title">Thank you!</h2>
+            <p>Your message is on its way to me — no email app, no account needed. I read every one. 🌿</p>
+            {email && (
+              <p className="contact-modal__sent-fallback">
+                If a reply would help, I’ll reach you at <strong>{email}</strong>.
+              </p>
+            )}
             <button className="contact-modal__submit" onClick={onClose}>Done</button>
+          </div>
+        ) : status === 'error' ? (
+          <div className="contact-modal__sent">
+            <div className="contact-modal__sent-icon" aria-hidden="true">📭</div>
+            <h2 className="contact-modal__title">Couldn’t send just now</h2>
+            <p>Something blocked the send — usually a network hiccup or an ad-blocker. You can email it to me directly instead:</p>
+            <p className="contact-modal__sent-fallback">
+              <a href={mailto}>contact@wildlifeexplorer.us</a>
+            </p>
+            <div className="contact-modal__actions">
+              <button className="contact-modal__submit" onClick={() => setStatus('idle')}>← Try again</button>
+            </div>
           </div>
         ) : (
           <form className="contact-modal__body" onSubmit={submit}>
@@ -2331,12 +2371,12 @@ function ContactModal({ onClose, presetPark = '' }) {
 
             <div className="contact-modal__actions">
               <button type="submit" className="contact-modal__submit"
-                disabled={message.trim().length < 3}>
-                📧 Send
+                disabled={message.trim().length < 3 || status === 'sending'}>
+                {status === 'sending' ? 'Sending…' : '📨 Send'}
               </button>
             </div>
             <p className="contact-modal__privacy">
-              Opens your email app to send your message to me directly — no account, nothing shared or sold.
+              Sends straight to me — no email app, no account, nothing shared or sold.
             </p>
           </form>
         )}
@@ -4980,6 +5020,37 @@ function LocationPopup({ location, heroImage, heroAlt, effectiveAnimals, season,
             </span>
           )}
         </div>
+        {/* Park actions — directions, shareable link, manual refresh.
+            Rendered as a row BELOW the hero (on the dark header) so they never
+            collide with the photo's own controls and stay legible on any image. */}
+        <div className="lp__actions">
+          <a
+            className="lp__action-btn"
+            href={`https://www.google.com/maps/dir/?api=1&destination=${location.lat},${location.lng}`}
+            target="_blank" rel="noopener noreferrer"
+            aria-label={`Get directions to ${location.name}`}
+            title="Open directions in your maps app"
+          >🧭 Directions</a>
+          <button
+            className="lp__action-btn"
+            aria-label={`Copy a shareable link to ${location.name}`}
+            title="Copy shareable link"
+            onClick={async () => {
+              const link = `${window.location.origin}/park/${encodeURIComponent(location.id)}`;
+              try {
+                await navigator.clipboard.writeText(link);
+                setShareCopied(true);
+                setTimeout(() => setShareCopied(false), 2000);
+              } catch {
+                window.prompt('Copy this link:', link);
+              }
+            }}
+          >{shareCopied ? '✓ Link copied' : '🔗 Share'}</button>
+          {!isLoading && (
+            <button className="lp__action-btn" onClick={() => refreshLocation(location.id)}
+              aria-label="Refresh wildlife data" title="Refresh live data">↻ Refresh</button>
+          )}
+        </div>
         {/* ── Data attribution line ─────────────────────────────────────── */}
         {isLive && (() => {
           const liveSrcs = [...new Set(sources.filter(s => s !== 'static' && s !== 'estimated'))];
@@ -5015,39 +5086,6 @@ function LocationPopup({ location, heroImage, heroAlt, effectiveAnimals, season,
           <div className="lp__refreshing">↻ Refreshing wildlife data…</div>
         )}
 
-        {/* Manual refresh button — only when idle */}
-        {!isLoading && (
-          <button className="lp__refresh-btn" onClick={() => refreshLocation(location.id)}
-            aria-label="Refresh wildlife data" title="Refresh live data">↻</button>
-        )}
-        {/* Share this park — copies a deep link that reopens this view */}
-        <button
-          className="lp__share-btn"
-          aria-label={`Copy a shareable link to ${location.name}`}
-          title="Copy shareable link"
-          onClick={async () => {
-            const link = `${window.location.origin}/park/${encodeURIComponent(location.id)}`;
-            try {
-              await navigator.clipboard.writeText(link);
-              setShareCopied(true);
-              setTimeout(() => setShareCopied(false), 2000);
-            } catch {
-              window.prompt('Copy this link:', link);
-            }
-          }}
-        >
-          {shareCopied ? '✓ Link copied' : '🔗 Share'}
-        </button>
-        {/* Directions — opens the device's maps app at the park */}
-        <a
-          className="lp__share-btn lp__directions-btn"
-          href={`https://www.google.com/maps/dir/?api=1&destination=${location.lat},${location.lng}`}
-          target="_blank" rel="noopener noreferrer"
-          aria-label={`Get directions to ${location.name}`}
-          title="Open directions in your maps app"
-        >
-          🧭 Directions
-        </a>
         {/* Species type breakdown row */}
         {Object.keys(typeBreakdown).length > 0 && (
           <div className="lp__breakdown">
