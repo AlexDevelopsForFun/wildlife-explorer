@@ -28,39 +28,12 @@ export default async function handler(req, res) {
     const replyTo = clamp(b.email, 160);
     if (message.length < 3) return res.status(400).json({ error: 'message required' });
 
-    const summary = { category, park, message, replyTo, ts: new Date().toISOString() };
-    console.log('[feedback]', JSON.stringify(summary));
-
-    // Accept the canonical name plus common casings so a mis-typed Vercel env
-    // var still works (env vars are case-sensitive).
-    const key = process.env.WEB3FORMS_KEY || process.env.Web3FormsKey
-      || process.env.WEB3FORMSKEY || process.env.WEB3FORMS_ACCESS_KEY;
-    let relayed = false, relayMsg = key ? '' : 'no WEB3FORMS_KEY env var found';
-    if (key) {
-      try {
-        const w3 = await fetch('https://api.web3forms.com/submit', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          body: JSON.stringify({
-            access_key: key,
-            subject: `[Wildlife Explorer] ${category}${park ? ` — ${park}` : ''}`,
-            from_name: 'Wildlife Explorer feedback',
-            email: replyTo || 'no-reply@wildlifeexplorer.us',
-            message: `Category: ${category}\nPark: ${park || '(none)'}\nReply-to: ${replyTo || '(none)'}\n\n${message}`,
-          }),
-          signal: AbortSignal.timeout(10000),
-        });
-        const j = await w3.json().catch(() => ({}));
-        relayed = w3.ok && j.success === true;
-        relayMsg = `${w3.status}: ${j.message ?? '(no message)'}`;
-        console.log('[feedback] relay', w3.status, 'success=' + j.success, j.message ? `msg=${j.message}` : '');
-      } catch (e) { relayMsg = 'relay error: ' + String(e?.message || e); console.log('[feedback]', relayMsg); }
-    } else {
-      console.log('[feedback] relay skipped — no WEB3FORMS_KEY env var found');
-    }
-    // relayMsg is a generic Web3Forms status string (e.g. "please verify your
-    // email") — not the key — so it's safe to expose for self-diagnosis.
-    return res.status(200).json({ ok: true, relayed, relayMsg });
+    // Backup record only. Email delivery happens CLIENT-side (browser →
+    // Web3Forms direct) because Web3Forms 403s server-to-server calls from
+    // datacenter IPs. This just preserves a copy in the Vercel runtime logs
+    // (filter "[feedback]") in case a browser submission's delivery is missed.
+    console.log('[feedback]', JSON.stringify({ category, park, message, replyTo, ts: new Date().toISOString() }));
+    return res.status(200).json({ ok: true });
   } catch {
     return res.status(400).json({ error: 'bad request' });
   }

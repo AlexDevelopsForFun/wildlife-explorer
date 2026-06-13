@@ -2227,6 +2227,12 @@ function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
 // quality — confirm or correct what they actually saw at a park. Posts to
 // /api/feedback (relayed to email server-side; no third-party script on the
 // page). A mailto fallback is always shown so it works even if the POST fails.
+// Web3Forms public access key (a form ID, NOT a secret — Web3Forms explicitly
+// says it's safe in client-side code). Submissions go straight from the
+// visitor's browser to Web3Forms, which emails them to contact@wildlifeexplorer.us.
+// Spam is mitigated by the honeypot (botcheck) + Web3Forms' own filtering.
+const WEB3FORMS_ACCESS_KEY = '6c5c24a7-500a-49fd-8bd0-98ab6944bb68';
+
 const FEEDBACK_CATEGORIES = [
   { key: 'data', emoji: '📍', label: 'Correct park data', hint: 'A species is wrong/missing, or the rarity looks off' },
   { key: 'bug', emoji: '🐛', label: 'Report a problem', hint: 'Something is broken or behaving oddly' },
@@ -2250,13 +2256,33 @@ function ContactModal({ onClose, presetPark = '' }) {
     e.preventDefault();
     if (message.trim().length < 3 || status === 'sending') return;
     setStatus('sending');
+    const cat = FEEDBACK_CATEGORIES.find(c => c.key === category);
     try {
-      const r = await fetch('/api/feedback', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ category, park, message, email, company }),
+      // Submit DIRECTLY to Web3Forms from the browser — that's how Web3Forms
+      // is designed to work (the access key is public/safe for client code).
+      // A server-side relay from Vercel's datacenter IP gets 403'd as bot
+      // traffic; the user's real browser passes. Honeypot via `botcheck`.
+      const r = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_ACCESS_KEY,
+          subject: `[Wildlife Explorer] ${cat?.label ?? 'Feedback'}${park ? ` — ${park}` : ''}`,
+          from_name: 'Wildlife Explorer feedback',
+          email: email || 'no-reply@wildlifeexplorer.us',
+          botcheck: company ? true : '',
+          message: `Category: ${cat?.label ?? category}\nPark: ${park || '(none)'}\nReply-to: ${email || '(none)'}\n\n${message}`,
+        }),
       });
-      setStatus(r.ok ? 'sent' : 'error');
-      if (r.ok) track('feedback_sent', { category });
+      const j = await r.json().catch(() => ({}));
+      const ok = r.ok && j.success === true;
+      setStatus(ok ? 'sent' : 'error');
+      if (ok) track('feedback_sent', { category });
+      // Fire-and-forget backup log to our own runtime logs (never blocks UX).
+      fetch('/api/feedback', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ category, park, message, email, company }), keepalive: true,
+      }).catch(() => {});
     } catch { setStatus('error'); }
   };
 
