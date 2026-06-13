@@ -35,7 +35,7 @@ export default async function handler(req, res) {
     // var still works (env vars are case-sensitive).
     const key = process.env.WEB3FORMS_KEY || process.env.Web3FormsKey
       || process.env.WEB3FORMSKEY || process.env.WEB3FORMS_ACCESS_KEY;
-    let relayed = false;
+    let relayed = false, relayMsg = key ? '' : 'no WEB3FORMS_KEY env var found';
     if (key) {
       try {
         const w3 = await fetch('https://api.web3forms.com/submit', {
@@ -52,12 +52,15 @@ export default async function handler(req, res) {
         });
         const j = await w3.json().catch(() => ({}));
         relayed = w3.ok && j.success === true;
+        relayMsg = `${w3.status}: ${j.message ?? '(no message)'}`;
         console.log('[feedback] relay', w3.status, 'success=' + j.success, j.message ? `msg=${j.message}` : '');
-      } catch (e) { console.log('[feedback] relay error', String(e?.message || e)); }
+      } catch (e) { relayMsg = 'relay error: ' + String(e?.message || e); console.log('[feedback]', relayMsg); }
     } else {
       console.log('[feedback] relay skipped — no WEB3FORMS_KEY env var found');
     }
-    return res.status(200).json({ ok: true, relayed });
+    // relayMsg is a generic Web3Forms status string (e.g. "please verify your
+    // email") — not the key — so it's safe to expose for self-diagnosis.
+    return res.status(200).json({ ok: true, relayed, relayMsg });
   } catch {
     return res.status(400).json({ error: 'bad request' });
   }
