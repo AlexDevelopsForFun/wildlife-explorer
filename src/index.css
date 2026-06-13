@@ -880,24 +880,21 @@ body, #root {
 }
 .lp__hero-toggle:hover { background: rgba(255,255,255,0.16); color: #fff; }
 .lp__hero--natural { height: auto !important; max-height: 340px; object-fit: cover; }
-/* Photo's own close ✕ — top-LEFT so it never overlaps the refresh / panel-close
-   controls on the right. Extra-opaque + shadow to read on bright images. */
-.lp__hero-close {
-  position: absolute; top: 6px; left: 6px;
-  width: 24px; height: 24px; border-radius: 50%; border: 0; cursor: pointer;
-  font-size: 12px; line-height: 1; display: flex; align-items: center; justify-content: center;
-  background: rgba(0,0,0,0.6); color: #fff;
-  box-shadow: 0 1px 5px rgba(0,0,0,0.45); backdrop-filter: blur(2px);
-}
-.lp__hero-close:hover { background: rgba(0,0,0,0.82); color: #fff; }
-/* "Wrong photo" report — bottom-left, mirrors the credit pill. */
-.lp__hero-flag {
+/* Photo controls (Hide photo + Wrong photo) — a labeled row at the BOTTOM-left
+   of the image. Keeping them out of the top corners means the popup's own ✕ is
+   the only close button (no confusing duplicate). Dark pills read on any image. */
+.lp__hero-tools {
   position: absolute; left: 6px; bottom: 6px;
-  font-size: 9.5px; line-height: 1; padding: 3px 8px; border-radius: 999px; border: 0;
-  background: rgba(0,0,0,0.6); color: rgba(255,255,255,0.9); cursor: pointer;
-  backdrop-filter: blur(2px); box-shadow: 0 1px 4px rgba(0,0,0,0.35);
+  display: flex; gap: 6px; flex-wrap: wrap;
 }
-.lp__hero-flag:hover { background: rgba(140,30,30,0.8); color: #fff; }
+.lp__hero-tool {
+  font-size: 9.5px; line-height: 1; padding: 4px 9px; border-radius: 999px; border: 0;
+  background: rgba(0,0,0,0.6); color: rgba(255,255,255,0.92); cursor: pointer;
+  backdrop-filter: blur(2px); box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+  transition: background 0.15s, color 0.15s;
+}
+.lp__hero-tool:hover { background: rgba(0,0,0,0.82); color: #fff; }
+.lp__hero-flag:hover { background: rgba(140,30,30,0.85); color: #fff; }
 @media (max-width: 768px) {
   .lp__hero--natural { max-height: 260px; }
 }
