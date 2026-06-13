@@ -4483,14 +4483,18 @@ function LocationPopup({ location, heroImage, heroAlt, effectiveAnimals, season,
   const [wikiHero, setWikiHero] = useState(null);
   const [showHero, toggleHero] = useHeroPreference();
   useEffect(() => {
-    if (heroImage) { setWikiHero(null); return; }
     let alive = true;
     setWikiHero(null);
+    // Prefer the Wikipedia LEAD image — for national parks it's the editor-curated
+    // iconic landscape (Wind Cave returns the cave itself, not a stray bison from
+    // the NPS photo set). The NPS image is only the fallback below.
     fetchWikiParkImage(location.name, location.lat, location.lng, location.id)
       .then(img => { if (alive) setWikiHero(img); });
     return () => { alive = false; };
-  }, [location.id, heroImage]);
-  const effectiveHero = heroImage ? { src: heroImage, credit: null } : wikiHero;
+  }, [location.id]);
+  // Wikipedia lead (with attribution) wins; fall back to the NPS scenery photo
+  // (public domain, no credit) only when Wikipedia has nothing usable.
+  const effectiveHero = wikiHero || (heroImage ? { src: heroImage, credit: null } : null);
 
   const currentMonth = new Date().getMonth() + 1; // 1-12
   const monthName    = MONTH_NAMES[currentMonth - 1];
