@@ -31,10 +31,14 @@ export default async function handler(req, res) {
     const summary = { category, park, message, replyTo, ts: new Date().toISOString() };
     console.log('[feedback]', JSON.stringify(summary));
 
-    const key = process.env.WEB3FORMS_KEY;
+    // Accept the canonical name plus common casings so a mis-typed Vercel env
+    // var still works (env vars are case-sensitive).
+    const key = process.env.WEB3FORMS_KEY || process.env.Web3FormsKey
+      || process.env.WEB3FORMSKEY || process.env.WEB3FORMS_ACCESS_KEY;
+    let relayed = false;
     if (key) {
       try {
-        await fetch('https://api.web3forms.com/submit', {
+        const w3 = await fetch('https://api.web3forms.com/submit', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
           body: JSON.stringify({
@@ -46,9 +50,14 @@ export default async function handler(req, res) {
           }),
           signal: AbortSignal.timeout(10000),
         });
-      } catch { /* logged above regardless */ }
+        const j = await w3.json().catch(() => ({}));
+        relayed = w3.ok && j.success === true;
+        console.log('[feedback] relay', w3.status, 'success=' + j.success, j.message ? `msg=${j.message}` : '');
+      } catch (e) { console.log('[feedback] relay error', String(e?.message || e)); }
+    } else {
+      console.log('[feedback] relay skipped — no WEB3FORMS_KEY env var found');
     }
-    return res.status(200).json({ ok: true });
+    return res.status(200).json({ ok: true, relayed });
   } catch {
     return res.status(400).json({ error: 'bad request' });
   }

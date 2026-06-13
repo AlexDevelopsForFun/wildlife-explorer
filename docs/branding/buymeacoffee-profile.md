@@ -11,23 +11,31 @@ US Wildlife Explorer
 ## Short tagline (the one-liner under your name)
 Helping people find wildlife at 4,700+ US parks — free, forever.
 
-## About section (the main bio)
+## About section (the main bio) — owner's down-to-earth version
 
-US Wildlife Explorer is a free map that shows you which animals you can actually
-see at over 4,700 US parks — every national park, all 50 states' state parks, and
-the National Wildlife Refuges — plus the best season to spot each one.
+Hi — I'm the creator of US Wildlife Explorer. I'm an avid hiker and amateur
+photographer with a soft spot for wildlife.
 
-It pulls live data from eBird (Cornell Lab of Ornithology), iNaturalist, and the
-National Park Service, and turns it into a simple answer to the question every
-nature lover asks: *"What will I see here, and when should I go?"*
+I built this because every time I visited a new park, I had the same questions:
+What animals should I be looking for? What are my actual odds of seeing them?
+And when's the best time to go? I could never find that info in one place, so I
+decided to make it — first for myself, then for anyone else who wonders the same
+thing.
 
-I'm a solo developer and I built this because I couldn't find it anywhere else.
-There's no paywall and no account required — and I'd like to keep it that way.
+US Wildlife Explorer is a free map that shows which animals you can actually see
+at over 4,700 US parks — every national park, all 50 states' state parks, and the
+National Wildlife Refuges — plus the best season to spot each one. It pulls live
+data from eBird (Cornell Lab of Ornithology), iNaturalist, and the National Park
+Service, and turns it into a simple answer to the question every nature lover
+asks: "What will I see here, and when should I go?"
 
-Running it isn't free, though: map tiles, hosting, and data services all cost
-money as more people use it. If the app helped you plan a hike, find a new park,
-or finally spot that bird — a coffee keeps it online and ad-light for everyone
-else. Thank you for being here. 🌿
+I'm a one-person operation, and there's no paywall and no sign-up — and I'd like
+to keep it that way.
+
+It's not free to run, though. Map tiles, hosting, and data services all add up as
+more people use it. If this app helped you plan a hike, find a new park, or
+finally spot that bird, a coffee helps keep it online for everyone. Thanks for
+being here. 🌿
 
 ## "What your support funds" (short version, if there's a second field)
 ☕ Server & map-tile costs · 🗺️ More parks and species · 🐦 Keeping it free and
