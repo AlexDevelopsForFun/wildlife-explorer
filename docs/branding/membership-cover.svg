@@ -1,0 +1,14 @@
+<svg width="500" height="300" viewBox="0 0 500 300" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#0c3823"/><stop offset="1" stop-color="#23764a"/>
+</linearGradient>
+</defs>
+<rect width="500" height="300" fill="url(#sky)"/>
+<circle cx="250" cy="118" r="46" fill="#e8c879" opacity="0.92"/>
+<path d="M0 215 Q120 180 250 210 T500 200 L500 300 L0 300 Z" fill="#176034"/>
+<path d="M0 245 Q140 215 270 245 T500 240 L500 300 L0 300 Z" fill="#0f3f25"/>
+<path d="M182 102 Q220 78 250 108 Q280 78 318 102 Q280 94 250 128 Q220 94 182 102 Z" fill="#f7eedd"/>
+<ellipse cx="250" cy="118" rx="6.5" ry="9" fill="#f7eedd"/>
+<text x="250" y="282" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="25" font-weight="800" fill="#f7eedd">US Wildlife Explorer</text>
+</svg>
