@@ -10,13 +10,15 @@ they name shows you read the terms.)*
 
 Hello,
 
-I'm writing as directed in §2d of the eBird API Terms of Use to request written
-permission for commercial use of the eBird API.
+I'm writing as directed in §2d of the eBird API Terms of Use to ask about written
+permission for a limited commercial use of the eBird API — specifically, to help
+cover the running costs of a free public resource, not to operate it for profit.
 
 I run **US Wildlife Explorer** (https://wildlifeexplorer.us), a free web app that
 helps wildlife watchers discover which species they can see at over 4,700 US parks
 — the national park system, all 50 states' state parks, and the National Wildlife
-Refuges — along with the best season to visit each.
+Refuges — along with the best season to visit each. I'm a solo, hobbyist developer;
+the site is free to everyone, with no paywall and no accounts.
 
 **How the site uses the eBird API today**, in line with the current Terms:
 
@@ -32,22 +34,28 @@ Refuges — along with the best season to visit each.
 - The site is currently **free and non-commercial**, which I understand the Terms
   permit for "websites, web-based platforms, [and] mobile applications" (§2a).
 
-**What I'd like to do, and why I'm asking first:** to keep the site sustainable I
-am considering modest display advertising. I understand that under §2d this counts
-as a commercial purpose (revenue generation) and therefore requires your written
-permission **before** I enable it — which is why nothing has been turned on.
+**What I'd like to do, and why I'm asking first:** the site's only costs are
+hosting and map tiles, which grow as more people use it. To keep it online and
+free, I'd like to offset those costs — primarily through reader donations, and
+possibly modest, unobtrusive display advertising. My goal is cost-recovery and
+sustainability, not profit. I understand that under §2d advertising counts as a
+commercial purpose (revenue generation) and so needs your written permission
+**before** I enable it — which is exactly why I haven't turned anything on, and
+why I'm reaching out first.
 
 Could you let me know:
 
-1. Whether a written commercial-use agreement is available for a small,
-   single-developer, free-to-users site like this, and what terms or fees apply;
-2. Whether different revenue models are treated differently (e.g. display ads vs.
-   reader donations vs. a paid tier) so I can choose an approach you're comfortable
-   with;
+1. Whether eBird offers written permission for this kind of limited, cost-recovery
+   use by a free, hobbyist, single-developer site — and what terms or fees, if any,
+   would apply;
+2. Whether different models are viewed differently (e.g. reader donations, which I
+   understand may be considered non-commercial, vs. modest display ads) so I can
+   choose an approach the Lab is comfortable with;
 3. Anything you'd like changed in how eBird data is presented or attributed.
 
-I'm happy to share traffic figures, exact request volumes, or a walkthrough of how
-the data flows through the app. Thank you for eBird and for considering this.
+I'd be glad to share traffic figures, exact request volumes, or a walkthrough of
+how the data flows through the app. Thank you for eBird — it's the backbone of the
+bird data on the site — and for considering this.
 
 Best regards,
 Alexa

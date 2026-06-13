@@ -2258,22 +2258,19 @@ function ContactModal({ onClose, presetPark = '' }) {
     setStatus('sending');
     const cat = FEEDBACK_CATEGORIES.find(c => c.key === category);
     try {
-      // Submit DIRECTLY to Web3Forms from the browser — that's how Web3Forms
-      // is designed to work (the access key is public/safe for client code).
-      // A server-side relay from Vercel's datacenter IP gets 403'd as bot
-      // traffic; the user's real browser passes. Honeypot via `botcheck`.
-      const r = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({
-          access_key: WEB3FORMS_ACCESS_KEY,
-          subject: `[Wildlife Explorer] ${cat?.label ?? 'Feedback'}${park ? ` — ${park}` : ''}`,
-          from_name: 'Wildlife Explorer feedback',
-          email: email || 'no-reply@wildlifeexplorer.us',
-          botcheck: company ? true : '',
-          message: `Category: ${cat?.label ?? category}\nPark: ${park || '(none)'}\nReply-to: ${email || '(none)'}\n\n${message}`,
-        }),
-      });
+      // Submit DIRECTLY to Web3Forms from the browser as FormData — Web3Forms'
+      // canonical method (matches their HTML <form> example). FormData is a
+      // CORS "simple request" (no preflight), the most universally-reliable
+      // path. The access key is public/safe for client code; a server relay
+      // would get 403'd from a datacenter IP. Honeypot via `botcheck`.
+      const fd = new FormData();
+      fd.append('access_key', WEB3FORMS_ACCESS_KEY);
+      fd.append('subject', `[Wildlife Explorer] ${cat?.label ?? 'Feedback'}${park ? ` — ${park}` : ''}`);
+      fd.append('from_name', 'Wildlife Explorer feedback');
+      fd.append('email', email || 'no-reply@wildlifeexplorer.us');
+      if (company) fd.append('botcheck', 'true');
+      fd.append('message', `Category: ${cat?.label ?? category}\nPark: ${park || '(none)'}\nReply-to: ${email || '(none)'}\n\n${message}`);
+      const r = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: fd });
       const j = await r.json().catch(() => ({}));
       const ok = r.ok && j.success === true;
       setStatus(ok ? 'sent' : 'error');
