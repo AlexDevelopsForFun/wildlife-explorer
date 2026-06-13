@@ -66,14 +66,19 @@ function ParkHero({ hero, parkId, parkName, showHero, onToggle, onFlag }) {
       <img className="lp__hero lp__hero--natural" src={hero.src} alt={`${parkName} scenery`} loading="lazy"
            onError={(e) => { e.currentTarget.parentElement.style.display = 'none'; }} />
       {hero.credit && (
-        <>
-          <a className="lp__hero-credit" href={hero.credit} target="_blank" rel="noopener noreferrer"
-             title="Photo source & license (Wikimedia)">📷 Wikimedia</a>
-          <button type="button" className="lp__hero-flag" onClick={flag}
-                  title="Report: this photo doesn't represent the park">🚩 Wrong photo</button>
-        </>
+        <a className="lp__hero-credit" href={hero.credit} target="_blank" rel="noopener noreferrer"
+           title="Photo source & license (Wikimedia)">📷 Wikimedia</a>
       )}
-      <button type="button" className="lp__hero-close" onClick={onToggle} aria-label="Hide park photo" title="Hide photo">✕</button>
+      {/* Photo controls live in a labeled row at the BOTTOM — the only ✕ in the
+          corners is the popup's own close, so there's no duplicate close button. */}
+      <div className="lp__hero-tools">
+        <button type="button" className="lp__hero-tool" onClick={onToggle}
+                aria-label="Hide park photo" title="Hide photo">✕ Hide photo</button>
+        {hero.credit && (
+          <button type="button" className="lp__hero-tool lp__hero-flag" onClick={flag}
+                  title="Report: this photo doesn't represent the park">🚩 Wrong photo</button>
+        )}
+      </div>
     </div>
   );
 }
