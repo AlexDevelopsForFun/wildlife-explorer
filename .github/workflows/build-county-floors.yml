@@ -1,0 +1,76 @@
+name: Build County Species Floors
+
+# One-off (manually triggered) build of the county-level species floors that let
+# every park show its full, range-appropriate species list:
+#   1. Bird floor for the rural refuge/national-park counties not yet sampled
+#      (scripts/buildUnitCounties.mjs → merges into stateParkBirdFreq.js → split).
+#   2. Non-bird floor (mammals/reptiles/amphibians/fish/insects) for every county
+#      from iNaturalist (scripts/buildCountyNonbird.mjs → src/data/countyNonbird/).
+#
+# Runs on a runner that never sleeps (the laptop kept idling to sleep mid-build).
+# Commits the generated data back to feature/state-parks.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350   # < 6h GitHub hard limit
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/state-parks
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm ci
+
+      # ── 1. Bird floor for the remaining rural unit-counties ────────────────
+      # continue-on-error: this is the lower-value rural piece; if the eBird key
+      # has any issue, the non-bird floor (step 2) must still build + commit.
+      - name: Bird county floor (eBird) for refuge/national counties
+        continue-on-error: true
+        env:
+          VITE_EBIRD_API_KEY: ${{ secrets.EBIRD_KEY }}
+          EBIRD_KEY:          ${{ secrets.EBIRD_KEY }}
+        run: node --max-old-space-size=6144 scripts/buildUnitCounties.mjs
+
+      - name: Re-split bird freq into per-state chunks
+        continue-on-error: true
+        run: node scripts/splitBirdFreq.mjs
+
+      # ── 2. Non-bird floor (iNaturalist) for every county ───────────────────
+      - name: County non-bird floor (mammals/reptiles/amphibians/fish/insects)
+        env:
+          NPS_API_KEY:      ${{ secrets.NPS_KEY }}
+          VITE_NPS_API_KEY: ${{ secrets.NPS_KEY }}
+        run: node --max-old-space-size=6144 scripts/buildCountyNonbird.mjs
+
+      # ── 3. Sanity gate — refuse to commit an empty/broken dataset ──────────
+      - name: Sanity check
+        run: |
+          test -f src/data/countyNonbird/loader.js || { echo "non-bird loader missing"; exit 1; }
+          node --input-type=module -e "
+            import('./src/data/countyNonbird/nb_fl.js').then(m => {
+              const counties = Object.keys(m.COUNTY_NONBIRD).length;
+              const gator = Object.values(m.COUNTY_NONBIRD).some(g => (g.reptile||[]).some(([n]) => /alligator/i.test(n)));
+              console.log('FL non-bird counties=' + counties + ' gatorSomewhere=' + gator);
+              if (counties < 30 || !gator) { console.error('FL non-bird data looks wrong — aborting'); process.exit(1); }
+            });
+          "
+
+      # ── 4. Commit the generated data back to the branch ────────────────────
+      - name: Commit & push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/data/stateParkBirdFreq.js src/data/birdFreq/ src/data/countyNonbird/ scripts/_nj_county_cache/
+          git commit -m "data: county species floors (rural bird counties + non-bird floor) [skip ci]" || echo "nothing to commit"
+          git push origin HEAD:feature/state-parks
