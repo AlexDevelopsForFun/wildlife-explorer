@@ -33,13 +33,17 @@ jobs:
         run: npm ci
 
       # ── 1. Bird floor for the remaining rural unit-counties ────────────────
+      # continue-on-error: this is the lower-value rural piece; if the eBird key
+      # has any issue, the non-bird floor (step 2) must still build + commit.
       - name: Bird county floor (eBird) for refuge/national counties
+        continue-on-error: true
         env:
           VITE_EBIRD_API_KEY: ${{ secrets.EBIRD_KEY }}
           EBIRD_KEY:          ${{ secrets.EBIRD_KEY }}
         run: node --max-old-space-size=6144 scripts/buildUnitCounties.mjs
 
       - name: Re-split bird freq into per-state chunks
+        continue-on-error: true
         run: node scripts/splitBirdFreq.mjs
 
       # ── 2. Non-bird floor (iNaturalist) for every county ───────────────────
