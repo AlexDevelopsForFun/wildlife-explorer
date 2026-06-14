@@ -250,4 +250,5 @@ export const STATE_PARKS_NY = [
   { id: "ny-long-point-finger-lakes", name: "Long Point State Park – Finger Lakes", lat: 42.7144, lng: -76.7083, radiusKm: 4, category: "state-park" },
   { id: "ny-long-point-on-lake-chautauqua", name: "Long Point State Park on Lake Chautauqua", lat: 42.18, lng: -79.409, radiusKm: 4, category: "state-park" },
   { id: "ny-harriet-hollister-spencer", name: "Harriet Hollister Spencer State Recreation Area", lat: 42.689, lng: -77.512, radiusKm: 4, category: "recreation-area" },
+  { id: "ny-three-falls", name: "Three Falls State Park", lat: 42.557, lng: -76.625, radiusKm: 4, category: "state-park" },
 ];
