@@ -32,19 +32,63 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CACHE_DIR = path.join(__dirname, '_photo_audit_cache');
 mkdirSync(CACHE_DIR, { recursive: true });
 
-// API key: env or .env (same pattern as the other scripts).
-let KEY = process.env.ANTHROPIC_API_KEY ?? '';
-if (!KEY) {
+// Read a key from process.env or the .env file (same pattern as other scripts).
+const envVal = (names) => {
+  for (const n of names) if (process.env[n]) return process.env[n];
   try {
-    for (const line of readFileSync(path.join(__dirname, '..', '.env'), 'utf8').split('\n')) {
-      const m = line.match(/^ANTHROPIC_API_KEY=(.+)$/);
-      if (m) { KEY = m[1].trim().replace(/^["']|["']$/g, ''); break; }
+    const txt = readFileSync(path.join(__dirname, '..', '.env'), 'utf8');
+    for (const n of names) {
+      const m = txt.match(new RegExp(`^${n}=(.+)$`, 'm'));
+      if (m) return m[1].trim().replace(/^["']|["']$/g, '');
     }
   } catch {}
-}
+  return '';
+};
+
+// API key (Anthropic vision).
+const KEY = envVal(['ANTHROPIC_API_KEY']);
 if (!KEY && !process.argv.includes('--emit')) { console.error('No ANTHROPIC_API_KEY'); process.exit(1); }
 const client = KEY ? new Anthropic({ apiKey: KEY }) : null;
 const MODEL = 'claude-haiku-4-5-20251001'; // cheapest vision-capable model
+
+// NPS key — lets the audit pull national-park units (id `nps_<code>`), so the
+// curated map also covers them (e.g. Roosevelt Campobello → the cottage, BAD).
+const NPS_KEY = envVal(['NPS_API_KEY', 'VITE_NPS_API_KEY', 'REACT_APP_NPS_API_KEY']);
+
+// Mirror useNpsParks.js: which NPS designations are natural (wildlife) units.
+const NP_NATURAL = ['national park', 'national preserve', 'national seashore', 'national lakeshore',
+  'national recreation area', 'national reserve', 'national river', 'scenic river', 'scenic riverway',
+  'wild and scenic river', 'wild river'];
+const NP_EXCLUDE = ['historic', 'memorial', 'battlefield', 'military', 'cemetery', 'heritage',
+  'parkway', 'scenic trail', 'historic trail'];
+const NATURAL_MONUMENTS = new Set(['agfo','ania','band','buis','cabr','cakr','camo','cavo','cebr','chir',
+  'colm','crmo','depo','deto','dino','elma','flfo','fobu','hafo','jeca','joda','kaww','labe','muwo','nabr',
+  'orca','orpi','para','rabr','sucr','tica','tusk','vicr']);
+const npsQualifies = (d = '', code = '') => {
+  d = d.toLowerCase();
+  if (NP_EXCLUDE.some(p => d.includes(p))) return false;
+  if (NP_NATURAL.some(p => d.includes(p))) return true;
+  if (d.includes('national monument')) return NATURAL_MONUMENTS.has(code.toLowerCase());
+  return false;
+};
+
+async function fetchNationalUnits() {
+  if (!NPS_KEY) { console.warn('  (no NPS key — skipping national-park units)'); return []; }
+  try {
+    const r = await fetch(`https://developer.nps.gov/api/v1/parks?limit=600&api_key=${NPS_KEY}`,
+      { signal: AbortSignal.timeout(20000) });
+    if (!r.ok) { console.warn(`  (NPS API ${r.status} — skipping national units)`); return []; }
+    const { data } = await r.json();
+    const out = [];
+    for (const p of data ?? []) {
+      if (!npsQualifies(p.designation, p.parkCode)) continue;
+      const lat = parseFloat(p.latitude), lng = parseFloat(p.longitude);
+      if (!isFinite(lat) || !isFinite(lng) || (lat === 0 && lng === 0)) continue;
+      out.push({ id: `nps_${p.parkCode}`, name: p.fullName ?? p.name, lat, lng });
+    }
+    return out;
+  } catch (e) { console.warn(`  (NPS fetch failed: ${e.message})`); return []; }
+}
 
 // Same junk/photo filters as the client (apiService.js).
 const JUNK = /\b(map|locator|logo|seal|crest|coat of arms|flag|plaque|marker|sign|signage|diagram|chart|layout|floor plan|site plan|emblem|icon|banner|brochure|poster|nrhp|aerial|satellite|landsat|orthophoto|topographic|topo|view of earth|space station|from space)\b|\biss\d|\.svg(\?|$)/i;
@@ -180,6 +224,9 @@ async function main() {
   const parks = [];
   for (const arr of Object.values(STATE_PARKS_BY_STATE)) for (const p of (arr ?? [])) parks.push(p);
   for (const r of NATIONAL_WILDLIFE_REFUGES) parks.push(r);
+  const national = await fetchNationalUnits();
+  for (const n of national) parks.push(n);
+  console.log(`Park set: ${parks.length} total (incl. ${national.length} national-park units).`);
 
   if (!process.argv.includes('--emit')) {
     const todo = parks.filter(p => !existsSync(path.join(CACHE_DIR, `${p.id}.json`)));

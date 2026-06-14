@@ -166,4 +166,5 @@ export const STATE_PARKS_MA = [
   { id: "ma-fort-phoenix-beach", name: "Fort Phoenix Beach State Reservation", lat: 41.6242, lng: -70.8989, radiusKm: 4, category: "state-park" },
   { id: "ma-connecticut-river-greenway", name: "Connecticut River Greenway State Park", lat: 42.6076, lng: -72.5417, radiusKm: 4, category: "state-park" },
   { id: "ma-blackstone-river-and-canal-heritage", name: "Blackstone River and Canal Heritage State Park", lat: 42.0914, lng: -71.6019, radiusKm: 4, category: "state-park" },
+  { id: "ma-richard-mckinnon", name: "Richard McKinnon State Park", lat: 42.3689, lng: -71.0719, radiusKm: 4, category: "state-park" },
 ];
