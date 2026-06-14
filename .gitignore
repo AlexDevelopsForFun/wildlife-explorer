@@ -29,6 +29,9 @@ scripts/geotiff-cache/
 # ── Local script caches & scratch files (regenerated from wildlifeCache.js) ──
 scripts/_*.cjs
 scripts/_county_cache/
+scripts/_us_counties.geojson
+scripts/_*.log
+scripts/_photo_audit_cache/
 scripts/parkTips-cache.json
 scripts/tipTargets.json
 scripts/photoFetch-cache.json

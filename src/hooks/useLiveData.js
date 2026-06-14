@@ -10,6 +10,8 @@ import {
 } from '../services/apiService';
 import { WILDLIFE_CACHE, WILDLIFE_CACHE_BUILT_AT } from '../data/wildlifeCacheLoader.js';
 import { NATIONAL_INAT_PLACE_IDS } from '../data/nationalInatPlaces.js';
+import { UNIT_COUNTY } from '../data/unitCounty.js';
+import { loadStateBirdFreq } from '../data/birdFreq/loader.js';
 
 // ── Weekly stale-bundle eviction ──────────────────────────────────────────────
 // If the static bundle is older than 7 days, all loc_v1_* localStorage entries
@@ -201,7 +203,7 @@ export function useLiveData(locations) {
 
       const sources = [];
       let livePool = [], ebirdChecklists = null, ebirdHistoricalSpecies = null,
-          inatObservations = 0;
+          inatObservations = 0, countySeeded = false;
 
       // Static bundle for this location — used in emitPartial + final merge.
       const bundledAnimals = WILDLIFE_CACHE[loc.id]?.animals ?? [];
@@ -360,6 +362,48 @@ export function useLiveData(locations) {
           }
         }
 
+        // ── 5. County bird-list floor (refuges + national parks) ─────────────
+        // State parks get a baked-in county checklist (PARK_COUNTY); these units
+        // didn't, so a slow/rate-limited live eBird call left them showing a
+        // handful of GBIF records (the "Barnegat shows 14 species" bug). When the
+        // unit maps to a county we have eBird data for, re-rate its live birds
+        // with the gold-standard county frequency and — if the live bird list is
+        // thin — seed the full county list so the species count reflects reality.
+        const _county = UNIT_COUNTY[loc.id];
+        if (_county) {
+          try {
+            const _st = _county.split('-')[1]?.toLowerCase();
+            const _mod = _st ? await loadStateBirdFreq(_st) : null;
+            const _cf = _mod?.COUNTY_BIRD_FREQ?.[_county] ?? null;
+            if (_cf) {
+              const liveBirdNames = new Set();
+              for (const a of livePool) {
+                if (a.animalType !== 'bird' || !a.name) continue;
+                liveBirdNames.add(a.name.toLowerCase());
+                const e = _cf[a.name.toLowerCase()];
+                if (e) { a.frequency = e.f; a.rarity = rarityFromChecklist(e.f); a.seasons = e.s; a._raritySource = 'ebird_county_freq'; }
+              }
+              // "Rich" live birds (eBird succeeded) → keep park-specific; otherwise
+              // seed the county list as a reliable, comprehensive floor.
+              const ebirdRich = sources.includes('ebird') && liveBirdNames.size >= 40;
+              if (!ebirdRich) {
+                let seeded = 0;
+                for (const [n, e] of Object.entries(_cf)) {
+                  if (n.startsWith('__') || liveBirdNames.has(n)) continue;
+                  livePool.push({
+                    name: n.replace(/(^|[\s-])\w/g, c => c.toUpperCase()),
+                    animalType: 'bird', emoji: '🐦', bestSeason: 'spring',
+                    frequency: e.f, rarity: rarityFromChecklist(e.f), seasons: e.s,
+                    source: 'ebird', _raritySource: 'ebird_county_freq', _countySeeded: true,
+                  });
+                  seeded++;
+                }
+                if (seeded) { if (!sources.includes('ebird')) sources.push('ebird'); countySeeded = true; }
+              }
+            }
+          } catch { /* non-fatal — county floor is best-effort */ }
+        }
+
       } catch (err) {
         DEV_WARN(`[useLiveData] ${loc.id}:`, err.message);
       }
@@ -388,7 +432,7 @@ export function useLiveData(locations) {
         );
 
         const finalResult = {
-          animals, sources,
+          animals, sources, countySeeded,
           stats: { ebirdChecklists, ebirdHistoricalSpecies, inatObservations, speciesCounts },
           // No _partial flag — this is the final committed result
         };

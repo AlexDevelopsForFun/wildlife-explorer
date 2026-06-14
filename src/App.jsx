@@ -4470,7 +4470,7 @@ function RaritySpectrumBar({ animals, activeRarity, onSelectRarity }) {
 }
 
 function LocationPopup({ location, heroImage, heroAlt, effectiveAnimals, season, rarity, animalType,
-  isLive, sources, isLoading, debugMode, stats, cacheTs,
+  isLive, sources, isLoading, debugMode, stats, cacheTs, countySeeded,
   loadingProgress, refreshLocation,
   popupType, setPopupType, popupSort, setPopupSort,
   popupSeason, setPopupSeason, popupRarity, setPopupRarity,
@@ -5110,6 +5110,16 @@ function LocationPopup({ location, heroImage, heroAlt, effectiveAnimals, season,
                 {SEASONS[popupSeason]?.emoji ?? '📅'} {SEASONS[popupSeason]?.label ?? popupSeason}
               </span>
             )}
+          </div>
+        )}
+        {/* County-level fallback — live sightings were thin, so the bird list is
+            seeded from the surrounding county's eBird checklists (honest about
+            the source so visitors trust it). */}
+        {countySeeded && (
+          <div className="lp__banner" role="note">
+            <strong>County-level bird list.</strong> Live sightings were sparse here just now,
+            so this shows the birds of the surrounding county (eBird historical checklists) —
+            the species you can expect in this area.
           </div>
         )}
         {/* API data note — eBird checklist count + iNat observation count */}
@@ -6597,6 +6607,7 @@ function AppInner() {
                 isLoading={loading.has(openPopup.loc.id)}
                 debugMode={debugMode}
                 stats={liveData[openPopup.loc.id]?.stats}
+                countySeeded={!!liveData[openPopup.loc.id]?.countySeeded}
                 cacheTs={liveData[openPopup.loc.id]?._cacheTs ?? null}
                 popupType={popupType}       setPopupType={setPopupType}
                 popupSort={popupSort}       setPopupSort={setPopupSort}
