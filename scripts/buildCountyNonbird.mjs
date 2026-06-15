@@ -146,7 +146,11 @@ async function main() {
 
   const data = {};   // fips -> { mammal:[...], ... }
   let done = 0, withData = 0;
-  // iNat ~60/min — keep concurrency modest. 2 workers × ~6 spaced reqs/county.
+  // SINGLE worker on purpose: iNat throttles hard at >60 req/min, and 2 workers
+  // (≈90/min attempted) get rate-limited into a crawl that blew the 6h CI budget.
+  // One worker with the per-call sleeps below paces at ~45/min — under the limit,
+  // so it runs at full speed without 429 backoffs. Cached counties are instant,
+  // so a resumed run only pays for the un-sampled ones.
   const todo = [...fipsList];
   const worker = async () => {
     while (todo.length) {
@@ -158,7 +162,7 @@ async function main() {
       if (++done % 50 === 0) console.log(`  …${done}/${fipsList.length} (${withData} with data)`);
     }
   };
-  await Promise.all([worker(), worker()]);
+  await worker();
 
   // ── emit per-state chunks + loader ────────────────────────────────────────
   const byState = {};

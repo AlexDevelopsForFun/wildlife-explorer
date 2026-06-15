@@ -32,7 +32,7 @@ scripts/_county_cache/
 scripts/_us_counties.geojson
 scripts/_*.log
 scripts/_photo_audit_cache/
-scripts/_nonbird_cache/
+# _nonbird_cache is tracked (committed) so the cloud build resumes from it.
 scripts/parkTips-cache.json
 scripts/tipTargets.json
 scripts/photoFetch-cache.json
