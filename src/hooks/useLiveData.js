@@ -6,7 +6,7 @@ const DEV_WARN = (...a) => { if (import.meta.env.DEV) console.warn(...a); };
 import {
   fetchEbirdHotspot, fetchEbird, fetchINat, fetchNps, fetchGbif,
   deduplicateAnimals, getCorrectionFactor, getMonthlyFrequency, rarityFromChecklist,
-  rarityFromInatAbundance, locationCacheGet, locationCacheSet,
+  rarityFromInatAbundance, nonbirdSeasons, locationCacheGet, locationCacheSet,
 } from '../services/apiService';
 import { WILDLIFE_CACHE, WILDLIFE_CACHE_BUILT_AT } from '../data/wildlifeCacheLoader.js';
 import { NATIONAL_INAT_PLACE_IDS } from '../data/nationalInatPlaces.js';
@@ -431,7 +431,7 @@ export function useLiveData(locations) {
                   livePool.push({
                     name, animalType: group, emoji: NONBIRD_EMOJI[group] ?? '🐾', bestSeason: 'spring',
                     frequency: f, rarity: rarityFromInatAbundance(f),
-                    seasons: ['spring', 'summer', 'fall', 'winter'],
+                    seasons: nonbirdSeasons(group, loc.lat),
                     source: 'inaturalist', _raritySource: 'inat_county_freq', _countySeeded: true,
                   });
                   seededNb++;
