@@ -208,6 +208,21 @@ export function rarityFromInatAbundance(freq) {
   return 'exceptional';
 }
 
+// Climate-aware seasons for a county-seeded NON-BIRD species. The county floor
+// has no per-species month data, so instead of marking everything all-season
+// (which wrongly shows a summer butterfly under a Winter filter), apply the
+// biology: warm-blooded animals + fish are observable year-round, while cold-
+// blooded animals (reptiles, amphibians, insects) go dormant/absent in winter
+// EXCEPT in the subtropical south (≈ below 31°N — Florida, the Gulf coast,
+// south Texas, Hawai‘i). Per-park latitude drives the call.
+const ALL_SEASONS = ['spring', 'summer', 'fall', 'winter'];
+const NO_WINTER   = ['spring', 'summer', 'fall'];
+export function nonbirdSeasons(group, lat) {
+  if (group === 'mammal' || group === 'marine') return ALL_SEASONS;
+  const subtropical = typeof lat === 'number' && lat < 31;
+  return subtropical ? ALL_SEASONS : NO_WINTER;
+}
+
 // ── Frequency correction factors ─────────────────────────────────────────────
 // Charismatic species get over-reported (excited birders log even rare sightings),
 // so their raw checklist frequency is inflated. We divide to compensate.

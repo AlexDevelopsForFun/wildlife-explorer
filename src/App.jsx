@@ -412,7 +412,7 @@ import { findStateParksWithBird } from './utils/birdParkSearch';
 import {
   mergeAnimals, balanceAnimals, filterGeographicOutliers, NEVER_EXCEPTIONAL_BIRDS,
   getCorrectionFactor, getMonthlyFrequency,
-  rarityFromChecklist, rarityFromInatAbundance, applyRarityOverride,
+  rarityFromChecklist, rarityFromInatAbundance, nonbirdSeasons, applyRarityOverride,
   fetchInatMonthlyHist, fetchInatParkMonthlyEffort,
   fetchEbird, fetchINat, fetchEbirdHotspot, deduplicateAnimals,
   fetchWikiParkImage, fetchEbirdNotable,
@@ -1725,7 +1725,7 @@ function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
                 animals.push({
                   name, animalType: group, emoji: NONBIRD_EMOJI[group] ?? '🐾',
                   frequency: f, rarity: rarityFromInatAbundance(f),
-                  seasons: ['spring', 'summer', 'fall', 'winter'],
+                  seasons: nonbirdSeasons(group, park.lat),
                   _raritySource: 'inat_county_freq', _countySeeded: true,
                 });
                 countySeeded = true;
