@@ -194,6 +194,20 @@ export function rarityFromChecklist(freq) {
   return 'exceptional';
 }
 
+// Non-bird county-floor rarity. That "frequency" is sqrt(obs / most-observed-
+// species) — a relative iNaturalist PHOTOGRAPHY signal, not a per-visit
+// probability, and it's skewed by what people bother to photograph (an invasive
+// anole gets logged far more than a notable gator). So map it conservatively:
+// the most-recorded species reads "Very Likely", never "Guaranteed", with a
+// wider spread down to Rare so the long tail isn't all labelled "Likely".
+export function rarityFromInatAbundance(freq) {
+  if (freq >= 0.80) return 'very_likely';
+  if (freq >= 0.45) return 'likely';
+  if (freq >= 0.22) return 'unlikely';
+  if (freq >= 0.08) return 'rare';
+  return 'exceptional';
+}
+
 // ── Frequency correction factors ─────────────────────────────────────────────
 // Charismatic species get over-reported (excited birders log even rare sightings),
 // so their raw checklist frequency is inflated. We divide to compensate.
