@@ -12,6 +12,12 @@ import { WILDLIFE_CACHE, WILDLIFE_CACHE_BUILT_AT } from '../data/wildlifeCacheLo
 import { NATIONAL_INAT_PLACE_IDS } from '../data/nationalInatPlaces.js';
 import { UNIT_COUNTY } from '../data/unitCounty.js';
 import { loadStateBirdFreq } from '../data/birdFreq/loader.js';
+import { loadCountyNonbird } from '../data/countyNonbird/loader.js';
+
+// Non-bird county floor: seed a group only when the live list for it is thin,
+// and the emoji each seeded species shows.
+const NONBIRD_EMOJI = { mammal: '🦌', reptile: '🦎', amphibian: '🐸', marine: '🐟', insect: '🦋' };
+const NONBIRD_THIN  = { mammal: 12, reptile: 12, amphibian: 8, marine: 12, insect: 25 };
 
 // ── Weekly stale-bundle eviction ──────────────────────────────────────────────
 // If the static bundle is older than 7 days, all loc_v1_* localStorage entries
@@ -402,6 +408,38 @@ export function useLiveData(locations) {
               }
             }
           } catch { /* non-fatal — county floor is best-effort */ }
+
+          // ── Non-bird floor: mammals/reptiles/amphibians/fish/insects ──────
+          // Same idea for the other taxa from iNaturalist — so a sparse park
+          // still shows the animals documented in its county (FL gators etc.).
+          try {
+            const _st2 = _county.split('-')[1]?.toLowerCase();
+            const _nbAll = _st2 ? await loadCountyNonbird(_st2) : null;
+            const _nb = _nbAll?.[_county] ?? null;
+            if (_nb) {
+              const liveByGroup = {}; const liveNonbirdNames = new Set();
+              for (const a of livePool) {
+                if (a.animalType === 'bird' || !a.name) continue;
+                liveByGroup[a.animalType] = (liveByGroup[a.animalType] ?? 0) + 1;
+                liveNonbirdNames.add(a.name.toLowerCase());
+              }
+              let seededNb = 0;
+              for (const [group, list] of Object.entries(_nb)) {
+                if ((liveByGroup[group] ?? 0) >= (NONBIRD_THIN[group] ?? 12)) continue; // live already rich
+                for (const [name, f] of list) {
+                  if (liveNonbirdNames.has(name.toLowerCase())) continue;
+                  livePool.push({
+                    name, animalType: group, emoji: NONBIRD_EMOJI[group] ?? '🐾', bestSeason: 'spring',
+                    frequency: f, rarity: rarityFromChecklist(f),
+                    seasons: ['spring', 'summer', 'fall', 'winter'],
+                    source: 'inaturalist', _raritySource: 'inat_county_freq', _countySeeded: true,
+                  });
+                  seededNb++;
+                }
+              }
+              if (seededNb) { if (!sources.includes('inaturalist')) sources.push('inaturalist'); countySeeded = true; }
+            }
+          } catch { /* non-fatal */ }
         }
 
       } catch (err) {

@@ -15,7 +15,13 @@ import { STATE_PARKS_NJ, STATE_PARKS_BY_STATE, findStatePark, INAT_PLACE_IDS, ST
 // the main bundle. Opening a park fetches only its own state's data; the old
 // all-states monolith (12MB) is split by scripts/splitBirdFreq.mjs.
 import { loadStateBirdFreq } from './data/birdFreq/loader.js';
+import { loadCountyNonbird } from './data/countyNonbird/loader.js';
 import { safeSetItem } from './utils/safeStorage.js';
+
+// Non-bird county floor (mammals/reptiles/amphibians/fish/insects): seed a group
+// only when the live list for it is thin; emoji shown per seeded species.
+const NONBIRD_EMOJI = { mammal: '🦌', reptile: '🦎', amphibian: '🐸', marine: '🐟', insect: '🦋' };
+const NONBIRD_THIN  = { mammal: 12, reptile: 12, amphibian: 8, marine: 12, insect: 25 };
 
 // Park hero photos are opt-in: collapsed behind a pill by default (the species
 // are the point; the photo is a peek), and the visitor's last choice is
@@ -1682,6 +1688,38 @@ function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
             }));
           if (animals.length && !sources.includes('ebird')) sources.push('ebird');
         }
+
+        // ── Non-bird county floor (mammals/reptiles/amphibians/fish/insects) ──
+        // Seed each group from the county's iNaturalist list when the live data
+        // for it is thin, so a sparse state park still shows the animals
+        // documented in its county (e.g. gators at a quiet Florida park).
+        try {
+          const _spCounty = birdFreqMod?.PARK_COUNTY?.[park.id];
+          const _nbAll = _spCounty ? await loadCountyNonbird(park.id.slice(0, 2)) : null;
+          const _nb = _nbAll?.[_spCounty] ?? null;
+          if (alive && _nb) {
+            const liveByGroup = {}; const liveNames = new Set();
+            for (const a of animals) {
+              if (a.animalType === 'bird' || !a.name) continue;
+              liveByGroup[a.animalType] = (liveByGroup[a.animalType] ?? 0) + 1;
+              liveNames.add(a.name.toLowerCase());
+            }
+            for (const [group, list] of Object.entries(_nb)) {
+              if ((liveByGroup[group] ?? 0) >= (NONBIRD_THIN[group] ?? 12)) continue;
+              for (const [name, f] of list) {
+                if (liveNames.has(name.toLowerCase())) continue;
+                animals.push({
+                  name, animalType: group, emoji: NONBIRD_EMOJI[group] ?? '🐾',
+                  frequency: f, rarity: rarityFromChecklist(f),
+                  seasons: ['spring', 'summer', 'fall', 'winter'],
+                  _raritySource: 'inat_county_freq', _countySeeded: true,
+                });
+                countySeeded = true;
+              }
+            }
+          }
+        } catch { /* non-fatal — non-bird floor is best-effort */ }
+
         const stats = { ebirdChecklists, ebirdHistoricalSpecies: ebirdHistoricalSpecies || null, inatObservations };
         setState({ status: animals.length ? 'ok' : 'empty', species: animals, total: animals.length, sources, stats, partial: false, countySeeded });
       } catch {
@@ -1997,9 +2035,9 @@ function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
               )}
               {state.countySeeded ? (
                 <div className="statepark-modal__banner" role="note">
-                  <strong>County-level bird list.</strong> Few geotagged observations were
-                  found right at this spot, so this shows the birds of the surrounding
-                  county (eBird historical checklists) — the species you can expect in this area.
+                  <strong>County-level species list.</strong> Few geotagged observations were
+                  found right at this spot, so this shows the wildlife documented in the surrounding
+                  county (eBird + iNaturalist records) — the species you can expect in this area.
                 </div>
               ) : (
                 <div className="statepark-modal__banner" role="note">
@@ -5117,9 +5155,9 @@ function LocationPopup({ location, heroImage, heroAlt, effectiveAnimals, season,
             the source so visitors trust it). */}
         {countySeeded && (
           <div className="lp__banner" role="note">
-            <strong>County-level bird list.</strong> Live sightings were sparse here just now,
-            so this shows the birds of the surrounding county (eBird historical checklists) —
-            the species you can expect in this area.
+            <strong>County-level species list.</strong> Live sightings were sparse here just now,
+            so this shows the wildlife documented in the surrounding county (eBird + iNaturalist
+            records) — the species you can expect in this area.
           </div>
         )}
         {/* API data note — eBird checklist count + iNat observation count */}

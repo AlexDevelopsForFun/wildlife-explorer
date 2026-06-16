@@ -167,7 +167,7 @@ function mergeSamples(a, b) {
   return { valid: a.valid + b.valid, total: a.total + b.total, datesPresent, monthData, monthValid };
 }
 
-async function sampleCounty(county) {
+export async function sampleCounty(county) {
   const cacheFile = path.join(CACHE_DIR, `${county}.json`);
   if (existsSync(cacheFile)) {
     const cached = JSON.parse(readFileSync(cacheFile, 'utf8'));
@@ -247,4 +247,9 @@ async function main() {
   console.log(`   ${Object.keys(parkCounty).length} parks → ${Object.keys(countyFreq).length} counties w/ data, ${spp} county-species entries.`);
 }
 
-main().catch(e => { console.error(e); process.exit(1); });
+// Only run the full build when invoked directly — allows importing sampleCounty
+// (e.g. scripts/buildUnitCounties.mjs) without triggering the 4,050-park build.
+import { pathToFileURL } from 'url';
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch(e => { console.error(e); process.exit(1); });
+}
