@@ -23,6 +23,18 @@ import { safeSetItem } from './utils/safeStorage.js';
 const NONBIRD_EMOJI = { mammal: '🦌', reptile: '🦎', amphibian: '🐸', marine: '🐟', insect: '🦋' };
 const NONBIRD_THIN  = { mammal: 12, reptile: 12, amphibian: 8, marine: 12, insect: 25 };
 
+// County fallback for the handful of state parks the eBird-hotspot build never
+// resolved (so they had no floor). Hand-mapped by point-in-polygon; only the
+// ones whose county actually has floor data are listed. The newest parks
+// (MA/NY) self-resolve on the next monthly bird rebuild — this is their stopgap.
+const PARK_COUNTY_EXTRA = {
+  'ma-richard-mckinnon': 'US-MA-017',
+  'ny-three-falls':      'US-NY-099',
+  'nv-forty-mile':       'US-NV-023',
+  'ms-holmes-county':    'US-MS-051',
+  'ak-wood-tikchik':     'US-AK-070',
+};
+
 // Park hero photos are opt-in: collapsed behind a pill by default (the species
 // are the point; the photo is a peek), and the visitor's last choice is
 // remembered — open it once and parks keep showing photos, close it and they
@@ -400,7 +412,7 @@ import { findStateParksWithBird } from './utils/birdParkSearch';
 import {
   mergeAnimals, balanceAnimals, filterGeographicOutliers, NEVER_EXCEPTIONAL_BIRDS,
   getCorrectionFactor, getMonthlyFrequency,
-  rarityFromChecklist, applyRarityOverride,
+  rarityFromChecklist, rarityFromInatAbundance, applyRarityOverride,
   fetchInatMonthlyHist, fetchInatParkMonthlyEffort,
   fetchEbird, fetchINat, fetchEbirdHotspot, deduplicateAnimals,
   fetchWikiParkImage, fetchEbirdNotable,
@@ -1598,8 +1610,11 @@ function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
         // Factored into finalize() so we can emit birds first, then the full set.
         const birdFreqMod = await loadStateBirdFreq(park.id.slice(0, 2));
         if (!alive) return;
-        const countyFreq = birdFreqMod
-          ? (birdFreqMod.COUNTY_BIRD_FREQ[birdFreqMod.PARK_COUNTY[park.id]] ?? null)
+        // County for both floors — PARK_COUNTY (from the bird build) with a
+        // hand-mapped fallback for the few parks it never resolved.
+        const _spCounty = birdFreqMod?.PARK_COUNTY?.[park.id] ?? PARK_COUNTY_EXTRA[park.id] ?? null;
+        const countyFreq = (birdFreqMod && _spCounty)
+          ? (birdFreqMod.COUNTY_BIRD_FREQ[_spCounty] ?? null)
           : null;
         const finalize = () => {
           // Drop clear out-of-range live-API artifacts (state-aware: keeps Dall
@@ -1694,7 +1709,6 @@ function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
         // for it is thin, so a sparse state park still shows the animals
         // documented in its county (e.g. gators at a quiet Florida park).
         try {
-          const _spCounty = birdFreqMod?.PARK_COUNTY?.[park.id];
           const _nbAll = _spCounty ? await loadCountyNonbird(park.id.slice(0, 2)) : null;
           const _nb = _nbAll?.[_spCounty] ?? null;
           if (alive && _nb) {
@@ -1710,7 +1724,7 @@ function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
                 if (liveNames.has(name.toLowerCase())) continue;
                 animals.push({
                   name, animalType: group, emoji: NONBIRD_EMOJI[group] ?? '🐾',
-                  frequency: f, rarity: rarityFromChecklist(f),
+                  frequency: f, rarity: rarityFromInatAbundance(f),
                   seasons: ['spring', 'summer', 'fall', 'winter'],
                   _raritySource: 'inat_county_freq', _countySeeded: true,
                 });
