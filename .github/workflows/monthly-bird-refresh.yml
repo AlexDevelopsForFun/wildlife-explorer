@@ -57,6 +57,9 @@ jobs:
           "
           test "$(ls src/data/birdFreq/freq_*.js | wc -l)" = "50" || { echo "Expected 50 state chunks"; exit 1; }
 
+      - name: Health audit (coverage + signature species — refuse a regression)
+        run: node --max-old-space-size=6144 scripts/auditSpeciesFloors.mjs
+
       - name: Build (must pass before pushing)
         env:
           VITE_EBIRD_API_KEY: ${{ secrets.EBIRD_KEY }}

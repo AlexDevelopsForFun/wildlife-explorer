@@ -1,0 +1,36 @@
+name: Species Floor Health Audit
+
+# Standing guardrail: verifies every park still has a county species floor and
+# that signature animals appear where they live (alligator in FL, moose up
+# north, bison by Yellowstone…). Runs weekly, on any change to the species
+# data, and on demand. A red ❌ here means a park could silently go near-empty
+# — i.e. catch the next "Barnegat" before a visitor does.
+
+on:
+  schedule:
+    - cron: "0 13 * * 1"   # Mondays 13:00 UTC
+  pull_request:
+    paths:
+      - 'src/data/stateParkBirdFreq.js'
+      - 'src/data/birdFreq/**'
+      - 'src/data/countyNonbird/**'
+      - 'src/data/unitCounty.js'
+      - 'src/data/stateParks*.js'
+      - 'src/data/nationalWildlifeRefuges.js'
+      - 'scripts/auditSpeciesFloors.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      # No npm install needed — the audit only imports the project's own data.
+      - name: Run species-floor health audit
+        run: node --max-old-space-size=4096 scripts/auditSpeciesFloors.mjs
