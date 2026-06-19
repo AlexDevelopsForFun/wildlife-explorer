@@ -888,15 +888,19 @@ body, #root {
   display: flex; gap: 6px; flex-wrap: wrap;
 }
 .lp__hero-tool {
-  font-size: 9.5px; line-height: 1; padding: 4px 9px; border-radius: 999px; border: 0;
-  background: rgba(0,0,0,0.6); color: rgba(255,255,255,0.92); cursor: pointer;
-  backdrop-filter: blur(2px); box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+  display: inline-flex; align-items: center;
+  font-size: 11px; line-height: 1; padding: 6px 11px; border-radius: 999px; border: 0;
+  background: rgba(0,0,0,0.62); color: #fff; cursor: pointer;
+  backdrop-filter: blur(2px); box-shadow: 0 1px 5px rgba(0,0,0,0.45);
   transition: background 0.15s, color 0.15s;
 }
 .lp__hero-tool:hover { background: rgba(0,0,0,0.82); color: #fff; }
 .lp__hero-flag:hover { background: rgba(140,30,30,0.85); color: #fff; }
 @media (max-width: 768px) {
   .lp__hero--natural { max-height: 260px; }
+  /* Real touch targets on phones — the old 18px pills were untappable. */
+  .lp__hero-tool { font-size: 13px; padding: 11px 16px; min-height: 40px; }
+  .lp__hero-credit { font-size: 11px; padding: 7px 11px; min-height: 32px; align-items: center; }
 }
 .lp__hero-credit {
   position: absolute; right: 6px; bottom: 6px;
@@ -3602,7 +3606,14 @@ body, #root {
   .hdr__logo  { font-size: 24px; }
   .hdr__title { font-size: 14px; letter-spacing: -0.3px; }
   .hdr__sub   { display: none; }
-  .hdr__actions { margin-left: auto; gap: 4px; }
+  /* Wrap the action buttons so About + Feedback are always reachable — at
+     375px they were running off-screen in a non-scrolling nowrap row. Needs
+     width:100% + flex-shrink to override the base flex-shrink:0 that let the
+     row overflow the viewport instead of wrapping. */
+  .hdr__actions {
+    margin-left: 0; width: 100%; flex-shrink: 1;
+    gap: 6px; flex-wrap: wrap; justify-content: flex-start;
+  }
 
   /* Search slot wraps to own line, full width */
   .hdr__search-slot {
