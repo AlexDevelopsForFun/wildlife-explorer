@@ -35,6 +35,16 @@ const PARK_COUNTY_EXTRA = {
   'ak-wood-tikchik':     'US-AK-070',
 };
 
+// Hiking-trails deep link (MVP). Opens AllTrails' map centered on the park
+// (~13 km box) so visitors see the routes/trails there — AllTrails has far
+// richer US trail coverage than OSM route-relations. Single source of truth:
+// swap this one URL to change the destination (e.g. an OSM hiking map).
+const trailsUrl = (lat, lng) => {
+  const d = 0.06;
+  return `https://www.alltrails.com/explore?b_tl_lat=${(lat + d).toFixed(4)}&b_tl_lng=${(lng - d).toFixed(4)}` +
+         `&b_br_lat=${(lat - d).toFixed(4)}&b_br_lng=${(lng + d).toFixed(4)}`;
+};
+
 // Park hero photos are opt-in: collapsed behind a pill by default (the species
 // are the point; the photo is a peek), and the visitor's last choice is
 // remembered — open it once and parks keep showing photos, close it and they
@@ -1979,6 +1989,15 @@ function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
               title="Open directions in your maps app"
             >
               🧭 Directions
+            </a>
+            <a
+              className="lp__share-btn lp__directions-btn lp__trails-btn"
+              href={trailsUrl(park.lat, park.lng)}
+              target="_blank" rel="noopener noreferrer"
+              aria-label={`See hiking trails at ${park.name}`}
+              title="See hiking trails & routes (AllTrails)"
+            >
+              🥾 Trails
             </a>
           </div>
           {/* In-panel park switcher — jump to another park in the same state
@@ -5092,6 +5111,13 @@ function LocationPopup({ location, heroImage, heroAlt, effectiveAnimals, season,
             aria-label={`Get directions to ${location.name}`}
             title="Open directions in your maps app"
           >🧭 Directions</a>
+          <a
+            className="lp__action-btn"
+            href={trailsUrl(location.lat, location.lng)}
+            target="_blank" rel="noopener noreferrer"
+            aria-label={`See hiking trails at ${location.name}`}
+            title="See hiking trails & routes (AllTrails)"
+          >🥾 Trails</a>
           <button
             className="lp__action-btn"
             aria-label={`Copy a shareable link to ${location.name}`}
