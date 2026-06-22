@@ -3369,6 +3369,28 @@ body, #root {
 }
 
 /* ── Footer ────────────────────────────────────────────────────────────────── */
+/* ── How-to-use guide (reuses the about-modal shell) ─────────────────────── */
+.guide-tips { list-style: none; margin: 4px 0 0; padding: 0 32px; }
+.guide-tip {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.guide-tip:last-child { border-bottom: 0; }
+.guide-tip__emoji { font-size: 26px; line-height: 1.1; flex-shrink: 0; width: 32px; text-align: center; }
+.guide-tip__title { margin: 1px 0 4px; font-size: 15px; font-weight: 700; color: #fff; }
+.guide-tip__body  { margin: 0; font-size: 13.5px; line-height: 1.5; color: rgba(255,255,255,0.72); }
+.guide-link {
+  background: none; border: 0; padding: 0; cursor: pointer;
+  color: #6fd08c; font-size: inherit; font-weight: 600; text-decoration: underline;
+}
+.guide-link:hover { color: #8fe0a8; }
+.splash__links { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+@media (max-width: 768px) {
+  .guide-tips { padding: 0 18px; }
+  .guide-tip__title { font-size: 14px; }
+  .guide-tip__body  { font-size: 13px; }
+}
+
 .about-modal__footer {
   text-align: center;
   padding: 24px 32px 30px;

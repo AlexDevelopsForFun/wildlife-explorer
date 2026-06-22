@@ -1237,6 +1237,68 @@ function AboutModal({ onClose, scrollTo }) {
   );
 }
 
+// ── How-to-use guide ───────────────────────────────────────────────────────
+// Action-first quick start: the high-value moves most visitors never discover
+// (species search, near-me, filters, life list, trails) + how to read the
+// likelihood bar. Reuses the about-modal shell; also prerendered at /guide.
+const GUIDE_TIPS = [
+  ['🔎', 'Search any animal', 'Type a species — “Bald Eagle”, “Black Bear”, “Monarch” — in the search bar to find every park where it’s been seen. The fastest way to chase a specific creature.'],
+  ['📍', 'Find parks near you', 'Tap “Near me” for the closest national parks, state parks, and refuges, sorted by distance — including what’s rare in the area right now.'],
+  ['🎚️', 'Filter for your trip', 'Open a park and set the season + likelihood filters to answer “what will I actually see in July?” Sort by Most Iconic, or by how likely each species is.'],
+  ['✅', 'Keep a life list', 'Tap “+ Mark seen” on any animal to build your personal life list — it remembers everything you’ve spotted across every park.'],
+  ['🥾', 'Plan the visit', 'Every park has Directions and Trails buttons, plus an opt-in photo of what it actually looks like.'],
+];
+function GuideModal({ onClose, onAbout }) {
+  useEffect(() => {
+    const h = e => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, [onClose]);
+
+  return (
+    <>
+      <div className="about-overlay" onClick={onClose} />
+      <div className="about-modal" role="dialog" aria-modal="true" aria-label="How to use US Wildlife Explorer">
+        <button className="about-modal__close" onClick={onClose} aria-label="Close">X</button>
+        <div className="about-modal__body">
+          <div className="about-modal__hero">
+            <span className="about-modal__hero-icon">✨</span>
+            <h2 className="about-modal__hero-title">Get the most out of it</h2>
+            <p className="about-modal__hero-sub">Five quick ways to find the wildlife you’re after</p>
+          </div>
+
+          <ol className="guide-tips">
+            {GUIDE_TIPS.map(([emoji, title, body], i) => (
+              <li key={i} className="guide-tip">
+                <span className="guide-tip__emoji" aria-hidden="true">{emoji}</span>
+                <div>
+                  <h3 className="guide-tip__title">{title}</h3>
+                  <p className="guide-tip__body">{body}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+
+          <section className="about-section">
+            <h3 className="about-section__title">How to read the likelihood bar</h3>
+            <div className="about-section__body">
+              <p>Each species shows how likely you are to encounter it — <strong>Guaranteed → Very Likely → Likely → Unlikely → Rare</strong> — based on real eBird and iNaturalist sightings, adjusted for the park.</p>
+              <p>A <strong>“County-level” note</strong> means sightings right at that spot were sparse, so we show the wildlife documented in the surrounding county — the species you can reasonably expect in the area.</p>
+            </div>
+          </section>
+
+          <div className="about-modal__footer">
+            <p>Want the methodology behind the numbers?{' '}
+              {onAbout && <button type="button" className="guide-link" onClick={() => { onClose(); onAbout('methodology'); }}>Read how we calculate it →</button>}
+            </p>
+            <p>Spotted something off? Use the 💬 Feedback button — your reports keep it accurate.</p>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
 // ── My Life List modal ─────────────────────────────────────────────────────
 // The keepsake view: everything the visitor has personally logged, grouped
 // by the park where they first saw it, with milestone rank + export/clear.
@@ -2874,7 +2936,7 @@ function StateParkMap({ state, parks, stateGeo, onPickPark, onClose, onSwitchSta
 // ── Welcome splash screen ──────────────────────────────────────────────────────
 // Shown only on the very first visit (localStorage key wm_visited).
 // Dismissed by clicking the button; never shown again.
-function SplashScreen({ onDismiss, onAbout }) {
+function SplashScreen({ onDismiss, onAbout, onGuide }) {
   return (
     <div className="splash" role="dialog" aria-modal="true" aria-label="Welcome to US Wildlife Explorer">
       <div className="splash__content">
@@ -2884,9 +2946,16 @@ function SplashScreen({ onDismiss, onAbout }) {
         <button className="splash__btn" onClick={onDismiss} autoFocus>
           Explore the Map →
         </button>
-        <button className="splash__about-link" onClick={() => { onDismiss(); onAbout(); }}>
-          About this project
-        </button>
+        <div className="splash__links">
+          {onGuide && (
+            <button className="splash__about-link" onClick={() => { onDismiss(); onGuide(); }}>
+              ✨ How to use it
+            </button>
+          )}
+          <button className="splash__about-link" onClick={() => { onDismiss(); onAbout(); }}>
+            About this project
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -5858,6 +5927,9 @@ function AppInner() {
   const [aboutScrollTo, setAboutScrollTo] = useState(null);
   const openAbout = useCallback((section = null) => { track('about_open'); setAboutScrollTo(section); setShowAbout(true); }, []);
   const closeAbout = useCallback(() => { setShowAbout(false); setAboutScrollTo(null); }, []);
+  const [showGuide, setShowGuide] = useState(false);
+  const openGuide  = useCallback(() => { track('guide_open'); setShowGuide(true); }, []);
+  const closeGuide = useCallback(() => setShowGuide(false), []);
 
   // Welcome splash — shown only on first visit, gated by localStorage.
   const [showSplash, setShowSplash] = useState(() => {
@@ -6094,6 +6166,12 @@ function AppInner() {
     if (deepLinkDone.current) return;
     try {
       const u = new URL(window.location.href);
+      // /guide — the prerendered how-to-use page; open the guide on arrival.
+      if (/^\/guide\/?$/i.test(u.pathname)) {
+        deepLinkDone.current = true;
+        openGuide();
+        return;
+      }
       const spMatch  = u.pathname.match(/^\/state-park\/([a-z]{2})\/([^/]+)\/?$/i);
       const stMatch  = u.pathname.match(/^\/state\/([a-z]{2})\/?$/i);
       // Species landing pages (/species/<slug>[/<state>]) — prerendered for
@@ -6419,7 +6497,7 @@ function AppInner() {
           bundle provides instant content; live enrichment runs silently. */}
 
       {/* ── Welcome splash (first visit only) ── */}
-      {showSplash && <SplashScreen onDismiss={dismissSplash} onAbout={() => openAbout()} />}
+      {showSplash && <SplashScreen onDismiss={dismissSplash} onAbout={() => openAbout()} onGuide={openGuide} />}
 
       {/* ── Debug mode banner ── */}
       {debugMode && (
@@ -6479,6 +6557,9 @@ function AppInner() {
               </button>
               <button className="hdr__about-btn" onClick={() => setShowStateSelector(true)} title="Browse state parks by state" aria-label="Browse state parks">
                 <span className="hdr__about-icon" aria-hidden="true">🗺️</span> State Parks
+              </button>
+              <button className="hdr__about-btn" onClick={openGuide} title="How to use it — quick tips" aria-label="How to use it">
+                <span className="hdr__about-icon" aria-hidden="true">✨</span> Tips
               </button>
               <button className="hdr__about-btn" onClick={() => openAbout()} title="About this project" aria-label="About">
                 <span className="hdr__about-icon">i</span> About
@@ -6775,6 +6856,7 @@ function AppInner() {
 
       {/* ── About modal ── */}
       {showAbout && <AboutModal onClose={closeAbout} scrollTo={aboutScrollTo} />}
+      {showGuide && <GuideModal onClose={closeGuide} onAbout={openAbout} />}
       {showContact && <ContactModal onClose={() => setShowContact(false)} />}
       {showLifeList && <LifeListModal onClose={() => setShowLifeList(false)} />}
       {showParkList && (
