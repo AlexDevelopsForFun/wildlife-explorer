@@ -315,6 +315,7 @@ async function main() {
       `likely each sighting is, and the best time to visit — with live data ` +
       `from eBird, iNaturalist and the National Park Service.</p>` +
       `<p><a href="/species/">Looking for a specific bird? Find the parks where it lives →</a></p>` +
+      `<p><a href="/guide">New here? See how to get the most out of it →</a></p>` +
       parkNav +
       `<p>Loading the interactive map…</p></article>`;
     const homeHtml = baseHtml.replace(/(<div id="root">)(<\/div>)/, `$1${homeBlock}$2`);
@@ -445,9 +446,47 @@ async function main() {
     console.warn(`⚠  species pages skipped: ${e.message}`);
   }
 
+  // ── How-to-use guide (/guide) — prerendered for SEO + sharing ─────────────
+  // The crawlable body carries the tips so the page can rank for "how to find
+  // wildlife at parks"; React mounts over it and the /guide route opens the
+  // in-app guide modal.
+  try {
+    const gTitle = 'How to Use US Wildlife Explorer — Find Wildlife at 4,700+ Parks';
+    const gDesc  = 'Five quick ways to get the most out of US Wildlife Explorer: search any animal to find the parks it lives in, find parks near you, filter by season and likelihood, keep a life list, and plan your visit with directions and trails.';
+    const gUrl   = `${ORIGIN}/guide`;
+    const tips = [
+      ['Search any animal', 'Type a species — Bald Eagle, Black Bear, Monarch — to find every park where it has been seen. The fastest way to chase a specific creature.'],
+      ['Find parks near you', 'See the closest national parks, state parks, and wildlife refuges sorted by distance, plus what is rare in the area right now.'],
+      ['Filter for your trip', 'Set the season and likelihood filters to answer "what will I actually see in July?" and sort by how likely each species is.'],
+      ['Keep a life list', 'Mark species seen to build a personal life list that remembers everything you have spotted across every park.'],
+      ['Plan the visit', 'Every park has directions, hiking trails, and an opt-in photo of what it actually looks like.'],
+    ];
+    const guideBlock =
+      `<article class="seo-prerender">` +
+      `<h1>How to use US Wildlife Explorer</h1>` +
+      `<p>Five quick ways to find the wildlife you're after across 4,700+ US national parks, state parks, and wildlife refuges.</p>` +
+      tips.map(([t, b]) => `<h2>${esc(t)}</h2><p>${esc(b)}</p>`).join('') +
+      `<h2>How to read the likelihood bar</h2><p>Each species shows how likely you are to encounter it — Guaranteed, Very Likely, Likely, Unlikely, or Rare — based on real eBird and iNaturalist sightings, adjusted for the park.</p>` +
+      `<p><a href="/">Open the interactive map &rarr;</a></p></article>`;
+    const html = baseHtml
+      .replace(/<title>[\s\S]*?<\/title>/, `<title>${esc(gTitle)}</title>`)
+      .replace(/(<meta name="description" content=")[^"]*(")/, `$1${esc(gDesc)}$2`)
+      .replace(/(<link rel="canonical" href=")[^"]*(")/, `$1${gUrl}$2`)
+      .replace(/(<meta property="og:url" content=")[^"]*(")/, `$1${gUrl}$2`)
+      .replace(/(<meta property="og:title" content=")[^"]*(")/, `$1${esc(gTitle)}$2`)
+      .replace(/(<meta property="og:description" content=")[^"]*(")/, `$1${esc(gDesc)}$2`)
+      .replace(/(<meta name="twitter:title" content=")[^"]*(")/, `$1${esc(gTitle)}$2`)
+      .replace(/(<meta name="twitter:description" content=")[^"]*(")/, `$1${esc(gDesc)}$2`)
+      .replace(/(<div id="root">)(<\/div>)/, `$1${guideBlock}$2`);
+    const dir = path.join(DIST, 'guide');
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(path.join(dir, 'index.html'), html, 'utf8');
+    written++;
+  } catch (e) { console.warn(`⚠  guide prerender skipped: ${e.message}`); }
+
   // Sitemap — homepage + every park.
   const now = new Date().toISOString().slice(0, 10);
-  const urls = [`${ORIGIN}/`, ...wildlifeLocations.map(p => `${ORIGIN}/park/${p.id}`),
+  const urls = [`${ORIGIN}/`, `${ORIGIN}/guide`, ...wildlifeLocations.map(p => `${ORIGIN}/park/${p.id}`),
     ...stateParkUrls, ...speciesUrls];
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n`
     + `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`
