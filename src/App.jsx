@@ -1754,26 +1754,34 @@ function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
         if (!alive) return;
         let animals = finalize();
         let countySeeded = false;
-        if (!animals.length && countyFreq) {
-          // Live-empty fallback — vast wilderness units (Adirondack-class) whose
-          // centroid has no geotagged observations nearby. Seed the panel from
-          // the county's eBird checklist-frequency data: same species, same
-          // rarity scale the live path would assign, clearly labelled below.
-          countySeeded = true;
-          animals = Object.entries(countyFreq)
-            .filter(([n]) => !n.startsWith('__'))
-            .sort((a, b) => (b[1].f ?? 0) - (a[1].f ?? 0))
-            .slice(0, 80)
-            .map(([n, e]) => ({
-              name: n.replace(/(^|[\s-])\w/g, c => c.toUpperCase()),
-              animalType: 'bird',
-              frequency: e.f,
-              rarity: rarityFromChecklist(e.f),
-              seasons: e.s,
-              _raritySource: 'ebird_county_freq',
-              _countySeeded: true,
-            }));
-          if (animals.length && !sources.includes('ebird')) sources.push('ebird');
+        // Seed the county bird list when the LIVE bird list is thin — not only
+        // when the whole panel is empty. eBird can fail/return sparse while the
+        // non-bird floor (below) still fills `animals`, which previously blocked
+        // birds entirely (the "park shows reptiles but no birds" bug). Merge the
+        // county birds the live list missed, so the bird side is comprehensive.
+        if (countyFreq) {
+          const liveBirdNames = new Set(
+            animals.filter(a => a.animalType === 'bird' && a.name).map(a => a.name.toLowerCase()));
+          if (liveBirdNames.size < 40) {
+            const seededBirds = Object.entries(countyFreq)
+              .filter(([n]) => !n.startsWith('__') && !liveBirdNames.has(n))
+              .sort((a, b) => (b[1].f ?? 0) - (a[1].f ?? 0))
+              .slice(0, 80)
+              .map(([n, e]) => ({
+                name: n.replace(/(^|[\s-])\w/g, c => c.toUpperCase()),
+                animalType: 'bird',
+                frequency: e.f,
+                rarity: rarityFromChecklist(e.f),
+                seasons: e.s,
+                _raritySource: 'ebird_county_freq',
+                _countySeeded: true,
+              }));
+            if (seededBirds.length) {
+              animals = [...animals, ...seededBirds];
+              countySeeded = true;
+              if (!sources.includes('ebird')) sources.push('ebird');
+            }
+          }
         }
 
         // ── Non-bird county floor (mammals/reptiles/amphibians/fish/insects) ──
@@ -2798,6 +2806,11 @@ function StateParkMap({ state, parks, stateGeo, onPickPark, onClose, onSwitchSta
   function FrameState({ state, feature }) {
     const map = useMap();
     useEffect(() => {
+      // Move the panning fence to THIS state FIRST. MapContainer's maxBounds
+      // prop only applies on mount, so when the user switches states the old
+      // fence (with 0.85 viscosity) would clamp the recenter and trap the map
+      // on the previous state. Releasing + re-setting it fixes that.
+      try { map.setMaxBounds(state.bounds ?? null); } catch { /* ignore */ }
       if (feature) {
         try { map.fitBounds(L.geoJSON(feature).getBounds(), { padding: [18, 18] }); return; }
         catch { /* fall through */ }
@@ -3033,10 +3046,11 @@ function getCharismaScore(name, animalType) {
     if (/\b(puffin|flamingo|spoonbill|whooping crane|sandhill crane|roseate|pelican|frigate|booby|albatross|trumpeter swan|tundra swan)\b/.test(n)) return 8;
     // Tier 7: large wading + waterbirds visitors notice
     if (/\b(heron|egret|ibis|stork|loon|cormorant|gannet|anhinga|kingfisher|wood duck|harlequin|hooded merganser)\b/.test(n)) return 7;
-    // Tier 6: woodpeckers, charismatic small birds
-    if (/\b(woodpecker|jay|magpie|raven|roadrunner|grouse|ptarmigan|wild turkey|turkey|quail)\b/.test(n)) return 6;
-    // Generic small bird floor (sparrows, warblers, finches)
-    return 4;
+    // Tier 6: woodpeckers, charismatic small birds + colourful songbirds
+    if (/\b(woodpecker|jay|magpie|raven|roadrunner|grouse|ptarmigan|wild turkey|turkey|quail|cardinal|bluebird|oriole|tanager|bunting|warbler|hummingbird|goldfinch|bluejay)\b/.test(n)) return 6;
+    // Generic small bird floor (sparrows, finches) — birds are the headline
+    // draw at most parks, so they edge out generic reptiles/amphibians (4).
+    return 5;
   }
 
   // ── Marine life (non-mammal: sea turtles, sharks, rays, fish) ─────────
@@ -3098,7 +3112,17 @@ function nudgeRarityWithCommunity(baseTier, community) {
   return _RARITY_BY_INDEX[bi + (ti > bi ? 1 : -1)];
 }
 
+// Charisma threshold a rare/exceptional animal must clear to be treated as a
+// "highlight" (and bubble above common species). Below it, rarity does NOT
+// override charisma — so a rare obscure skink can't outrank a gray fox.
+const ICONIC_CHARISMA_BAR = 7;
+
 function iconicSortFn(a, b) {
+  const ca = getCharismaScore(a.name, a.animalType);
+  const cb = getCharismaScore(b.name, b.animalType);
+  const ra = _RARITY_ORDER[a.rarity] ?? 5;
+  const rb = _RARITY_ORDER[b.rarity] ?? 5;
+
   // Tier 1: curated Park Naturalist animals (real funFact, not a placeholder)
   const aIsCurated = !!(a.funFact && !needsGeneratedDescription(a.funFact));
   const bIsCurated = !!(b.funFact && !needsGeneratedDescription(b.funFact));
@@ -3106,49 +3130,39 @@ function iconicSortFn(a, b) {
   if (aIsCurated) {
     // Within curated: charisma first (Bison/Wolf/Bear before common sparrows),
     // then rarity (Guaranteed before Rare within same charisma band)
-    const cd = getCharismaScore(b.name, b.animalType) - getCharismaScore(a.name, a.animalType);
-    if (cd !== 0) return cd;
-    return (_RARITY_ORDER[a.rarity] ?? 5) - (_RARITY_ORDER[b.rarity] ?? 5);
+    if (cb !== ca) return cb - ca;
+    return ra - rb;
   }
 
-  // Tier 2: exceptional animals — rare but exciting, once-in-a-lifetime
-  const aIsExc = a.rarity === 'exceptional';
-  const bIsExc = b.rarity === 'exceptional';
+  // Tier 2: a rare-but-CHARISMATIC animal is a true once-in-a-lifetime highlight
+  // (a rare bobcat, a rare bird of prey). Gated by charisma so the long tail of
+  // obscure rare reptiles/amphibians does NOT bubble above charismatic species.
+  const aIsExc = a.rarity === 'exceptional' && ca >= ICONIC_CHARISMA_BAR;
+  const bIsExc = b.rarity === 'exceptional' && cb >= ICONIC_CHARISMA_BAR;
   if (aIsExc !== bIsExc) return aIsExc ? -1 : 1;
-  if (aIsExc) {
-    return getCharismaScore(b.name, b.animalType) - getCharismaScore(a.name, a.animalType);
-  }
+  if (aIsExc) { if (cb !== ca) return cb - ca; return ra - rb; }
 
   // Tier 3: high-charisma species (mammals, big reptiles, big sea life,
-  // birds of prey) that you can actually expect to see. Anything scoring 8+
-  // on charisma at likely-or-better rarity gets bubbled — so a guaranteed
-  // alligator sits beside a guaranteed bison, not buried under generic
-  // mammals.
-  const aTopIconic = getCharismaScore(a.name, a.animalType) >= 8 &&
-                     (a.rarity === 'guaranteed' || a.rarity === 'very_likely' || a.rarity === 'likely');
-  const bTopIconic = getCharismaScore(b.name, b.animalType) >= 8 &&
-                     (b.rarity === 'guaranteed' || b.rarity === 'very_likely' || b.rarity === 'likely');
+  // birds of prey) you can actually expect to see — charisma 8+ at likely-or-
+  // better gets bubbled so a guaranteed alligator sits beside a guaranteed
+  // bison, not buried under generic mammals.
+  const likelyPlus = (r) => r === 'guaranteed' || r === 'very_likely' || r === 'likely';
+  const aTopIconic = ca >= 8 && likelyPlus(a.rarity);
+  const bTopIconic = cb >= 8 && likelyPlus(b.rarity);
   if (aTopIconic !== bTopIconic) return aTopIconic ? -1 : 1;
-  if (aTopIconic) {
-    // Within the tier: charisma first (Bison/Bear/Croc beat Heron),
-    // then rarity (Guaranteed before Likely within same charisma band)
-    const cd = getCharismaScore(b.name, b.animalType) - getCharismaScore(a.name, a.animalType);
-    if (cd !== 0) return cd;
-    return (_RARITY_ORDER[a.rarity] ?? 5) - (_RARITY_ORDER[b.rarity] ?? 5);
-  }
+  if (aTopIconic) { if (cb !== ca) return cb - ca; return ra - rb; }
 
-  // Tier 4: rare animals — exciting even if hard to see
-  const aIsRare = a.rarity === 'rare';
-  const bIsRare = b.rarity === 'rare';
+  // Tier 4: rare AND charismatic — same gating as Tier 2.
+  const aIsRare = a.rarity === 'rare' && ca >= ICONIC_CHARISMA_BAR;
+  const bIsRare = b.rarity === 'rare' && cb >= ICONIC_CHARISMA_BAR;
   if (aIsRare !== bIsRare) return aIsRare ? -1 : 1;
-  if (aIsRare) {
-    return getCharismaScore(b.name, b.animalType) - getCharismaScore(a.name, a.animalType);
-  }
+  if (aIsRare) { if (cb !== ca) return cb - ca; return ra - rb; }
 
-  // Tier 5: everything else — charisma descending, then rarity ascending
-  const cd = getCharismaScore(b.name, b.animalType) - getCharismaScore(a.name, a.animalType);
-  if (cd !== 0) return cd;
-  return (_RARITY_ORDER[a.rarity] ?? 5) - (_RARITY_ORDER[b.rarity] ?? 5);
+  // Tier 5: everything else — charisma descending (so gray foxes/coyotes and
+  // charismatic birds sit above common snakes/lizards/turtles regardless of how
+  // often each is logged), then rarity ascending.
+  if (cb !== ca) return cb - ca;
+  return ra - rb;
 }
 
 // Approximate encounter-rate by rarity tier — used as last-resort when no
