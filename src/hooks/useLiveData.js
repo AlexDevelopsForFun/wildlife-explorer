@@ -15,6 +15,15 @@ import { loadStateBirdFreq } from '../data/birdFreq/loader.js';
 import { loadCountyNonbird } from '../data/countyNonbird/loader.js';
 import { loadCountyBirdList } from '../data/countyBirdList/loader.js';
 
+// Hand-mapped county for refuges whose centroid falls in open water (Columbia
+// estuary / offshore sea-stacks / San Pablo Bay), so point-in-polygon left them
+// county-less. Nearest-county fallback → lets them seed a floor like any unit.
+const UNIT_COUNTY_EXTRA = {
+  'nwr_lewis-and-clark':    'US-OR-007', // Clatsop, OR
+  'nwr_quillayute-needles': 'US-WA-009', // Clallam, WA
+  'nwr_san-pablo-bay':      'US-CA-041', // Marin, CA
+};
+
 // Non-bird county floor: seed a group only when the live list for it is thin,
 // and the emoji each seeded species shows.
 const NONBIRD_EMOJI = { mammal: '🦌', reptile: '🦎', amphibian: '🐸', marine: '🐟', insect: '🦋' };
@@ -376,7 +385,7 @@ export function useLiveData(locations) {
         // unit maps to a county we have eBird data for, re-rate its live birds
         // with the gold-standard county frequency and — if the live bird list is
         // thin — seed the full county list so the species count reflects reality.
-        const _county = UNIT_COUNTY[loc.id];
+        const _county = UNIT_COUNTY[loc.id] ?? UNIT_COUNTY_EXTRA[loc.id];
         if (_county) {
           try {
             const _st = _county.split('-')[1]?.toLowerCase();

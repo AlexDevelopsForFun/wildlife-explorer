@@ -48,6 +48,7 @@ const LOADERS = {
   tx: () => import('./nb_tx.js'),
   ut: () => import('./nb_ut.js'),
   va: () => import('./nb_va.js'),
+  vt: () => import('./nb_vt.js'),
   wa: () => import('./nb_wa.js'),
   wi: () => import('./nb_wi.js'),
   wv: () => import('./nb_wv.js'),
