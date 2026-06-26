@@ -46,8 +46,11 @@ async function main() {
   console.log(`  ${NAME.size} species in taxonomy.`);
 
   // 2. Counties that are park counties but have NO frequency floor.
+  // SUPPLEMENT = hand-mapped orphan counties not in PARK_COUNTY/UNIT_COUNTY
+  // (al-cedar-creek→US-AL-097, ms-kurtz-sf→US-MS-041).
+  const SUPPLEMENT = ['US-AL-097', 'US-MS-041'];
   const have = new Set(Object.keys(COUNTY_BIRD_FREQ));
-  const wanted = [...new Set([...Object.values(PARK_COUNTY), ...Object.values(UNIT_COUNTY)])]
+  const wanted = [...new Set([...Object.values(PARK_COUNTY), ...Object.values(UNIT_COUNTY), ...SUPPLEMENT])]
     .filter(c => /^US-[A-Z]{2}-\d+$/.test(c) && !have.has(c));
   console.log(`${wanted.length} park-counties missing a frequency floor → fetching species lists.\n`);
 

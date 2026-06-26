@@ -60,6 +60,9 @@ async function jget(url, tries = 3) {
   return null;
 }
 
+// Domestic / non-wildlife names that can slip through as research-grade.
+const DOMESTIC = /^domestic\b|domesticated|feral cat|feral dog|^human$|house cat/i;
+
 // iconic taxon → app group + per-county cap (top N by observation count).
 const TAXA = [
   ['Mammalia', 'mammal', 60],
@@ -111,7 +114,14 @@ async function sampleCounty(fips, coord) {
       const list = [];
       for (const r of results) {
         const name = (r.taxon?.preferred_common_name || r.taxon?.name || '').trim();
-        if (!name || r.count < 2) continue;                 // ≥2 research-grade obs
+        // research-grade already = community-verified, wild. count>=1 is a real
+        // documented occurrence — keep it. Because results are capped + sorted by
+        // count desc, single-obs species only survive in SPARSE (sub-cap) counties
+        // (a rich county fills its cap with high-count species first), so this
+        // recovers expected animals in low-coverage counties (rural Iowa keeps its
+        // cottontail/beaver) without polluting well-sampled ones. Skip domestics.
+        if (!name || r.count < 1) continue;
+        if (DOMESTIC.test(name)) continue;
         const f = Math.min(0.95, Math.sqrt(r.count / maxCount));
         list.push([name, Math.round(f * 100) / 100]);
       }
@@ -140,6 +150,18 @@ async function main() {
     const c = refById[uid] ? [refById[uid].lat, refById[uid].lng] : npsById[uid];
     if (c) coordByFips[fips] = c;
   }
+  // Hand-mapped edge counties (orphan state parks + water-centroid refuges that
+  // aren't in PARK_COUNTY/UNIT_COUNTY). County CENTROID coords so the iNat place
+  // lookup reliably resolves the right county. Keeps these parks from showing a
+  // birds-only list. Mirror of the 5 edge mappings added to App.jsx/useLiveData.
+  const EDGE_COORDS = {
+    'US-AL-097': [30.4935, -88.1975],  // Mobile (al-cedar-creek)
+    'US-MS-041': [31.1869, -88.5615],  // Greene (ms-kurtz-sf)
+    'US-WA-009': [48.1761, -123.9991], // Clallam (nwr_quillayute-needles)
+    'US-ND-027': [47.6859, -98.9503],  // Eddy (nwr Johnson Lake — refuge pt hit an empty place)
+    'US-ND-063': [47.9394, -98.2827],  // Nelson (nwr Lambs Lake)
+  };
+  for (const [fips, c] of Object.entries(EDGE_COORDS)) coordByFips[fips] = c;  // authoritative centroids
 
   const fipsList = Object.keys(coordByFips).sort();
   console.log(`County non-bird floor: ${fipsList.length} counties to sample (mammal/reptile/amphibian/fish/insect).\n`);

@@ -34,6 +34,8 @@ const PARK_COUNTY_EXTRA = {
   'nv-forty-mile':       'US-NV-023',
   'ms-holmes-county':    'US-MS-051',
   'ak-wood-tikchik':     'US-AK-070',
+  'al-cedar-creek':      'US-AL-097', // Mobile — point-in-polygon
+  'ms-kurtz-sf':         'US-MS-041', // Greene — point-in-polygon
 };
 
 // Hiking-trails deep link (MVP). Opens AllTrails' map centered on the park
