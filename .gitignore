@@ -53,3 +53,4 @@ scripts/subcategoryAudit.json
 # consumed transiently by splitCache. App imports the 3 tier files, not this.
 # Keeping it out of git halves per-rebuild history churn (~18MB/run).
 src/data/wildlifeCache.js
+scripts/_cbl_cache/
