@@ -13,6 +13,7 @@ import { NATIONAL_INAT_PLACE_IDS } from '../data/nationalInatPlaces.js';
 import { UNIT_COUNTY } from '../data/unitCounty.js';
 import { loadStateBirdFreq } from '../data/birdFreq/loader.js';
 import { loadCountyNonbird } from '../data/countyNonbird/loader.js';
+import { loadCountyBirdList } from '../data/countyBirdList/loader.js';
 
 // Non-bird county floor: seed a group only when the live list for it is thin,
 // and the emoji each seeded species shows.
@@ -405,6 +406,28 @@ export function useLiveData(locations) {
                   seeded++;
                 }
                 if (seeded) { if (!sources.includes('ebird')) sources.push('ebird'); countySeeded = true; }
+              }
+            } else {
+              // No frequency floor for this county — fall back to eBird's county
+              // species LIST (presence only, flat rarity) so the unit shows its
+              // real bird list instead of collapsing to a handful of records.
+              const liveBirdNames = new Set(livePool.filter(a => a.animalType === 'bird' && a.name).map(a => a.name.toLowerCase()));
+              if (liveBirdNames.size < 40) {
+                const _cbl = await loadCountyBirdList(_st);
+                const _list = _cbl?.[_county] ?? null;
+                if (_list?.length) {
+                  let seeded = 0;
+                  for (const n of _list) {
+                    if (liveBirdNames.has(n.toLowerCase())) continue;
+                    livePool.push({
+                      name: n, animalType: 'bird', emoji: '🐦', bestSeason: 'spring',
+                      frequency: 0.2, rarity: 'unlikely', seasons: ['spring', 'summer', 'fall', 'winter'],
+                      source: 'ebird', _raritySource: 'ebird_county_list', _countySeeded: true,
+                    });
+                    seeded++;
+                  }
+                  if (seeded) { if (!sources.includes('ebird')) sources.push('ebird'); countySeeded = true; }
+                }
               }
             }
           } catch { /* non-fatal — county floor is best-effort */ }

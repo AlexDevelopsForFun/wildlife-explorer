@@ -16,6 +16,7 @@ import { STATE_PARKS_NJ, STATE_PARKS_BY_STATE, findStatePark, INAT_PLACE_IDS, ST
 // all-states monolith (12MB) is split by scripts/splitBirdFreq.mjs.
 import { loadStateBirdFreq } from './data/birdFreq/loader.js';
 import { loadCountyNonbird } from './data/countyNonbird/loader.js';
+import { loadCountyBirdList } from './data/countyBirdList/loader.js';
 import { safeSetItem } from './utils/safeStorage.js';
 
 // Non-bird county floor (mammals/reptiles/amphibians/fish/insects): seed a group
@@ -1759,27 +1760,45 @@ function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
         // non-bird floor (below) still fills `animals`, which previously blocked
         // birds entirely (the "park shows reptiles but no birds" bug). Merge the
         // county birds the live list missed, so the bird side is comprehensive.
-        if (countyFreq) {
+        {
           const liveBirdNames = new Set(
             animals.filter(a => a.animalType === 'bird' && a.name).map(a => a.name.toLowerCase()));
           if (liveBirdNames.size < 40) {
-            const seededBirds = Object.entries(countyFreq)
-              .filter(([n]) => !n.startsWith('__') && !liveBirdNames.has(n))
-              .sort((a, b) => (b[1].f ?? 0) - (a[1].f ?? 0))
-              .slice(0, 80)
-              .map(([n, e]) => ({
-                name: n.replace(/(^|[\s-])\w/g, c => c.toUpperCase()),
-                animalType: 'bird',
-                frequency: e.f,
-                rarity: rarityFromChecklist(e.f),
-                seasons: e.s,
-                _raritySource: 'ebird_county_freq',
-                _countySeeded: true,
-              }));
-            if (seededBirds.length) {
-              animals = [...animals, ...seededBirds];
-              countySeeded = true;
-              if (!sources.includes('ebird')) sources.push('ebird');
+            if (countyFreq) {
+              const seededBirds = Object.entries(countyFreq)
+                .filter(([n]) => !n.startsWith('__') && !liveBirdNames.has(n))
+                .sort((a, b) => (b[1].f ?? 0) - (a[1].f ?? 0))
+                .slice(0, 80)
+                .map(([n, e]) => ({
+                  name: n.replace(/(^|[\s-])\w/g, c => c.toUpperCase()),
+                  animalType: 'bird', frequency: e.f, rarity: rarityFromChecklist(e.f),
+                  seasons: e.s, _raritySource: 'ebird_county_freq', _countySeeded: true,
+                }));
+              if (seededBirds.length) {
+                animals = [...animals, ...seededBirds];
+                countySeeded = true;
+                if (!sources.includes('ebird')) sources.push('ebird');
+              }
+            } else if (_spCounty) {
+              // No frequency floor for this county — fall back to eBird's county
+              // species LIST (presence only, flat rarity) so the park shows its
+              // real bird list instead of collapsing to ~1 species.
+              const _cbl = await loadCountyBirdList(park.id.slice(0, 2));
+              const _list = _cbl?.[_spCounty] ?? null;
+              if (alive && _list?.length) {
+                const seededBirds = _list
+                  .filter(n => !liveBirdNames.has(n.toLowerCase()))
+                  .map(n => ({
+                    name: n, animalType: 'bird', frequency: 0.2, rarity: 'unlikely',
+                    seasons: ['spring', 'summer', 'fall', 'winter'],
+                    _raritySource: 'ebird_county_list', _countySeeded: true,
+                  }));
+                if (seededBirds.length) {
+                  animals = [...animals, ...seededBirds];
+                  countySeeded = true;
+                  if (!sources.includes('ebird')) sources.push('ebird');
+                }
+              }
             }
           }
         }
