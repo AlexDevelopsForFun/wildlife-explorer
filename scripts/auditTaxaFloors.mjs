@@ -40,11 +40,9 @@ const PARK_COUNTY_EXTRA = {
   'ma-richard-mckinnon': 'US-MA-017', 'ny-three-falls': 'US-NY-099',
   'nv-forty-mile': 'US-NV-023', 'ms-holmes-county': 'US-MS-051', 'ak-wood-tikchik': 'US-AK-070',
   'al-cedar-creek': 'US-AL-097', 'ms-kurtz-sf': 'US-MS-041',
+  'ca-border-field': 'US-CA-073',   // overrides PARK_COUNTY's MX municipio
 };
-const UNIT_COUNTY_EXTRA = {
-  'nwr_lewis-and-clark': 'US-OR-007', 'nwr_quillayute-needles': 'US-WA-009',
-  'nwr_san-pablo-bay': 'US-CA-041',
-};
+import { UNIT_COUNTY_EXTRA } from '../src/data/unitCountyExtra.js';
 
 const COUNTY_BIRD_LIST = {};
 for (const f of readdirSync(D('countyBirdList'))) {
@@ -81,7 +79,7 @@ const expectedSparse = (st, t) => {
 const rows = [];
 for (const [st, list] of Object.entries(STATE_PARKS_BY_STATE))
   for (const p of (list ?? []))
-    rows.push({ id: p.id, name: p.name, kind: 'state', st, county: PARK_COUNTY[p.id] ?? PARK_COUNTY_EXTRA[p.id] ?? null });
+    rows.push({ id: p.id, name: p.name, kind: 'state', st, county: PARK_COUNTY_EXTRA[p.id] ?? PARK_COUNTY[p.id] ?? null });
 for (const r of NATIONAL_WILDLIFE_REFUGES)
   rows.push({ id: r.id, name: r.name, kind: 'refuge', st: (r.stateCodes || [])[0] || '', county: UNIT_COUNTY[r.id] ?? UNIT_COUNTY_EXTRA[r.id] ?? null });
 for (const id of Object.keys(UNIT_COUNTY).filter(k => k.startsWith('nps_')))

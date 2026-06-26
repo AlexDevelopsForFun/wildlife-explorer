@@ -63,6 +63,19 @@ async function jget(url, tries = 3) {
 // Domestic / non-wildlife names that can slip through as research-grade.
 const DOMESTIC = /^domestic\b|domesticated|feral cat|feral dog|^human$|house cat/i;
 
+// Offshore / territorial / giant-park counties where the US-county place lookup
+// (iNat admin_level 20) returns nothing — resolve them to the right iNat place
+// directly (admin_level 10 island/municipio for PR; the park place for wrst).
+// Verified place_ids; this is the "best-accuracy" resolver for these units.
+const PLACE_OVERRIDE = {
+  'US-PR-023': 11636, // Cabo Rojo (nwr_cabo-rojo)
+  'US-PR-049': 11648, // Culebra (nwr_culebra)
+  'US-PR-097': 11665, // Mayagüez — Desecheo I. (nwr_desecheo)
+  'US-PR-079': 11636, // Cabo Rojo — Laguna Cartagena (nwr_laguna-cartagena, adjacent municipio)
+  'US-PR-147': 11697, // Vieques (nwr_vieques)
+  'US-AK-261': 72658, // Wrangell–St. Elias NP (nps_wrst)
+};
+
 // iconic taxon → app group + per-county cap (top N by observation count).
 const TAXA = [
   ['Mammalia', 'mammal', 60],
@@ -101,8 +114,8 @@ async function sampleCounty(fips, coord) {
   const cacheFile = path.join(CACHE_DIR, `${fips}.json`);
   if (existsSync(cacheFile)) { try { return JSON.parse(readFileSync(cacheFile, 'utf8')); } catch {} }
   const out = { pid: null, groups: {} };
-  const pid = await placeIdFor(coord[0], coord[1]);
-  await sleep(900);
+  let pid = PLACE_OVERRIDE[fips] ?? null;
+  if (!pid) { pid = await placeIdFor(coord[0], coord[1]); await sleep(900); }
   out.pid = pid;
   if (pid) {
     for (const [iconic, group, cap] of TAXA) {
@@ -160,6 +173,7 @@ async function main() {
     'US-WA-009': [48.1761, -123.9991], // Clallam (nwr_quillayute-needles)
     'US-ND-027': [47.6859, -98.9503],  // Eddy (nwr Johnson Lake — refuge pt hit an empty place)
     'US-ND-063': [47.9394, -98.2827],  // Nelson (nwr Lambs Lake)
+    'US-MA-019': [41.3030, -70.1041],  // Nantucket (nwr_nantucket — island county)
   };
   for (const [fips, c] of Object.entries(EDGE_COORDS)) coordByFips[fips] = c;  // authoritative centroids
 

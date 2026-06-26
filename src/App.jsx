@@ -36,6 +36,9 @@ const PARK_COUNTY_EXTRA = {
   'ak-wood-tikchik':     'US-AK-070',
   'al-cedar-creek':      'US-AL-097', // Mobile — point-in-polygon
   'ms-kurtz-sf':         'US-MS-041', // Greene — point-in-polygon
+  'ca-border-field':     'US-CA-073', // San Diego — park sits ON the MX border so
+                                      // its centroid fell in a MX municipio; it's
+                                      // a San Diego coastal park (full SD floor).
 };
 
 // Hiking-trails deep link (MVP). Opens AllTrails' map centered on the park
@@ -1685,9 +1688,11 @@ function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
         // Factored into finalize() so we can emit birds first, then the full set.
         const birdFreqMod = await loadStateBirdFreq(park.id.slice(0, 2));
         if (!alive) return;
-        // County for both floors — PARK_COUNTY (from the bird build) with a
-        // hand-mapped fallback for the few parks it never resolved.
-        const _spCounty = birdFreqMod?.PARK_COUNTY?.[park.id] ?? PARK_COUNTY_EXTRA[park.id] ?? null;
+        // County for both floors. PARK_COUNTY_EXTRA is the hand-curated AUTHORITY
+        // (it overrides PARK_COUNTY — e.g. Border Field, whose auto point-in-polygon
+        // landed in a Mexican municipio, is corrected to San Diego here); fall back
+        // to PARK_COUNTY (from the bird build) otherwise.
+        const _spCounty = PARK_COUNTY_EXTRA[park.id] ?? birdFreqMod?.PARK_COUNTY?.[park.id] ?? null;
         const countyFreq = (birdFreqMod && _spCounty)
           ? (birdFreqMod.COUNTY_BIRD_FREQ[_spCounty] ?? null)
           : null;

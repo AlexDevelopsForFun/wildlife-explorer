@@ -14,15 +14,7 @@ import { UNIT_COUNTY } from '../data/unitCounty.js';
 import { loadStateBirdFreq } from '../data/birdFreq/loader.js';
 import { loadCountyNonbird } from '../data/countyNonbird/loader.js';
 import { loadCountyBirdList } from '../data/countyBirdList/loader.js';
-
-// Hand-mapped county for refuges whose centroid falls in open water (Columbia
-// estuary / offshore sea-stacks / San Pablo Bay), so point-in-polygon left them
-// county-less. Nearest-county fallback → lets them seed a floor like any unit.
-const UNIT_COUNTY_EXTRA = {
-  'nwr_lewis-and-clark':    'US-OR-007', // Clatsop, OR
-  'nwr_quillayute-needles': 'US-WA-009', // Clallam, WA
-  'nwr_san-pablo-bay':      'US-CA-041', // Marin, CA
-};
+import { UNIT_COUNTY_EXTRA } from '../data/unitCountyExtra.js';
 
 // Non-bird county floor: seed a group only when the live list for it is thin,
 // and the emoji each seeded species shows.

@@ -40,6 +40,7 @@ const LOADERS = {
   on: () => import('./nb_on.js'),
   or: () => import('./nb_or.js'),
   pa: () => import('./nb_pa.js'),
+  pr: () => import('./nb_pr.js'),
   qc: () => import('./nb_qc.js'),
   ri: () => import('./nb_ri.js'),
   sc: () => import('./nb_sc.js'),
