@@ -54,3 +54,4 @@ scripts/subcategoryAudit.json
 # Keeping it out of git halves per-rebuild history churn (~18MB/run).
 src/data/wildlifeCache.js
 scripts/_cbl_cache/
+scripts/_auditTargets.json

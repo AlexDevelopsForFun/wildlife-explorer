@@ -174,6 +174,19 @@ async function main() {
     'US-ND-027': [47.6859, -98.9503],  // Eddy (nwr Johnson Lake — refuge pt hit an empty place)
     'US-ND-063': [47.9394, -98.2827],  // Nelson (nwr Lambs Lake)
     'US-MA-019': [41.3030, -70.1041],  // Nantucket (nwr_nantucket — island county)
+    // Park rep-coord resolved to a NEIGHBOR's iNat place (shared place_id); the
+    // county centroid resolves correctly and has far more data (auditLowAccuracy).
+    'US-FL-119': [28.6717, -82.0853],  // Sumter, FL   (marine 0→36)
+    'US-MO-089': [39.1506, -92.7467],  // Howard, MO   (marine 2→30)
+    'US-MO-195': [39.1913, -93.1092],  // Saline, MO   (marine 2→8)
+    'US-SD-083': [43.3155, -96.5766],  // Lincoln, SD  (marine 0→36)
+    'US-TN-007': [35.5845, -85.2395],  // Bledsoe, TN  (marine 1→9)
+    'US-TN-077': [35.5843, -88.3742],  // Henderson, TN(mammal 4→17)
+    'US-TN-175': [35.7117, -85.3873],  // Van Buren, TN(marine 1→12)
+    'US-IA-151': [42.7045, -94.6001],  // Pocahontas, IA (reptile 2→5)
+    'US-ND-061': [48.1104, -102.3905], // Mountrail, ND   (marine 2→5)
+    'US-ND-071': [48.1583, -98.7791],  // Ramsey, ND      (marine 2→4)
+    'US-ND-105': [48.3449, -103.7984], // Williams, ND    (marine 2→4)
   };
   for (const [fips, c] of Object.entries(EDGE_COORDS)) coordByFips[fips] = c;  // authoritative centroids
 
