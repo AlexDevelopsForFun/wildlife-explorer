@@ -1458,20 +1458,6 @@ body, #root {
   align-items: start;
 }
 
-/* ── Wider park popup + state-park panel on desktop: use the screen and show
-   more species at once (3 columns on roomy monitors). The ≤768px mobile rules
-   below still win on phones (full-width single-column sheet). ── */
-@media (min-width: 1200px) {
-  .popup-panel     { width: 1100px; }
-  .statepark-modal { max-width: 1100px; }
-  .lp__body        { grid-template-columns: 1fr 1fr 1fr; }
-  .statepark-grid  { grid-template-columns: 1fr 1fr 1fr; }
-}
-@media (min-width: 1600px) {
-  .popup-panel     { width: 1280px; }
-  .statepark-modal { max-width: 1280px; }
-}
-
 .lp__empty {
   grid-column: 1 / -1; /* span both columns */
   font-size: 13px;
@@ -4785,3 +4771,20 @@ textarea:focus-visible,
    reuses the national-park .lp__* / .rarity-spectrum / .lifelist-bar classes
    verbatim, so there are no state-park-specific styles for those — parity is
    inherited, not re-implemented. */
+
+/* ── Wider park popup + state-park panel on desktop ──────────────────────────
+   Use the screen and show more species at once (3 columns on roomy monitors).
+   Placed at the END of the file ON PURPOSE: the .statepark-modal / .statepark-grid
+   base rules appear later than the popup rules, so these overrides must come
+   after ALL of them to win at equal specificity. Phones (≤768px) keep their
+   full-width single-column sheet via the mobile media queries above. */
+@media (min-width: 1200px) {
+  .popup-panel     { width: 1100px; }
+  .statepark-modal { max-width: 1100px; }
+  .lp__body        { grid-template-columns: 1fr 1fr 1fr; }
+  .statepark-grid  { grid-template-columns: 1fr 1fr 1fr; }
+}
+@media (min-width: 1600px) {
+  .popup-panel     { width: 1280px; }
+  .statepark-modal { max-width: 1280px; }
+}
