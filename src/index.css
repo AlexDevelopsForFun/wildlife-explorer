@@ -791,9 +791,9 @@ body, #root {
   left:          50%;
   transform:     translate(-50%, -50%);
   z-index:       1401;
-  width:         700px;
-  max-width:     90vw;
-  max-height:    85vh;
+  width:         960px;
+  max-width:     94vw;
+  max-height:    90vh;
   border-radius: 18px;
   overflow:      hidden;
   box-shadow:    0 24px 64px rgba(0, 0, 0, 0.28);
@@ -839,7 +839,7 @@ body, #root {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
   display: flex;
   flex-direction: column;
-  max-height: 85vh; /* matches .popup-panel max-height */
+  max-height: 90vh; /* matches .popup-panel max-height */
   overflow: hidden;
 }
 
@@ -1456,6 +1456,20 @@ body, #root {
   grid-template-columns: 1fr 1fr;
   gap: 10px;
   align-items: start;
+}
+
+/* ── Wider park popup + state-park panel on desktop: use the screen and show
+   more species at once (3 columns on roomy monitors). The ≤768px mobile rules
+   below still win on phones (full-width single-column sheet). ── */
+@media (min-width: 1200px) {
+  .popup-panel     { width: 1100px; }
+  .statepark-modal { max-width: 1100px; }
+  .lp__body        { grid-template-columns: 1fr 1fr 1fr; }
+  .statepark-grid  { grid-template-columns: 1fr 1fr 1fr; }
+}
+@media (min-width: 1600px) {
+  .popup-panel     { width: 1280px; }
+  .statepark-modal { max-width: 1280px; }
 }
 
 .lp__empty {
@@ -4404,7 +4418,7 @@ textarea:focus-visible,
 .statepark-modal {
   position: fixed; inset: 0; z-index: 3101;
   display: flex; flex-direction: column;
-  max-width: 760px; max-height: calc(100vh - 40px);
+  max-width: 960px; max-height: calc(100vh - 40px);
   margin: 20px auto; border-radius: 22px; overflow: hidden;
   background: linear-gradient(145deg, #071a0d 0%, #0d3824 45%, #0a2540 100%);
   box-shadow: 0 24px 70px rgba(0,0,0,0.45);
