@@ -4191,6 +4191,7 @@ textarea:focus-visible,
 .seen-toggle--on:hover { background: #126e35; border-color: #126e35; }
 
 .lifelist-bar {
+  grid-column: 1 / -1; /* span all columns when inside the .lp__body species grid */
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -4239,6 +4240,7 @@ textarea:focus-visible,
 
 /* ── Always-visible rating key (replaces tooltip-only nuance) ───────────── */
 .lp__legend {
+  grid-column: 1 / -1; /* span all columns when inside the .lp__body species grid */
   display: flex;
   flex-wrap: wrap;
   gap: 4px 14px;
