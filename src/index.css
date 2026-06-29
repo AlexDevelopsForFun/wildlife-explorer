@@ -4790,3 +4790,24 @@ textarea:focus-visible,
   .popup-panel     { width: 1280px; }
   .statepark-modal { max-width: 1280px; }
 }
+
+/* ── Desktop popup: compact the header so more species rows are visible ───────
+   The control + meta chrome ate ~60% of the popup height, leaving only one card
+   row above the fold. On wide screens, collapse the three filter rows onto one
+   line and trim the head/meta paddings so the species grid starts much higher.
+   Mobile is untouched (its own compact rules apply ≤768px). */
+@media (min-width: 1200px) {
+  /* Filters share one wrapping row: [sort + season] · rarity · search */
+  .lp__controls      { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px; padding: 7px 14px; }
+  .lp__controls-row  { flex: 2 1 300px; }
+  .lp__select--full  { flex: 1 1 150px; width: auto; }
+  .lp__search        { flex: 1 1 200px; }
+  /* Trim the green header + spectrum + taxon-chip paddings */
+  .lp__head          { padding: 14px 22px 10px 22px; }
+  .rarity-spectrum   { padding: 7px 16px 5px; }
+  .lp__tabs          { padding: 7px 14px 5px; }
+  /* Tighten the meta rows directly above the species grid */
+  .lp__showing-count { padding: 2px 0 1px; }
+  .lp__legend        { margin: 0 0 4px; }
+  .lifelist-bar      { margin: 0 0 6px; padding: 5px 10px; }
+}
