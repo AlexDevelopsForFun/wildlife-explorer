@@ -4791,6 +4791,111 @@ textarea:focus-visible,
   .statepark-modal { max-width: 1280px; }
 }
 
+/* ── Support modal: CTA, supporters wall, changelog ──────────────────────────
+   Lives inside .about-modal (fixed dark shell), so colours are literal here to
+   match .about-section__body rather than theme variables. */
+.support-cta {
+  display: block;
+  margin: 16px 0 8px;
+  padding: 13px 18px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ffdd00 0%, #ffc700 100%);
+  color: #1a1400;
+  font-size: 15.5px;
+  font-weight: 800;
+  text-align: center;
+  text-decoration: none;
+  letter-spacing: -0.2px;
+  box-shadow: 0 6px 18px rgba(255, 199, 0, 0.22);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.support-cta:hover  { transform: translateY(-1px); box-shadow: 0 9px 24px rgba(255, 199, 0, 0.3); }
+.support-cta:active { transform: translateY(0); }
+.support-cta__note {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.6);
+  text-align: center;
+  margin: 0;
+}
+
+.support-wall {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.support-wall__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+}
+.support-wall__item--founding {
+  background: rgba(255, 221, 0, 0.1);
+  border-color: rgba(255, 221, 0, 0.35);
+}
+.support-wall__item a        { color: #86efac; text-decoration: none; }
+.support-wall__item a:hover  { text-decoration: underline; }
+.support-wall__badge         { font-size: 12px; }
+.support-wall__empty,
+.support-wall__note {
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+}
+
+.changelog { list-style: none; padding: 0; margin: 0; }
+.changelog__release {
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+.changelog__release:last-child { border-bottom: none; padding-bottom: 0; }
+.changelog__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+.changelog__title {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+.changelog__date {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.45);
+  white-space: nowrap;
+}
+.changelog__items {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.72);
+}
+.changelog__items li { margin-bottom: 3px; }
+
+/* Header ☕ Support button — warm tint so it reads as the one "give back" action */
+.hdr__about-btn--support {
+  background: rgba(255, 221, 0, 0.14);
+  border-color: rgba(255, 221, 0, 0.4);
+}
+.hdr__about-btn--support:hover { background: rgba(255, 221, 0, 0.24); }
+
 /* ── Desktop popup: compact the header so more species rows are visible ───────
    The control + meta chrome ate ~60% of the popup height, leaving only one card
    row above the fold. On wide screens, collapse the three filter rows onto one
