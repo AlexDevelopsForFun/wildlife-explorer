@@ -18,9 +18,15 @@ US Wildlife Explorer
 ## Short description (80 char max)
 
 ```
-See which animals you'll find at 4,700+ US parks — and the best time to go.
+See which animals you'll find at 4,700+ US parks — and when to go looking.
 ```
-*(74 characters)*
+*(74 characters — this is what's live in the console)*
+
+⚠️ **Avoid the word "best" (and "top", "#1", "most popular").** The first draft
+read "…and the best time to go" and Play's automated check rejected it with
+*"Should not use keywords that indicate store performance or ranking"* — the
+listing would not have been promoted. Superlatives read as ranking claims to
+Google even when you mean them descriptively.
 
 **Alternates if you want a different angle:**
 - `What wildlife will you see at 4,700+ US parks? Find out before you go.` (69)

@@ -1,4 +1,8 @@
-<svg width="1500" height="500" viewBox="0 0 1500 500" xmlns="http://www.w3.org/2000/svg">
+<svg width="1600" height="400" viewBox="0 0 1600 400" xmlns="http://www.w3.org/2000/svg">
+<!-- Buy Me a Coffee page cover. BMC requires >=1600x400 and crops top/bottom on
+     narrow viewports, so ALL text sits in the vertical middle band (y 110-250)
+     and stays left of the sun, clear of the avatar that overlaps bottom-centre.
+     Rendered at 2x (3200x800) so it never looks soft on retina. -->
 <defs>
   <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
     <stop offset="0" stop-color="#082618"/>
@@ -6,43 +10,37 @@
     <stop offset="1" stop-color="#23764a"/>
   </linearGradient>
   <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
-    <stop offset="0" stop-color="#e8c879" stop-opacity="0.35"/>
+    <stop offset="0" stop-color="#e8c879" stop-opacity="0.34"/>
     <stop offset="1" stop-color="#e8c879" stop-opacity="0"/>
   </radialGradient>
 </defs>
 
-<!-- sky -->
-<rect width="1500" height="500" fill="#0c3823"/>
-<rect width="1500" height="500" fill="url(#sky)"/>
+<rect width="1600" height="400" fill="#0c3823"/>
+<rect width="1600" height="400" fill="url(#sky)"/>
 
-<!-- sun + glow (right of centre so the BMC avatar, which overlaps bottom-centre, never covers it) -->
-<circle cx="1120" cy="188" r="190" fill="url(#glow)"/>
-<circle cx="1120" cy="188" r="70" fill="#e8c879" opacity="0.94"/>
-<circle cx="1120" cy="188" r="70" fill="none" stroke="#f3d89a" stroke-width="2.5" opacity="0.5"/>
+<!-- sun + soaring bird, right side -->
+<circle cx="1235" cy="176" r="165" fill="url(#glow)"/>
+<circle cx="1235" cy="176" r="62" fill="#e8c879" opacity="0.94"/>
+<circle cx="1235" cy="176" r="62" fill="none" stroke="#f3d89a" stroke-width="2.2" opacity="0.5"/>
+<path d="M1147 162 q50 -32 88 7 q38 -39 88 -7 q-50 -12 -88 30 q-38 -42 -88 -30 Z" fill="#f7eedd"/>
+<ellipse cx="1235" cy="176" rx="8.5" ry="11" fill="#f7eedd"/>
 
 <!-- distant birds -->
-<path d="M400 120 q26 -18 48 -5 q-22 2 -32 15 q-8 -11 -16 -10 Z" fill="#f7eedd" opacity="0.7"/>
-<path d="M486 92 q20 -14 37 -4 q-17 2 -25 12 q-6 -9 -12 -8 Z" fill="#f7eedd" opacity="0.5"/>
-<path d="M905 118 q17 -12 31 -3 q-14 1 -21 10 q-5 -7 -10 -7 Z" fill="#f7eedd" opacity="0.45"/>
+<path d="M980 104 q22 -15 40 -4 q-18 2 -27 13 q-7 -10 -13 -9 Z" fill="#f7eedd" opacity="0.55"/>
+<path d="M1052 78 q17 -12 31 -3 q-14 2 -21 10 q-5 -8 -10 -7 Z" fill="#f7eedd" opacity="0.4"/>
 
-<!-- hero bird silhouette over the sun -->
-<path d="M1020 172 q56 -36 100 8 q44 -44 100 -8 q-56 -14 -100 34 q-44 -48 -100 -34 Z" fill="#f7eedd"/>
-<ellipse cx="1120" cy="188" rx="9.5" ry="12.5" fill="#f7eedd"/>
-
-<!-- layered hills -->
-<path d="M0 330 Q260 272 520 322 T1020 306 T1500 322 L1500 500 L0 500 Z" fill="#176034"/>
-<path d="M0 382 Q300 336 600 384 T1140 370 T1500 386 L1500 500 L0 500 Z" fill="#0f3f25"/>
-<path d="M0 436 Q340 402 700 440 T1500 432 L1500 500 L0 500 Z" fill="#0a2e1c"/>
-
-<!-- conifer treeline -->
+<!-- layered hills (bottom quarter — safe to crop) -->
+<path d="M0 262 Q280 214 560 258 T1090 244 T1600 258 L1600 400 L0 400 Z" fill="#176034"/>
+<path d="M0 306 Q320 266 640 308 T1215 296 T1600 310 L1600 400 L0 400 Z" fill="#0f3f25"/>
+<path d="M0 350 Q360 322 750 356 T1600 348 L1600 400 L0 400 Z" fill="#0a2e1c"/>
 <g fill="#0a2e1c" opacity="0.95">
-  <path d="M112 404 l17 -46 l17 46 z"/><path d="M150 410 l13 -36 l13 36 z"/>
-  <path d="M1330 400 l18 -50 l18 50 z"/><path d="M1372 408 l14 -38 l14 38 z"/>
+  <path d="M96 322 l15 -40 l15 40 z"/><path d="M130 328 l11 -30 l11 30 z"/>
+  <path d="M1440 318 l16 -43 l16 43 z"/><path d="M1477 326 l12 -32 l12 32 z"/>
 </g>
 
-<!-- wordmark (upper-left, clear of the avatar overlap) -->
-<text x="96" y="228" font-family="Segoe UI, system-ui, -apple-system, sans-serif"
-      font-size="76" font-weight="800" fill="#f7eedd" letter-spacing="-1.5">US Wildlife Explorer</text>
-<text x="100" y="278" font-family="Segoe UI, system-ui, -apple-system, sans-serif"
-      font-size="29" font-weight="600" fill="#9fd8b4" letter-spacing="0.2">What you'll see, and when to go — 4,700+ US parks</text>
+<!-- wordmark: vertical middle band, left of the sun -->
+<text x="86" y="186" font-family="Segoe UI, system-ui, -apple-system, sans-serif"
+      font-size="72" font-weight="800" fill="#f7eedd" letter-spacing="-1.6">US Wildlife Explorer</text>
+<text x="90" y="232" font-family="Segoe UI, system-ui, -apple-system, sans-serif"
+      font-size="26" font-weight="600" fill="#9fd8b4" letter-spacing="0.2">What you'll see, and when to go — 4,700+ US parks</text>
 </svg>

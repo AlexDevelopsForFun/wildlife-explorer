@@ -1,14 +1,40 @@
-<svg width="500" height="300" viewBox="0 0 500 300" xmlns="http://www.w3.org/2000/svg">
+<svg width="800" height="400" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+<!-- Buy Me a Coffee MEMBERSHIP tier cover. BMC crops this card to a wide strip,
+     which sliced the wordmark off the bottom of the old 500x300 version (its
+     text sat at 94% height). So the canvas is 2:1 and every important element
+     (sun, bird, wordmark) sits inside the vertical middle band (y 80-300) — the
+     region that survives crops from roughly 1.5:1 through 3:1. Render at 2x. -->
 <defs>
-<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-<stop offset="0" stop-color="#0c3823"/><stop offset="1" stop-color="#23764a"/>
-</linearGradient>
+  <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#0a2e1c"/>
+    <stop offset="0.5" stop-color="#0c3823"/>
+    <stop offset="1" stop-color="#23764a"/>
+  </linearGradient>
+  <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+    <stop offset="0" stop-color="#e8c879" stop-opacity="0.3"/>
+    <stop offset="1" stop-color="#e8c879" stop-opacity="0"/>
+  </radialGradient>
 </defs>
-<rect width="500" height="300" fill="url(#sky)"/>
-<circle cx="250" cy="118" r="46" fill="#e8c879" opacity="0.92"/>
-<path d="M0 215 Q120 180 250 210 T500 200 L500 300 L0 300 Z" fill="#176034"/>
-<path d="M0 245 Q140 215 270 245 T500 240 L500 300 L0 300 Z" fill="#0f3f25"/>
-<path d="M182 102 Q220 78 250 108 Q280 78 318 102 Q280 94 250 128 Q220 94 182 102 Z" fill="#f7eedd"/>
-<ellipse cx="250" cy="118" rx="6.5" ry="9" fill="#f7eedd"/>
-<text x="250" y="282" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="25" font-weight="800" fill="#f7eedd">US Wildlife Explorer</text>
+
+<rect width="800" height="400" fill="#0c3823"/>
+<rect width="800" height="400" fill="url(#sky)"/>
+
+<!-- sun + soaring bird, upper middle -->
+<circle cx="400" cy="138" r="150" fill="url(#glow)"/>
+<circle cx="400" cy="138" r="58" fill="#e8c879" opacity="0.94"/>
+<circle cx="400" cy="138" r="58" fill="none" stroke="#f3d89a" stroke-width="2" opacity="0.5"/>
+<path d="M318 125 q47 -30 82 7 q35 -37 82 -7 q-47 -11 -82 28 q-35 -39 -82 -28 Z" fill="#f7eedd"/>
+<ellipse cx="400" cy="138" rx="8" ry="10.5" fill="#f7eedd"/>
+<path d="M628 96 q19 -13 34 -3 q-15 2 -23 11 q-6 -9 -11 -8 Z" fill="#f7eedd" opacity="0.45"/>
+
+<!-- hills -->
+<path d="M0 268 Q150 232 320 262 T620 250 T800 262 L800 400 L0 400 Z" fill="#176034"/>
+<path d="M0 312 Q180 280 380 314 T800 306 L800 400 L0 400 Z" fill="#0f3f25"/>
+<path d="M0 356 Q220 332 460 360 T800 352 L800 400 L0 400 Z" fill="#0a2e1c"/>
+
+<!-- wordmark: middle band, well clear of the crop edges -->
+<text x="400" y="258" text-anchor="middle" font-family="Segoe UI, system-ui, -apple-system, sans-serif"
+      font-size="46" font-weight="800" fill="#f7eedd" letter-spacing="-0.8">US Wildlife Explorer</text>
+<text x="400" y="292" text-anchor="middle" font-family="Segoe UI, system-ui, -apple-system, sans-serif"
+      font-size="19" font-weight="600" fill="#9fd8b4" letter-spacing="0.3">Keep it free &amp; ad-free</text>
 </svg>
