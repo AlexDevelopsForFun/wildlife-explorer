@@ -1238,6 +1238,7 @@ function AboutModal({ onClose, scrollTo }) {
 
           <div className="about-modal__footer">
             <p>Built with care for the wildlife-watching community.</p>
+            <p>No accounts, no ads, no tracking — <a className="guide-link" href="/privacy" target="_blank" rel="noopener noreferrer">read the privacy policy</a>.</p>
           </div>
         </div>
       </div>

@@ -24,6 +24,7 @@ import sharp from 'sharp';
 import { wildlifeLocations } from '../src/wildlifeData.js';
 import { STATE_PARKS_BY_STATE } from '../src/data/stateParksNJ.js';
 import { PARK_COUNTY, COUNTY_BIRD_FREQ } from '../src/data/stateParkBirdFreq.js';
+import { renderPrivacyHtml } from './privacyPage.mjs';
 
 // State-code → full name, for prerendered titles/copy. Extend as states ship.
 const STATE_NAMES = { NJ: 'New Jersey', DE: 'Delaware', CT: 'Connecticut', RI: 'Rhode Island', MA: 'Massachusetts', NH: 'New Hampshire', VT: 'Vermont', ME: 'Maine', NY: 'New York', PA: 'Pennsylvania', MD: 'Maryland', VA: 'Virginia', WV: 'West Virginia', NC: 'North Carolina', SC: 'South Carolina', GA: 'Georgia', TN: 'Tennessee', KY: 'Kentucky', OH: 'Ohio', MI: 'Michigan', IN: 'Indiana', IL: 'Illinois', WI: 'Wisconsin', MN: 'Minnesota', FL: 'Florida', AL: 'Alabama', MS: 'Mississippi', LA: 'Louisiana', AR: 'Arkansas', IA: 'Iowa', MO: 'Missouri', ND: 'North Dakota', SD: 'South Dakota', NE: 'Nebraska', KS: 'Kansas', OK: 'Oklahoma', MT: 'Montana', WY: 'Wyoming', CO: 'Colorado', ID: 'Idaho', UT: 'Utah', NV: 'Nevada', AZ: 'Arizona', NM: 'New Mexico', CA: 'California', OR: 'Oregon', WA: 'Washington', TX: 'Texas', AK: 'Alaska', HI: 'Hawaii' };
@@ -484,9 +485,20 @@ async function main() {
     written++;
   } catch (e) { console.warn(`⚠  guide prerender skipped: ${e.message}`); }
 
+  // ── Privacy policy (/privacy) — REQUIRED by Google Play, and it must load for
+  // reviewers with no JS, so it's a standalone static page rather than an SPA
+  // route the React bundle would paint over.
+  try {
+    const dir = path.join(DIST, 'privacy');
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(path.join(dir, 'index.html'), renderPrivacyHtml(ORIGIN), 'utf8');
+    written++;
+  } catch (e) { console.warn(`⚠  privacy prerender skipped: ${e.message}`); }
+
   // Sitemap — homepage + every park.
   const now = new Date().toISOString().slice(0, 10);
-  const urls = [`${ORIGIN}/`, `${ORIGIN}/guide`, ...wildlifeLocations.map(p => `${ORIGIN}/park/${p.id}`),
+  const urls = [`${ORIGIN}/`, `${ORIGIN}/guide`, `${ORIGIN}/privacy`,
+    ...wildlifeLocations.map(p => `${ORIGIN}/park/${p.id}`),
     ...stateParkUrls, ...speciesUrls];
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n`
     + `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`
