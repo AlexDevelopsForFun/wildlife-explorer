@@ -18,6 +18,8 @@ import { loadStateBirdFreq } from './data/birdFreq/loader.js';
 import { loadCountyNonbird } from './data/countyNonbird/loader.js';
 import { loadCountyBirdList } from './data/countyBirdList/loader.js';
 import { safeSetItem } from './utils/safeStorage.js';
+import { SUPPORTERS, FOUNDING_LIMIT, SUPPORT_URL } from './data/supporters.js';
+import { CHANGELOG } from './data/changelog.js';
 
 // Non-bird county floor (mammals/reptiles/amphibians/fish/insects): seed a group
 // only when the live list for it is thin; emoji shown per seeded species.
@@ -1298,6 +1300,112 @@ function GuideModal({ onClose, onAbout }) {
               {onAbout && <button type="button" className="guide-link" onClick={() => { onClose(); onAbout('methodology'); }}>Read how we calculate it →</button>}
             </p>
             <p>Spotted something off? Use the 💬 Feedback button — your reports keep it accurate.</p>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+// ── Support modal (☕) ──────────────────────────────────────────────────────
+// Why the project needs support, the Buy Me a Coffee link, the Supporters wall
+// (the 💚/🌟/🔗 membership perks), and the 📝 "What's new" changelog. Donations
+// are deliberately the ONLY revenue: they're non-commercial, so the app stays
+// inside the eBird / iNaturalist data terms — no ads, no paywall, no accounts.
+function SupportModal({ onClose }) {
+  useEffect(() => {
+    const h = e => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, [onClose]);
+
+  // Founding members first, then alphabetical.
+  const wall = [...SUPPORTERS].sort((a, b) =>
+    (b.founding ? 1 : 0) - (a.founding ? 1 : 0) || a.name.localeCompare(b.name)
+  );
+  const foundingLeft = Math.max(0, FOUNDING_LIMIT - wall.filter(s => s.founding).length);
+
+  return (
+    <>
+      <div className="about-overlay" onClick={onClose} />
+      <div className="about-modal" role="dialog" aria-modal="true" aria-label="Support US Wildlife Explorer">
+        <button className="about-modal__close" onClick={onClose} aria-label="Close">X</button>
+        <div className="about-modal__body">
+          <div className="about-modal__hero">
+            <span className="about-modal__hero-icon">☕</span>
+            <h2 className="about-modal__hero-title">Keep it free &amp; ad-free</h2>
+            <p className="about-modal__hero-sub">US Wildlife Explorer is one person, no ads, no sign-up</p>
+          </div>
+
+          <section className="about-section">
+            <div className="about-section__body">
+              <p>Every park view pulls live data and map tiles, and those costs grow with every visitor. There's no paywall and no advertising here — <strong>donations are what keep it that way</strong>.</p>
+              <p>If this helped you plan a hike, find a new park, or finally spot that bird, a coffee keeps it online for everyone.</p>
+            </div>
+            <a
+              className="support-cta"
+              href={SUPPORT_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => track('support_click')}
+            >
+              ☕ Buy me a coffee
+            </a>
+            <p className="support-cta__note">
+              One-time, or $3/month membership — your name on the wall below, a Founding Supporter badge, and a say in what gets built next.
+            </p>
+          </section>
+
+          <section className="about-section">
+            <h3 className="about-section__title">💚 Supporters</h3>
+            <div className="about-section__body">
+              {wall.length === 0 ? (
+                <p className="support-wall__empty">
+                  No supporters yet — <strong>be the first</strong>, and you'll head up this wall as a Founding Supporter. 🌿
+                </p>
+              ) : (
+                <>
+                  <ul className="support-wall">
+                    {wall.map((s, i) => (
+                      <li key={i} className={`support-wall__item${s.founding ? ' support-wall__item--founding' : ''}`}>
+                        {s.founding && <span className="support-wall__badge" title="Founding Supporter">🌟</span>}
+                        {s.link
+                          ? <a href={s.link} target="_blank" rel="noopener noreferrer nofollow">{s.name}</a>
+                          : <span>{s.name}</span>}
+                      </li>
+                    ))}
+                  </ul>
+                  {foundingLeft > 0 && (
+                    <p className="support-wall__note">
+                      🌟 {foundingLeft} Founding Supporter {foundingLeft === 1 ? 'spot' : 'spots'} left.
+                    </p>
+                  )}
+                </>
+              )}
+            </div>
+          </section>
+
+          <section className="about-section">
+            <h3 className="about-section__title">📝 What's new</h3>
+            <div className="about-section__body">
+              <ol className="changelog">
+                {CHANGELOG.map((rel, i) => (
+                  <li key={i} className="changelog__release">
+                    <div className="changelog__head">
+                      <h4 className="changelog__title">{rel.title}</h4>
+                      <span className="changelog__date">{rel.date}</span>
+                    </div>
+                    <ul className="changelog__items">
+                      {rel.items.map((it, j) => <li key={j}>{it}</li>)}
+                    </ul>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </section>
+
+          <div className="about-modal__footer">
+            <p>Got an idea for what to build next? Use the 💬 Feedback button — supporters' suggestions go to the top of the list.</p>
           </div>
         </div>
       </div>
@@ -5970,6 +6078,7 @@ function AppInner() {
   const [showGuide, setShowGuide] = useState(false);
   const openGuide  = useCallback(() => { track('guide_open'); setShowGuide(true); }, []);
   const closeGuide = useCallback(() => setShowGuide(false), []);
+  const [showSupport, setShowSupport] = useState(false);
 
   // Welcome splash — shown only on first visit, gated by localStorage.
   const [showSplash, setShowSplash] = useState(() => {
@@ -6607,6 +6716,9 @@ function AppInner() {
               <button className="hdr__about-btn" onClick={() => { track('contact_open'); setShowContact(true); }} title="Report an issue, suggest a feature, or correct park data" aria-label="Send feedback">
                 <span className="hdr__about-icon" aria-hidden="true">💬</span> Feedback
               </button>
+              <button className="hdr__about-btn hdr__about-btn--support" onClick={() => { track('support_open'); setShowSupport(true); }} title="Support the project — keep it free and ad-free" aria-label="Support this project">
+                <span className="hdr__about-icon" aria-hidden="true">☕</span> Support
+              </button>
               <button
                 className="hdr__theme-btn"
                 onClick={() => { track('theme_toggle', { theme: darkMode ? 'light' : 'dark' }); setDarkMode(d => !d); }}
@@ -6898,6 +7010,7 @@ function AppInner() {
       {showAbout && <AboutModal onClose={closeAbout} scrollTo={aboutScrollTo} />}
       {showGuide && <GuideModal onClose={closeGuide} onAbout={openAbout} />}
       {showContact && <ContactModal onClose={() => setShowContact(false)} />}
+      {showSupport && <SupportModal onClose={() => setShowSupport(false)} />}
       {showLifeList && <LifeListModal onClose={() => setShowLifeList(false)} />}
       {showParkList && (
         <ParkListModal
