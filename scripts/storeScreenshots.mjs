@@ -1,17 +1,22 @@
 #!/usr/bin/env node
 /**
- * scripts/storeScreenshots.mjs — regenerate the Google Play phone screenshots.
+ * scripts/storeScreenshots.mjs — regenerate the Google Play store screenshots.
  *
- * Drives headless Chrome over the DevTools Protocol (CDP) at a real mobile
- * viewport and writes 4 PNGs at exactly 1080x1920 — 9:16 with both sides over
- * Play's 1080px "eligible for promotion" threshold.
+ * Drives headless Chrome over the DevTools Protocol (CDP) at a real device
+ * viewport and writes 4 PNGs per form factor. Play requires a set for phone AND
+ * both tablet sizes before the store listing counts as complete.
  *
  * No dependencies: it talks to Chrome's debugger over the WebSocket that ships
  * with Node 22+, so there's no puppeteer install (~200MB Chromium) to maintain.
  *
- * Run:  node scripts/storeScreenshots.mjs [--out DIR] [--url ORIGIN]
+ * Run all three sets:
+ *   node scripts/storeScreenshots.mjs --preset phone      ->  1080x1920
+ *   node scripts/storeScreenshots.mjs --preset tablet7    ->  1200x1920
+ *   node scripts/storeScreenshots.mjs --preset tablet10   ->  1600x2560
+ * Options: [--url ORIGIN] [--out DIR] [--port N]
+ *
  * Then: Play Console > Grow users > Store presence > Main store listing >
- *       Phone screenshots > Add assets.
+ *       Phone / 7-inch tablet / 10-inch tablet screenshots > Add assets.
  *
  * ── Gotchas this script exists to encode (all learned the hard way) ─────────
  * 1. `chrome --headless --screenshot --window-size=360,640 --force-device-scale
@@ -37,9 +42,23 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const argv = process.argv.slice(2);
 const arg = (n, d) => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : d; };
 
+// Play wants a set per form factor. Each preset is CSS viewport x DPR, chosen so
+// the output lands on a clean size with both sides inside Play's 320-3840px
+// window. The CSS width also decides which layout the app renders: <=768px is
+// the mobile layout, wider gets the desktop/tablet one — which is exactly what
+// tablet reviewers expect to see.
+const PRESETS = {
+  phone:    { w: 360, h: 640,  dpr: 3 }, // -> 1080x1920
+  tablet7:  { w: 600, h: 960,  dpr: 2 }, // -> 1200x1920
+  tablet10: { w: 800, h: 1280, dpr: 2 }, // -> 1600x2560
+};
+const PRESET = arg('--preset', 'phone');
+if (!PRESETS[PRESET]) { console.error(`--preset must be one of: ${Object.keys(PRESETS).join(', ')}`); process.exit(1); }
+const { w: VW, h: VH, dpr: DPR } = PRESETS[PRESET];
+
 const ORIGIN = arg('--url', 'https://wildlifeexplorer.us');
-const OUT    = arg('--out', path.join(__dirname, '..', 'store-screenshots'));
-const PORT   = 9339;
+const OUT    = arg('--out', path.join(__dirname, '..', 'store-screenshots', PRESET));
+const PORT   = Number(arg('--port', '9339'));
 
 // Chrome on Windows / macOS / Linux.
 const CHROME = [
@@ -84,9 +103,9 @@ async function main() {
   const { sessionId: S } = await send('Target.attachToTarget', { targetId, flatten: true });
   await send('Page.enable', {}, S);
   await send('Runtime.enable', {}, S);
-  // 360x640 CSS px @ DPR 3 -> 1080x1920 output. See gotcha #1.
+  // CSS px + DPR from the preset. See gotcha #1.
   await send('Emulation.setDeviceMetricsOverride',
-    { width: 360, height: 640, deviceScaleFactor: 3, mobile: true }, S);
+    { width: VW, height: VH, deviceScaleFactor: DPR, mobile: PRESET === 'phone' }, S);
   // Gotcha #4 — Denver, so "Near me" has parks + rare birds to show.
   await send('Browser.grantPermissions', { origin: ORIGIN, permissions: ['geolocation'] });
   await send('Emulation.setGeolocationOverride',
@@ -116,7 +135,7 @@ async function main() {
     console.log('  ✓', file);
   };
 
-  console.log(`Capturing ${ORIGIN} -> ${OUT}`);
+  console.log(`Capturing ${ORIGIN} [${PRESET} ${VW}x${VH}@${DPR} -> ${VW*DPR}x${VH*DPR}] -> ${OUT}`);
 
   // 1 — the map: header, species search, clustered park pins
   await open(`${ORIGIN}/`, 9000);
@@ -138,7 +157,7 @@ async function main() {
   await sleep(9000);
   await shoot('4-nearme.png');
 
-  console.log('\nAll 4 written at 1080x1920 (9:16, promotion-eligible).');
+  console.log(`\nAll 4 written at ${VW * DPR}x${VH * DPR}.`);
   ws.close(); chrome.kill();
 }
 
