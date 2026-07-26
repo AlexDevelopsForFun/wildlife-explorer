@@ -55,3 +55,6 @@ scripts/subcategoryAudit.json
 src/data/wildlifeCache.js
 scripts/_cbl_cache/
 scripts/_auditTargets.json
+
+# Generated Play Store screenshots (regenerate: node scripts/storeScreenshots.mjs)
+store-screenshots/
