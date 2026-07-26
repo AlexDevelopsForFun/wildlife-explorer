@@ -1,0 +1,50 @@
+<svg width="1024" height="500" viewBox="0 0 1024 500" xmlns="http://www.w3.org/2000/svg">
+<!-- Google Play feature graphic — must be EXACTLY 1024x500 px, no transparency.
+     Play crops the edges on some surfaces, so all text sits inside a ~9% safe
+     margin, and nothing important is dead-centre (Play overlays a play button
+     there if a promo video is ever added). -->
+<defs>
+  <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#082618"/>
+    <stop offset="0.5" stop-color="#0c3823"/>
+    <stop offset="1" stop-color="#23764a"/>
+  </linearGradient>
+  <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+    <stop offset="0" stop-color="#e8c879" stop-opacity="0.34"/>
+    <stop offset="1" stop-color="#e8c879" stop-opacity="0"/>
+  </radialGradient>
+</defs>
+
+<rect width="1024" height="500" fill="#0c3823"/>
+<rect width="1024" height="500" fill="url(#sky)"/>
+
+<!-- sun + soaring bird, right side -->
+<circle cx="812" cy="196" r="185" fill="url(#glow)"/>
+<circle cx="812" cy="196" r="72" fill="#e8c879" opacity="0.94"/>
+<circle cx="812" cy="196" r="72" fill="none" stroke="#f3d89a" stroke-width="2.4" opacity="0.5"/>
+<path d="M710 180 q58 -37 102 8 q44 -45 102 -8 q-58 -14 -102 34 q-44 -48 -102 -34 Z" fill="#f7eedd"/>
+<ellipse cx="812" cy="196" rx="10" ry="13" fill="#f7eedd"/>
+
+<!-- distant birds -->
+<path d="M560 108 q23 -16 42 -4 q-19 2 -28 13 q-7 -10 -14 -9 Z" fill="#f7eedd" opacity="0.5"/>
+<path d="M636 82 q18 -12 32 -3 q-14 2 -22 10 q-5 -8 -10 -7 Z" fill="#f7eedd" opacity="0.36"/>
+
+<!-- layered hills -->
+<path d="M0 316 Q180 268 360 310 T700 296 T1024 312 L1024 500 L0 500 Z" fill="#176034"/>
+<path d="M0 370 Q210 328 420 372 T780 358 T1024 374 L1024 500 L0 500 Z" fill="#0f3f25"/>
+<path d="M0 424 Q240 396 500 430 T1024 420 L1024 500 L0 500 Z" fill="#0a2e1c"/>
+<g fill="#0a2e1c" opacity="0.95">
+  <path d="M92 386 l16 -44 l16 44 z"/><path d="M128 392 l12 -33 l12 33 z"/>
+  <path d="M916 382 l17 -46 l17 46 z"/><path d="M956 390 l13 -35 l13 35 z"/>
+</g>
+
+<!-- wordmark + tagline, left, inside the safe margin -->
+<text x="92" y="212" font-family="Segoe UI, system-ui, -apple-system, sans-serif"
+      font-size="66" font-weight="800" fill="#f7eedd" letter-spacing="-1.4">US Wildlife</text>
+<text x="92" y="282" font-family="Segoe UI, system-ui, -apple-system, sans-serif"
+      font-size="66" font-weight="800" fill="#f7eedd" letter-spacing="-1.4">Explorer</text>
+<text x="95" y="330" font-family="Segoe UI, system-ui, -apple-system, sans-serif"
+      font-size="25" font-weight="600" fill="#9fd8b4" letter-spacing="0.2">What you'll see, and when to go</text>
+<text x="95" y="364" font-family="Segoe UI, system-ui, -apple-system, sans-serif"
+      font-size="25" font-weight="600" fill="#9fd8b4" letter-spacing="0.2">4,700+ parks &amp; refuges</text>
+</svg>
