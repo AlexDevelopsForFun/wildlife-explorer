@@ -95,7 +95,9 @@ function logit(p) {
 }
 function expit(L) { return 1 / (1 + Math.exp(-L)); }
 
-function rarityFromFrequency(freq) {
+// Exported so the species search can label county-frequency odds with the same
+// vocabulary the park panels use — the thresholds must live in exactly one place.
+export function rarityFromFrequency(freq) {
   for (const { tier, min } of TIER_THRESHOLDS) {
     if (freq >= min) return tier;
   }

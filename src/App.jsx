@@ -1568,7 +1568,10 @@ function LifeListModal({ onClose }) {
 // keyboard / screen-reader user cannot open ANY park — the core function of
 // the site (WCAG 2.1.1). This dialog lists every park as a real button with
 // a type-ahead filter; picking one opens the same panel a marker click does.
-function ParkListModal({ parks, onPick, onClose, title = 'Browse parks', subtitle = null, ariaLabel = 'Browse national parks' }) {
+// `preserveOrder` keeps the caller's ranking (the species search sorts by odds
+// and distance); without it the list is alphabetical, which is what the plain
+// park browsers want.
+function ParkListModal({ parks, onPick, onClose, title = 'Browse parks', subtitle = null, ariaLabel = 'Browse national parks', preserveOrder = false }) {
   const [q, setQ] = useState('');
   const inputRef = useRef(null);
   useEffect(() => {
@@ -1578,7 +1581,7 @@ function ParkListModal({ parks, onPick, onClose, title = 'Browse parks', subtitl
     return () => window.removeEventListener('keydown', h);
   }, [onClose]);
 
-  const sorted = [...parks].sort((a, b) => a.name.localeCompare(b.name));
+  const sorted = preserveOrder ? parks : [...parks].sort((a, b) => a.name.localeCompare(b.name));
   const needle = q.trim().toLowerCase();
   const list = needle
     ? sorted.filter(p =>
@@ -1605,14 +1608,28 @@ function ParkListModal({ parks, onPick, onClose, title = 'Browse parks', subtitl
           />
         </div>
         <ul className="parklist-modal__list" aria-label="National parks">
-          {list.map(p => (
-            <li key={p.id}>
-              <button className="parklist-modal__item" onClick={() => onPick(p)}>
-                <span className="parklist-modal__item-name">{p.name}</span>
-                {p.state && <span className="parklist-modal__item-state">{p.state}</span>}
-              </button>
-            </li>
-          ))}
+          {list.map(p => {
+            const tier = p.rarity ? SPECTRUM_CONFIG.find(c => c.key === p.rarity) : null;
+            return (
+              <li key={p.id}>
+                <button className="parklist-modal__item" onClick={() => onPick(p)}>
+                  <span className="parklist-modal__item-name">{p.name}</span>
+                  {tier && (
+                    <span
+                      className="parklist-modal__item-odds"
+                      style={{ color: tier.color, borderColor: `${tier.color}66`, background: `${tier.color}18` }}
+                    >
+                      {tier.label}
+                    </span>
+                  )}
+                  {typeof p.miles === 'number' && (
+                    <span className="parklist-modal__item-miles">{Math.round(p.miles)} mi</span>
+                  )}
+                  {p.state && <span className="parklist-modal__item-state">{p.state}</span>}
+                </button>
+              </li>
+            );
+          })}
           {list.length === 0 && (
             <li className="parklist-modal__empty">No parks match “{q}”.</li>
           )}
@@ -2670,7 +2687,7 @@ function ContactModal({ onClose, presetPark = '' }) {
 // Requests the browser geolocation (client-side only — the coordinate is never
 // sent anywhere) and lists the nearest wildlife sites, national + state, by
 // great-circle distance. Works wherever you are in the US.
-function NearMeModal({ index, onPick, onClose }) {
+function NearMeModal({ index, onPick, onClose, onLocate }) {
   const [status, setStatus]   = useState('locating'); // locating | ok | denied | error | unsupported
   const [results, setResults] = useState([]);
   const [notable, setNotable] = useState(null);       // rare-bird alerts (eBird notable feed)
@@ -2686,6 +2703,7 @@ function NearMeModal({ index, onPick, onClose }) {
       pos => {
         if (!alive) return;
         const { latitude, longitude } = pos.coords;
+        onLocate?.({ lat: latitude, lng: longitude });
         const R = 3958.8, toRad = d => d * Math.PI / 180;            // miles
         const miFrom = (la, lo) => {
           const dLa = toRad(la - latitude), dLo = toRad(lo - longitude);
@@ -2707,7 +2725,7 @@ function NearMeModal({ index, onPick, onClose }) {
       { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 },
     );
     return () => { alive = false; };
-  }, [index]);
+  }, [index, onLocate]);
 
   const MSG = {
     locating:    'Finding your location…',
@@ -6070,6 +6088,10 @@ function AppInner() {
   // State Parks: state selector → state-zoomed map → click pin → park panel.
   const [showStateSelector, setShowStateSelector] = useState(false);
   const [showNearMe, setShowNearMe] = useState(false);
+  // Coordinate captured when the user opens "Near me" and grants permission.
+  // Kept in memory only (never persisted, never sent anywhere) so the species
+  // search can rank matches by distance without prompting a second time.
+  const [userLoc, setUserLoc] = useState(null);     // { lat, lng } | null
   const [showContact, setShowContact] = useState(false);
   const [selectedStateForMap, setSelectedStateForMap] = useState(null); // state code, e.g. 'NJ'
   const [activeStatePark, setActiveStatePark] = useState(null);         // park entry
@@ -6242,6 +6264,10 @@ function AppInner() {
     return [...nat, ...st].filter(it => typeof it.lat === 'number' && typeof it.lng === 'number');
   }, [npsParks]);
 
+  // Stable identity matters: NearMeModal lists this in an effect's deps, and an
+  // inline arrow would re-trigger the geolocation request on every render.
+  const handleUserLocate = useCallback((c) => setUserLoc(c), []);
+
   const handleNearMePick = useCallback((item) => {
     setShowNearMe(false);
     if (item.kind === 'national') {
@@ -6292,14 +6318,43 @@ function AppInner() {
   useEffect(() => {
     if (!speciesFilter) { setStateParkMatches(null); return; }
     let alive = true;
-    findStateParksWithBird(speciesFilter).then(ids => {
+    findStateParksWithBird(speciesFilter).then(hits => {
       if (!alive) return;
-      const parks = ids.map(id => allStateParksFlat.get(id)).filter(Boolean)
-        .sort((a, b) => a.state.localeCompare(b.state) || a.name.localeCompare(b.name));
+      let parks = hits
+        .map(h => {
+          const p = allStateParksFlat.get(h.id);
+          return p ? { ...p, freq: h.freq, rarity: h.rarity } : null;
+        })
+        .filter(Boolean);
+
+      if (userLoc) {
+        // Rank by odds, but only among parks that are actually reachable —
+        // otherwise "best odds" surfaces a park 2,000 miles away. Widen the
+        // radius rather than show an empty list in sparsely-covered regions.
+        const R = 3958.8, toRad = d => d * Math.PI / 180;
+        for (const p of parks) {
+          const dLa = toRad(p.lat - userLoc.lat), dLo = toRad(p.lng - userLoc.lng);
+          const a = Math.sin(dLa / 2) ** 2
+            + Math.cos(toRad(userLoc.lat)) * Math.cos(toRad(p.lat)) * Math.sin(dLo / 2) ** 2;
+          p.miles = 2 * R * Math.asin(Math.sqrt(a));
+        }
+        let within = [];
+        for (const radius of [150, 300, 600]) {
+          within = parks.filter(p => p.miles <= radius);
+          if (within.length >= 8) break;
+        }
+        parks = within.length ? within : parks;
+        // County frequency is identical for every park in a county, so distance
+        // is the tiebreaker that makes the ordering useful rather than arbitrary.
+        parks.sort((a, b) => b.freq - a.freq || a.miles - b.miles);
+      } else {
+        parks.sort((a, b) =>
+          b.freq - a.freq || a.state.localeCompare(b.state) || a.name.localeCompare(b.name));
+      }
       setStateParkMatches(parks);
     });
     return () => { alive = false; };
-  }, [speciesFilter, allStateParksFlat]);
+  }, [speciesFilter, allStateParksFlat, userLoc]);
   const handleCategoryReset = useCallback(() => {
     setCategoryType('all');
     setCategorySubtype('all');
@@ -7025,14 +7080,18 @@ function AppInner() {
         <NearMeModal
           index={nearMeIndex}
           onPick={handleNearMePick}
+          onLocate={handleUserLocate}
           onClose={() => setShowNearMe(false)}
         />
       )}
       {showStateMatches && stateParkMatches?.length > 0 && (
         <ParkListModal
           parks={stateParkMatches}
-          title={`State parks with ${speciesFilter}`}
-          subtitle="Regularly recorded in the park's county (eBird) — tap a park for its full wildlife panel"
+          preserveOrder
+          title={`Best odds for ${speciesFilter}`}
+          subtitle={userLoc
+            ? 'Nearby state parks, best odds first — based on how often the species is reported in the park’s county (eBird)'
+            : 'State parks ranked by how often the species is reported in the park’s county (eBird). Tap “Near me” once to rank by distance too.'}
           ariaLabel={`State parks with ${speciesFilter}`}
           onPick={(p) => {
             setShowStateMatches(false);
