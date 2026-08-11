@@ -1614,12 +1614,19 @@ function ParkListModal({ parks, onPick, onClose, title = 'Browse parks', subtitl
               <li key={p.id}>
                 <button className="parklist-modal__item" onClick={() => onPick(p)}>
                   <span className="parklist-modal__item-name">{p.name}</span>
-                  {tier && (
+                  {tier && typeof p.freq === 'number' && (
+                    // Deliberately NOT the tier word. "Guaranteed" means "at this
+                    // park" everywhere else in the app, but this figure is the
+                    // park's COUNTY reporting rate — one number shared by every
+                    // park in the county (Mat-Su Borough alone has 11). Showing
+                    // the rate itself keeps it comparable without promising
+                    // something the county data cannot support.
                     <span
                       className="parklist-modal__item-odds"
                       style={{ color: tier.color, borderColor: `${tier.color}66`, background: `${tier.color}18` }}
+                      title={`Reported on ${Math.round(p.freq * 100)}% of eBird checklists in this park's county`}
                     >
-                      {tier.label}
+                      {Math.round(p.freq * 100)}%
                     </span>
                   )}
                   {typeof p.miles === 'number' && (
@@ -2889,7 +2896,13 @@ function StateSelectorModal({ states, onPick, onClose }) {
 // state's bounds with a pin per park. Mirrors the national-park flow:
 // pin → click → opens StateParkPanel (which stacks above this overlay).
 // Renders its own MapContainer so the main national-park map is untouched.
-function StateParkMap({ state, parks, stateGeo, onPickPark, onClose, onSwitchState }) {
+// `federal` carries the national parks, monuments, preserves and refuges that
+// fall inside this state, normalised by the caller to the same shape as a state
+// park (plus `emoji`, `catLabel`, `__federal` and the original `unit`). Before
+// this, opening Utah showed state parks with Zion, Bryce, Arches and every
+// refuge simply missing — the two layers lived in separate views and neither
+// answered "what's in this state?".
+function StateParkMap({ state, parks, federal = [], stateGeo, onPickPark, onPickFederal, onClose, onSwitchState }) {
   useEffect(() => {
     const h = e => { if (e.key === 'Escape') onClose(); };
     window.addEventListener('keydown', h);
@@ -2923,23 +2936,46 @@ function StateParkMap({ state, parks, stateGeo, onPickPark, onClose, onSwitchSta
   };
   const pinFor = (park) => {
     const cat = park.category || 'state-park';
-    const emoji = CAT_EMOJI[cat] || '🏞️';
+    // Federal units carry their own emoji from npsEmojiOf, so the state map
+    // doesn't need a second copy of that mapping.
+    const emoji = park.emoji || CAT_EMOJI[cat] || '🏞️';
     return L.divIcon({
-      className: 'state-park-pin',
+      className: `state-park-pin${park.__federal ? ' state-park-pin--federal' : ''}`,
       html: `<div class="state-park-pin__badge" aria-hidden="true">${emoji}</div>`,
       iconSize: [28, 28], iconAnchor: [14, 14],
     });
   };
 
-  // Distinct categories present in this state's park list — drives the filter.
-  const legendCats = [...new Set(parks.map(p => p.category || 'state-park'))];
-  const catCount = (c) => parks.filter(p => (p.category || 'state-park') === c).length;
+  // State parks and federal units share one list, one filter bar and one map.
+  const allUnits = useMemo(() => [...parks, ...federal], [parks, federal]);
+
+  // Distinct categories present in this state — drives the filter chips.
+  const legendCats = useMemo(
+    () => [...new Set(allUnits.map(p => p.category || 'state-park'))],
+    [allUnits],
+  );
+  const catCount = (c) => allUnits.filter(p => (p.category || 'state-park') === c).length;
+  // Chip emoji/label: federal units bring their own, state parks use the tables.
+  const catMeta = useMemo(() => {
+    const m = new Map();
+    for (const u of allUnits) {
+      const c = u.category || 'state-park';
+      if (!m.has(c)) m.set(c, {
+        emoji: u.emoji || CAT_EMOJI[c] || '🏞️',
+        label: u.catLabel || CAT_LABEL[c] || c,
+      });
+    }
+    return m;
+  }, [allUnits]);
 
   // Category + name filtering (mirrors the national map's filter bar). Default:
   // all categories on. Clicking a category chip toggles it; the search box
   // narrows by park name.
   const [activeCats, setActiveCats] = useState(() => new Set(legendCats));
   const [query, setQuery] = useState('');
+  // Switching states changes which categories exist; without this the old
+  // state's set carries over and silently hides the new state's units.
+  useEffect(() => { setActiveCats(new Set(legendCats)); }, [state.code, legendCats.join('|')]); // eslint-disable-line react-hooks/exhaustive-deps
   const toggleCat = (c) => setActiveCats(prev => {
     const next = new Set(prev);
     if (next.has(c)) next.delete(c); else next.add(c);
@@ -2947,11 +2983,11 @@ function StateParkMap({ state, parks, stateGeo, onPickPark, onClose, onSwitchSta
   });
   const visibleParks = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return parks.filter(p =>
+    return allUnits.filter(p =>
       activeCats.has(p.category || 'state-park') &&
       (!q || (p.name || '').toLowerCase().includes(q))
     );
-  }, [parks, activeCats, query]);
+  }, [allUnits, activeCats, query]);
 
   // Frame the state tightly: fit to the actual boundary polygon when we
   // have it (snug, regardless of viewport), else the hand-tuned view, else
@@ -2996,7 +3032,7 @@ function StateParkMap({ state, parks, stateGeo, onPickPark, onClose, onSwitchSta
       parks.forEach(p => {
         const m = L.marker([p.lat, p.lng], { icon: pinFor(p) });
         m.bindTooltip(p.name, { direction: 'top', opacity: 0.95, className: 'park-tooltip' });
-        m.on('click', () => onPick(p));
+        m.on('click', () => (p.__federal ? onPickFederal?.(p) : onPick(p)));
         group.addLayer(m);
       });
       group.addTo(map);
@@ -3009,9 +3045,9 @@ function StateParkMap({ state, parks, stateGeo, onPickPark, onClose, onSwitchSta
     <div className="statemap-overlay" role="dialog" aria-modal="true" aria-label={`${state.name} state parks map`}>
       <div className="statemap-overlay__bar">
         <div className="statemap-overlay__title">
-          🗺️ {state.name} State Parks
+          🗺️ {state.name} Parks &amp; Refuges
           <span className="statemap-overlay__count">
-            · {visibleParks.length === parks.length ? `${parks.length} parks` : `${visibleParks.length} of ${parks.length}`}
+            · {visibleParks.length === allUnits.length ? `${allUnits.length} places` : `${visibleParks.length} of ${allUnits.length}`}
           </span>
         </div>
         {/* Switch to another state's map without returning to the national map. */}
@@ -3031,6 +3067,7 @@ function StateParkMap({ state, parks, stateGeo, onPickPark, onClose, onSwitchSta
         <div className="statemap-overlay__filters" role="group" aria-label="Filter by park type">
           {legendCats.map(c => {
             const on = activeCats.has(c);
+            const meta = catMeta.get(c) ?? { emoji: '🏞️', label: c };
             return (
               <button
                 key={c}
@@ -3038,10 +3075,10 @@ function StateParkMap({ state, parks, stateGeo, onPickPark, onClose, onSwitchSta
                 className={`statemap-filter-chip${on ? ' is-active' : ''}`}
                 aria-pressed={on}
                 onClick={() => toggleCat(c)}
-                title={`${on ? 'Hide' : 'Show'} ${CAT_LABEL[c] ?? c}`}
+                title={`${on ? 'Hide' : 'Show'} ${meta.label}`}
               >
-                <span aria-hidden="true">{CAT_EMOJI[c] ?? '🏞️'}</span>
-                <span>{CAT_LABEL[c] ?? c}</span>
+                <span aria-hidden="true">{meta.emoji}</span>
+                <span>{meta.label}</span>
                 <span className="statemap-filter-chip__count">{catCount(c)}</span>
               </button>
             );
@@ -6268,6 +6305,29 @@ function AppInner() {
   // inline arrow would re-trigger the geolocation request on every render.
   const handleUserLocate = useCallback((c) => setUserLoc(c), []);
 
+  // Federal units inside the state whose map is open, normalised to the shape
+  // StateParkMap expects. The three source lists are disjoint by construction
+  // (npsParks excludes the static 63 via existingNpsCodes, refuges are their
+  // own file), which is why they can be concatenated without de-duping.
+  const federalForStateMap = useMemo(() => {
+    if (!selectedStateForMap) return [];
+    const code = selectedStateForMap;
+    return [...wildlifeLocations, ...npsParks, ...NATIONAL_WILDLIFE_REFUGES]
+      .filter(l => l.stateCodes?.includes(code)
+        && typeof l.lat === 'number' && typeof l.lng === 'number')
+      .map(l => {
+        const kind = npsKindOf(l) || 'National Park';
+        return {
+          id: l.id, name: l.name, lat: l.lat, lng: l.lng,
+          category: `federal:${kind}`,
+          emoji: npsEmojiOf(l),
+          catLabel: kind,
+          __federal: true,
+          unit: l,
+        };
+      });
+  }, [selectedStateForMap, npsParks]);
+
   const handleNearMePick = useCallback((item) => {
     setShowNearMe(false);
     if (item.kind === 'national') {
@@ -7088,10 +7148,10 @@ function AppInner() {
         <ParkListModal
           parks={stateParkMatches}
           preserveOrder
-          title={`Best odds for ${speciesFilter}`}
+          title={`Where to look for ${speciesFilter}`}
           subtitle={userLoc
-            ? 'Nearby state parks, best odds first — based on how often the species is reported in the park’s county (eBird)'
-            : 'State parks ranked by how often the species is reported in the park’s county (eBird). Tap “Near me” once to rank by distance too.'}
+            ? '% = share of eBird checklists in the park’s COUNTY that report this species. It’s a county-wide signal shared by every park in that county — a good steer, not a promise for the park itself. Nearest strong counties first.'
+            : '% = share of eBird checklists in the park’s COUNTY that report this species — county-wide, not park-specific. Tap “Near me” once to see the nearest ones first.'}
           ariaLabel={`State parks with ${speciesFilter}`}
           onPick={(p) => {
             setShowStateMatches(false);
@@ -7119,6 +7179,15 @@ function AppInner() {
           <StateParkMap
             state={s}
             parks={STATE_PARKS_BY_STATE[s.code] || []}
+            federal={federalForStateMap}
+            onPickFederal={(u) => {
+              // Federal units live on the national map's popup, so close the
+              // state overlay and hand off — same route "Near me" already uses.
+              setSelectedStateForMap(null);
+              setActiveStatePark(null);
+              track('state_map_federal_open', { park: u.name, state: s.code });
+              handlePopupOpen(u.unit);
+            }}
             stateGeo={stateGeoData}
             onSwitchState={(code) => {
               setActiveStatePark(null);   // close any open panel
