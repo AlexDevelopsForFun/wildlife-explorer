@@ -4382,6 +4382,18 @@ textarea:focus-visible,
 .parklist-modal__item:focus-visible { outline: 3px solid #1d4ed8; outline-offset: 2px; }
 .parklist-modal__item-name { font-size: 14px; font-weight: 600; }
 .parklist-modal__item-state { margin-left: auto; font-size: 12px; color: #8fb3a1; white-space: nowrap; }
+/* Species-search rows: likelihood badge + distance. `--odds` pushes the badge
+   right; the state chip keeps its own margin-left:auto for the plain lists. */
+.parklist-modal__item-odds {
+  margin-left: auto; flex: none; font-size: 11px; font-weight: 700;
+  padding: 2px 7px; border-radius: 999px; border: 1px solid; white-space: nowrap;
+}
+.parklist-modal__item-odds + .parklist-modal__item-state,
+.parklist-modal__item-miles + .parklist-modal__item-state { margin-left: 0; }
+.parklist-modal__item-miles {
+  flex: none; font-size: 12px; color: #8fb3a1; white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
 .parklist-modal__empty { color: #8fb3a1; padding: 16px 12px; font-size: 14px; }
 @media (max-width: 640px) {
   .parklist-modal { margin: 0; border-radius: 0; max-height: 100vh; inset: 0; max-width: none; }
