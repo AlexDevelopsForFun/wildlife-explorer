@@ -858,8 +858,14 @@ export async function fetchINat(lat, lng, locId, taxonKey = null, { radius = 20,
     // observation count, so concatenation produces a clean deduplicated ranked list.
     // Boundary query (place_id) when available; otherwise the lat/lng circle.
     const geoParam = placeId ? `place_id=${placeId}` : `lat=${lat}&lng=${lng}&radius=${radius}`;
+    // MUST go through the proxy: api.inaturalist.org sends no
+    // Access-Control-Allow-Origin, so a direct browser fetch is CORS-blocked
+    // and this whole function fails. It failed silently for a long time —
+    // callers fall back to the county-level list, which renders a plausible
+    // "few observations were found right at this spot" banner instead of an
+    // error, so every state park quietly served county data.
     const baseUrl =
-      `https://api.inaturalist.org/v1/observations/species_counts` +
+      `/api/inat-proxy/observations/species_counts` +
       `?${geoParam}&per_page=200` +
       `&quality_grade=research&order_by=observations_count&order=desc&locale=en&preferred_place_id=1${taxonParam}${dateParam}`;
 

@@ -5,21 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0c3823" />
 
-    <title>US Wildlife Explorer — Find Wildlife in America's National Parks</title>
-    <meta name="description" content="Discover which animals you can see at 63 US national parks, when to visit, and how likely each sighting is. Live eBird + iNaturalist data, rarity ratings, and best-time-to-view guidance." />
+    <!-- These are the DEFAULTS for the homepage. prerenderParks.js regex-replaces
+         title / description / og / twitter per page, so keep the tag shapes
+         intact (single-line, double-quoted content) or the replacements miss.
+         Counts must track the real data: 63 national parks + ~149 other NPS
+         units + 543 refuges + 4,048 state parks. They said "63 national parks"
+         for months after the app grew past 4,700. -->
+    <title>US Wildlife Explorer — Wildlife at 4,700+ US Parks &amp; Refuges</title>
+    <meta name="description" content="See which animals are recorded at more than 4,700 US national parks, state parks and wildlife refuges — how likely you are to see each species, and the season to look. Free, no ads, no sign-up." />
     <link rel="canonical" href="https://wildlifeexplorer.us/" />
 
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://wildlifeexplorer.us/" />
-    <meta property="og:title" content="US Wildlife Explorer — Wildlife in America's National Parks" />
-    <meta property="og:description" content="Discover which animals live in each of 63 US national parks, when to visit them, and how likely you are to spot each species on your trip." />
+    <meta property="og:title" content="US Wildlife Explorer — Wildlife at 4,700+ US Parks &amp; Refuges" />
+    <meta property="og:description" content="Every national park, all 50 states' state parks and 543 national wildlife refuges — with the animals recorded at each, how likely you are to see them, and when to go looking." />
     <meta property="og:image" content="https://wildlifeexplorer.us/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="US Wildlife Explorer" />
-    <meta name="twitter:description" content="Discover which animals you can see at 63 US national parks, when to visit, and how likely each sighting is." />
+    <meta name="twitter:description" content="See which animals are recorded at more than 4,700 US parks and refuges, how likely each sighting is, and the season to look." />
     <meta name="twitter:image" content="https://wildlifeexplorer.us/og-image.png" />
 
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>" />
@@ -32,12 +38,14 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Wildlife" />
 
-    <!-- Google AdSense: site-ownership verification + (post-approval) ad
-         serving. Auto Ads stay OFF in the AdSense dashboard until the eBird
-         commercial agreement and basemap swap are settled — this tag alone
-         displays nothing. Propagates to every prerendered page via baseHtml. -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4775599309285189"
-        crossorigin="anonymous"></script>
+    <!-- Google AdSense site ownership, verified WITHOUT loading the ad script.
+         Auto Ads stay off until the eBird commercial agreement and basemap swap
+         are settled (see Docs/), so adsbygoogle.js was a third-party script and
+         data-collection surface on all 11,283 pages returning nothing. This
+         meta tag plus public/ads.txt (which carries the same publisher ID) is
+         Google's supported verification path. Restore the <script> tag when ads
+         actually go live. -->
+    <meta name="google-adsense-account" content="ca-pub-4775599309285189" />
   </head>
   <body>
     <div id="root"></div>
