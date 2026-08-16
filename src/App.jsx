@@ -6169,7 +6169,12 @@ function AppInner() {
   // ── State boundary GeoJSON ────────────────────────────────────────────────
   const [stateGeoData, setStateGeoData] = useState(null);
   useEffect(() => {
-    fetch('https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json')
+    // Served from our own origin (public/us-states.json), NOT hotlinked from
+    // raw.githubusercontent.com: that came back with Cache-Control max-age=300
+    // so it re-downloaded 87KB nearly every visit, sat outside the service
+    // worker cache (breaking the offline promise for state outlines), and made
+    // an unmaintained third-party repo a single point of failure.
+    fetch('/us-states.json')
       .then(r => r.json())
       .then(data => setStateGeoData(data))
       .catch(() => { /* silently skip if offline — map still works */ });

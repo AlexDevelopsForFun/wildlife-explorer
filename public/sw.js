@@ -16,7 +16,12 @@
 const VERSION = 'v1';
 const CORE = `wm-core-${VERSION}`;
 const RUNTIME = `wm-runtime-${VERSION}`;
-const CORE_URLS = ['/', '/manifest.webmanifest', '/icon.svg'];
+// us-states.json is precached (not just runtime-cached) so state outlines work
+// offline even for a user who never opened a state map while online. It's
+// static geography, so a cache-first copy never goes stale. Deliberately NOT
+// bumping VERSION for this: install re-runs addAll on any changed sw.js, while
+// a bump would purge the multi-MB wildlife tier chunks and re-download them.
+const CORE_URLS = ['/', '/manifest.webmanifest', '/icon.svg', '/us-states.json'];
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();

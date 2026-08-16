@@ -24,6 +24,8 @@ import sharp from 'sharp';
 import { wildlifeLocations } from '../src/wildlifeData.js';
 import { STATE_PARKS_BY_STATE } from '../src/data/stateParksNJ.js';
 import { PARK_COUNTY, COUNTY_BIRD_FREQ } from '../src/data/stateParkBirdFreq.js';
+import { NATIONAL_WILDLIFE_REFUGES } from '../src/data/nationalWildlifeRefuges.js';
+import { UNIT_COUNTY } from '../src/data/unitCounty.js';
 import { renderPrivacyHtml } from './privacyPage.mjs';
 
 // State-code → full name, for prerendered titles/copy. Extend as states ship.
@@ -43,6 +45,11 @@ const ORIGIN = 'https://wildlifeexplorer.us';
 const esc = (s) => String(s ?? '')
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
   .replace(/"/g, '&quot;');
+
+// Species names in COUNTY_BIRD_FREQ are lowercase ("bald eagle"). Module scope
+// because both the refuge pages and the species pages need it, and the refuge
+// loop runs first — a const inside main() would be in the TDZ there.
+const titleCase = (n) => String(n).replace(/(^|[\s-])\w/g, c => c.toUpperCase());
 
 const RARITY_WORD = {
   guaranteed: 'almost guaranteed', very_likely: 'very likely', likely: 'likely',
@@ -179,6 +186,120 @@ async function main() {
     }
   }
 
+  // ── National Wildlife Refuges ────────────────────────────────────────
+  // 543 refuges were reachable in the app but had NO static page: /park/
+  // nwr_barnegat served the generic SPA shell, so Google saw the homepage
+  // and shared links previewed as the homepage. They're prime long-tail
+  // queries ("birds at Bosque del Apache") and the data was already here.
+  //
+  // Unlike state parks these get a real species list: UNIT_COUNTY maps each
+  // refuge to its county and COUNTY_BIRD_FREQ has that county's eBird
+  // reporting rates, so the crawlable body carries actual bird names.
+  //
+  // NOTE the ~86 non-park NPS units (monuments, preserves, seashores) are
+  // still missing. They're fetched at RUNTIME from /api/nps-proxy, so no
+  // names or coordinates exist at build time — adding them means either a
+  // keyed NPS fetch during the build or a committed static list.
+  const refugeUrls = [];
+  const refugesByState = new Map();
+  for (const r of NATIONAL_WILDLIFE_REFUGES) {
+    const st = r.stateCodes?.[0];
+    if (!st) continue;                       // ~71 offshore units, no state
+    if (!refugesByState.has(st)) refugesByState.set(st, []);
+    refugesByState.get(st).push(r);
+  }
+
+  for (const refuge of NATIONAL_WILDLIFE_REFUGES) {
+    try {
+      const url = `${ORIGIN}/park/${refuge.id}`;
+      const st = refuge.stateCodes?.[0];
+      const stName = st ? (STATE_NAMES[st] || st) : null;
+
+      // Top county birds, most-reported first — real content, not filler.
+      const county = UNIT_COUNTY[refuge.id];
+      const countyBirds = county && COUNTY_BIRD_FREQ[county]
+        ? Object.entries(COUNTY_BIRD_FREQ[county])
+            .filter(([sp, e]) => !sp.startsWith('__') && Number.isFinite(e?.f))
+            .sort((a, b) => b[1].f - a[1].f)
+            .slice(0, 25)
+            .map(([sp, e]) => ({ name: titleCase(sp), f: e.f }))
+        : [];
+
+      const title = `Wildlife at ${refuge.name} — birds & when to see them | US Wildlife Explorer`;
+      const desc = `See wildlife at ${refuge.name}${stName ? `, ${stName}` : ''}: `
+        + (countyBirds.length
+            ? `${countyBirds.slice(0, 4).map(b => b.name).join(', ')} and more`
+            : 'birds, mammals and more')
+        + ` — how likely each sighting is, and the season to look.`;
+      const descClamped = desc.length > 158 ? desc.slice(0, 155) + '…' : desc;
+
+      // Same-state refuges only: a 543-link nav on every page would bury the
+      // real content and read as a link farm.
+      const sibs = (st ? refugesByState.get(st) : []) ?? [];
+      const refNav = sibs.length > 1
+        ? `<nav class="seo-parklinks" aria-label="Other ${esc(stName)} refuges">`
+          + `<h2>More ${esc(stName)} national wildlife refuges</h2><ul>`
+          + sibs.filter(s => s.id !== refuge.id)
+              .map(s => `<li><a href="/park/${encodeURIComponent(s.id)}">Wildlife at ${esc(s.name)}</a></li>`)
+              .join('')
+          + `</ul></nav>`
+        : '';
+
+      const birdLi = countyBirds
+        .map(b => `<li>${esc(b.name)} — reported on ${Math.round(b.f * 100)}% of nearby checklists</li>`)
+        .join('');
+
+      const seoBlock =
+        `<article class="seo-prerender">` +
+        `<h1>Wildlife at ${esc(refuge.name)}</h1>` +
+        `<p>${esc(refuge.name)}${stName ? ` in ${esc(stName)}` : ''} is a US national `
+        + `wildlife refuge — which animals are recorded there, how likely you are to see `
+        + `each one, and the best season to visit. Live data from eBird and iNaturalist.</p>` +
+        (birdLi
+          ? `<h2>Birds regularly recorded nearby</h2><ul>${birdLi}</ul>`
+            + `<p>Percentages are the share of eBird checklists in the surrounding county `
+            + `reporting each species — a county-wide signal, not a park-level guarantee.</p>`
+          : '') +
+        `<p>Loading the interactive map…</p>` +
+        refNav +
+        `</article>`;
+
+      const jsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'TouristAttraction',
+        name: refuge.name,
+        description: descClamped,
+        url,
+        ...(Number.isFinite(refuge.lat) && Number.isFinite(refuge.lng) ? {
+          geo: { '@type': 'GeoCoordinates', latitude: refuge.lat, longitude: refuge.lng },
+        } : {}),
+        isAccessibleForFree: true,
+        touristType: 'Wildlife watching',
+      };
+
+      let html = baseHtml
+        .replace(/<title>[\s\S]*?<\/title>/, `<title>${esc(title)}</title>`)
+        .replace(/(<meta name="description" content=")[^"]*(")/, `$1${esc(descClamped)}$2`)
+        .replace(/(<link rel="canonical" href=")[^"]*(")/, `$1${url}$2`)
+        .replace(/(<meta property="og:url" content=")[^"]*(")/, `$1${url}$2`)
+        .replace(/(<meta property="og:title" content=")[^"]*(")/, `$1${esc(title)}$2`)
+        .replace(/(<meta property="og:description" content=")[^"]*(")/, `$1${esc(descClamped)}$2`)
+        .replace(/(<meta name="twitter:title" content=")[^"]*(")/, `$1${esc(title)}$2`)
+        .replace(/(<meta name="twitter:description" content=")[^"]*(")/, `$1${esc(descClamped)}$2`)
+        .replace(/(<div id="root">)(<\/div>)/, `$1${seoBlock}$2`);
+      html = html.replace(/<\/head>/,
+        `  <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>\n  </head>`);
+
+      const dir = path.join(DIST, 'park', refuge.id);
+      mkdirSync(dir, { recursive: true });
+      writeFileSync(path.join(dir, 'index.html'), html, 'utf8');
+      refugeUrls.push(url);
+      written++;
+    } catch (e) {
+      console.warn(`⚠  refuge prerender skipped ${refuge.id}: ${e.message}`);
+    }
+  }
+
   // ── State parks ──────────────────────────────────────────────────────
   // Same treatment as national parks: a static index page per state +
   // a static page per state park, so deep links (/state/<st>, /state-park/
@@ -311,10 +432,12 @@ async function main() {
   try {
     const homeBlock =
       `<article class="seo-prerender">` +
-      `<h1>US Wildlife Explorer — wildlife in America's national parks</h1>` +
-      `<p>Discover which animals you can see at 63 US national parks, how ` +
-      `likely each sighting is, and the best time to visit — with live data ` +
-      `from eBird, iNaturalist and the National Park Service.</p>` +
+      `<h1>US Wildlife Explorer — wildlife at America's parks and refuges</h1>` +
+      `<p>See which animals are recorded at more than 4,700 US national parks, ` +
+      `state parks and national wildlife refuges — how likely you are to see ` +
+      `each species, and the season to look. Live data from eBird, iNaturalist ` +
+      `and the National Park Service.</p>` +
+      `<p><a href="/park/nwr_bosque-del-apache">Browse national wildlife refuges →</a></p>` +
       `<p><a href="/species/">Looking for a specific bird? Find the parks where it lives →</a></p>` +
       `<p><a href="/guide">New here? See how to get the most out of it →</a></p>` +
       parkNav +
@@ -355,7 +478,6 @@ async function main() {
       }
     }
 
-    const titleCase = (n) => n.replace(/(^|[\s-])\w/g, c => c.toUpperCase());
     const slugOf = (n) => n.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
     const seenSlug = new Set();
     const top = [...spIndex.entries()]
@@ -499,7 +621,7 @@ async function main() {
   const now = new Date().toISOString().slice(0, 10);
   const urls = [`${ORIGIN}/`, `${ORIGIN}/guide`, `${ORIGIN}/privacy`,
     ...wildlifeLocations.map(p => `${ORIGIN}/park/${p.id}`),
-    ...stateParkUrls, ...speciesUrls];
+    ...refugeUrls, ...stateParkUrls, ...speciesUrls];
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n`
     + `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`
     + urls.map(u => `  <url><loc>${u}</loc><lastmod>${now}</lastmod></url>`).join('\n')
@@ -507,8 +629,9 @@ async function main() {
   writeFileSync(path.join(DIST, 'sitemap.xml'), sitemap, 'utf8');
 
   console.log(`✅ Prerendered ${written} pages `
-    + `(${wildlifeLocations.length} national parks + ${stateParkUrls.length} state `
-    + `+ ${speciesUrls.length} species) + OG images + sitemap (${urls.length} URLs).`);
+    + `(${wildlifeLocations.length} national parks + ${refugeUrls.length} refuges `
+    + `+ ${stateParkUrls.length} state + ${speciesUrls.length} species) `
+    + `+ OG images + sitemap (${urls.length} URLs).`);
 }
 
 main().catch(err => { console.error(err); process.exit(1); });
