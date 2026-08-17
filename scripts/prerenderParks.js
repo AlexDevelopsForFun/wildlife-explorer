@@ -26,6 +26,7 @@ import { STATE_PARKS_BY_STATE } from '../src/data/stateParksNJ.js';
 import { PARK_COUNTY, COUNTY_BIRD_FREQ } from '../src/data/stateParkBirdFreq.js';
 import { NATIONAL_WILDLIFE_REFUGES } from '../src/data/nationalWildlifeRefuges.js';
 import { UNIT_COUNTY } from '../src/data/unitCounty.js';
+import { loadCountyNonbird, NONBIRD_STATE_KEYS } from '../src/data/countyNonbird/loader.js';
 import { renderPrivacyHtml } from './privacyPage.mjs';
 
 // State-code → full name, for prerendered titles/copy. Extend as states ship.
@@ -49,7 +50,12 @@ const esc = (s) => String(s ?? '')
 // Species names in COUNTY_BIRD_FREQ are lowercase ("bald eagle"). Module scope
 // because both the refuge pages and the species pages need it, and the refuge
 // loop runs first — a const inside main() would be in the TDZ there.
-const titleCase = (n) => String(n).replace(/(^|[\s-])\w/g, c => c.toUpperCase());
+//
+// Capitalises after whitespace ONLY, never after a hyphen: the accepted forms
+// are "Red-tailed Hawk" and "White-tailed Deer", not "Red-Tailed". Slugs are
+// derived from the raw lowercase name, so this is display-only and cannot
+// change any existing URL.
+const titleCase = (n) => String(n).replace(/(^|\s)\S/g, c => c.toUpperCase());
 
 const RARITY_WORD = {
   guaranteed: 'almost guaranteed', very_likely: 'very likely', likely: 'likely',
@@ -462,29 +468,68 @@ async function main() {
     for (const [code, parks] of Object.entries(STATE_PARKS_BY_STATE))
       for (const p of (parks ?? [])) parkById.set(p.id, { ...p, st: code.toLowerCase() });
 
-    // species → state → [{ park, f }]
-    const spIndex = new Map();
-    for (const [pid, county] of Object.entries(PARK_COUNTY)) {
+    // species → state → [{ park, f }], built once per dataset.
+    const buildIndex = (perCounty) => {
+      const idx = new Map();
+      for (const [pid, county] of Object.entries(PARK_COUNTY)) {
+        const park = parkById.get(pid);
+        if (!park) continue;
+        for (const [sp, f] of perCounty(county)) {
+          let states = idx.get(sp);
+          if (!states) idx.set(sp, (states = new Map()));
+          let arr = states.get(park.st);
+          if (!arr) states.set(park.st, (arr = []));
+          arr.push({ park, f });
+        }
+      }
+      return idx;
+    };
+
+    const birdIndex = buildIndex(function* (county) {
       const freq = COUNTY_BIRD_FREQ[county];
-      const park = parkById.get(pid);
-      if (!freq || !park) continue;
+      if (!freq) return;
       for (const [sp, e] of Object.entries(freq)) {
         if (sp.startsWith('__')) continue;
-        let states = spIndex.get(sp);
-        if (!states) spIndex.set(sp, (states = new Map()));
-        let arr = states.get(park.st);
-        if (!arr) states.set(park.st, (arr = []));
-        arr.push({ park, f: e.f ?? 0 });
+        yield [sp, e?.f ?? 0];
+      }
+    });
+
+    // Non-birds: mammals, reptiles, amphibians, marine life and insects. Same
+    // county→park join, different source and — critically — a different UNIT.
+    // Bird `f` is an eBird checklist reporting rate; non-bird `f` is an
+    // iNaturalist observability index. The page copy below must never describe
+    // one as the other, or we'd mass-produce the exact county/park overclaim
+    // that took two rounds to remove from the UI — this time into Google's
+    // index across thousands of pages, where it's effectively permanent.
+    const nonbirdByCounty = new Map();
+    for (const key of NONBIRD_STATE_KEYS) {
+      const mod = await loadCountyNonbird(key);
+      if (!mod) continue;
+      for (const [county, groups] of Object.entries(mod)) {
+        let bucket = nonbirdByCounty.get(county);
+        if (!bucket) nonbirdByCounty.set(county, (bucket = []));
+        for (const list of Object.values(groups)) {
+          if (!Array.isArray(list)) continue;
+          for (const pair of list) {
+            const n = pair?.[0], f = pair?.[1];
+            if (n && Number.isFinite(f)) bucket.push([String(n).toLowerCase(), f]);
+          }
+        }
       }
     }
+    const nonbirdIndex = buildIndex(county => nonbirdByCounty.get(county) ?? []);
 
     const slugOf = (n) => n.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    // Shared across both datasets so a mammal can never overwrite a bird's page.
     const seenSlug = new Set();
-    const top = [...spIndex.entries()]
+    const topOf = (idx, limit) => [...idx.entries()]
       .map(([sp, states]) => ({ sp, states, slug: slugOf(sp), total: [...states.values()].reduce((s, a) => s + a.length, 0) }))
       .sort((a, b) => b.total - a.total)
       .filter(s => s.slug && !seenSlug.has(s.slug) && seenSlug.add(s.slug))
-      .slice(0, 150);
+      .slice(0, limit);
+
+    const top = topOf(birdIndex, 150);
+    const topNonbird = topOf(nonbirdIndex, 150);
 
     // Shared page assembly — same meta treatment as the park pages.
     const renderPage = (relDir, url, title, descRaw, article, jsonLd) => {
@@ -505,66 +550,98 @@ async function main() {
       written++;
     };
 
-    for (const { sp, states, slug } of top) {
-      const display = titleCase(sp);
-      const qualifying = [...states.entries()]
-        .map(([st, arr]) => ({ st, arr }))
-        .filter(x => x.arr.length >= 3)
-        .sort((a, b) => b.arr.length - a.arr.length);
-      if (!qualifying.length) continue;
+    // Copy varies by dataset because the underlying number means different
+    // things. Birds: "regularly recorded", eBird checklists. Non-birds:
+    // "photographed", iNaturalist observations — never framed as a sighting
+    // probability or a checklist rate.
+    const COPY = {
+      bird: {
+        stateLead: (d, n, s) => `The ${d} is regularly recorded in the counties of ${n} ${s} state parks (eBird historical checklists). The strongest bets:`,
+        stateDesc: (d, n, s) => `${n} ${s} state parks where the ${d} is regularly recorded — ranked by eBird checklist frequency, with live sighting data for each park.`,
+        hubLead:   (d) => `State parks where the ${d} is regularly recorded, by state (eBird historical checklist data; live sighting odds on every park page):`,
+        hubDesc:   (d, n) => `Find the ${d}: ${n} states with parks where it is regularly recorded, ranked, with live sighting data from eBird and iNaturalist.`,
+      },
+      nonbird: {
+        stateLead: (d, n, s) => `The ${d} is recorded in the counties of ${n} ${s} state parks (research-grade iNaturalist observations). Ranked by how often it is observed in each area:`,
+        stateDesc: (d, n, s) => `${n} ${s} state parks in counties where the ${d} is observed — ranked by iNaturalist observation frequency, with live sighting data for each park.`,
+        hubLead:   (d) => `State parks in counties where the ${d} is observed, by state (research-grade iNaturalist records; live sighting data on every park page):`,
+        hubDesc:   (d, n) => `Find the ${d}: ${n} states with parks in counties where it is observed, ranked by iNaturalist observation frequency.`,
+      },
+    };
 
-      // Per species×state pages.
-      for (const { st, arr } of qualifying) {
-        const stName = STATE_NAMES[st.toUpperCase()] ?? st.toUpperCase();
-        const parksTop = arr.sort((a, b) => b.f - a.f).slice(0, 25);
-        const url = `${ORIGIN}/species/${slug}/${st}`;
-        const lis = parksTop.map(({ park }) =>
-          `<li><a href="/state-park/${st}/${encodeURIComponent(park.id)}">${esc(park.name)}</a></li>`).join('');
+    const emitSpecies = (list, kind) => {
+      const c = COPY[kind];
+      for (const { sp, states, slug } of list) {
+        const display = titleCase(sp);
+        const qualifying = [...states.entries()]
+          .map(([st, arr]) => ({ st, arr }))
+          .filter(x => x.arr.length >= 3)
+          .sort((a, b) => b.arr.length - a.arr.length);
+        if (!qualifying.length) continue;
+
+        // Per species×state pages.
+        for (const { st, arr } of qualifying) {
+          const stName = STATE_NAMES[st.toUpperCase()] ?? st.toUpperCase();
+          const parksTop = arr.sort((a, b) => b.f - a.f).slice(0, 25);
+          const url = `${ORIGIN}/species/${slug}/${st}`;
+          const lis = parksTop.map(({ park }) =>
+            `<li><a href="/state-park/${st}/${encodeURIComponent(park.id)}">${esc(park.name)}</a></li>`).join('');
+          const article =
+            `<article class="seo-prerender">` +
+            `<h1>Where to see a ${esc(display)} in ${esc(stName)}</h1>` +
+            `<p>${esc(c.stateLead(display, arr.length, stName))}</p>` +
+            `<ol>${lis}</ol>` +
+            `<p>These are county-level records — the species is documented in the area ` +
+            `around each park, which is a strong steer rather than a guarantee for the ` +
+            `park itself.</p>` +
+            `<p><a href="/species/${slug}">${esc(display)} in other states →</a> · ` +
+            `<a href="/state/${st}">All ${esc(stName)} state parks →</a></p>` +
+            `</article>`;
+          renderPage(`species/${slug}/${st}`, url,
+            `Where to see a ${display} in ${stName} — best parks | US Wildlife Explorer`,
+            c.stateDesc(display, arr.length, stName),
+            article,
+            { '@context': 'https://schema.org', '@type': 'ItemList', name: `${display} in ${stName}`, url,
+              itemListElement: parksTop.map(({ park }, i) => ({ '@type': 'ListItem', position: i + 1, name: park.name, url: `${ORIGIN}/state-park/${st}/${park.id}` })) });
+        }
+
+        // Species hub.
+        const url = `${ORIGIN}/species/${slug}`;
+        const stateLis = qualifying.map(({ st, arr }) =>
+          `<li><a href="/species/${slug}/${st}">${esc(STATE_NAMES[st.toUpperCase()] ?? st)} — ${arr.length} parks</a></li>`).join('');
         const article =
           `<article class="seo-prerender">` +
-          `<h1>Where to see a ${esc(display)} in ${esc(stName)}</h1>` +
-          `<p>The ${esc(display)} is regularly recorded in the counties of ${arr.length} ` +
-          `${esc(stName)} state parks (eBird historical checklists). The strongest bets:</p>` +
-          `<ol>${lis}</ol>` +
-          `<p><a href="/species/${slug}">${esc(display)} in other states →</a> · ` +
-          `<a href="/state/${st}">All ${esc(stName)} state parks →</a></p>` +
+          `<h1>Where to see a ${esc(display)} in the US</h1>` +
+          `<p>${esc(c.hubLead(display))}</p>` +
+          `<ul>${stateLis}</ul>` +
+          `<p><a href="/species/">Browse all species →</a></p>` +
           `</article>`;
-        renderPage(`species/${slug}/${st}`, url,
-          `Where to see a ${display} in ${stName} — best parks | US Wildlife Explorer`,
-          `${arr.length} ${stName} state parks where the ${display} is regularly recorded — ranked by eBird checklist frequency, with live sighting data for each park.`,
+        renderPage(`species/${slug}`, url,
+          `Where to see a ${display} — best US parks by state | US Wildlife Explorer`,
+          c.hubDesc(display, qualifying.length),
           article,
-          { '@context': 'https://schema.org', '@type': 'ItemList', name: `${display} in ${stName}`, url,
-            itemListElement: parksTop.map(({ park }, i) => ({ '@type': 'ListItem', position: i + 1, name: park.name, url: `${ORIGIN}/state-park/${st}/${park.id}` })) });
+          { '@context': 'https://schema.org', '@type': 'WebPage', name: `Where to see a ${display}`, url });
       }
+    };
 
-      // Species hub.
-      const url = `${ORIGIN}/species/${slug}`;
-      const stateLis = qualifying.map(({ st, arr }) =>
-        `<li><a href="/species/${slug}/${st}">${esc(STATE_NAMES[st.toUpperCase()] ?? st)} — ${arr.length} parks</a></li>`).join('');
-      const article =
-        `<article class="seo-prerender">` +
-        `<h1>Where to see a ${esc(display)} in the US</h1>` +
-        `<p>State parks where the ${esc(display)} is regularly recorded, by state ` +
-        `(eBird historical checklist data; live sighting odds on every park page):</p>` +
-        `<ul>${stateLis}</ul>` +
-        `<p><a href="/species/">Browse all birds →</a></p>` +
-        `</article>`;
-      renderPage(`species/${slug}`, url,
-        `Where to see a ${display} — best US parks by state | US Wildlife Explorer`,
-        `Find the ${display}: ${qualifying.length} states with parks where it is regularly recorded, ranked, with live sighting data from eBird and iNaturalist.`,
-        article,
-        { '@context': 'https://schema.org', '@type': 'WebPage', name: `Where to see a ${display}`, url });
-    }
+    emitSpecies(top, 'bird');
+    emitSpecies(topNonbird, 'nonbird');
 
-    // /species/ index — the crawl entry, linked from the homepage.
-    const hubLis = top.map(({ sp, slug }) =>
-      `<li><a href="/species/${slug}">Where to see a ${esc(titleCase(sp))}</a></li>`).join('');
+    // /species/ index — the crawl entry, linked from the homepage. Lists both
+    // datasets under their own headings so the crawler reaches every hub.
+    const liOf = ({ sp, slug }) =>
+      `<li><a href="/species/${slug}">Where to see a ${esc(titleCase(sp))}</a></li>`;
+    const total = top.length + topNonbird.length;
     renderPage('species', `${ORIGIN}/species/`,
-      `Where to see ${top.length} popular US birds — park finder | US Wildlife Explorer`,
-      `Pick a bird, get the US state parks where it's regularly recorded — ${top.length} species, ranked from eBird data, with live sighting odds per park.`,
-      `<article class="seo-prerender"><h1>Find parks for a specific bird</h1>` +
-      `<p>The ${top.length} most widespread birds across 4,000+ US state parks:</p><ul>${hubLis}</ul></article>`,
-      { '@context': 'https://schema.org', '@type': 'WebPage', name: 'Bird park finder', url: `${ORIGIN}/species/` });
+      `Where to see ${total} US animals — park finder | US Wildlife Explorer`,
+      `Pick an animal, get the US state parks where it's recorded — ${total} birds, mammals, reptiles and more, ranked from eBird and iNaturalist data.`,
+      `<article class="seo-prerender"><h1>Find parks for a specific animal</h1>` +
+      `<p>The most widespread species across 4,000+ US state parks, from eBird and ` +
+      `iNaturalist records.</p>` +
+      `<h2>Birds</h2><ul>${top.map(liOf).join('')}</ul>` +
+      `<h2>Mammals, reptiles, amphibians &amp; more</h2><ul>${topNonbird.map(liOf).join('')}</ul>` +
+      `</article>`,
+      { '@context': 'https://schema.org', '@type': 'WebPage', name: 'Animal park finder', url: `${ORIGIN}/species/` });
   } catch (e) {
     console.warn(`⚠  species pages skipped: ${e.message}`);
   }
