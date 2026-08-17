@@ -27,6 +27,7 @@ import { PARK_COUNTY, COUNTY_BIRD_FREQ } from '../src/data/stateParkBirdFreq.js'
 import { NATIONAL_WILDLIFE_REFUGES } from '../src/data/nationalWildlifeRefuges.js';
 import { UNIT_COUNTY } from '../src/data/unitCounty.js';
 import { loadCountyNonbird, NONBIRD_STATE_KEYS } from '../src/data/countyNonbird/loader.js';
+import { NPS_UNITS } from '../src/data/npsUnits.js';
 import { renderPrivacyHtml } from './privacyPage.mjs';
 
 // State-code → full name, for prerendered titles/copy. Extend as states ship.
@@ -189,6 +190,98 @@ async function main() {
       written++;
     } catch (e) {
       console.warn(`⚠  prerender skipped ${park.id}: ${e.message}`);
+    }
+  }
+
+  // ── Other NPS units (monuments, preserves, seashores, rivers…) ───────
+  // The app discovers these live via /api/nps-proxy, so they had no build-time
+  // identity and therefore no static page. src/data/npsUnits.js is a snapshot
+  // (regenerate with scripts/fetchNpsUnits.mjs) filtered by the SAME
+  // npsFilter module the app's hook uses, so the two can't disagree.
+  //
+  // The 63 flagship national parks are excluded by npsCode exactly as the app
+  // does via existingNpsCodes — they already prerender above, with richer
+  // bundled species data.
+  const staticNpsCodes = new Set(wildlifeLocations.filter(l => l.npsCode).map(l => l.npsCode));
+  const npsUnitUrls = [];
+  const extraNpsUnits = NPS_UNITS.filter(u => !staticNpsCodes.has(u.parkCode));
+
+  for (const unit of extraNpsUnits) {
+    try {
+      const url = `${ORIGIN}/park/${unit.id}`;
+      const st = unit.stateCodes?.[0];
+      const stName = st ? (STATE_NAMES[st] || st) : null;
+      const kind = unit.npsKind || 'National Park Unit';
+
+      const county = UNIT_COUNTY[unit.id];
+      const countyBirds = county && COUNTY_BIRD_FREQ[county]
+        ? Object.entries(COUNTY_BIRD_FREQ[county])
+            .filter(([sp, e]) => !sp.startsWith('__') && Number.isFinite(e?.f))
+            .sort((a, b) => b[1].f - a[1].f)
+            .slice(0, 25)
+            .map(([sp, e]) => ({ name: titleCase(sp), f: e.f }))
+        : [];
+
+      const title = `Wildlife at ${unit.name} — what to see & when | US Wildlife Explorer`;
+      const desc = `See wildlife at ${unit.name}${stName ? `, ${stName}` : ''}: `
+        + (countyBirds.length
+            ? `${countyBirds.slice(0, 4).map(b => b.name).join(', ')} and more`
+            : 'birds, mammals and more')
+        + ` — how likely each sighting is, and the season to look.`;
+      const descClamped = desc.length > 158 ? desc.slice(0, 155) + '…' : desc;
+
+      const sibs = extraNpsUnits.filter(u => u.id !== unit.id && u.stateCodes?.[0] === st);
+      const nav = sibs.length
+        ? `<nav class="seo-parklinks" aria-label="Other ${esc(stName)} national park units">`
+          + `<h2>More ${esc(stName)} national park units</h2><ul>`
+          + sibs.map(s => `<li><a href="/park/${encodeURIComponent(s.id)}">Wildlife at ${esc(s.name)}</a></li>`).join('')
+          + `</ul></nav>`
+        : '';
+
+      const birdLi = countyBirds
+        .map(b => `<li>${esc(b.name)} — reported on ${Math.round(b.f * 100)}% of nearby checklists</li>`)
+        .join('');
+
+      const seoBlock =
+        `<article class="seo-prerender">` +
+        `<h1>Wildlife at ${esc(unit.name)}</h1>` +
+        `<p>${esc(unit.name)}${stName ? ` in ${esc(stName)}` : ''} is a US ${esc(kind.toLowerCase())} `
+        + `— which animals are recorded there, how likely you are to see each one, and the `
+        + `best season to visit. Live data from eBird, iNaturalist and the National Park Service.</p>` +
+        (birdLi
+          ? `<h2>Birds regularly recorded nearby</h2><ul>${birdLi}</ul>`
+            + `<p>Percentages are the share of eBird checklists in the surrounding county `
+            + `reporting each species — a county-wide signal, not a park-level guarantee.</p>`
+          : '') +
+        `<p>Loading the interactive map…</p>` + nav + `</article>`;
+
+      const jsonLd = {
+        '@context': 'https://schema.org', '@type': 'TouristAttraction',
+        name: unit.name, description: descClamped, url,
+        geo: { '@type': 'GeoCoordinates', latitude: unit.lat, longitude: unit.lng },
+        isAccessibleForFree: true, touristType: 'Wildlife watching',
+      };
+
+      let html = baseHtml
+        .replace(/<title>[\s\S]*?<\/title>/, `<title>${esc(title)}</title>`)
+        .replace(/(<meta name="description" content=")[^"]*(")/, `$1${esc(descClamped)}$2`)
+        .replace(/(<link rel="canonical" href=")[^"]*(")/, `$1${url}$2`)
+        .replace(/(<meta property="og:url" content=")[^"]*(")/, `$1${url}$2`)
+        .replace(/(<meta property="og:title" content=")[^"]*(")/, `$1${esc(title)}$2`)
+        .replace(/(<meta property="og:description" content=")[^"]*(")/, `$1${esc(descClamped)}$2`)
+        .replace(/(<meta name="twitter:title" content=")[^"]*(")/, `$1${esc(title)}$2`)
+        .replace(/(<meta name="twitter:description" content=")[^"]*(")/, `$1${esc(descClamped)}$2`)
+        .replace(/(<div id="root">)(<\/div>)/, `$1${seoBlock}$2`);
+      html = html.replace(/<\/head>/,
+        `  <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>\n  </head>`);
+
+      const dir = path.join(DIST, 'park', unit.id);
+      mkdirSync(dir, { recursive: true });
+      writeFileSync(path.join(dir, 'index.html'), html, 'utf8');
+      npsUnitUrls.push(url);
+      written++;
+    } catch (e) {
+      console.warn(`⚠  nps unit prerender skipped ${unit.id}: ${e.message}`);
     }
   }
 
@@ -698,7 +791,7 @@ async function main() {
   const now = new Date().toISOString().slice(0, 10);
   const urls = [`${ORIGIN}/`, `${ORIGIN}/guide`, `${ORIGIN}/privacy`,
     ...wildlifeLocations.map(p => `${ORIGIN}/park/${p.id}`),
-    ...refugeUrls, ...stateParkUrls, ...speciesUrls];
+    ...npsUnitUrls, ...refugeUrls, ...stateParkUrls, ...speciesUrls];
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n`
     + `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`
     + urls.map(u => `  <url><loc>${u}</loc><lastmod>${now}</lastmod></url>`).join('\n')
@@ -706,7 +799,8 @@ async function main() {
   writeFileSync(path.join(DIST, 'sitemap.xml'), sitemap, 'utf8');
 
   console.log(`✅ Prerendered ${written} pages `
-    + `(${wildlifeLocations.length} national parks + ${refugeUrls.length} refuges `
+    + `(${wildlifeLocations.length} national parks + ${npsUnitUrls.length} NPS units `
+    + `+ ${refugeUrls.length} refuges `
     + `+ ${stateParkUrls.length} state + ${speciesUrls.length} species) `
     + `+ OG images + sitemap (${urls.length} URLs).`);
 }
