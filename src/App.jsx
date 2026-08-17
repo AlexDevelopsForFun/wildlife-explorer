@@ -426,7 +426,7 @@ const STATE_PARK_STATES = [
   },
 ];
 import { classifyAnimalSubtype, getSubtypeDefs } from './utils/subcategories';
-import { findStateParksWithBird } from './utils/birdParkSearch';
+import { findStateParksWithSpecies } from './utils/birdParkSearch';
 import {
   mergeAnimals, balanceAnimals, filterGeographicOutliers, NEVER_EXCEPTIONAL_BIRDS,
   getCorrectionFactor, getMonthlyFrequency,
@@ -2297,9 +2297,10 @@ function StateParkPanel({ park, onClose, openAbout, onSwitchPark }) {
               )}
               {state.countySeeded ? (
                 <div className="statepark-modal__banner" role="note">
-                  <strong>County-level species list.</strong> Few geotagged observations were
-                  found right at this spot, so this shows the wildlife documented in the surrounding
-                  county (eBird + iNaturalist records) — the species you can expect in this area.
+                  <strong>Some entries are county-wide.</strong> Sightings logged at this exact
+                  spot were thin, so the list is topped up with species documented in the
+                  surrounding county (eBird + iNaturalist). Those carry a <code>~</code> on their
+                  likelihood badge — the rest is recorded here.
                 </div>
               ) : (
                 <div className="statepark-modal__banner" role="note">
@@ -3843,6 +3844,19 @@ function resolvePillSemantics(animal, displayRarity, sources) {
   const isCurated = rs === 'override' || rs === 'override_curated' || rs === 'curated';
   const npsOnly = sources?.length === 1 && sources[0] === 'nps';
 
+  // County-seeded — checked FIRST because the provenance caveat outranks every
+  // other reading. The figure is the surrounding COUNTY's reporting rate, not
+  // this park's: every park in the county carries the identical number
+  // (Matanuska-Susitna Borough alone has 11, spanning lakeshore sites and
+  // alpine Denali State Park). Rendering the bare park-level tier word here
+  // promises far more than county data can support.
+  if (animal._countySeeded) {
+    return {
+      kind: 'county',
+      title: `${label} (${range}) — from eBird/iNaturalist records for the surrounding COUNTY, not sightings at this exact spot. Every park in the county shares this figure, so read it as "what lives in this area", not a park-level guarantee.`,
+      indicator: '~',
+    };
+  }
   // Encounter probability — eBird Status & Trends models the literal per-
   // checklist probability, which is the cleanest answer to "will I see this
   // on a visit?". Birds with S&T data get this even when other sources are
@@ -5468,9 +5482,10 @@ function LocationPopup({ location, heroImage, heroAlt, effectiveAnimals, season,
             the source so visitors trust it). */}
         {countySeeded && (
           <div className="lp__banner" role="note">
-            <strong>County-level species list.</strong> Live sightings were sparse here just now,
-            so this shows the wildlife documented in the surrounding county (eBird + iNaturalist
-            records) — the species you can expect in this area.
+            <strong>Some entries are county-wide.</strong> Live sightings were sparse here just
+            now, so the list is topped up with species documented in the surrounding county
+            (eBird + iNaturalist). Those carry a <code>~</code> on their likelihood badge — the
+            rest is recorded at this park.
           </div>
         )}
         {/* API data note — eBird checklist count + iNat observation count */}
@@ -6379,12 +6394,17 @@ function AppInner() {
     return m;
   }, []);
   const [stateParkMatches, setStateParkMatches] = useState(null);
+  // 'bird' | 'nonbird' | 'none' — decides how the % is described. Bird numbers
+  // are checklist reporting rates; non-bird numbers are iNaturalist
+  // observability indexes. Same glyph, different unit.
+  const [matchKind, setMatchKind] = useState('none');
   const [showStateMatches, setShowStateMatches] = useState(false);
   useEffect(() => {
-    if (!speciesFilter) { setStateParkMatches(null); return; }
+    if (!speciesFilter) { setStateParkMatches(null); setMatchKind('none'); return; }
     let alive = true;
-    findStateParksWithBird(speciesFilter).then(hits => {
+    findStateParksWithSpecies(speciesFilter).then(({ kind, hits }) => {
       if (!alive) return;
+      setMatchKind(kind);
       let parks = hits
         .map(h => {
           const p = allStateParksFlat.get(h.id);
@@ -7154,9 +7174,12 @@ function AppInner() {
           parks={stateParkMatches}
           preserveOrder
           title={`Where to look for ${speciesFilter}`}
-          subtitle={userLoc
-            ? '% = share of eBird checklists in the park’s COUNTY that report this species. It’s a county-wide signal shared by every park in that county — a good steer, not a promise for the park itself. Nearest strong counties first.'
-            : '% = share of eBird checklists in the park’s COUNTY that report this species — county-wide, not park-specific. Tap “Near me” once to see the nearest ones first.'}
+          subtitle={
+            (matchKind === 'nonbird'
+              ? '% = how commonly this species is photographed in the park’s COUNTY on iNaturalist — a relative observability score, not a chance of seeing it. '
+              : '% = share of eBird checklists in the park’s COUNTY that report this species. ')
+            + 'It’s county-wide, shared by every park in that county — a good steer, not a promise for the park itself. '
+            + (userLoc ? 'Nearest strong counties first.' : 'Tap “Near me” once to see the nearest ones first.')}
           ariaLabel={`State parks with ${speciesFilter}`}
           onPick={(p) => {
             setShowStateMatches(false);
