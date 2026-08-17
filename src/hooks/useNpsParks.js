@@ -9,6 +9,7 @@
  */
 
 import { useState, useEffect } from 'react';
+import { NP_KIND, npsQualifies } from '../data/npsFilter.js';
 
 // v5 — wildlife-focused refocus. Auto-include the inherently-NATURAL NPS
 // designations (parks, preserves, seashores, lakeshores, recreation areas,
@@ -20,49 +21,9 @@ import { useState, useEffect } from 'react';
 const CACHE_KEY = 'wm_nps_parks_v7';  // v7 picks the best scenery image (not images[0])
 const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
 
-// Inherently-natural designations — always wildlife-relevant.
-const NP_NATURAL = [
-  'national park', 'national preserve', 'national seashore', 'national lakeshore',
-  'national recreation area', 'national reserve',
-  'national river', 'scenic river', 'scenic riverway', 'wild and scenic river', 'wild river',
-];
-// Cultural/historic designations never qualify (also guards the rare
-// "National Monument and Historic Shrine" style combos).
-const NP_EXCLUDE = [
-  'historic', 'memorial', 'battlefield', 'military', 'cemetery',
-  'heritage', 'parkway', 'scenic trail', 'historic trail',
-];
-// Genuinely-natural National Monuments (by NPS parkCode). Everything not listed
-// — civic monuments (Statue of Liberty, Castle Clinton…), archaeological sites
-// (pueblos, cliff dwellings, ruins, mounds, flint quarries), forts and
-// battlefields designated as monuments — is excluded.
-const NATURAL_MONUMENTS = new Set([
-  'agfo', 'ania', 'band', 'buis', 'cabr', 'cakr', 'camo', 'cavo', 'cebr', 'chir',
-  'colm', 'crmo', 'depo', 'deto', 'dino', 'elma', 'flfo', 'fobu', 'hafo', 'jeca',
-  'joda', 'kaww', 'labe', 'muwo', 'nabr', 'orca', 'orpi', 'para', 'rabr', 'sucr',
-  'tica', 'tusk', 'vicr',
-]);
-// Map a full designation string to a short kind, for the UI/legend.
-const NP_KIND = (d = '') => {
-  const s = d.toLowerCase();
-  if (s.includes('national park')) return 'National Park';
-  if (s.includes('monument')) return 'National Monument';
-  if (s.includes('seashore')) return 'National Seashore';
-  if (s.includes('lakeshore')) return 'National Lakeshore';
-  if (s.includes('preserve')) return 'National Preserve';
-  if (s.includes('recreation area')) return 'National Recreation Area';
-  if (s.includes('reserve')) return 'National Reserve';
-  if (s.includes('river')) return 'National River';
-  return 'National Park Unit';
-};
-function npsQualifies(park) {
-  const d = (park.designation || '').toLowerCase();
-  if (NP_EXCLUDE.some(p => d.includes(p))) return false;
-  if (NP_NATURAL.some(p => d.includes(p))) return true;   // seashore / preserve / NRA / …
-  // Monuments: natural ones only (allow-list by parkCode).
-  if (d.includes('national monument')) return NATURAL_MONUMENTS.has((park.parkCode || '').toLowerCase());
-  return false;
-}
+// Filter + kind mapping live in src/data/npsFilter.js so the build-time page
+// generator can apply the exact same rules without duplicating (and drifting
+// from) them, and without pulling React into a node script.
 
 // NPS gives an ordered `images` array, but images[0] is frequently a wildlife
 // close-up (e.g. Wind Cave's lead photo is a bison, not the park). Prefer a
