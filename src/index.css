@@ -140,22 +140,22 @@
   --text-primary:    #e2e8f0;
   --text-secondary:  #b0bac8;
   --text-muted:      #94a3b8;
-  --text-faint:      #64748b;
+  --text-faint:      #8693a5;  /* WCAG AA: #64748b was 3.08:1 on panel bg */
   --text-tab:        #94a3b8;
-  --text-tab-count:  #94a3b8;
+  --text-tab-count:  #9aa9bc;  /* WCAG AA: #94a3b8 was 4.34:1 */
   --text-exc-title:  #fca5a5;
   --text-exc-sub:    #fbbf24;
   --text-exc-banner: #fbbf24;
   --text-tip:        #4ade80;
   --text-tip-badge:  #86efac;
-  --text-scientific: #64748b;
+  --text-scientific: #8693a5;  /* WCAG AA: was 3.08:1 */
   --text-showing:    #94a3b8;
   --text-load-more:  #86efac;
   --text-view-all:   #4ade80;
   --text-subtype:    #86efac;
   --text-sighting:   #e2e8f0;
   --text-user-badge: #fbbf24;
-  --text-rarity-help:rgba(255,255,255,0.4);
+  --text-rarity-help:rgba(255,255,255,0.62);  /* WCAG AA: 0.4 was 3.25:1 */
 
   --border-card:     #2d3548;
   --border-input:    #353b4e;
@@ -203,7 +203,9 @@
 }
 [data-theme="dark"] .leaflet-control-attribution {
   background: rgba(26, 31, 46, 0.85) !important;
-  color: #94a3b8 !important;
+  /* WCAG AA: #94a3b8 gave 4.32:1 over the translucent panel. Attribution is a
+     licence requirement (OSM/CARTO) — it has to be legible, not just present. */
+  color: #cbd5e1 !important;
 }
 [data-theme="dark"] .leaflet-control-attribution a {
   color: #4ade80 !important;
@@ -356,7 +358,9 @@ body, #root {
 
 .hdr__sub {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.55);
+  /* WCAG AA: 0.55 gave 3.63:1 on the header gradient's lightest stop (needs
+     4.5:1 at this size). 0.67 is the minimum that passes; 0.72 leaves headroom. */
+  color: rgba(255, 255, 255, 0.72);
   margin-top: 2px;
   white-space: nowrap;
 }
@@ -387,7 +391,9 @@ body, #root {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: rgba(255,255,255,0.45);
+  /* WCAG AA: 0.45 gave 3.47:1 at 10px. 0.57 is the minimum; 0.62 for headroom. */
+  /* WCAG AA: 0.62 = 3.67:1 on the panel header gradient. */
+  color: rgba(255,255,255,0.80);
   white-space: nowrap;
 }
 
@@ -455,7 +461,8 @@ body, #root {
   background-position: right 9px center;
   border: 2px solid rgba(255,255,255,0.22);
   border-radius: 999px;
-  color: rgba(255,255,255,0.88);
+  /* WCAG AA: 0.88 = 4.20:1 on the button tint; needs ~0.96. */
+  color: #fff;
   font-size: 11.5px;
   font-weight: 500;
   padding: 5px 28px 5px 11px;
@@ -502,7 +509,9 @@ body, #root {
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--text-faint, #6b7280);
+  /* WCAG AA: the faint token resolved to rgb(100,116,139) = 3.45:1 on this
+     card. #cbd5e1 clears it comfortably (~10.7:1) and still reads as a kicker. */
+  color: #cbd5e1;
   margin-bottom: 3px;
 }
 .active-now-card__msg {
@@ -936,7 +945,8 @@ body, #root {
   margin: 10px 0 2px; padding: 8px 11px; border-radius: 8px;
   font-size: 11.5px; line-height: 1.45;
   background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.16);
-  color: rgba(255,255,255,0.9);
+  /* WCAG AA: 0.9 = 4.22:1 on the chip tint; needs ~0.98. */
+  color: #fff;
 }
 .lp__banner strong { color: #fff; }
 
@@ -957,7 +967,8 @@ body, #root {
 
 .lp__state {
   font-size: 11.5px;
-  color: rgba(255, 255, 255, 0.62);
+  /* WCAG AA: 0.62 = 3.67:1 on the panel header gradient; 0.80 clears 4.5. */
+  color: rgba(255, 255, 255, 0.80);
 }
 
 .lp__type {
@@ -1152,7 +1163,8 @@ body, #root {
 .lp__api-note {
   margin-top: 5px;
   font-size: 10px;
-  color: rgba(255, 255, 255, 0.6);
+  /* WCAG AA: 0.6 = 3.54:1 on the panel header gradient. */
+  color: rgba(255, 255, 255, 0.80);
   letter-spacing: 0.2px;
 }
 
@@ -2192,10 +2204,11 @@ body, #root {
   opacity: 0.85;
   cursor: default;
 }
-.freq--high  { color: #15803d; background: #15803d18; }
-.freq--med   { color: #b45309; background: #b4530918; }
-.freq--low   { color: #c2410c; background: #c2410c18; }
-.freq--trace { color: #6b7280; background: #6b728018; }
+/* WCAG AA: text lifted (2.70:1 -> 4.64:1); tint kept at the original hue. */
+.freq--high  { color: #5ba677; background: #15803d18; }
+.freq--med   { color: #cb8753; background: #b4530918; }  /* was 2.71:1 */
+.freq--low   { color: #d6805c; background: #c2410c18; }  /* was 2.67:1 */
+.freq--trace { color: #9398a2; background: #6b728018; }  /* was 2.75:1 */
 /* Estimated frequencies — slightly muted to signal they aren't histogram data */
 .seasonal-freq--est { opacity: 0.75; }
 .freq-est-flag {
@@ -2540,17 +2553,26 @@ body, #root {
   transition: background 0.12s, color 0.12s, opacity 0.12s;
 }
 .map-legend__chip.is-active { background: #2f7d4f; border-color: #2f7d4f; color: #fff; }
-.map-legend__chip:not(.is-active) { opacity: 0.55; }
+/* WCAG AA: opacity fades the TEXT and its background together, so 0.55 with
+   #6b7280 left the "off" chips at 2.02:1 — effectively illegible. These are
+   live controls (tapping one turns the layer on), not disabled ones, so they
+   have to stay readable. 0.8 + #374151 gives 5.25:1 and still reads as off. */
+.map-legend__chip:not(.is-active) { opacity: 0.8; color: #374151; }
 .map-legend__chip:hover { filter: brightness(0.97); }
 .map-legend__chip:focus-visible { outline: 2px solid #1d4ed8; outline-offset: 1px; }
-.map-legend__chip-count { font-size: 10px; opacity: 0.85; }
+/* No extra opacity here: it MULTIPLIES with the parent chip's own fade
+   (0.8 x 0.85 = 0.68), which pushed the counts to 3.8:1. The smaller font size
+   already carries the visual de-emphasis. */
+.map-legend__chip-count { font-size: 10px; }
 .map-legend__statelink {
   margin-top: 1px; padding: 6px 8px; border-radius: 8px; cursor: pointer; text-align: left;
   font-size: 11.5px; line-height: 1.35; color: #1f513a;
   background: rgba(47,125,79,0.10); border: 1px solid rgba(47,125,79,0.25);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
-.map-legend__statelink strong { color: #2f7d4f; }
+/* WCAG AA: #2f7d4f on the panel's tinted background was 4.42:1, just short.
+   #2e794d clears it at 4.64:1 and is visually indistinguishable. */
+.map-legend__statelink strong { color: #2e794d; }
 .map-legend__statelink:hover { background: rgba(47,125,79,0.18); }
 .map-legend__statelink:focus-visible { outline: 2px solid #1d4ed8; outline-offset: 1px; }
 
@@ -3417,7 +3439,8 @@ body, #root {
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.75);
+  /* WCAG AA: 0.75 sat at 4.47:1 — just under the 4.5 needed at 12px. */
+  color: rgba(255, 255, 255, 0.88);
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
@@ -3441,7 +3464,10 @@ body, #root {
   font-weight: 800;
   font-style: italic;
   font-family: Georgia, 'Times New Roman', serif;
-  color: rgba(255, 255, 255, 0.85);
+  /* WCAG AA: this badge sits on its own translucent white circle, so its
+     effective background is LIGHTER than the header (rgb(76,128,99)) and 0.85
+     gave only 3.83:1. Needs essentially solid white here. */
+  color: #fff;
 }
 
 /* ── Header Theme toggle button ────────────────────────────────────────────── */
