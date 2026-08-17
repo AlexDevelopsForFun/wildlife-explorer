@@ -713,7 +713,15 @@ function MarkerLayer({ locations, icons, onPopupOpen, onPopupClose }) {
 
     const newMarkers = {};
     locations.forEach(loc => {
-      const marker = L.marker([loc.lat, loc.lng], { icon: iconsRef.current[loc.id] ?? createPinIcon(loc.locationType, false, false, 3, npsEmojiOf(loc)) });
+      // Leaflet gives every interactive marker role="button" and tabindex="0"
+      // but NO accessible name, so a screen reader announced "button" 65 times
+      // with nothing to tell the parks apart. `title` supplies the name (and
+      // the native tooltip on desktop); `alt` covers image-icon rendering.
+      const marker = L.marker([loc.lat, loc.lng], {
+        icon: iconsRef.current[loc.id] ?? createPinIcon(loc.locationType, false, false, 3, npsEmojiOf(loc)),
+        title: loc.name,
+        alt: loc.name,
+      });
       marker.on('click', () => onOpenRef.current(loc));
       if (!isTouchOnly) {
         marker.bindTooltip(loc.name, {
@@ -3031,7 +3039,13 @@ function StateParkMap({ state, parks, federal = [], stateGeo, onPickPark, onPick
         }),
       });
       parks.forEach(p => {
-        const m = L.marker([p.lat, p.lng], { icon: pinFor(p) });
+        // title/alt give the marker an accessible name — a bound tooltip does
+        // not (it's mouse-hover only and never reaches assistive tech).
+        const m = L.marker([p.lat, p.lng], {
+          icon: pinFor(p),
+          title: p.name,
+          alt: p.__federal ? `${p.name} (${p.catLabel ?? 'federal land'})` : p.name,
+        });
         m.bindTooltip(p.name, { direction: 'top', opacity: 0.95, className: 'park-tooltip' });
         m.on('click', () => (p.__federal ? onPickFederal?.(p) : onPick(p)));
         group.addLayer(m);
@@ -6796,6 +6810,11 @@ function AppInner() {
         </div>
       )}
 
+      {/* Skip link — the map puts 65+ focusable markers in the tab order, so
+          without this a keyboard user cannot reach anything past it in fewer
+          than 65 presses. Visually hidden until focused. */}
+      <a className="skip-link" href="#park-list-skip-target">Skip map, browse parks as a list</a>
+
       {/* ── Header ── */}
       <header className="hdr">
         <div className="hdr__inner">
@@ -6842,7 +6861,7 @@ function AppInner() {
               <button className="hdr__about-btn" onClick={() => { track('near_me_open'); setShowNearMe(true); }} title="Find wildlife sites near you" aria-label="Parks near me">
                 <span className="hdr__about-icon" aria-hidden="true">📍</span> Near me
               </button>
-              <button className="hdr__about-btn" onClick={() => setShowParkList(true)} title="Browse all national parks (keyboard accessible)" aria-label="Browse national parks">
+              <button id="park-list-skip-target" className="hdr__about-btn" onClick={() => setShowParkList(true)} title="Browse all national parks (keyboard accessible)" aria-label="Browse national parks">
                 <span className="hdr__about-icon" aria-hidden="true">⌖</span> National Parks
               </button>
               <button className="hdr__about-btn" onClick={() => setShowStateSelector(true)} title="Browse state parks by state" aria-label="Browse state parks">
