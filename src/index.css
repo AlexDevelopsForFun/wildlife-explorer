@@ -4381,6 +4381,16 @@ textarea:focus-visible,
 .parklist-modal__item:hover { background: rgba(255,255,255,0.1); }
 .parklist-modal__item:focus-visible { outline: 3px solid #1d4ed8; outline-offset: 2px; }
 .parklist-modal__item-name { font-size: 14px; font-weight: 600; }
+/* Skip link — off-screen until focused, then pinned top-left above everything
+   (the map sits at a high stacking context, hence the z-index). */
+.skip-link {
+  position: absolute; left: -9999px; top: 0; z-index: 10000;
+  padding: 10px 16px; border-radius: 0 0 8px 0;
+  background: #0c3823; color: #eaf4ee; font-weight: 700; text-decoration: none;
+  border: 2px solid #4a8557;
+}
+.skip-link:focus { left: 0; outline: 3px solid #1d4ed8; outline-offset: 2px; }
+
 .parklist-modal__item-state { margin-left: auto; font-size: 12px; color: #8fb3a1; white-space: nowrap; }
 /* Species-search rows: likelihood badge + distance. `--odds` pushes the badge
    right; the state chip keeps its own margin-left:auto for the plain lists. */
