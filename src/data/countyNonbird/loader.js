@@ -55,6 +55,10 @@ const LOADERS = {
   wv: () => import('./nb_wv.js'),
   wy: () => import('./nb_wy.js'),
 };
+// Every chunk key — the species search needs all of them to answer "which
+// parks have a Black Bear?", the same way bird search needs all bird chunks.
+export const NONBIRD_STATE_KEYS = Object.keys(LOADERS);
+
 const _cache = {};
 export async function loadCountyNonbird(stateLower) {
   const k = (stateLower || '').toLowerCase();
