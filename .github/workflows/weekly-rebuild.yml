@@ -37,9 +37,17 @@ permissions:
 
 env:
   # Number of parallel rebuild shards. Each shard gets ~1/N of parks (stride
-  # interleaved) and its own 6h GH Actions budget. With ~63 parks total, 4
-  # shards = ~16 parks each, which fits comfortably under the cap.
-  SHARD_COUNT: "4"
+  # interleaved) and its own 6h GH Actions budget.
+  #
+  # Was 4 (~16 parks/shard) with a comment claiming that "fits comfortably
+  # under the cap". It did not: every run from 2026-07-12 to 2026-08-16 was
+  # cancelled at 5h50m with ALL FOUR shards still in their rebuild step, so the
+  # merge job never ran and nothing was ever committed. Shards upload their
+  # artifact only on completion, so a cancelled shard leaves nothing behind.
+  # 12 shards puts each at ~5 parks, roughly a third of the work that was
+  # already overrunning. GitHub's hard cap is 360 min, so a longer timeout was
+  # never an option.
+  SHARD_COUNT: "12"
 
 jobs:
   # ── Stage 0: pre-flight curation gate ──────────────────────────────────
@@ -74,7 +82,7 @@ jobs:
     strategy:
       fail-fast: false       # one shard failing shouldn't kill the others
       matrix:
-        shard: [0, 1, 2, 3]  # MUST match SHARD_COUNT above
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]  # MUST match SHARD_COUNT above
 
     steps:
       - name: Checkout
