@@ -935,7 +935,8 @@ body, #root {
   border-radius: 999px; cursor: pointer; text-decoration: none;
   background: rgba(255,255,255,0.14);
   border: 1px solid rgba(255,255,255,0.24);
-  color: rgba(255,255,255,0.88);
+  /* WCAG AA: 0.88 = 4.20:1 over the button's own tint; needs ~0.96. */
+  color: #fff;
   transition: background 0.15s, color 0.15s;
 }
 .lp__action-btn:hover { background: rgba(255,255,255,0.26); color: #fff; }
@@ -994,17 +995,20 @@ body, #root {
 /* ── Data attribution line (replaces live-row + cache-status) ────────────── */
 .lp__source-attr {
   font-size: 10.5px;
-  color: rgba(255,255,255,0.5);
+  /* WCAG AA: 0.5 fell short on the header gradient. */
+  color: rgba(255,255,255,0.80);
   margin-top: 6px;
   line-height: 1.4;
 }
 .lp__source-attr span {
-  color: rgba(255,255,255,0.35);
+  /* WCAG AA: 0.35 = 2.18:1 — the worst text in the panel. */
+  color: rgba(255,255,255,0.80);
 }
 /* Source links (eBird.org etc.) — required attribution link-back, kept subtle
    so it doesn't compete with the data. */
 .lp__source-link {
-  color: rgba(255,255,255,0.62);
+  /* WCAG AA: 0.62 = 3.67:1 on the panel header gradient. */
+  color: rgba(255,255,255,0.82);
   text-decoration: underline;
   text-decoration-color: rgba(255,255,255,0.25);
   text-underline-offset: 2px;
@@ -1149,12 +1153,16 @@ body, #root {
   padding: 2px 8px;
   font-size: 11px;
   font-weight: 600;
-  color: rgba(255,255,255,0.9);
+  /* WCAG AA: 0.9 = 4.22:1 over the chip tint; needs ~0.98. */
+  color: #fff;
   letter-spacing: 0.3px;
 }
 
 .breakdown-chip--season {
-  background: rgba(255,255,255,0.25);
+  /* WCAG AA: this variant lightens the chip more than the base (0.25 vs 0.15),
+     which pushed even pure white text to 3.82:1. Dropping to 0.16 keeps it
+     visibly distinct from the base chip while white clears 4.5. */
+  background: rgba(255,255,255,0.16);
   border-color: rgba(255,255,255,0.45);
   margin-left: 2px;
 }
