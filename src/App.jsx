@@ -6568,6 +6568,40 @@ function AppInner() {
     return list;
   }, []);
 
+  // ── Species the county data has but WILDLIFE_CACHE doesn't ───────────────
+  // Suggestions were built only from the 63 national parks' cache (2,583
+  // species), so ~7,000 animals the app holds county data for could not be
+  // searched AT ALL — Brown Bear, Caribou, Walrus, Grey Whale. The search
+  // requires picking a suggestion, so they were unreachable rather than merely
+  // hard to find.
+  //
+  // The index is ~250KB, so it loads lazily on first use rather than riding in
+  // the main bundle: nobody who never touches the search pays for it.
+  const [extraSpecies, setExtraSpecies] = useState(null);
+  const wantsSpeciesPool = speciesQuery.trim().length >= 2 || categoryType !== 'all';
+  useEffect(() => {
+    if (extraSpecies || !wantsSpeciesPool) return;
+    let alive = true;
+    import('./data/speciesSearchIndex.js')
+      .then(m => { if (alive) setExtraSpecies(m.SPECIES_SEARCH_EXTRA ?? []); })
+      .catch(() => { /* search still works on the cache-derived list */ });
+    return () => { alive = false; };
+  }, [wantsSpeciesPool, extraSpecies]);
+
+  // Cache-derived entries stay FIRST so existing ordering and the richer
+  // records (scientific name, bundled photo) keep winning ties.
+  const speciesSearchPool = useMemo(() => {
+    if (!extraSpecies?.length) return allSpeciesList;
+    return [
+      ...allSpeciesList,
+      ...extraSpecies.map(([name, animalType, parkCount]) => ({
+        name, animalType, parkCount,
+        sciName: null, subtype: null, photoUrl: null,
+        _fromCounty: true,
+      })),
+    ];
+  }, [allSpeciesList, extraSpecies]);
+
   const speciesSuggestions = useMemo(() => {
     const q = speciesQuery.trim().toLowerCase();
     const catActive = categoryType !== 'all';
@@ -6575,7 +6609,7 @@ function AppInner() {
     if (q.length < 2 && !catActive) return [];
 
     // Pre-filter by category/subtype if the user has narrowed the picker.
-    let pool = allSpeciesList;
+    let pool = speciesSearchPool;
     if (catActive) {
       pool = pool.filter(s => {
         if (s.animalType !== categoryType) return false;
@@ -6597,7 +6631,7 @@ function AppInner() {
       if (exact.length + sw.length + contains.length >= 120) break;
     }
     return [...exact, ...sw, ...contains].slice(0, catActive ? 60 : 12);
-  }, [speciesQuery, allSpeciesList, categoryType, categorySubtype]);
+  }, [speciesQuery, speciesSearchPool, categoryType, categorySubtype]);
 
   const speciesFilteredParkIds = useMemo(() => {
     if (!speciesFilter) return null;
