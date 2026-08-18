@@ -24,6 +24,8 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import { STATE_PARKS_BY_STATE } from '../src/data/stateParksNJ.js';
+import { UNIT_COUNTY } from '../src/data/unitCounty.js';
+import { UNIT_COUNTY_EXTRA } from '../src/data/unitCountyExtra.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
@@ -227,8 +229,25 @@ async function main() {
     if (c) { parkCounty[id] = c; console.log(`  ${id.padEnd(22)} ${c}`); }
     else console.log(`  ${id.padEnd(22)} (none)`);
   }
-  const counties = [...new Set(Object.values(parkCounty))];
-  console.log(`\n${counties.length} unique counties to sample… (4-way parallel; cached counties are instant)\n`);
+  // Sample the counties of FEDERAL units too (refuges + NPS monuments,
+  // preserves, seashores) — not just state parks. This build iterated
+  // PARK_COUNTY alone, so a county holding a refuge but no state park was
+  // never sampled, leaving 213 refuges and 41 NPS units with no bird floor at
+  // all: precisely the places people visit FOR birds. UNIT_COUNTY_EXTRA holds
+  // the hand-mapped coastal/island refuges.
+  //
+  // PARK_COUNTY itself is deliberately NOT widened — it means "state park →
+  // county" to every consumer, and federal units have their own maps.
+  const parkCounties = new Set(Object.values(parkCounty));
+  const unitCounties = new Set(
+    [...Object.values(UNIT_COUNTY), ...Object.values(UNIT_COUNTY_EXTRA)].filter(Boolean));
+  const extra = [...unitCounties].filter(c => !parkCounties.has(c));
+  const counties = [...parkCounties, ...extra];
+  console.log(`
+${counties.length} unique counties to sample `
+    + `(${parkCounties.size} state-park + ${extra.length} federal-unit-only)`
+    + ` — 4-way parallel; cached counties are instant
+`);
   const countyFreq = {};
   const sampled = await pMap(counties, async (c) => ({ c, data: await sampleCounty(c) }), 4);
   for (const { c, data } of sampled) if (data) countyFreq[c] = data;  // counties order preserved
