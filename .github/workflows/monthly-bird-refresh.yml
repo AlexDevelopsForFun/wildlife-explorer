@@ -15,6 +15,11 @@ on:
   schedule:
     - cron: "0 4 1 * *"   # 04:00 UTC on the 1st of each month
   workflow_dispatch:
+    inputs:
+      full_clear:
+        description: "Clear the ENTIRE county cache (will very likely exceed the 350min budget — only for a deliberate full rebuild)"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -33,8 +38,39 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Clear county cache (no TTL — clearing IS the refresh)
-        run: rm -rf scripts/_nj_county_cache && mkdir -p scripts/_nj_county_cache
+      # Rotate, don't wipe. Clearing the WHOLE cache made this job re-sample
+      # ~1,800 counties, which overran timeout-minutes: 350 every single run
+      # (Jul 1 and Aug 1 2026 both cancelled at 5h50m, mid-rebuild) and threw
+      # away every hour of it — the cache is only committed at the end, so a
+      # cancelled run leaves nothing behind. GitHub's hard cap is 360 minutes,
+      # so a bigger timeout was never available.
+      #
+      # Instead clear one deterministic quarter per month: every county is
+      # refreshed on a rolling 4-month cycle, and each run finishes well inside
+      # the budget. Bucketing is by a stable hash of the filename (NOT mtime —
+      # a fresh checkout gives every file the same timestamp).
+      - name: Rotate county cache (1/4 per month — clearing IS the refresh)
+        env:
+          FULL_CLEAR: ${{ github.event.inputs.full_clear }}
+        run: |
+          mkdir -p scripts/_nj_county_cache
+          node -e '
+            const fs = require("fs");
+            const dir = "scripts/_nj_county_cache";
+            const BUCKETS = 4;
+            const bucket = new Date().getUTCMonth() % BUCKETS;
+            const full = process.env.FULL_CLEAR === "true";
+            const files = fs.readdirSync(dir).filter(f => f.endsWith(".json"));
+            let cleared = 0;
+            for (const f of files) {
+              let h = 0;
+              for (const ch of f) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+              if (full || h % BUCKETS === bucket) { fs.unlinkSync(`${dir}/${f}`); cleared++; }
+            }
+            console.log(`${files.length} cached counties, cleared ${cleared} `
+              + (full ? "(FULL clear requested)" : `(bucket ${bucket}/${BUCKETS})`)
+              + " — the rest resume from cache.");
+          '
 
       - name: Rebuild county bird frequencies
         env:
