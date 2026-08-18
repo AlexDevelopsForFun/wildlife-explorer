@@ -28,6 +28,9 @@ const LOADERS = {
   vt: () => import('./freq_vt.js'), va: () => import('./freq_va.js'),
   wa: () => import('./freq_wa.js'), wv: () => import('./freq_wv.js'),
   wi: () => import('./freq_wi.js'), wy: () => import('./freq_wy.js'),
+  // Puerto Rico — 5 NWRs in US-PR-### municipios; no state parks, so this
+  // chunk exists purely for the federal-unit bird floor.
+  pr: () => import('./freq_pr.js'),
 };
 
 // One state's data ({ PARK_COUNTY, COUNTY_BIRD_FREQ }) or null. Repeated

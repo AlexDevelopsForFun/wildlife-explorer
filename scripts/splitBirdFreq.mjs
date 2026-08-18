@@ -20,8 +20,28 @@
  */
 import { writeFileSync, mkdirSync } from 'fs';
 import { PARK_COUNTY, COUNTY_BIRD_FREQ } from '../src/data/stateParkBirdFreq.js';
+import { UNIT_COUNTY } from '../src/data/unitCounty.js';
+import { UNIT_COUNTY_EXTRA } from '../src/data/unitCountyExtra.js';
 
-const STATES = ['al','ak','az','ar','ca','co','ct','de','fl','ga','hi','id','il','in','ia','ks','ky','la','me','md','ma','mi','mn','ms','mo','mt','ne','nv','nh','nj','nm','ny','nc','nd','oh','ok','or','pa','ri','sc','sd','tn','tx','ut','vt','va','wa','wv','wi','wy'];
+// Counties referenced by FEDERAL units (nwr_* / nps_*), grouped by the state in
+// the county code itself. useLiveData resolves a unit's chunk with
+// `county.split('-')[1]`, so a refuge county MUST live in the chunk matching its
+// own code — not the refuge's stateCodes, which can differ on a border.
+//
+// Without this the widened build was pointless: partitioning keys off the park
+// id prefix (`xx-`), and federal ids don't match any state, so every
+// federal-only county was sampled and then silently dropped here.
+const UNIT_COUNTIES_BY_STATE = {};
+for (const c of new Set([...Object.values(UNIT_COUNTY), ...Object.values(UNIT_COUNTY_EXTRA)])) {
+  const st = String(c || '').split('-')[1]?.toLowerCase();
+  if (!st) continue;
+  (UNIT_COUNTIES_BY_STATE[st] ??= new Set()).add(c);
+}
+
+const STATES = ['al','ak','az','ar','ca','co','ct','de','fl','ga','hi','id','il','in','ia','ks','ky','la','me','md','ma','mi','mn','ms','mo','mt','ne','nv','nh','nj','nm','ny','nc','nd','oh','ok','or','pa','ri','sc','sd','tn','tx','ut','vt','va','wa','wv','wi','wy',
+  // Puerto Rico: no state parks, but 5 NWRs sit in US-PR-### municipios.
+  // eBird treats PR as a subnational1 with municipio subnational2 codes.
+  'pr'];
 
 mkdirSync(new URL('../src/data/birdFreq/', import.meta.url), { recursive: true });
 
@@ -34,6 +54,7 @@ for (const st of STATES) {
     parkCounty[pid] = county;
     counties.add(county);
   }
+  for (const c of UNIT_COUNTIES_BY_STATE[st] ?? []) counties.add(c);
   const countyFreq = {};
   for (const c of counties) if (COUNTY_BIRD_FREQ[c]) countyFreq[c] = COUNTY_BIRD_FREQ[c];
   totalParks += Object.keys(parkCounty).length;
