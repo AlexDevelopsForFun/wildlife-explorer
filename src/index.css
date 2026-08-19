@@ -1599,7 +1599,13 @@ body, #root {
 }
 
 .rarity-spectrum__tier-label {
-  color: var(--seg-color, var(--text-secondary));
+  /* WCAG AA: the raw segment hues land at 4.07-4.33:1 on the #f8fafc bar for
+     very_likely/likely/unlikely. Darkening the LABEL by 8% lifts the worst to
+     4.68 while --seg-color itself still paints the bar and the active
+     underline, so the colour coding is untouched. Keep the var() fallback
+     inside the mix -- an unset --seg-color would otherwise invalidate the
+     whole declaration and drop the colour entirely. */
+  color: color-mix(in srgb, var(--seg-color, var(--text-secondary)) 92%, black);
   font-weight: 600;
   letter-spacing: 0.01em;
 }
@@ -1828,6 +1834,25 @@ body, #root {
 }
 
 /* ── Shared badge base ────────────────────────────────────────────────────── */
+/* Rarity badge text colour is theme-dependent.
+   `--rarity-text` is the DARKENED variant, correct on the pale tint over a
+   white page. On the dark panel that same darkening left every tier between
+   2.5:1 and 4.1:1, so dark mode lightens the raw hue toward white instead.
+   68% keeps the hue clearly recognisable while the worst tier (exceptional)
+   reaches 4.65:1; fill and border still use the untouched `color`, so the
+   palette identity is unchanged. Browsers without color-mix fall back to the
+   light-mode rule -- readable, just not AA. */
+.rarity-badge { color: var(--rarity-text); }
+[data-theme="dark"] .rarity-badge {
+  color: color-mix(in srgb, var(--rarity-hue) 68%, white);
+}
+
+/* Same problem on the spectrum bar: --seg-color is the raw tier hue, which on
+   the dark panel ran 2.25-3.68:1. */
+[data-theme="dark"] .rarity-spectrum__tier-label {
+  color: color-mix(in srgb, var(--seg-color, var(--text-secondary)) 68%, white);
+}
+
 .rarity-badge,
 .season-badge {
   display: inline-flex;

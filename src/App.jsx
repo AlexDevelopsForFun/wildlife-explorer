@@ -4184,7 +4184,15 @@ function AnimalCard({ animal, debugMode, seasonalFreqs, parkEffort = null, locat
               return (
                 <span
                   className={`rarity-badge${r.star ? ' rarity-badge--exceptional' : ''}`}
-                  style={{ color: r.textColor || r.color, background: r.color + '22', borderColor: r.color + '55' }}
+                  // Colour moves to custom properties so the stylesheet can pick a
+                  // theme-appropriate text colour. `textColor` is a DARKENED variant
+                  // tuned for the pale tint over a white page; on the dark panel that
+                  // made things worse, not better (2.5-4.1:1). See index.css.
+                  style={{
+                    '--rarity-text': r.textColor || r.color,
+                    '--rarity-hue':  r.color,
+                    background: r.color + '22', borderColor: r.color + '55',
+                  }}
                   title={pill.title}
                 >
                   {r.emoji && <span className="rarity-badge__glyph" aria-hidden="true">{r.emoji}</span>}
@@ -6087,6 +6095,10 @@ function AppInner() {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [speciesQuery,  setSpeciesQuery]  = useState('');
   const [speciesFilter, setSpeciesFilter] = useState(null); // selected species name string
+  // Taxon group of the selected species, when known. Only used to break ties
+  // in the county name fallback (see findStateParksWithSpecies) — never to
+  // filter, so a null here costs nothing.
+  const [speciesFilterType, setSpeciesFilterType] = useState(null);
   const [categoryType,    setCategoryType]    = useState('all');
   const [categorySubtype, setCategorySubtype] = useState('all');
 
@@ -6387,11 +6399,13 @@ function AppInner() {
 
   const handleSpeciesSelect = useCallback((s) => {
     setSpeciesFilter(s.name);
+    setSpeciesFilterType(s.animalType ?? null);
     setSpeciesQuery(s.name);
     track('species_search', { species: s.name, parkCount: s.parkCount });
   }, []);
   const handleSpeciesClear = useCallback(() => {
     setSpeciesFilter(null);
+    setSpeciesFilterType(null);
     setSpeciesQuery('');
     setStateParkMatches(null);
     setShowStateMatches(false);
@@ -6416,7 +6430,7 @@ function AppInner() {
   useEffect(() => {
     if (!speciesFilter) { setStateParkMatches(null); setMatchKind('none'); return; }
     let alive = true;
-    findStateParksWithSpecies(speciesFilter).then(({ kind, hits }) => {
+    findStateParksWithSpecies(speciesFilter, speciesFilterType).then(({ kind, hits }) => {
       if (!alive) return;
       setMatchKind(kind);
       let parks = hits
@@ -6453,7 +6467,7 @@ function AppInner() {
       setStateParkMatches(parks);
     });
     return () => { alive = false; };
-  }, [speciesFilter, allStateParksFlat, userLoc]);
+  }, [speciesFilter, speciesFilterType, allStateParksFlat, userLoc]);
   const handleCategoryReset = useCallback(() => {
     setCategoryType('all');
     setCategorySubtype('all');
@@ -6490,6 +6504,7 @@ function AppInner() {
         const known = allSpeciesList.find(s => slugOf(s.name) === slug);
         const name = known?.name ?? slug.replace(/-/g, ' ').replace(/(^|[\s])\w/g, c => c.toUpperCase());
         setSpeciesFilter(name);
+        setSpeciesFilterType(known?.animalType ?? null);
         setSpeciesQuery(name);
         return;
       }
