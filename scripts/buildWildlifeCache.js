@@ -63,17 +63,111 @@ const { mergeSourcesWeighted } = await import('../src/data/sourceWeighting.js');
 // ── Helpers ──────────────────────────────────────────────────────────────────
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
+// -- Host-aware rate limiting -------------------------------------------------
+// Measured 2026-08-18: ONE park (acadia) took 5m22s and logged 21 HTTP 429s,
+// all from iNaturalist. Extrapolated over 63 parks that is ~5.6 h, which is
+// exactly where the weekly job started dying at its 5h50m timeout -- every
+// throttled call pays 2-15 s of backoff, so the build spends its budget
+// waiting to be let back in rather than doing work.
+//
+// The two APIs are limited on DIFFERENT axes, which is why one global delay
+// cannot serve both:
+//   * iNaturalist limits per IP and asks for <=100 req/min. The old 300 ms
+//     spacing is 200/min -- 2x over. Each shard is its own GitHub runner with
+//     its own IP, so this budget is PER PROCESS and must NOT be divided by
+//     SHARD_COUNT.
+//   * eBird limits per API KEY, and every shard shares one key. Its budget
+//     therefore MUST scale with SHARD_COUNT, or 12 shards send 12x the agreed
+//     rate from a single credential.
+//
+// This is a MINIMUM INTERVAL, not an added delay: the ad-hoc `await sleep(...)`
+// calls scattered through the build already count toward it, so pacing only
+// waits for whatever time is still owed.
+const _SHARD_COUNT_FOR_RATE = Math.max(1, Number(process.env.SHARD_COUNT) || 1);
+
+function _minIntervalMs(host) {
+  if (host.endsWith('inaturalist.org')) {
+    return Number(process.env.INAT_MIN_INTERVAL_MS ?? 700);          // ~85/min per IP
+  }
+  if (host.endsWith('ebird.org')) {
+    // Scale against the 4-shard config that was demonstrably throttle-free
+    // (4 shards x 200 ms = ~1,200 req/min aggregate, zero eBird 429s observed),
+    // NOT against SHARD_COUNT outright -- that would slow 12 shards to 2.4 s
+    // per call and cost ~20-40 min per shard to buy headroom eBird never asked
+    // for. At 12 shards this yields 600 ms, holding the aggregate constant.
+    const base = Number(process.env.EBIRD_MIN_INTERVAL_MS ?? 200);
+    return Math.round(base * Math.max(1, _SHARD_COUNT_FOR_RATE / 4));
+  }
+  return 0;                                                           // unpaced (NPS etc.)
+}
+
+// host -> { nextAt, penalty, ok }. `penalty` is adaptive: a 429 means our
+// nominal rate is still faster than the server will allow right now, so widen
+// the interval and let it decay back only after sustained success.
+const _paceState = new Map();
+function _paceFor(host) {
+  let st = _paceState.get(host);
+  if (!st) _paceState.set(host, (st = { nextAt: 0, penalty: 0, ok: 0 }));
+  return st;
+}
+function _hostOf(url) { try { return new URL(url).hostname; } catch { return null; } }
+
+async function pace(url) {
+  const host = _hostOf(url);
+  if (!host) return;
+  const base = _minIntervalMs(host);
+  if (!base) return;
+  const st = _paceFor(host);
+  const wait = st.nextAt - Date.now();
+  if (wait > 0) await sleep(wait);
+  st.nextAt = Date.now() + base + st.penalty;
+}
+
+// Called on 429. Returns the server's own Retry-After in ms when it sends one
+// -- always prefer that to our guess.
+function noteThrottled(url, retryAfterSec) {
+  const host = _hostOf(url);
+  if (!host) return 0;
+  const st = _paceFor(host);
+  st.ok = 0;
+  st.penalty = Math.min(st.penalty + 250, 3000);     // widen, but stay bounded
+  const ra = Number(retryAfterSec);
+  return Number.isFinite(ra) && ra > 0 ? Math.min(ra * 1000, 30000) : 0;
+}
+
+function noteOk(url) {
+  const host = _hostOf(url);
+  if (!host) return;
+  const st = _paceFor(host);
+  if (st.penalty && ++st.ok >= 25) { st.penalty = Math.max(0, st.penalty - 100); st.ok = 0; }
+}
+
+function paceSummary() {
+  const out = [];
+  for (const [host, st] of _paceState) {
+    if (st.penalty) out.push(`${host} penalty +${st.penalty}ms`);
+  }
+  return out.join(', ');
+}
+
+
 async function safeFetch(url, opts = {}, retries = 5) {
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
+      await pace(url);
       const res = await fetch(url, { ...opts, signal: AbortSignal.timeout(30000) });
-      if (res.ok) return await res.json();
+      if (res.ok) { noteOk(url); return await res.json(); }
       // Rate-limited or server error — back off and retry. Balance patience
       // (iNat sometimes throttles for 10-20 s) against total budget (job has
       // a 6 h cap and makes thousands of calls). 2-4-8-12-15-15 s = up to 56 s
       // worst-case per call vs. old 12 s and too-patient 182 s.
       if ((res.status === 429 || res.status >= 500) && attempt < retries) {
-        const delay = Math.min(2000 * Math.pow(2, attempt), 15000); // 2,4,8,12,15,15s
+        // A 429 also widens this host's steady-state interval, so the rest of
+        // the run slows down instead of re-earning the same penalty per call.
+        const serverWait = res.status === 429
+          ? noteThrottled(url, res.headers.get('retry-after'))
+          : 0;
+        const delay = Math.max(serverWait, Math.min(2000 * Math.pow(2, attempt), 15000));
         console.warn(`    ⚠  HTTP ${res.status} — retrying in ${delay / 1000}s (${url.slice(0, 80)}…)`);
         await sleep(delay);
         continue;
@@ -94,10 +188,14 @@ async function safeFetch(url, opts = {}, retries = 5) {
 async function safeTextFetch(url, opts = {}, retries = 2) {
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
+      await pace(url);
       const res = await fetch(url, { ...opts, signal: AbortSignal.timeout(30000) });
-      if (res.ok) return await res.text();
+      if (res.ok) { noteOk(url); return await res.text(); }
       if ((res.status === 429 || res.status >= 500) && attempt < retries) {
-        const delay = 2000 * (attempt + 1);
+        const serverWait = res.status === 429
+          ? noteThrottled(url, res.headers.get('retry-after'))
+          : 0;
+        const delay = Math.max(serverWait, 2000 * (attempt + 1));
         console.warn(`    ⚠  HTTP ${res.status} — retrying in ${delay / 1000}s`);
         await sleep(delay);
         continue;
@@ -2210,6 +2308,11 @@ async function main() {
     console.log(`\n✅  Partial cache written to ${PARTIAL_OUT}`);
     console.log(`   Parks: ${Object.keys(cache).length} | Species: ${totalSpecies}`);
     console.log(`   Built: ${builtAt}\n`);
+    // Surface throttling in the CI log. A silent run tells you nothing about
+    // WHY it was slow; a non-empty penalty here means the host pushed back and
+    // the interval had to widen -- the first thing to check if the job ever
+    // creeps toward its timeout again.
+    console.log(`   Throttling: ${paceSummary() || 'none (no host penalties applied)'}`);
     return;
   }
 
@@ -2239,6 +2342,11 @@ async function main() {
   console.log(`\n✅  Written to ${outPath}`);
   console.log(`   Parks: ${wildlifeLocations.length} | Species: ${totalSpecies}`);
   console.log(`   Built: ${builtAt}\n`);
+    // Surface throttling in the CI log. A silent run tells you nothing about
+    // WHY it was slow; a non-empty penalty here means the host pushed back and
+    // the interval had to widen -- the first thing to check if the job ever
+    // creeps toward its timeout again.
+    console.log(`   Throttling: ${paceSummary() || 'none (no host penalties applied)'}`);
 }
 
 main().catch(err => {
