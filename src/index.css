@@ -1844,7 +1844,14 @@ body, #root {
    light-mode rule -- readable, just not AA. */
 .rarity-badge { color: var(--rarity-text); }
 [data-theme="dark"] .rarity-badge {
-  color: color-mix(in srgb, var(--rarity-hue) 68%, white);
+  /* 66%, not 68%: exceptional (#9c4b8a) is the darkest hue against its own
+     tinted badge and lands at 4.45 when mixed at 68%. 66% is the most hue the
+     WORST tier can keep and still clear 4.6 (exceptional 4.62, rare 4.75).
+     Solve against every tier, not the ones a given park happens to render --
+     Acadia has no exceptional species locally, which is exactly how 68% got
+     shipped and then failed on production. The spectrum label rule below is
+     separately solved and stays at 68%; its palette is different. */
+  color: color-mix(in srgb, var(--rarity-hue) 66%, white);
 }
 
 /* Same problem on the spectrum bar: --seg-color is the raw tier hue, which on
