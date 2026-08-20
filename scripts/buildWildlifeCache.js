@@ -23,7 +23,7 @@
  *   - No 20-species cap anywhere — all confirmed species are stored
  */
 
-import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { fileURLToPath } from 'url';
 import path from 'path';
 
@@ -856,6 +856,52 @@ const MIN_VALID_DATES = 20;         // need ≥20 valid sample dates for reliabl
 // Prevents double-fetching when multiple parks share a county.
 const _countyDataCache = new Map();
 
+// ── Persistent county cache ─────────────────────────────────────────────────
+// Each county costs ~96 eBird calls (48 stats + 48 historic, paced) — about
+// 3 minutes — and the in-memory map above only dedupes WITHIN one run, so
+// every weekly rebuild re-bought identical data from scratch.
+//
+// It is safe to cache on disk because the sample is deterministic: the query
+// is pinned to `getFullYear() - 1`, a CLOSED year that cannot gain new
+// checklists in any way this sampler would see. Keying the filename on that
+// year also means the cache self-invalidates every January without anyone
+// remembering to clear it — 2025 entries simply stop being asked for.
+//
+// Mirrors scripts/_nj_county_cache/ used by buildStateParkBirdFreq.js, but
+// kept separate: that cache stores a different shape and would silently
+// mis-deserialize here.
+const COUNTY_CACHE_DIR = path.join(__dirname, '_wc_county_cache');
+
+function _countyCacheFile(countyCode, year) {
+  return path.join(COUNTY_CACHE_DIR, `${countyCode}_${year}.json`);
+}
+
+function _readCountyCache(countyCode, year) {
+  try {
+    const f = _countyCacheFile(countyCode, year);
+    if (!existsSync(f)) return undefined;
+    const parsed = JSON.parse(readFileSync(f, 'utf8'));
+    // `__empty__` records a county eBird genuinely has too little data for, so
+    // a sparse county is not re-sampled for 96 calls every single week.
+    if (parsed && parsed.__empty__) return null;
+    return parsed;
+  } catch {
+    return undefined;   // unreadable/corrupt → treat as a miss and re-fetch
+  }
+}
+
+function _writeCountyCache(countyCode, year, freqMap) {
+  try {
+    mkdirSync(COUNTY_CACHE_DIR, { recursive: true });
+    const payload = (freqMap && Object.keys(freqMap).length)
+      ? freqMap
+      : { __empty__: 1 };
+    writeFileSync(_countyCacheFile(countyCode, year), JSON.stringify(payload), 'utf8');
+  } catch (e) {
+    console.warn(`    ⚠  could not cache county ${countyCode}: ${e.message}`);
+  }
+}
+
 async function fetchCountyHistoricData(countyCode) {
   // Return cached result (or in-flight promise) if available
   if (_countyDataCache.has(countyCode)) return _countyDataCache.get(countyCode);
@@ -871,6 +917,13 @@ async function _fetchCountyHistoricDataImpl(countyCode) {
   // Use most recent full year
   const now = new Date();
   const year = now.getFullYear() - 1; // e.g. 2025 if running in 2026
+
+  // Disk cache first — a hit skips ~96 paced eBird calls (~3 min) entirely.
+  const cached = _readCountyCache(countyCode, year);
+  if (cached !== undefined) {
+    console.log(`  [${countyCode}] county cache hit (${year})`);
+    return cached;
+  }
 
   const hdrs = { headers: { 'X-eBirdApiToken': EBIRD_KEY } };
   const speciesDateMap = new Map(); // comName → Set of date indices where observed
@@ -921,6 +974,10 @@ async function _fetchCountyHistoricDataImpl(countyCode) {
 
   if (validDates < MIN_VALID_DATES) {
     console.log(`    [county ${countyCode}] ⚠ too few valid dates (${validDates} < ${MIN_VALID_DATES}) — returning null for fallback`);
+    // Deterministic for a closed year, so record it. These are the WORST
+    // counties to re-sample: too sparse to yield data, yet they still burn all
+    // 48 stats calls proving it, every single week.
+    _writeCountyCache(countyCode, year, null);
     return null;
   }
 
@@ -980,6 +1037,9 @@ async function _fetchCountyHistoricDataImpl(countyCode) {
     };
   }
 
+  // Persist only a genuinely-completed sample. An aborted or key-less run
+  // returns earlier, so we can never freeze a partial result into the cache.
+  _writeCountyCache(countyCode, year, freqMap);
   return freqMap;
 }
 

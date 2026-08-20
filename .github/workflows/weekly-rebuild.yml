@@ -119,6 +119,19 @@ jobs:
           retention-days: 7
           if-no-files-found: error
 
+      # County eBird samples cost ~96 paced calls (~3 min) each and are pinned
+      # to a CLOSED year, so they never change. Ship them to the merge job so
+      # they can be committed once and reused by every later run.
+      # `ignore`, not `error`: a shard whose counties were all cache hits
+      # writes nothing, and that is success, not failure.
+      - name: Upload county cache (shard ${{ matrix.shard }})
+        uses: actions/upload-artifact@v5
+        with:
+          name: county-cache-${{ matrix.shard }}
+          path: scripts/_wc_county_cache/
+          retention-days: 7
+          if-no-files-found: ignore
+
   # ── Stage 2: merge shards, enrich, validate, deploy ─────────────────────
   merge:
     needs: rebuild
@@ -160,6 +173,21 @@ jobs:
 
       - name: List downloaded shards
         run: ls -la shards/
+
+      # Merge every shard's county samples into the working tree so the commit
+      # below carries them. merge-multiple flattens all shards into one
+      # directory; filenames are `<county>_<year>.json` so they cannot collide.
+      - name: Restore county cache from shards
+        uses: actions/download-artifact@v5
+        with:
+          path: scripts/_wc_county_cache/
+          pattern: county-cache-*
+          merge-multiple: true
+
+      - name: County cache size
+        run: |
+          mkdir -p scripts/_wc_county_cache
+          echo "county cache files: $(ls scripts/_wc_county_cache | wc -l)"
 
       - name: Merge shard caches
         run: node scripts/mergeShards.js shards/
@@ -355,6 +383,9 @@ jobs:
           git add src/data/wildlifeCachePrimary.js \
                   src/data/wildlifeCacheTier2.js \
                   src/data/wildlifeCacheTier3.js
+          # Generated, deterministic, self-invalidating on the year key --
+          # committing it is what makes the NEXT rebuild skip the county phase.
+          git add -f scripts/_wc_county_cache/ 2>/dev/null || true
           git commit -m "chore(data): weekly wildlife cache rebuild
 
           Automated weekly rebuild from eBird + iNaturalist + NPS.
