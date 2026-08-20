@@ -33,6 +33,9 @@ scripts/_us_counties.geojson
 scripts/_*.log
 scripts/_photo_audit_cache/
 # _nonbird_cache is tracked (committed) so the cloud build resumes from it.
+# _wc_county_cache is tracked too: each file is ~96 paced eBird calls (~3 min)
+# of a CLOSED year's data, so committing it is what lets the weekly rebuild
+# skip the county phase entirely. Do NOT add a blanket scripts/_*/ rule.
 scripts/parkTips-cache.json
 scripts/tipTargets.json
 scripts/photoFetch-cache.json
