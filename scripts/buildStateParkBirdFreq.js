@@ -169,6 +169,19 @@ const COUNTY_OVERRIDE = {
   'wv-panther-sf': 'US-WV-047',      // Panther SF, far SW WV on the VA/KY line → McDowell, WV
   'in-falls-of-the-ohio': 'US-IN-019', // Clarksville IN, across the river from Louisville → Clark, IN
   'az-lake-havasu': 'US-AZ-015',     // on the AZ bank of the Colorado R. (the CA border) → Mohave, AZ
+  // ── Cross-BORDER misfires (found 2026-08-20) ────────────────────────────────
+  // These five resolved to CANADIAN and MEXICAN counties, and each already had
+  // frequency data — so US parks were serving foreign checklist rates in
+  // production. countyForPark() takes the nearest eBird hotspot, and on a
+  // border (or an island in a shared waterway) that is often the other
+  // country's. Counties below are the point-in-polygon result from
+  // scripts/_us_counties.geojson, which is authoritative for where the park
+  // physically sits.
+  'vt-black-turn-brook': 'US-VT-009',   // was CA-QC-CT (Quebec)   → Essex, VT
+  'ny-mary-island': 'US-NY-045',        // was CA-ON-LG (Ontario)  → Jefferson, NY (Thousand Islands)
+  'mi-lime-island': 'US-MI-033',        // was CA-ON-AL (Ontario)  → Chippewa, MI (St Marys River island)
+  'mn-lake-of-the-woods': 'US-MN-077',  // was CA-ON-RR (Ontario)  → Lake of the Woods, MN
+  'ca-border-field': 'US-CA-073',       // was MX-BCN-005 (Baja)   → San Diego, CA
 };
 
 async function countyForPark(lat, lng) {
