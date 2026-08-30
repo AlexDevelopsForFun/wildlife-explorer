@@ -884,18 +884,40 @@ function _readCountyCache(countyCode, year) {
     // `__empty__` records a county eBird genuinely has too little data for, so
     // a sparse county is not re-sampled for 96 calls every single week.
     if (parsed && parsed.__empty__) return null;
-    return parsed;
+    return parsed;   // __validDates rides along; stripped by _countyDataOf()
   } catch {
     return undefined;   // unreadable/corrupt → treat as a miss and re-fetch
   }
 }
 
-function _writeCountyCache(countyCode, year, freqMap) {
+function _writeCountyCache(countyCode, year, freqMap, validDates) {
   try {
     mkdirSync(COUNTY_CACHE_DIR, { recursive: true });
     const payload = (freqMap && Object.keys(freqMap).length)
-      ? freqMap
+      ? { ...freqMap, __validDates: validDates }
       : { __empty__: 1 };
+    // Never let a WEAKER sample replace a stronger one already on disk. CI runs
+    // from datacenter IPs that eBird throttles harder than a home connection:
+    // on 2026-08-30 the scheduled rebuild produced strict SUBSETS of local
+    // samples for the same closed year (Yellowstone's county: 183 species vs
+    // 208, zero species unique to CI, and every frequency lower). Without this
+    // check the cache freezes whichever run happened to be throttled worst.
+    const existing = _readCountyCache(countyCode, year);
+    if (existing) {
+      // Samples committed before quality tracking carry no marker. Those were
+      // hand-verified as the RICHER of two competing samples, so treat an
+      // absent marker as "already good" and keep it; every new write carries a
+      // marker, so this only ever applies to that legacy set.
+      if (existing.__validDates === undefined) {
+        console.log(`  [${countyCode}] keeping existing unmarked sample (pre-quality-tracking)`);
+        return;
+      }
+      if (existing.__validDates > (validDates ?? 0)) {
+        console.log(`  [${countyCode}] keeping stronger cached sample `
+          + `(${existing.__validDates} valid dates vs ${validDates})`);
+        return;
+      }
+    }
     writeFileSync(_countyCacheFile(countyCode, year), JSON.stringify(payload), 'utf8');
   } catch (e) {
     console.warn(`    ⚠  could not cache county ${countyCode}: ${e.message}`);
@@ -921,8 +943,13 @@ async function _fetchCountyHistoricDataImpl(countyCode) {
   // Disk cache first — a hit skips ~96 paced eBird calls (~3 min) entirely.
   const cached = _readCountyCache(countyCode, year);
   if (cached !== undefined) {
-    console.log(`  [${countyCode}] county cache hit (${year})`);
-    return cached;
+    if (cached === null) { console.log(`  [${countyCode}] county cache hit (${year}, empty)`); return null; }
+    // __validDates is bookkeeping, not a species. Callers iterate this map as
+    // species -> {rawFreq,...}, so it must never escape the cache layer.
+    const { __validDates, ...freq } = cached;
+    console.log(`  [${countyCode}] county cache hit (${year}`
+      + `${__validDates ? `, ${__validDates} valid dates` : ''})`);
+    return freq;
   }
 
   const hdrs = { headers: { 'X-eBirdApiToken': EBIRD_KEY } };
@@ -1039,7 +1066,7 @@ async function _fetchCountyHistoricDataImpl(countyCode) {
 
   // Persist only a genuinely-completed sample. An aborted or key-less run
   // returns earlier, so we can never freeze a partial result into the cache.
-  _writeCountyCache(countyCode, year, freqMap);
+  _writeCountyCache(countyCode, year, freqMap, validDates);
   return freqMap;
 }
 
