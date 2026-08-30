@@ -53,7 +53,15 @@ for (const [code, list] of Object.entries(STATE_PARKS_BY_STATE)) {
   for (let i = 0; i < list.length; i++)
     for (let j = i + 1; j < list.length; j++) {
       const dLat = Math.abs(list[i].lat - list[j].lat), dLng = Math.abs(list[i].lng - list[j].lng);
-      if (dLat < 0.01 && dLng < 0.01) warn(`${code}: "${list[i].id}" & "${list[j].id}" share ~same coord`);
+      // 0.01 deg is ~0.7 mi, which flagged five pairs of genuinely ADJACENT
+      // parks (Orange/Royalston State Forests, Hook Mountain/Rockland Lake,
+      // Haystack Hill/Tolovana Beach, Oyhut/Chance A La Mer, East
+      // Matunuck/Succotash Marsh) — all real, distinct units 3,500-4,200 ft
+      // apart. Five permanent false positives train you to ignore the audit,
+      // which is worse than not running it. 0.002 deg is ~700 ft: tight enough
+      // that only a true duplicate (a Wikidata dup re-imported under two ids,
+      // which lands on IDENTICAL coords) trips it.
+      if (dLat < 0.002 && dLng < 0.002) warn(`${code}: "${list[i].id}" & "${list[j].id}" share ~same coord`);
     }
 }
 

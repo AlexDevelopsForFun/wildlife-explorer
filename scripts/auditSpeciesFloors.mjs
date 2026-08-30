@@ -24,6 +24,7 @@ import { fileURLToPath } from 'url';
 import { STATE_PARKS_BY_STATE } from '../src/data/stateParksNJ.js';
 import { PARK_COUNTY, COUNTY_BIRD_FREQ } from '../src/data/stateParkBirdFreq.js';
 import { UNIT_COUNTY } from '../src/data/unitCounty.js';
+import { UNIT_COUNTY_EXTRA } from '../src/data/unitCountyExtra.js';
 import { NATIONAL_WILDLIFE_REFUGES } from '../src/data/nationalWildlifeRefuges.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -70,9 +71,15 @@ function coverage(label, parks, countyOf, minPct) {
 
 console.log('\n── Coverage (every park should have a county floor) ──');
 coverage('State parks', Object.values(STATE_PARKS_BY_STATE).flat(), p => PARK_COUNTY[p.id], 0.97);
-coverage('Refuges', NATIONAL_WILDLIFE_REFUGES, p => UNIT_COUNTY[p.id], 0.80);
+// Resolve exactly the way buildStateParkBirdFreq.js does: the union of
+// UNIT_COUNTY and UNIT_COUNTY_EXTRA. Reading UNIT_COUNTY alone reported 91.7%
+// refuge coverage when the real figure is 100%, and hid 41 refuges that DO
+// have a bird floor — UNIT_COUNTY_EXTRA is exactly where the hand-mapped
+// coastal/island refuges live, i.e. the ones most likely to look broken.
+const unitCountyOf = (id) => UNIT_COUNTY[id] ?? UNIT_COUNTY_EXTRA[id] ?? null;
+coverage('Refuges', NATIONAL_WILDLIFE_REFUGES, p => unitCountyOf(p.id), 0.80);
 coverage('National units', Object.keys(UNIT_COUNTY).filter(k => k.startsWith('nps_')).map(id => ({ id })),
-         p => UNIT_COUNTY[p.id], 0.85);
+         p => unitCountyOf(p.id), 0.85);
 
 // ── 2. SIGNATURE SPECIES ────────────────────────────────────────────────────
 // Each: should appear in ≥ `min` of the named states' counties. gate 'fail'
