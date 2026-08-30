@@ -182,6 +182,22 @@ const COUNTY_OVERRIDE = {
   'mi-lime-island': 'US-MI-033',        // was CA-ON-AL (Ontario)  → Chippewa, MI (St Marys River island)
   'mn-lake-of-the-woods': 'US-MN-077',  // was CA-ON-RR (Ontario)  → Lake of the Woods, MN
   'ca-border-field': 'US-CA-073',       // was MX-BCN-005 (Baja)   → San Diego, CA
+  // ── Parks eBird could not resolve at all (found 2026-08-20) ────────────────
+  // countyForPark() found no hotspot within 25 km, so these had NO county and
+  // therefore no floor of any kind — not bird, not non-bird. Counties are the
+  // point-in-polygon result from _us_counties.geojson; every one is 'inside'
+  // its polygon (not a nearest-neighbour guess) and matches the park's own
+  // state. Sparse-hotspot country, which is exactly where a county floor
+  // matters most.
+  'al-cedar-creek': 'US-AL-097',        // Mobile, AL
+  'ms-holmes-county': 'US-MS-051',      // Holmes, MS
+  'ms-kurtz-sf': 'US-MS-041',           // Greene, MS
+  'ak-wood-tikchik': 'US-AK-070',       // Dillingham, AK (county sampled 2026-08-20: too sparse for a bird floor)
+  // NOT mapped: 'nv-forty-mile'. Its coordinates (37.0739, -116.3489) fall
+  // inside the Nevada National Security Site, closed to the public, and
+  // Nevada's park system has no unit there — it looks like a bad Wikidata
+  // import. Mapping it would hand a probably-nonexistent park a confident
+  // 198-species floor. Needs a curation decision, not a county.
 };
 
 async function countyForPark(lat, lng) {
