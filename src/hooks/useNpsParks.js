@@ -9,6 +9,7 @@
  */
 
 import { useState, useEffect } from 'react';
+import { pickHeroImage } from '../data/npsHero.js';
 import { NP_KIND, npsQualifies } from '../data/npsFilter.js';
 
 // v5 — wildlife-focused refocus. Auto-include the inherently-NATURAL NPS
@@ -25,27 +26,9 @@ const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
 // generator can apply the exact same rules without duplicating (and drifting
 // from) them, and without pulling React into a node script.
 
-// NPS gives an ordered `images` array, but images[0] is frequently a wildlife
-// close-up (e.g. Wind Cave's lead photo is a bison, not the park). Prefer a
-// landscape/scenery shot: reward scenery words, penalise animal close-ups, and
-// fall back to NPS's own ordering on ties.
-const HERO_ANIMAL  = /\b(bison|buffalo|elk|deer|moose|bear|wolf|coyote|fox|bobcat|cougar|lynx|bird|eagle|hawk|falcon|owl|duck|goose|heron|crane|pelican|gull|snake|lizard|turtle|tortoise|frog|toad|fish|salmon|trout|insect|butterfly|dragonfly|bee|beetle|bug|bat|prairie dog|ferret|sheep|goat|pronghorn|antelope|elephant seal|seal|otter|squirrel|chipmunk|rabbit|marmot|portrait|close-?up|wildlife|critter|mammal|reptile|amphibian)\b/i;
-const HERO_SCENERY = /\b(landscape|scenic|scenery|vista|overlook|panorama|sunset|sunrise|skyline|canyon|valley|mountain|peak|ridge|cliff|butte|mesa|prairie|grassland|meadow|forest|woods|river|creek|lake|pond|waterfall|falls|gorge|shore|coast|coastline|beach|dune|desert|cave|cavern|formation|boxwork|rock|badland|hill|view|trail|aerial|night sky|stars|milky way|wetland|marsh|spring|geyser)\b/i;
-
-function pickHeroImage(images) {
-  if (!Array.isArray(images) || images.length === 0) return null;
-  let best = images[0], bestScore = -Infinity;
-  images.forEach((img, i) => {
-    const hay = `${img.title || ''} ${img.altText || ''} ${img.caption || ''}`.toLowerCase();
-    // Scenery wins outright (a landscape word means it's a place shot, even if a
-    // place NAME like "Eagle Peak" also trips the animal list). Only penalise an
-    // animal word when there's NO scenery context — that's the tight-portrait case.
-    let score = HERO_SCENERY.test(hay) ? 3 : (HERO_ANIMAL.test(hay) ? -3 : 0);
-    score -= i * 0.01;                 // gentle tiebreak toward NPS's own order
-    if (score > bestScore) { bestScore = score; best = img; }
-  });
-  return best;
-}
+// Hero-image scoring lives in src/data/npsHero.js so the serverless proxy can
+// apply the IDENTICAL rules before sending data to the browser. A second copy
+// here would drift, and drift shows up as a park quietly changing its photo.
 
 /**
  * Convert one NPS API park record into the app's location shape.
@@ -63,7 +46,10 @@ function parkToLocation(park) {
     ? park.states.split(',').map(s => s.trim()).filter(Boolean)
     : [];
 
-  const hero = pickHeroImage(park.images);
+  // The proxy now resolves the hero server-side and omits `images` entirely.
+  // Keep the client-side fallback: the proxy response is edge-cached for 24h,
+  // so for a day after deploy some visitors still receive the old fat shape.
+  const hero = park.heroImage ?? pickHeroImage(park.images);
 
   return {
     id:          `nps_${park.parkCode}`,
