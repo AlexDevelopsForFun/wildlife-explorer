@@ -193,11 +193,12 @@ const COUNTY_OVERRIDE = {
   'ms-holmes-county': 'US-MS-051',      // Holmes, MS
   'ms-kurtz-sf': 'US-MS-041',           // Greene, MS
   'ak-wood-tikchik': 'US-AK-070',       // Dillingham, AK (county sampled 2026-08-20: too sparse for a bird floor)
-  // NOT mapped: 'nv-forty-mile'. Its coordinates (37.0739, -116.3489) fall
-  // inside the Nevada National Security Site, closed to the public, and
-  // Nevada's park system has no unit there — it looks like a bad Wikidata
-  // import. Mapping it would hand a probably-nonexistent park a confident
-  // 198-species floor. Needs a curation decision, not a county.
+  // 'nv-forty-mile' was DELETED from the registry (2026-08-31). Its coordinates
+  // (37.0739, -116.3489) fell inside the Nevada National Security Site, closed
+  // to the public, where Nevada's park system has no unit — a bad Wikidata
+  // import. It had been inheriting Nye County's 198-species floor via
+  // PARK_COUNTY_EXTRA, i.e. publishing confident wildlife odds for a nuclear
+  // test site. Do not re-add it from a Wikidata refresh without checking.
 };
 
 async function countyForPark(lat, lng) {

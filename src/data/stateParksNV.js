@@ -25,7 +25,6 @@ export const STATE_PARKS_NV = [
   { id: "nv-wild-horse", name: "Wild Horse State Recreation Area", lat: 41.6708, lng: -115.8, radiusKm: 4, category: "recreation-area" },
   { id: "nv-rye-patch", name: "Rye Patch State Recreation Area", lat: 40.4706, lng: -118.3094, radiusKm: 4, category: "recreation-area" },
   { id: "nv-beaver-dam", name: "Beaver Dam State Park", lat: 37.51, lng: -114.073, radiusKm: 4, category: "state-park" },
-  { id: "nv-forty-mile", name: "Forty Mile State Park", lat: 37.0739, lng: -116.3489, radiusKm: 4, category: "state-park" },
   { id: "nv-van-sickle-bistate-park", name: "Van Sickle Bi-State Park", lat: 38.9622, lng: -119.94, radiusKm: 4, category: "state-park" },
   { id: "nv-snyder-meadows", name: "Snyder Meadows State Park", lat: 39.1153, lng: -119.8439, radiusKm: 4, category: "state-park" },
   { id: "nv-ice-age-fossils", name: "Ice Age Fossils State Park", lat: 36.3186, lng: -115.2061, radiusKm: 4, category: "state-park" },

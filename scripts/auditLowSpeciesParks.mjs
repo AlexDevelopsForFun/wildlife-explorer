@@ -38,7 +38,7 @@ for (const f of readdirSync(CBL_DIR)) {
 // Mirror App.jsx PARK_COUNTY_EXTRA (hand-mapped orphan state parks).
 const PARK_COUNTY_EXTRA = {
   'ma-richard-mckinnon': 'US-MA-017', 'ny-three-falls': 'US-NY-099',
-  'nv-forty-mile': 'US-NV-023', 'ms-holmes-county': 'US-MS-051', 'ak-wood-tikchik': 'US-AK-070',
+  'ms-holmes-county': 'US-MS-051', 'ak-wood-tikchik': 'US-AK-070',
 };
 
 const birdN    = (c) => {

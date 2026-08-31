@@ -38,7 +38,7 @@ const D = (p) => path.join(__dirname, '..', 'src', 'data', p);
 // Hand-mapped orphan parks (mirror App.jsx PARK_COUNTY_EXTRA + the 5 new edge units).
 const PARK_COUNTY_EXTRA = {
   'ma-richard-mckinnon': 'US-MA-017', 'ny-three-falls': 'US-NY-099',
-  'nv-forty-mile': 'US-NV-023', 'ms-holmes-county': 'US-MS-051', 'ak-wood-tikchik': 'US-AK-070',
+  'ms-holmes-county': 'US-MS-051', 'ak-wood-tikchik': 'US-AK-070',
   'al-cedar-creek': 'US-AL-097', 'ms-kurtz-sf': 'US-MS-041',
   'ca-border-field': 'US-CA-073',   // overrides PARK_COUNTY's MX municipio
 };

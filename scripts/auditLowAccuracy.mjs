@@ -26,7 +26,7 @@ import { NATIONAL_WILDLIFE_REFUGES } from '../src/data/nationalWildlifeRefuges.j
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CACHE = path.join(__dirname, '_nonbird_cache');
 const PARK_COUNTY_EXTRA = {
-  'ma-richard-mckinnon':'US-MA-017','ny-three-falls':'US-NY-099','nv-forty-mile':'US-NV-023',
+  'ma-richard-mckinnon':'US-MA-017','ny-three-falls':'US-NY-099',
   'ms-holmes-county':'US-MS-051','ak-wood-tikchik':'US-AK-070','al-cedar-creek':'US-AL-097',
   'ms-kurtz-sf':'US-MS-041','ca-border-field':'US-CA-073',
 };
