@@ -12,9 +12,18 @@
 // (req.url stays the original source path, e.g. /api/nps-proxy/parks?...)
 //   →  https://developer.nps.gov/api/v1/<path...>?<query>   (+ X-Api-Key)
 
+import { slimNpsPark } from '../src/data/npsHero.js';
+
 const ALLOW = [
   /^parks(\?|$)/,
 ];
+
+// Slim ONLY the bulk list. A request carrying `fields=` is asking for
+// something specific (apiService fetches `?parkCode=X&fields=topics`), and
+// trimming that would silently delete the very field it asked for.
+function shouldSlim(suffix) {
+  return /^parks(\?|$)/.test(suffix) && !/[?&]fields=/.test(suffix);
+}
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -42,7 +51,24 @@ export default async function handler(req, res) {
   const upstream = `https://developer.nps.gov/api/v1/${suffix}`;
   try {
     const r = await fetch(upstream, { headers: { 'X-Api-Key': key } });
-    const body = await r.text();
+    let body = await r.text();
+
+    // Reduce the bulk list to the fields the app reads, resolving the hero
+    // image here so the full `images` array never crosses the wire. 3.67 MB ->
+    // 0.42 MB (950 KB -> 132 KB gzipped) for identical rendering; the parse
+    // alone was blocking the main thread on every cold mobile visit.
+    //
+    // Failure here must NEVER cost the caller its data: any parse problem or
+    // unexpected shape falls through to the untouched upstream body.
+    if (r.ok && shouldSlim(suffix)) {
+      try {
+        const json = JSON.parse(body);
+        if (Array.isArray(json?.data)) {
+          body = JSON.stringify({ ...json, data: json.data.map(slimNpsPark) });
+        }
+      } catch { /* keep the original body */ }
+    }
+
     res
       .status(r.status)
       .setHeader('content-type', r.headers.get('content-type') || 'application/json')
