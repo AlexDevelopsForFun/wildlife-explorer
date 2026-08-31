@@ -37,6 +37,10 @@ jobs:
         run: npm ci
 
       - name: Production build
+        # Same heap headroom as the scheduled rebuilds — a PR check that OOMs
+        # where the real build succeeds (or vice versa) is worse than no check.
+        env:
+          NODE_OPTIONS: --max-old-space-size=6144
         run: npm run build
 
       # SEO prerender guard — every park page must ship with a unique

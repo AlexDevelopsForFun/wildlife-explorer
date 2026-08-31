@@ -100,6 +100,9 @@ jobs:
         env:
           VITE_EBIRD_API_KEY: ${{ secrets.EBIRD_KEY }}
           VITE_NPS_API_KEY:   ${{ secrets.NPS_KEY }}
+          # Prerendering 17,468 pages over 35 MB of cache needs the same heap
+          # headroom every other heavy step in this pipeline already asks for.
+          NODE_OPTIONS: --max-old-space-size=6144
         run: npm run build
 
       - name: Commit & push

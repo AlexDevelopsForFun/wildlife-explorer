@@ -32,6 +32,42 @@ const ROOT = path.resolve(__dirname, '..');
 const OUT = path.join(ROOT, 'src', 'data', 'stateParkBirdFreq.js');
 const CACHE_DIR = path.join(__dirname, '_nj_county_cache'); // shared county cache (codes are unique)
 
+// ── Park → county resolution cache ────────────────────────────────────────
+// countyForPark() costs 1-2 eBird calls at 300 ms each, and the build ran it
+// for ALL 4,050 parks on every single run — ~5,000 requests and 15-30 minutes
+// spent rediscovering a mapping that does not change, before any sampling even
+// begins. Parks do not move.
+//
+// The cache key embeds the COORDINATES, not just the id, so a curation fix
+// that nudges a park's lat/lng invalidates its entry automatically instead of
+// silently pinning it to the old county. That is the failure mode worth
+// designing against here: a wrong county is far more damaging than a slow
+// build, because every species reading for that park inherits it.
+//
+// Only successful resolutions are cached. A null means eBird had no hotspot
+// within 25 km, which CAN become resolvable as hotspots are added, and it is
+// only ~7 parks — not worth freezing in to save 14 calls.
+const PARK_COUNTY_CACHE = path.join(__dirname, '_park_county_cache.json');
+const _parkCountyKey = (p) => `${p.id}@${Number(p.lat).toFixed(4)},${Number(p.lng).toFixed(4)}`;
+
+function loadParkCountyCache() {
+  try {
+    if (!existsSync(PARK_COUNTY_CACHE)) return {};
+    const o = JSON.parse(readFileSync(PARK_COUNTY_CACHE, 'utf8'));
+    return (o && typeof o === 'object') ? o : {};
+  } catch { return {}; }        // corrupt → rebuild it rather than die
+}
+
+function saveParkCountyCache(map) {
+  try {
+    // Sorted so the committed file diffs cleanly instead of reshuffling.
+    const sorted = Object.fromEntries(Object.entries(map).sort(([a], [b]) => a < b ? -1 : 1));
+    writeFileSync(PARK_COUNTY_CACHE, JSON.stringify(sorted, null, 0), 'utf8');
+  } catch (e) {
+    console.warn(`  ⚠  could not write park→county cache: ${e.message}`);
+  }
+}
+
 function loadEnv() {
   try {
     const txt = readFileSync(path.join(ROOT, '.env'), 'utf8');
@@ -49,18 +85,45 @@ const HDRS = { headers: { 'X-eBirdApiToken': EBIRD_KEY } };
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 // Retry on rate-limit (429) / transient 5xx with backoff; 4xx (e.g. 404 "no
 // data for date") returns null without retrying.
+// eBird request stats. jget() used to swallow every failure and return null,
+// which is how 2,789 parks silently became "(none)" on 2026-08-20 and the
+// build wrote a 44%-truncated file with a success line at the end. A run that
+// is being throttled must SAY SO.
+const EBIRD_STATS = { ok: 0, throttled: 0, failed: 0, penaltyMs: 0 };
+
 async function jget(url, tries = 3) {
   for (let i = 0; i < tries; i++) {
     try {
-      // 20s per-request timeout — a stalled/dropped eBird connection otherwise
-      // blocks a worker forever (the whole parallel build can hang). Timeout →
-      // throw → retry/backoff below.
+      // Adaptive penalty: once eBird starts pushing back, every subsequent
+      // request slows down too, instead of each one re-earning its own 429.
+      if (EBIRD_STATS.penaltyMs) await sleep(EBIRD_STATS.penaltyMs);
+      // 20s per-request timeout -- a stalled/dropped eBird connection otherwise
+      // blocks a worker forever (the whole parallel build can hang). Timeout ->
+      // throw -> retry/backoff below.
       const r = await fetch(url, { ...HDRS, signal: AbortSignal.timeout(20000) });
-      if (r.ok) return await r.json();
-      if (r.status === 429 || r.status >= 500) { await sleep(800 * (i + 1)); continue; }
+      if (r.ok) {
+        EBIRD_STATS.ok++;
+        if (EBIRD_STATS.penaltyMs && EBIRD_STATS.ok % 50 === 0) {
+          EBIRD_STATS.penaltyMs = Math.max(0, EBIRD_STATS.penaltyMs - 50);
+        }
+        return await r.json();
+      }
+      if (r.status === 429 || r.status >= 500) {
+        if (r.status === 429) {
+          EBIRD_STATS.throttled++;
+          EBIRD_STATS.penaltyMs = Math.min(EBIRD_STATS.penaltyMs + 100, 2000);
+        }
+        const ra = Number(r.headers.get('retry-after'));
+        await sleep(Number.isFinite(ra) && ra > 0
+          ? Math.min(ra * 1000, 20000)
+          : 800 * (i + 1));
+        continue;
+      }
+      EBIRD_STATS.failed++;
       return null;
     } catch { await sleep(500 * (i + 1)); }
   }
+  EBIRD_STATS.failed++;
   return null;
 }
 // Concurrency-limited map that PRESERVES input order in the result (so the
@@ -106,6 +169,35 @@ const COUNTY_OVERRIDE = {
   'wv-panther-sf': 'US-WV-047',      // Panther SF, far SW WV on the VA/KY line → McDowell, WV
   'in-falls-of-the-ohio': 'US-IN-019', // Clarksville IN, across the river from Louisville → Clark, IN
   'az-lake-havasu': 'US-AZ-015',     // on the AZ bank of the Colorado R. (the CA border) → Mohave, AZ
+  // ── Cross-BORDER misfires (found 2026-08-20) ────────────────────────────────
+  // These five resolved to CANADIAN and MEXICAN counties, and each already had
+  // frequency data — so US parks were serving foreign checklist rates in
+  // production. countyForPark() takes the nearest eBird hotspot, and on a
+  // border (or an island in a shared waterway) that is often the other
+  // country's. Counties below are the point-in-polygon result from
+  // scripts/_us_counties.geojson, which is authoritative for where the park
+  // physically sits.
+  'vt-black-turn-brook': 'US-VT-009',   // was CA-QC-CT (Quebec)   → Essex, VT
+  'ny-mary-island': 'US-NY-045',        // was CA-ON-LG (Ontario)  → Jefferson, NY (Thousand Islands)
+  'mi-lime-island': 'US-MI-033',        // was CA-ON-AL (Ontario)  → Chippewa, MI (St Marys River island)
+  'mn-lake-of-the-woods': 'US-MN-077',  // was CA-ON-RR (Ontario)  → Lake of the Woods, MN
+  'ca-border-field': 'US-CA-073',       // was MX-BCN-005 (Baja)   → San Diego, CA
+  // ── Parks eBird could not resolve at all (found 2026-08-20) ────────────────
+  // countyForPark() found no hotspot within 25 km, so these had NO county and
+  // therefore no floor of any kind — not bird, not non-bird. Counties are the
+  // point-in-polygon result from _us_counties.geojson; every one is 'inside'
+  // its polygon (not a nearest-neighbour guess) and matches the park's own
+  // state. Sparse-hotspot country, which is exactly where a county floor
+  // matters most.
+  'al-cedar-creek': 'US-AL-097',        // Mobile, AL
+  'ms-holmes-county': 'US-MS-051',      // Holmes, MS
+  'ms-kurtz-sf': 'US-MS-041',           // Greene, MS
+  'ak-wood-tikchik': 'US-AK-070',       // Dillingham, AK (county sampled 2026-08-20: too sparse for a bird floor)
+  // NOT mapped: 'nv-forty-mile'. Its coordinates (37.0739, -116.3489) fall
+  // inside the Nevada National Security Site, closed to the public, and
+  // Nevada's park system has no unit there — it looks like a bad Wikidata
+  // import. Mapping it would hand a probably-nonexistent park a confident
+  // 198-species floor. Needs a curation decision, not a county.
 };
 
 async function countyForPark(lat, lng) {
@@ -219,12 +311,39 @@ async function main() {
   const allParks = Object.values(STATE_PARKS_BY_STATE).flat();
   console.log(`\n🐦 State-park county bird-frequency build — ${allParks.length} parks (year ${YEAR})\n`);
   const parkCounty = {};
-  console.log('Resolving park → county… (6-way parallel)');
+  const pcCache = loadParkCountyCache();
+  let pcHits = 0, pcMiss = 0;
+  console.log('Resolving park → county… (6-way parallel, cached)');
   const resolved = await pMap(
     allParks,
-    async (p) => ({ id: p.id, c: COUNTY_OVERRIDE[p.id] ?? await countyForPark(p.lat, p.lng) }),
+    async (p) => {
+      // Override wins outright — it is a hand-made correction and must never
+      // be shadowed by a cached automatic result.
+      const ov = COUNTY_OVERRIDE[p.id];
+      if (ov) return { id: p.id, c: ov, key: null };
+      const key = _parkCountyKey(p);
+      const hit = pcCache[key];
+      if (hit) { pcHits++; return { id: p.id, c: hit, key }; }
+      pcMiss++;
+      return { id: p.id, c: await countyForPark(p.lat, p.lng), key };
+    },
     6,
   );
+  for (const { c, key } of resolved) if (key && c) pcCache[key] = c;
+  saveParkCountyCache(pcCache);
+  const noneCount = resolved.filter(r => !r.c).length;
+  console.log(`  park→county: ${pcHits} cached, ${pcMiss} resolved via eBird, ${noneCount} unresolved`);
+  console.log(`  eBird requests: ${EBIRD_STATS.ok} ok, ${EBIRD_STATS.throttled} throttled(429), ${EBIRD_STATS.failed} failed`);
+  // Loud, early warning. The regression gate at the end is the hard stop, but
+  // by then an hour of sampling has already been spent -- better to see the
+  // problem here, while there is still a choice about continuing.
+  if (noneCount > allParks.length * 0.05) {
+    console.warn(`
+  ⚠  ${noneCount}/${allParks.length} parks did not resolve to a county.`);
+    console.warn(`     That is almost certainly eBird throttling, not bad data.`);
+    console.warn(`     The build will refuse to overwrite good data if this holds.
+`);
+  }
   for (const { id, c } of resolved) {       // registry order preserved → deterministic
     if (c) { parkCounty[id] = c; console.log(`  ${id.padEnd(22)} ${c}`); }
     else console.log(`  ${id.padEnd(22)} (none)`);
@@ -260,6 +379,38 @@ ${counties.length} unique counties to sample `
     `// those parks gracefully fall back to the live recency/iNat signal.\n` +
     `export const PARK_COUNTY = ${JSON.stringify(parkCounty, null, 0)};\n\n` +
     `export const COUNTY_BIRD_FREQ = ${JSON.stringify(countyFreq)};\n`;
+
+  // -- Regression gate --------------------------------------------------------
+  // 2026-08-20: a local run resolved only 1,261 of 4,050 parks because eBird
+  // throttled the hotspot lookups and jget() returns null SILENTLY. The build
+  // then cheerfully overwrote 13.5 MB of good data with a 7.6 MB file -- a 44%
+  // loss, signed off with a success line. The CI workflow has sanity gates
+  // (parks>=3500) but running this script by hand bypasses them, so the gate
+  // belongs HERE, where the write actually happens.
+  //
+  // Compares against whatever is already on disk rather than a hard-coded
+  // number, so it keeps working as the park registry grows.
+  const parkCount = Object.keys(parkCounty).length;
+  const countyCount = Object.keys(countyFreq).length;
+  if (existsSync(OUT) && !process.env.ALLOW_SHRINK) {
+    const prev = readFileSync(OUT, 'utf8');
+    const mP = prev.match(/PARK_COUNTY = (\{.*?\});/s);
+    const mC = prev.match(/COUNTY_BIRD_FREQ = (\{.*\});/s);
+    const nPrevParks = mP ? Object.keys(JSON.parse(mP[1])).length : 0;
+    const nPrevCounties = mC ? Object.keys(JSON.parse(mC[1])).length : 0;
+    const parkFloor = Math.floor(nPrevParks * 0.9);
+    const countyFloor = Math.floor(nPrevCounties * 0.9);
+    if (parkCount < parkFloor || countyCount < countyFloor) {
+      console.error('\nREFUSING TO WRITE -- this build LOST data.');
+      console.error(`   parks:    ${parkCount} (on disk: ${nPrevParks}, floor: ${parkFloor})`);
+      console.error(`   counties: ${countyCount} (on disk: ${nPrevCounties}, floor: ${countyFloor})`);
+      console.error('   Almost always eBird throttling the park->county lookups:');
+      console.error("   grep '(none)' in the build log. Existing data left untouched.");
+      console.error('   Override with ALLOW_SHRINK=1 only if the shrink is intended.\n');
+      process.exit(1);
+    }
+  }
+
   writeFileSync(OUT, body, 'utf8');
   const spp = Object.values(countyFreq).reduce((n, c) => n + Object.keys(c).length, 0);
   console.log(`\n✅ Wrote ${OUT}`);
