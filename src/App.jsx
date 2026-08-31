@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect, useRef, useCallback, Component } from 'react';
+import { basemapUrl, BASEMAP_ATTRIBUTION } from './data/basemap.js';
 import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -3130,7 +3131,7 @@ function StateParkMap({ state, parks, federal = [], stateGeo, onPickPark, onPick
           attributionControl={false}
         >
           <TileLayer
-            url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+            url={basemapUrl(true)}
           />
           {stateFeature && (
             <GeoJSON
@@ -7061,10 +7062,8 @@ function AppInner() {
         <MapContainer center={[39.5, -98.35]} zoom={initialZoom} style={{ height: '100%', width: '100%' }}>
           <TileLayer
             key={darkMode ? 'dark' : 'light'}
-            url={darkMode
-              ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-              : "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"}
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+            url={basemapUrl(darkMode)}
+            attribution={BASEMAP_ATTRIBUTION}
           />
 
           {/* Capture map instance so the View Full Map button can call map.setView() */}
