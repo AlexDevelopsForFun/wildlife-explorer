@@ -112,9 +112,39 @@ const smPath = path.join(DIST, 'sitemap.xml');
 if (!existsSync(smPath)) {
   errors.push('dist/sitemap.xml missing');
 } else {
-  const locs = (readFileSync(smPath, 'utf8').match(/<loc>/g) || []).length;
-  const expected = wildlifeLocations.length + 1 + stateExtraUrls;
-  if (locs !== expected) errors.push(`sitemap has ${locs} URLs, expected ${expected} (homepage + ${wildlifeLocations.length} parks + ${stateExtraUrls} state)`);
+  const sm = readFileSync(smPath, 'utf8');
+  const locs = (sm.match(/<loc>/g) || []).length;
+
+  // The core set MUST be present, url by url. This is the part that actually
+  // matters for SEO and the part a broken prerender would drop.
+  const core = wildlifeLocations.length + 1 + stateExtraUrls;
+  const missingCore = [];
+  if (!/<loc>[^<]*\/<\/loc>|<loc>[^<]*wildlifeexplorer\.us\/?<\/loc>/.test(sm)
+      && !sm.includes('<loc>https://wildlifeexplorer.us/</loc>')) missingCore.push('homepage');
+  for (const l of wildlifeLocations) {
+    if (!sm.includes(`/park/${l.id}<`)) missingCore.push(`/park/${l.id}`);
+  }
+  for (const code of stateCodes) {
+    const lc = code.toLowerCase();
+    if (!sm.includes(`/state/${lc}<`)) missingCore.push(`/state/${lc}`);
+  }
+  if (missingCore.length) {
+    errors.push(`sitemap missing ${missingCore.length} core URL(s): ${missingCore.slice(0, 5).join(', ')}`
+      + (missingCore.length > 5 ? ' …' : ''));
+  }
+
+  // Total is a FLOOR, not an equality. The old check asserted exactly
+  // (homepage + national parks + state), which silently went stale the moment
+  // refuge, NPS-unit and species pages were added: it demanded 4,164 while the
+  // real sitemap carried 17,469. That single false failure skipped every
+  // downstream check in pr-checks.yml — override curation, cache freshness,
+  // proxy wiring and all three test suites — across five consecutive PRs.
+  // A guard that breaks whenever the site legitimately grows trains people to
+  // ignore it, so only a COLLAPSE below the core is treated as broken.
+  if (locs < core) {
+    errors.push(`sitemap has ${locs} URLs, fewer than the ${core} core pages `
+      + `(homepage + ${wildlifeLocations.length} national parks + ${stateExtraUrls} state) — prerender lost pages`);
+  }
 }
 
 if (errors.length) {

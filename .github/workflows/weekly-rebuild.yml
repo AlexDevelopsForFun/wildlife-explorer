@@ -287,6 +287,13 @@ jobs:
         run: node scripts/expandPhotos.mjs
 
       - name: Verify production build
+        # 35 MB of cache data is loaded to prerender 17,468 pages, and this is
+        # the ONLY heavy step in the pipeline that ran on Node's default heap —
+        # every sibling script already asks for 4-6 GB. The 2026-08-23 rebuild
+        # failed here with all 12 shards green, then the identical code passed on
+        # 08-30, which is what an allocation ceiling looks like as the cache grows.
+        env:
+          NODE_OPTIONS: --max-old-space-size=6144
         run: npm run build
 
       # Anchor-based calibration check — non-blocking. Compares the rebuilt
