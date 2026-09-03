@@ -50,6 +50,35 @@ const CACHE_DIR = path.join(__dirname, '_nj_county_cache'); // shared county cac
 const PARK_COUNTY_CACHE = path.join(__dirname, '_park_county_cache.json');
 const _parkCountyKey = (p) => `${p.id}@${Number(p.lat).toFixed(4)},${Number(p.lng).toFixed(4)}`;
 
+// Nine parks sit far enough from any eBird hotspot that countyForPark() cannot
+// resolve them at all. Each failure costs TWO search radii x three jget retries
+// — and the adaptive backoff added for throttling makes each of those slower —
+// so nine hopeless parks were burning most of a ten-minute build, every build,
+// forever.
+//
+// Caching the failure outright would be wrong: eBird gains hotspots over time,
+// and a park that cannot resolve today may resolve next year. So a miss is
+// cached WITH A DATE and honoured only while fresh. After the TTL it is retried
+// once, and either resolves (becoming a permanent hit) or re-dates its miss.
+//
+// Positive entries stay plain strings, so the 4,040 already committed keep
+// working untouched; only misses use the { miss: <ISO date> } shape.
+const PARK_COUNTY_MISS_TTL_DAYS = 30;
+
+function readParkCountyCache(cache, key) {
+  const v = cache[key];
+  if (typeof v === 'string' && v) return { known: true, county: v };
+  if (v && typeof v === 'object' && v.miss) {
+    const ageDays = (Date.now() - Date.parse(v.miss)) / 86400000;
+    // A malformed date parses to NaN; treat that as stale and re-resolve
+    // rather than honouring a miss we cannot age.
+    if (Number.isFinite(ageDays) && ageDays < PARK_COUNTY_MISS_TTL_DAYS) {
+      return { known: true, county: null };
+    }
+  }
+  return { known: false };
+}
+
 function loadParkCountyCache() {
   try {
     if (!existsSync(PARK_COUNTY_CACHE)) return {};
@@ -313,7 +342,7 @@ async function main() {
   console.log(`\n🐦 State-park county bird-frequency build — ${allParks.length} parks (year ${YEAR})\n`);
   const parkCounty = {};
   const pcCache = loadParkCountyCache();
-  let pcHits = 0, pcMiss = 0;
+  let pcHits = 0, pcMiss = 0, pcSkipped = 0;
   console.log('Resolving park → county… (6-way parallel, cached)');
   const resolved = await pMap(
     allParks,
@@ -323,17 +352,26 @@ async function main() {
       const ov = COUNTY_OVERRIDE[p.id];
       if (ov) return { id: p.id, c: ov, key: null };
       const key = _parkCountyKey(p);
-      const hit = pcCache[key];
-      if (hit) { pcHits++; return { id: p.id, c: hit, key }; }
+      const cached = readParkCountyCache(pcCache, key);
+      if (cached.known) {
+        cached.county ? pcHits++ : pcSkipped++;
+        return { id: p.id, c: cached.county, key, fresh: false };
+      }
       pcMiss++;
-      return { id: p.id, c: await countyForPark(p.lat, p.lng), key };
+      return { id: p.id, c: await countyForPark(p.lat, p.lng), key, fresh: true };
     },
     6,
   );
-  for (const { c, key } of resolved) if (key && c) pcCache[key] = c;
+  const missStamp = new Date().toISOString().slice(0, 10);
+  for (const { c, key, fresh } of resolved) {
+    if (!key) continue;
+    if (c) pcCache[key] = c;                       // resolved -> permanent hit
+    else if (fresh) pcCache[key] = { miss: missStamp };  // only re-date an ATTEMPT
+  }
   saveParkCountyCache(pcCache);
   const noneCount = resolved.filter(r => !r.c).length;
-  console.log(`  park→county: ${pcHits} cached, ${pcMiss} resolved via eBird, ${noneCount} unresolved`);
+  console.log(`  park→county: ${pcHits} cached, ${pcMiss} resolved via eBird, `
+    + `${pcSkipped} known-unresolvable (skipped), ${noneCount} unresolved`);
   console.log(`  eBird requests: ${EBIRD_STATS.ok} ok, ${EBIRD_STATS.throttled} throttled(429), ${EBIRD_STATS.failed} failed`);
   // Loud, early warning. The regression gate at the end is the hard stop, but
   // by then an hour of sampling has already been spent -- better to see the
