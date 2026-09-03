@@ -1579,8 +1579,16 @@ function LifeListModal({ onClose }) {
 // `preserveOrder` keeps the caller's ranking (the species search sorts by odds
 // and distance); without it the list is alphabetical, which is what the plain
 // park browsers want.
-function ParkListModal({ parks, onPick, onClose, title = 'Browse parks', subtitle = null, ariaLabel = 'Browse national parks', preserveOrder = false }) {
+// How many rows to put in the DOM at once. A species search can match 3,496
+// state parks, and rendering them all cost 18,008 DOM nodes on a phone —
+// for a list where the first fifty rows were identical ("100%") and nobody
+// scrolls that far. Filtering still runs over the WHOLE list; only the
+// rendered slice is capped.
+const PARKLIST_PAGE = 200;
+
+function ParkListModal({ parks, onPick, onClose, title = 'Browse parks', subtitle = null, ariaLabel = 'Browse national parks', preserveOrder = false, onUseLocation = null }) {
   const [q, setQ] = useState('');
+  const [shown, setShown] = useState(PARKLIST_PAGE);
   const inputRef = useRef(null);
   useEffect(() => {
     inputRef.current?.focus();
@@ -1596,6 +1604,11 @@ function ParkListModal({ parks, onPick, onClose, title = 'Browse parks', subtitl
         p.name.toLowerCase().includes(needle) ||
         String(p.state ?? '').toLowerCase().includes(needle))
     : sorted;
+  // A new query means a new list — start it from the top again, or the user
+  // sees page 18 of results they never asked for.
+  useEffect(() => { setShown(PARKLIST_PAGE); }, [needle]);
+  const visible = list.slice(0, shown);
+  const remaining = list.length - visible.length;
 
   return (
     <>
@@ -1605,6 +1618,16 @@ function ParkListModal({ parks, onPick, onClose, title = 'Browse parks', subtitl
         <div className="parklist-modal__head">
           <h2 className="parklist-modal__title">{title}</h2>
           {subtitle && <p className="parklist-modal__subtitle">{subtitle}</p>}
+          {/* Without a coordinate this list falls back to registry order, so a
+              species reported everywhere (bald eagle: 3,496 parks, the first
+              fifty all at 100%) opens on Alaska for a user in Ohio. The hint
+              used to be passive text telling them to go find the Near me
+              button; make it the button. */}
+          {onUseLocation && parks.length > PARKLIST_PAGE && (
+            <button className="parklist-modal__locate" onClick={onUseLocation}>
+              📍 Sort by distance from me
+            </button>
+          )}
           <input
             ref={inputRef}
             type="search"
@@ -1616,7 +1639,7 @@ function ParkListModal({ parks, onPick, onClose, title = 'Browse parks', subtitl
           />
         </div>
         <ul className="parklist-modal__list" aria-label="National parks">
-          {list.map(p => {
+          {visible.map(p => {
             const tier = p.rarity ? SPECTRUM_CONFIG.find(c => c.key === p.rarity) : null;
             return (
               <li key={p.id}>
@@ -1647,6 +1670,19 @@ function ParkListModal({ parks, onPick, onClose, title = 'Browse parks', subtitl
           })}
           {list.length === 0 && (
             <li className="parklist-modal__empty">No parks match “{q}”.</li>
+          )}
+          {remaining > 0 && (
+            <li className="parklist-modal__more-row">
+              <button
+                className="parklist-modal__more"
+                onClick={() => setShown(n => n + PARKLIST_PAGE)}
+              >
+                Show {Math.min(remaining, PARKLIST_PAGE)} more
+                <span className="parklist-modal__more-count">
+                  {visible.length} of {list.length}
+                </span>
+              </button>
+            </li>
           )}
         </ul>
       </div>
@@ -7245,8 +7281,9 @@ function AppInner() {
               ? '% = how commonly this species is photographed in the park’s COUNTY on iNaturalist — a relative observability score, not a chance of seeing it. '
               : '% = share of eBird checklists in the park’s COUNTY that report this species. ')
             + 'It’s county-wide, shared by every park in that county — a good steer, not a promise for the park itself. '
-            + (userLoc ? 'Nearest strong counties first.' : 'Tap “Near me” once to see the nearest ones first.')}
+            + (userLoc ? 'Nearest strong counties first.' : 'Sorted by odds; use the button below to put the closest first.')}
           ariaLabel={`State parks with ${speciesFilter}`}
+          onUseLocation={userLoc ? null : () => { setShowStateMatches(false); track('near_me_open'); setShowNearMe(true); }}
           onPick={(p) => {
             setShowStateMatches(false);
             handleNearMePick({ kind: 'state', park: p, state: p.state, id: p.id, name: p.name });
