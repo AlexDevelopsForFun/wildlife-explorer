@@ -3638,6 +3638,65 @@ body, #root {
   background: rgba(255, 255, 255, 0.22);
 }
 
+/* -- Mobile "More" menu ------------------------------------------------------
+   Seven header chips wrapped to three rows on a phone and ate 189px -- 23% of
+   the screen -- before the search bar. Tips / About / Feedback / Support move
+   behind this button; Near me, National Parks and State Parks stay visible
+   because they are the actual navigation.
+
+   `display: contents` on desktop means the wrapper vanishes from layout and the
+   four buttons flow exactly as they did before this change, so there is ONE
+   copy of the markup rather than a per-breakpoint duplicate. */
+.hdr__more-btn { display: none; }
+
+.hdr__secondary { display: contents; }
+
+@media (max-width: 768px) {
+  .hdr__more-btn {
+    display:       inline-flex;
+    align-items:   center;
+    gap:           5px;
+    padding:       6px 12px;
+    border-radius: 999px;
+    border:        2px solid rgba(255, 255, 255, 0.3);
+    background:    rgba(255, 255, 255, 0.12);
+    color:         #fff;
+    font-size:     12px;
+    font-weight:   600;
+    cursor:        pointer;
+    white-space:   nowrap;
+    flex-shrink:   0;
+  }
+  .hdr__more-btn:hover { background: rgba(255, 255, 255, 0.22); }
+
+  /* Out of flow entirely when closed -- not merely invisible -- so the chips
+     cannot reserve a row they no longer occupy. */
+  .hdr__secondary {
+    display:  none;
+    position: absolute;
+    top:      calc(100% + 6px);
+    right:    0;
+    z-index:  1200;
+    min-width: 178px;
+    padding:  8px;
+    flex-direction: column;
+    align-items: stretch;
+    gap:      6px;
+    background: var(--bg-card, #232838);
+    border:   1px solid var(--border-card, rgba(255,255,255,0.16));
+    border-radius: 12px;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.42);
+  }
+  .hdr__secondary--open { display: flex; }
+  .hdr__secondary .hdr__about-btn {
+    width: 100%;
+    justify-content: flex-start;
+    border-radius: 8px;
+  }
+  /* The actions row is the positioning context for the dropdown. */
+  .hdr__actions { position: relative; }
+}
+
 /* ── Mobile filter drawer (hidden on desktop) ────────────────────────────── */
 .mobile-filter-drawer {
   display:    none;
