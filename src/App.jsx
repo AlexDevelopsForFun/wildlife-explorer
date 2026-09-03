@@ -781,28 +781,33 @@ function ZoomTracker({ onZoomChange }) {
 // ── State boundary GeoJSON layer ──────────────────────────────────────────────
 // Subtle polygon outlines; states with parks get a light green fill tint.
 // Hover turns border green; click zooms to that state.
-function StateBoundaries({ geoData, statesWithParks, onStateClick }) {
+function StateBoundaries({ geoData, statesWithParks, onStateClick, darkMode = true }) {
   const map        = useMap();
   const geojsonRef = useRef(null);
 
   const stateStyle = useCallback(feature => {
     const code     = STATE_NAME_TO_CODE[feature.properties.name];
     const hasParks = code && statesWithParks.has(code);
+    // #666 at 0.6 was tuned against CARTO's old tiles and reads as haze on the
+    // Esri canvas that replaced them — the states stopped looking like separate
+    // places. Borders now pick a tone that actually separates from the basemap
+    // in each theme, and the "has parks" tint carries a little more weight so
+    // the distinction is visible rather than implied.
     return {
-      color:       '#666666',
-      weight:      1.5,
-      opacity:     0.6,
-      fillColor:   hasParks ? '#4a7a5f' : '#f0f0f0',
-      fillOpacity: hasParks ? 0.10     : 0.05,
+      color:       darkMode ? '#93a7b8' : '#5b6b7a',
+      weight:      1.6,
+      opacity:     darkMode ? 0.8 : 0.7,
+      fillColor:   hasParks ? '#4a7a5f' : (darkMode ? '#ffffff' : '#9aa5ad'),
+      fillOpacity: hasParks ? 0.14     : 0.03,
     };
-  }, [statesWithParks]);
+  }, [statesWithParks, darkMode]);
 
   const onEachFeature = useCallback((feature, layer) => {
     // No tooltip — CartoDB base tiles already show state names clearly.
     // Hover highlight only (green border) so the polygon still feels clickable.
     layer.on({
       mouseover: e => {
-        e.target.setStyle({ weight: 2.5, color: '#2d7a2d', opacity: 1 });
+        e.target.setStyle({ weight: 3, color: '#5fd38a', opacity: 1 });
         e.target.bringToFront();
       },
       mouseout: e => {
@@ -2890,8 +2895,14 @@ function StateSelectorModal({ states, onPick, onClose }) {
       <div className="stateselect-modal" role="dialog" aria-modal="true" aria-label="Choose a state">
         <button className="about-modal__close" onClick={onClose} aria-label="Close">X</button>
         <div className="stateselect-modal__head">
-          <h2 className="stateselect-modal__title">State Parks</h2>
-          <p className="stateselect-modal__sub">All 50 states · {totalParks.toLocaleString()} parks &amp; preserves</p>
+          {/* The view behind this already plots national parks, NPS monuments and
+              seashores, refuges AND state parks together — but every label said
+              "State Parks", so nobody could tell it did that. */}
+          <h2 className="stateselect-modal__title">Explore by state</h2>
+          <p className="stateselect-modal__sub">
+            Everything in one state — national parks, monuments, refuges &amp; state parks
+            <br />All 50 states · {totalParks.toLocaleString()} state parks &amp; preserves, plus federal land
+          </p>
         </div>
         <div className="stateselect-modal__controls">
           <input
@@ -6261,10 +6272,19 @@ function AppInner() {
       .catch(() => { /* silently skip if offline — map still works */ });
   }, []);
 
-  // Set of state postal codes that have at least one park in the app
+  // Set of state postal codes that have at least one park in the app.
+  //
+  // This drives the "has parks" tint on the state boundary layer, and it used
+  // to read wildlifeLocations alone — the 63 NATIONAL parks. That left 20
+  // states painted as empty despite being full of parks, including New York,
+  // Pennsylvania, Georgia, Massachusetts, New Jersey and Wisconsin: they simply
+  // have no national park. With 4,049 state parks and 543 refuges in the app,
+  // "has a national park" is the wrong question to ask of this map.
   const statesWithParks = useMemo(() => {
     const s = new Set();
     wildlifeLocations.forEach(loc => loc.stateCodes.forEach(c => s.add(c)));
+    Object.keys(STATE_PARKS_BY_STATE).forEach(c => s.add(c));
+    NATIONAL_WILDLIFE_REFUGES.forEach(r => (r.stateCodes ?? []).forEach(c => s.add(c)));
     return s;
   }, []);
 
@@ -6953,8 +6973,8 @@ function AppInner() {
               <button id="park-list-skip-target" className="hdr__about-btn" onClick={() => setShowParkList(true)} title="Browse all national parks (keyboard accessible)" aria-label="Browse national parks">
                 <span className="hdr__about-icon" aria-hidden="true">⌖</span> National Parks
               </button>
-              <button className="hdr__about-btn" onClick={() => setShowStateSelector(true)} title="Browse state parks by state" aria-label="Browse state parks">
-                <span className="hdr__about-icon" aria-hidden="true">🗺️</span> State Parks
+              <button className="hdr__about-btn" onClick={() => setShowStateSelector(true)} title="Pick a state to see every park in it — national, state, monuments, refuges" aria-label="Explore parks by state">
+                <span className="hdr__about-icon" aria-hidden="true">🗺️</span> By State
               </button>
               {/* Secondary actions. On desktop this wrapper is `display: contents`,
                   so these lay out exactly as before; on mobile it becomes a
@@ -7134,6 +7154,7 @@ function AppInner() {
           <StateBoundaries
             geoData={stateGeoData}
             statesWithParks={statesWithParks}
+            darkMode={darkMode}
             onStateClick={() => setStateZoomed(true)}
           />
 
