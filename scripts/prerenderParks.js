@@ -548,6 +548,25 @@ async function main() {
   }
 
   // ── Species pages (/species/<slug>[/<state>]) ────────────────────────────
+// "a" vs "an" is about SOUND, not spelling, and these strings go straight into
+// <title> and <h1> — i.e. into Google results. 4,544 of them read "a American
+// Lady", "a Eastern Kingsnake", "a Osprey".
+//
+// A naive vowel test is WRONG for 54 of the 6,478 species: "a European Carp"
+// and "a Unisexual Mole Salamander" are correct (yoo-), as is "a One-spotted
+// Variant" (wun-). The yoo- prefixes are enumerated rather than pattern-matched
+// because "Uni-" (YOO-ni-sexual) and "Une-" (uh-NEE-qual) diverge on the very
+// next letter.
+const ARTICLE_YOO_OR_WUN = /^(eu|ewe|uni|use|usu|util|utu|uku|ukr|uta|one|once)/i;
+const ARTICLE_SILENT_H   = /^(hour|honest|honou?r|heir)/i;
+function articleFor(name) {
+  const w = String(name ?? '').trim();
+  if (!w) return 'a';
+  if (ARTICLE_SILENT_H.test(w)) return 'an';
+  if (ARTICLE_YOO_OR_WUN.test(w)) return 'a';
+  return /^[aeiou]/i.test(w) ? 'an' : 'a';
+}
+
   // "Where to see a Bald Eagle in Florida" — long-tail landing pages built
   // from the county bird-frequency data (the same dataset that powers
   // state-park rarity). Top 150 birds by park coverage; one hub per species
@@ -681,7 +700,7 @@ async function main() {
             `<li><a href="/state-park/${st}/${encodeURIComponent(park.id)}">${esc(park.name)}</a></li>`).join('');
           const article =
             `<article class="seo-prerender">` +
-            `<h1>Where to see a ${esc(display)} in ${esc(stName)}</h1>` +
+            `<h1>Where to see ${articleFor(display)} ${esc(display)} in ${esc(stName)}</h1>` +
             `<p>${esc(c.stateLead(display, arr.length, stName))}</p>` +
             `<ol>${lis}</ol>` +
             `<p>These are county-level records — the species is documented in the area ` +
@@ -691,7 +710,7 @@ async function main() {
             `<a href="/state/${st}">All ${esc(stName)} state parks →</a></p>` +
             `</article>`;
           renderPage(`species/${slug}/${st}`, url,
-            `Where to see a ${display} in ${stName} — best parks | US Wildlife Explorer`,
+            `Where to see ${articleFor(display)} ${display} in ${stName} — best parks | US Wildlife Explorer`,
             c.stateDesc(display, arr.length, stName),
             article,
             { '@context': 'https://schema.org', '@type': 'ItemList', name: `${display} in ${stName}`, url,
@@ -704,13 +723,13 @@ async function main() {
           `<li><a href="/species/${slug}/${st}">${esc(STATE_NAMES[st.toUpperCase()] ?? st)} — ${arr.length} parks</a></li>`).join('');
         const article =
           `<article class="seo-prerender">` +
-          `<h1>Where to see a ${esc(display)} in the US</h1>` +
+          `<h1>Where to see ${articleFor(display)} ${esc(display)} in the US</h1>` +
           `<p>${esc(c.hubLead(display))}</p>` +
           `<ul>${stateLis}</ul>` +
           `<p><a href="/species/">Browse all species →</a></p>` +
           `</article>`;
         renderPage(`species/${slug}`, url,
-          `Where to see a ${display} — best US parks by state | US Wildlife Explorer`,
+          `Where to see ${articleFor(display)} ${display} — best US parks by state | US Wildlife Explorer`,
           c.hubDesc(display, qualifying.length),
           article,
           { '@context': 'https://schema.org', '@type': 'WebPage', name: `Where to see a ${display}`, url });
