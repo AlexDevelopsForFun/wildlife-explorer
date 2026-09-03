@@ -34,7 +34,6 @@ const NONBIRD_THIN  = { mammal: 12, reptile: 12, amphibian: 8, marine: 12, insec
 const PARK_COUNTY_EXTRA = {
   'ma-richard-mckinnon': 'US-MA-017',
   'ny-three-falls':      'US-NY-099',
-  'nv-forty-mile':       'US-NV-023',
   'ms-holmes-county':    'US-MS-051',
   'ak-wood-tikchik':     'US-AK-070',
   'al-cedar-creek':      'US-AL-097', // Mobile — point-in-polygon
