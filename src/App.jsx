@@ -6202,6 +6202,10 @@ function AppInner() {
   // State Parks: state selector → state-zoomed map → click pin → park panel.
   const [showStateSelector, setShowStateSelector] = useState(false);
   const [showNearMe, setShowNearMe] = useState(false);
+  // Mobile-only "More" menu. On a phone the seven header chips wrapped to three
+  // rows and ate 189px — 23% of the screen — before the search bar; the four
+  // secondary ones now collapse behind this.
+  const [moreOpen, setMoreOpen] = useState(false);
   // Coordinate captured when the user opens "Near me" and grants permission.
   // Kept in memory only (never persisted, never sent anywhere) so the species
   // search can rank matches by distance without prompting a second time.
@@ -6952,6 +6956,24 @@ function AppInner() {
               <button className="hdr__about-btn" onClick={() => setShowStateSelector(true)} title="Browse state parks by state" aria-label="Browse state parks">
                 <span className="hdr__about-icon" aria-hidden="true">🗺️</span> State Parks
               </button>
+              {/* Secondary actions. On desktop this wrapper is `display: contents`,
+                  so these lay out exactly as before; on mobile it becomes a
+                  dropdown behind the “More” button. Same markup either way —
+                  duplicating the buttons per breakpoint would drift. */}
+              <button
+                className="hdr__more-btn"
+                onClick={() => setMoreOpen(v => !v)}
+                aria-expanded={moreOpen}
+                aria-controls="hdr-secondary"
+                aria-label="More options"
+              >
+                ⋯ More
+              </button>
+              <div
+                id="hdr-secondary"
+                className={'hdr__secondary' + (moreOpen ? ' hdr__secondary--open' : '')}
+                onClick={() => setMoreOpen(false)}
+              >
               <button className="hdr__about-btn" onClick={openGuide} title="How to use it — quick tips" aria-label="How to use it">
                 <span className="hdr__about-icon" aria-hidden="true">✨</span> Tips
               </button>
@@ -6964,6 +6986,7 @@ function AppInner() {
               <button className="hdr__about-btn hdr__about-btn--support" onClick={() => { track('support_open'); setShowSupport(true); }} title="Support the project — keep it free and ad-free" aria-label="Support this project">
                 <span className="hdr__about-icon" aria-hidden="true">☕</span> Support
               </button>
+              </div>
               <button
                 className="hdr__theme-btn"
                 onClick={() => { track('theme_toggle', { theme: darkMode ? 'light' : 'dark' }); setDarkMode(d => !d); }}
