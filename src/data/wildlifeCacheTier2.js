@@ -1,9 +1,9 @@
 // Auto-generated — do not edit manually.
-// Parks: 16 | Species: 9623
+// Parks: 16 | Species: 9632
 
 export const WILDLIFE_CACHE_TIER2 = {
   "everglades": {
-    builtAt: "2026-09-06T10:04:45.076Z",
+    builtAt: "2026-09-13T10:55:16.850Z",
     animals: [
       {
         "name": "American Alligator",
@@ -51,7 +51,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Anolis sagrei",
-        "funFact": "2122 research-grade iNaturalist observations at this park.",
+        "funFact": "2124 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -68,7 +68,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Apalone ferox",
-        "funFact": "1163 research-grade iNaturalist observations at this park.",
+        "funFact": "1166 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -102,7 +102,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Nerodia clarkii",
-        "funFact": "219 research-grade iNaturalist observations at this park.",
+        "funFact": "221 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -119,7 +119,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Romalea microptera",
-        "funFact": "2449 research-grade iNaturalist observations at this park.",
+        "funFact": "2457 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -136,7 +136,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Celithemis eponina",
-        "funFact": "1310 research-grade iNaturalist observations at this park.",
+        "funFact": "1315 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -170,7 +170,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Anartia jatrophae",
-        "funFact": "722 research-grade iNaturalist observations at this park.",
+        "funFact": "723 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -238,7 +238,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Anisomorpha buprestoides",
-        "funFact": "347 research-grade iNaturalist observations at this park.",
+        "funFact": "349 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -292,7 +292,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Xylocopa micans",
-        "funFact": "272 research-grade iNaturalist observations at this park.",
+        "funFact": "275 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -309,7 +309,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Camponotus floridanus",
-        "funFact": "208 research-grade iNaturalist observations at this park.",
+        "funFact": "209 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -387,7 +387,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Lepisosteus platyrhincus",
-        "funFact": "1581 research-grade iNaturalist observations at this park.",
+        "funFact": "1582 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -443,7 +443,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Porphyrio martinica",
-        "funFact": "1845 research-grade iNaturalist observations at this park.",
+        "funFact": "1847 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -479,7 +479,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Agkistrodon conanti",
-        "funFact": "1641 research-grade iNaturalist observations at this park.",
+        "funFact": "1653 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -496,7 +496,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Pseudemys nelsoni",
-        "funFact": "1443 research-grade iNaturalist observations at this park.",
+        "funFact": "1445 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -615,7 +615,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Crotalus adamanteus",
-        "funFact": "346 research-grade iNaturalist observations at this park.",
+        "funFact": "347 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -649,7 +649,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Kinosternon baurii",
-        "funFact": "336 research-grade iNaturalist observations at this park.",
+        "funFact": "337 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -683,7 +683,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Pantherophis quadrivittatus",
-        "funFact": "263 research-grade iNaturalist observations at this park.",
+        "funFact": "265 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -700,7 +700,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Terrapene carolina",
-        "funFact": "257 research-grade iNaturalist observations at this park.",
+        "funFact": "259 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -768,7 +768,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Leiocephalus carinatus",
-        "funFact": "168 research-grade iNaturalist observations at this park.",
+        "funFact": "169 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -1197,7 +1197,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Xylocopa virginica",
-        "funFact": "113 research-grade iNaturalist observations at this park.",
+        "funFact": "115 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -2362,7 +2362,8 @@ export const WILDLIFE_CACHE_TIER2 = {
         "raritySource": "ebird_binary",
         "seasons": [
           "spring",
-          "summer"
+          "summer",
+          "fall"
         ],
         "scientificName": "Chordeiles minor",
         "funFact": "Confirmed at this park's eBird hotspot.",
@@ -5152,7 +5153,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Pipilo erythrophthalmus",
-        "funFact": "139 research-grade iNaturalist observations at this park.",
+        "funFact": "140 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -5345,7 +5346,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Hemidactylus mabouia",
-        "funFact": "449 research-grade iNaturalist observations at this park.",
+        "funFact": "451 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -5425,7 +5426,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Storeria victa",
-        "funFact": "87 research-grade iNaturalist observations at this park.",
+        "funFact": "88 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -5505,7 +5506,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Basiliscus vittatus",
-        "funFact": "40 research-grade iNaturalist observations at this park.",
+        "funFact": "41 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -5785,7 +5786,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Panoquina ocola",
-        "funFact": "105 research-grade iNaturalist observations at this park.",
+        "funFact": "107 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -6053,6 +6054,26 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
+        "name": "American Bumble Bee",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "likely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Bombus pensylvanicus",
+        "funFact": "62 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
         "name": "Eastern Leaf-footed Bug",
         "emoji": "🦋",
         "animalType": "insect",
@@ -6086,26 +6107,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ],
         "scientificName": "Panoquina panoquinoides",
         "funFact": "62 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
-        "name": "American Bumble Bee",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "likely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Bombus pensylvanicus",
-        "funFact": "61 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -6165,7 +6166,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Ascalapha odorata",
-        "funFact": "55 research-grade iNaturalist observations at this park.",
+        "funFact": "56 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -7513,6 +7514,26 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
+        "name": "Poey's Furrow Bee",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "likely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Halictus poeyi",
+        "funFact": "20 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
         "name": "S-banded Tiger Beetle",
         "emoji": "🦋",
         "animalType": "insect",
@@ -7573,7 +7594,7 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
-        "name": "Poey's Furrow Bee",
+        "name": "Larger Florida Mantis",
         "emoji": "🦋",
         "animalType": "insect",
         "rarity": "likely",
@@ -7584,7 +7605,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall",
           "winter"
         ],
-        "scientificName": "Halictus poeyi",
+        "scientificName": "Stagmomantis floridensis",
         "funFact": "19 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -7793,26 +7814,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
-        "name": "Larger Florida Mantis",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "likely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Stagmomantis floridensis",
-        "funFact": "18 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
         "name": "Pelonomus obscurus",
         "emoji": "🦋",
         "animalType": "insect",
@@ -7945,6 +7946,26 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Neargyractis slossonalis",
+        "funFact": "17 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
+        "name": "Two-spotted Longhorn Bee",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "likely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Melissodes bimaculatus",
         "funFact": "17 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -8193,26 +8214,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
-        "name": "Virginian Tiger Moth",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "likely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Spilosoma virginica",
-        "funFact": "15 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
         "name": "Florida Bass",
         "emoji": "🐟",
         "animalType": "marine",
@@ -8425,7 +8426,27 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Cyprinodon variegatus",
-        "funFact": "39 research-grade iNaturalist observations at this park.",
+        "funFact": "40 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
+        "name": "Hardhead Catfish",
+        "emoji": "🐟",
+        "animalType": "marine",
+        "rarity": "likely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Ariopsis felis",
+        "funFact": "38 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -8446,26 +8467,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ],
         "scientificName": "Cynoscion nebulosus",
         "funFact": "38 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
-        "name": "Hardhead Catfish",
-        "emoji": "🐟",
-        "animalType": "marine",
-        "rarity": "likely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Ariopsis felis",
-        "funFact": "37 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -10534,26 +10535,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
-        "name": "Brazilian Skipper",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "unlikely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Calpodes ethlius",
-        "funFact": "15 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
         "name": "Delaware Skipper",
         "emoji": "🦋",
         "animalType": "insect",
@@ -10566,6 +10547,26 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Anatrytone logan",
+        "funFact": "16 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
+        "name": "Brazilian Skipper",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "unlikely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Calpodes ethlius",
         "funFact": "15 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -11824,26 +11825,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
-        "name": "Reef Gecko",
-        "emoji": "🐊",
-        "animalType": "reptile",
-        "rarity": "rare",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Sphaerodactylus notatus",
-        "funFact": "4 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
         "name": "Florida Mud Turtle",
         "emoji": "🐊",
         "animalType": "reptile",
@@ -11856,6 +11837,26 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Kinosternon steindachneri",
+        "funFact": "5 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
+        "name": "Reef Gecko",
+        "emoji": "🐊",
+        "animalType": "reptile",
+        "rarity": "rare",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Sphaerodactylus notatus",
         "funFact": "4 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -13507,7 +13508,7 @@ export const WILDLIFE_CACHE_TIER2 = {
     ],
   },
   "denali": {
-    builtAt: "2026-09-06T10:04:45.664Z",
+    builtAt: "2026-09-13T10:55:17.102Z",
     animals: [
       {
         "name": "Caribou",
@@ -13616,7 +13617,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Tamiasciurus hudsonicus",
-        "funFact": "326 research-grade iNaturalist observations at this park.",
+        "funFact": "329 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -13635,7 +13636,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Lepus americanus",
-        "funFact": "211 research-grade iNaturalist observations at this park.",
+        "funFact": "213 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -13652,7 +13653,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "summer"
         ],
         "scientificName": "Phyllocnistis populiella",
-        "funFact": "59 research-grade iNaturalist observations at this park.",
+        "funFact": "60 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -15766,6 +15767,23 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
+        "name": "Hoary Marmot",
+        "emoji": "🦌",
+        "animalType": "mammal",
+        "rarity": "likely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "summer"
+        ],
+        "scientificName": "Marmota caligata",
+        "funFact": "107 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
         "name": "Red Fox",
         "emoji": "🦌",
         "animalType": "mammal",
@@ -15785,23 +15803,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
-        "name": "Hoary Marmot",
-        "emoji": "🦌",
-        "animalType": "mammal",
-        "rarity": "likely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "summer"
-        ],
-        "scientificName": "Marmota caligata",
-        "funFact": "106 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
         "name": "American Beaver",
         "emoji": "🦌",
         "animalType": "mammal",
@@ -15813,7 +15814,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Castor canadensis",
-        "funFact": "95 research-grade iNaturalist observations at this park.",
+        "funFact": "96 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -15850,7 +15851,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Clethrionomys rutilus",
-        "funFact": "18 research-grade iNaturalist observations at this park.",
+        "funFact": "19 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -16012,6 +16013,23 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
+        "name": "Yellow-fronted Bumble Bee",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "likely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "summer"
+        ],
+        "scientificName": "Bombus flavifrons",
+        "funFact": "18 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
         "name": "Jutta Arctic",
         "emoji": "🦋",
         "animalType": "insect",
@@ -16022,23 +16040,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ],
         "scientificName": "Oeneis jutta",
         "funFact": "18 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
-        "name": "Yellow-fronted Bumble Bee",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "likely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "summer"
-        ],
-        "scientificName": "Bombus flavifrons",
-        "funFact": "17 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -16073,6 +16074,24 @@ export const WILDLIFE_CACHE_TIER2 = {
         ],
         "scientificName": "Camponotus herculeanus",
         "funFact": "15 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
+        "name": "Rusty Tussock Moth",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "likely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "summer",
+          "fall"
+        ],
+        "scientificName": "Orgyia antiqua",
+        "funFact": "14 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -16116,23 +16135,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
-        "name": "Rusty Tussock Moth",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "likely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "summer"
-        ],
-        "scientificName": "Orgyia antiqua",
-        "funFact": "12 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
         "name": "Yellowish Cuckoo Bumble bee",
         "emoji": "🦋",
         "animalType": "insect",
@@ -16142,6 +16144,23 @@ export const WILDLIFE_CACHE_TIER2 = {
           "summer"
         ],
         "scientificName": "Bombus flavidus",
+        "funFact": "12 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
+        "name": "Elm Sawfly",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "likely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "summer"
+        ],
+        "scientificName": "Cimbex americanus",
         "funFact": "12 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -16186,23 +16205,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
-        "name": "Elm Sawfly",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "likely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "summer"
-        ],
-        "scientificName": "Cimbex americanus",
-        "funFact": "11 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
         "name": "frigid bumble bee",
         "emoji": "🦋",
         "animalType": "insect",
@@ -16212,7 +16214,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "summer"
         ],
         "scientificName": "Bombus frigidus",
-        "funFact": "7 research-grade iNaturalist observations at this park.",
+        "funFact": "8 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -21987,6 +21989,24 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
+        "name": "Asian Tit",
+        "emoji": "🐦",
+        "animalType": "bird",
+        "rarity": "unlikely",
+        "raritySource": "ebird_binary",
+        "seasons": [
+          "spring",
+          "fall"
+        ],
+        "scientificName": "Parus cinereus",
+        "funFact": "Recorded in this region (eBird historical checklist).",
+        "photoUrl": null,
+        "source": "ebird",
+        "sources": [
+          "ebird"
+        ]
+      },
+      {
         "name": "Eurasian Skylark",
         "emoji": "🐦",
         "animalType": "bird",
@@ -24697,7 +24717,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "summer"
         ],
         "scientificName": "Boloria alaskensis",
-        "funFact": "10 research-grade iNaturalist observations at this park.",
+        "funFact": "11 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -24880,26 +24900,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
-        "name": "Taiga Alpine",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "unlikely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Erebia mancinus",
-        "funFact": "5 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
         "name": "Sharp-lined Yellow",
         "emoji": "🦋",
         "animalType": "insect",
@@ -24912,6 +24912,26 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Sicya macularia",
+        "funFact": "6 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
+        "name": "Taiga Alpine",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "unlikely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Erebia mancinus",
         "funFact": "5 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -28338,7 +28358,7 @@ export const WILDLIFE_CACHE_TIER2 = {
     ],
   },
   "biscayne": {
-    builtAt: "2026-09-06T10:04:45.952Z",
+    builtAt: "2026-09-13T10:55:16.413Z",
     animals: [
       {
         "name": "American Alligator",
@@ -28371,7 +28391,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Agama picticauda",
-        "funFact": "269 research-grade iNaturalist observations at this park.",
+        "funFact": "273 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -28388,7 +28408,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Iguana iguana",
-        "funFact": "174 research-grade iNaturalist observations at this park.",
+        "funFact": "175 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -28405,7 +28425,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Anolis sagrei",
-        "funFact": "161 research-grade iNaturalist observations at this park.",
+        "funFact": "162 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -32454,6 +32474,23 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
+        "name": "Mangrove Skipper",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "likely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "year_round"
+        ],
+        "scientificName": "Phocides batabano",
+        "funFact": "23 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
         "name": "Zebra Longwing",
         "emoji": "🦋",
         "animalType": "insect",
@@ -32465,23 +32502,6 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Heliconius charithonia",
-        "funFact": "22 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
-        "name": "Mangrove Skipper",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "likely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "year_round"
-        ],
-        "scientificName": "Phocides batabano",
         "funFact": "22 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -36043,7 +36063,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Sula sula",
-        "funFact": "4 research-grade iNaturalist observations at this park.",
+        "funFact": "5 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -36063,6 +36083,26 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Melanitta americana",
+        "funFact": "3 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
+        "name": "Sandwich Tern",
+        "emoji": "🐦",
+        "animalType": "bird",
+        "rarity": "rare",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Thalasseus sandvicensis",
         "funFact": "3 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -36143,26 +36183,6 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Leucophaeus pipixcan",
-        "funFact": "2 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
-        "name": "Sandwich Tern",
-        "emoji": "🐦",
-        "animalType": "bird",
-        "rarity": "rare",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Thalasseus sandvicensis",
         "funFact": "2 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -36711,6 +36731,26 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
+        "name": "Megachile inimica",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "rare",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Megachile inimica",
+        "funFact": "2 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
         "name": "St. Andrew's Cotton Stainer",
         "emoji": "🦋",
         "animalType": "insect",
@@ -36904,6 +36944,26 @@ export const WILDLIFE_CACHE_TIER2 = {
         ],
         "scientificName": "Hemiblabera tenebricosa",
         "funFact": "2 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
+        "name": "Eastern Cicada-killer Wasp",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "rare",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Sphecius speciosus",
+        "funFact": "1 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -39591,26 +39651,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
-        "name": "Megachile inimica",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "exceptional",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Megachile inimica",
-        "funFact": "1 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
         "name": "Common Cotton Stainer Bug",
         "emoji": "🦋",
         "animalType": "insect",
@@ -40973,7 +41013,7 @@ export const WILDLIFE_CACHE_TIER2 = {
     ],
   },
   "badlands": {
-    builtAt: "2026-09-06T10:04:45.519Z",
+    builtAt: "2026-09-13T10:55:15.094Z",
     animals: [
       {
         "name": "American Bison",
@@ -41067,7 +41107,26 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Odocoileus hemionus",
-        "funFact": "249 research-grade iNaturalist observations at this park.",
+        "funFact": "255 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
+        "name": "Desert Cottontail",
+        "emoji": "🦌",
+        "animalType": "mammal",
+        "rarity": "very_likely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall"
+        ],
+        "scientificName": "Sylvilagus audubonii",
+        "funFact": "97 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -41141,6 +41200,25 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Polistes aurifer",
+        "funFact": "24 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
+        "name": "Rough-lipped Darkling Beetle",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "very_likely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall"
+        ],
+        "scientificName": "Eleodes hispilabris",
         "funFact": "24 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -45136,7 +45214,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Neotamias minimus",
-        "funFact": "134 research-grade iNaturalist observations at this park.",
+        "funFact": "135 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -45144,18 +45222,16 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
-        "name": "Desert Cottontail",
+        "name": "North American Porcupine",
         "emoji": "🦌",
         "animalType": "mammal",
         "rarity": "likely",
         "raritySource": "inat_corrected",
         "seasons": [
-          "spring",
-          "summer",
-          "fall"
+          "year_round"
         ],
-        "scientificName": "Sylvilagus audubonii",
-        "funFact": "96 research-grade iNaturalist observations at this park.",
+        "scientificName": "Erethizon dorsatum",
+        "funFact": "29 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -45212,7 +45288,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Pituophis catenifer",
-        "funFact": "48 research-grade iNaturalist observations at this park.",
+        "funFact": "49 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -45344,25 +45420,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ],
         "scientificName": "Euptoieta claudia",
         "funFact": "27 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
-        "name": "Rough-lipped Darkling Beetle",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "likely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall"
-        ],
-        "scientificName": "Eleodes hispilabris",
-        "funFact": "23 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -45542,6 +45599,26 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Chelymorpha cassidea",
+        "funFact": "7 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
+        "name": "Red and Black Long-horned Beetle",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "likely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Crossidius coralinus",
         "funFact": "7 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -46310,23 +46387,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
-        "name": "North American Porcupine",
-        "emoji": "🦌",
-        "animalType": "mammal",
-        "rarity": "unlikely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "year_round"
-        ],
-        "scientificName": "Erethizon dorsatum",
-        "funFact": "27 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
         "name": "American Badger",
         "emoji": "🦌",
         "animalType": "mammal",
@@ -46395,6 +46455,26 @@ export const WILDLIFE_CACHE_TIER2 = {
         ],
         "scientificName": "Microtus drummondii",
         "funFact": "3 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
+        "name": "Common Raccoon",
+        "emoji": "🦌",
+        "animalType": "mammal",
+        "rarity": "unlikely",
+        "raritySource": "nps_floor:common",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Procyon lotor",
+        "funFact": "1 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -47000,6 +47080,26 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
+        "name": "Reticulated Net-winged Beetle",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "unlikely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Calopteron reticulatum",
+        "funFact": "4 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
         "name": "Notch-mouthed Ground Beetle",
         "emoji": "🦋",
         "animalType": "insect",
@@ -47012,26 +47112,6 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Dicaelus purpuratus",
-        "funFact": "4 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
-        "name": "Red and Black Long-horned Beetle",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "unlikely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Crossidius coralinus",
         "funFact": "4 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -47092,26 +47172,6 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Caenurgina erechtea",
-        "funFact": "3 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
-        "name": "Reticulated Net-winged Beetle",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "unlikely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Calopteron reticulatum",
         "funFact": "3 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -48569,6 +48629,26 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Pachypsylla celtidismamma",
+        "funFact": "2 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
+        "name": "Tufted Globetail",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "rare",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Sphaerophoria contigua",
         "funFact": "2 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -50336,31 +50416,11 @@ export const WILDLIFE_CACHE_TIER2 = {
         "sources": [
           "inaturalist"
         ]
-      },
-      {
-        "name": "Common Damsel Bug",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "exceptional",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Nabis americoferus",
-        "funFact": "1 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
       }
     ],
   },
   "brycecanyon": {
-    builtAt: "2026-09-06T10:04:45.952Z",
+    builtAt: "2026-09-13T10:55:16.413Z",
     animals: [
       {
         "name": "Common Golden-mantled Ground Squirrel",
@@ -50374,7 +50434,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Callospermophilus lateralis",
-        "funFact": "739 research-grade iNaturalist observations at this park.",
+        "funFact": "740 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -50393,7 +50453,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Neotamias umbrinus",
-        "funFact": "440 research-grade iNaturalist observations at this park.",
+        "funFact": "442 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -51985,7 +52045,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Phrynosoma hernandesi",
-        "funFact": "118 research-grade iNaturalist observations at this park.",
+        "funFact": "122 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -52004,7 +52064,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Crotalus oreganus",
-        "funFact": "40 research-grade iNaturalist observations at this park.",
+        "funFact": "41 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -52023,7 +52083,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Thamnophis elegans",
-        "funFact": "16 research-grade iNaturalist observations at this park.",
+        "funFact": "18 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -59080,6 +59140,24 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
+        "name": "Elk",
+        "emoji": "🦌",
+        "animalType": "mammal",
+        "rarity": "unlikely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "fall"
+        ],
+        "scientificName": "Cervus canadensis",
+        "funFact": "12 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
         "name": "Plateau Fence Lizard",
         "emoji": "🐊",
         "animalType": "reptile",
@@ -59599,6 +59677,26 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
+        "name": "Western Harvester Ant",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "unlikely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Pogonomyrmex occidentalis",
+        "funFact": "3 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
         "name": "Western Sheep Moth",
         "emoji": "🦋",
         "animalType": "insect",
@@ -59691,26 +59789,6 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Trichodes ornatus",
-        "funFact": "2 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
-        "name": "Western Harvester Ant",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "unlikely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Pogonomyrmex occidentalis",
         "funFact": "2 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -60656,24 +60734,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
-        "name": "Elk",
-        "emoji": "🦌",
-        "animalType": "mammal",
-        "rarity": "rare",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "fall"
-        ],
-        "scientificName": "Cervus canadensis",
-        "funFact": "11 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
         "name": "Fremont's Squirrel",
         "emoji": "🦌",
         "animalType": "mammal",
@@ -61466,6 +61526,26 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Dasymutilla vestita",
+        "funFact": "2 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
+        "name": "Lycomorpha grotei",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "rare",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Lycomorpha grotei",
         "funFact": "2 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -63797,7 +63877,7 @@ export const WILDLIFE_CACHE_TIER2 = {
     ],
   },
   "arches": {
-    builtAt: "2026-09-06T10:04:47.324Z",
+    builtAt: "2026-09-13T10:55:16.787Z",
     animals: [
       {
         "name": "Hopi Chipmunk",
@@ -63811,7 +63891,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Neotamias rufus",
-        "funFact": "301 research-grade iNaturalist observations at this park.",
+        "funFact": "302 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -63849,7 +63929,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Aspidoscelis tigris",
-        "funFact": "374 research-grade iNaturalist observations at this park.",
+        "funFact": "376 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -66750,7 +66830,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Ammospermophilus leucurus",
-        "funFact": "79 research-grade iNaturalist observations at this park.",
+        "funFact": "80 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -66768,7 +66848,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "summer"
         ],
         "scientificName": "Otospermophilus variegatus",
-        "funFact": "63 research-grade iNaturalist observations at this park.",
+        "funFact": "64 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -66804,7 +66884,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "summer"
         ],
         "scientificName": "Gambelia wislizenii",
-        "funFact": "234 research-grade iNaturalist observations at this park.",
+        "funFact": "235 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -66823,7 +66903,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Urosaurus ornatus",
-        "funFact": "139 research-grade iNaturalist observations at this park.",
+        "funFact": "141 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -66861,7 +66941,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Crotalus oreganus",
-        "funFact": "28 research-grade iNaturalist observations at this park.",
+        "funFact": "29 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -67033,24 +67113,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
-        "name": "Red and Black Long-horned Beetle",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "likely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "summer",
-          "fall"
-        ],
-        "scientificName": "Crossidius coralinus",
-        "funFact": "8 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
         "name": "Obscure Darkling Beetle",
         "emoji": "🦋",
         "animalType": "insect",
@@ -67062,6 +67124,24 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Eleodes obscura",
+        "funFact": "9 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
+        "name": "Red and Black Long-horned Beetle",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "likely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "summer",
+          "fall"
+        ],
+        "scientificName": "Crossidius coralinus",
         "funFact": "8 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -70624,6 +70704,26 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
+        "name": "Long-eared Myotis",
+        "emoji": "🦌",
+        "animalType": "mammal",
+        "rarity": "exceptional",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Myotis evotis",
+        "funFact": "1 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
         "name": "White-throated Woodrat",
         "emoji": "🦌",
         "animalType": "mammal",
@@ -71484,6 +71584,26 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
+        "name": "Lycomorpha grotei",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "exceptional",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Lycomorpha grotei",
+        "funFact": "1 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
         "name": "Lycomorpha splendens",
         "emoji": "🦋",
         "animalType": "insect",
@@ -72166,7 +72286,7 @@ export const WILDLIFE_CACHE_TIER2 = {
     ],
   },
   "canyonlands": {
-    builtAt: "2026-09-06T10:04:48.745Z",
+    builtAt: "2026-09-13T10:55:19.123Z",
     animals: [
       {
         "name": "Hopi Chipmunk",
@@ -72180,7 +72300,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Neotamias rufus",
-        "funFact": "185 research-grade iNaturalist observations at this park.",
+        "funFact": "189 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -72199,7 +72319,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Uta stansburiana",
-        "funFact": "545 research-grade iNaturalist observations at this park.",
+        "funFact": "547 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -74009,7 +74129,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Sylvilagus audubonii",
-        "funFact": "48 research-grade iNaturalist observations at this park.",
+        "funFact": "49 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -74180,7 +74300,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Anaxyrus punctatus",
-        "funFact": "39 research-grade iNaturalist observations at this park.",
+        "funFact": "40 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -81449,10 +81569,13 @@ export const WILDLIFE_CACHE_TIER2 = {
         "rarity": "unlikely",
         "raritySource": "inat_corrected",
         "seasons": [
-          "year_round"
+          "spring",
+          "summer",
+          "fall",
+          "winter"
         ],
         "scientificName": "Puma concolor",
-        "funFact": "9 research-grade iNaturalist observations at this park.",
+        "funFact": "8 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -81547,7 +81670,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "summer"
         ],
         "scientificName": "Aspidoscelis tigris",
-        "funFact": "212 research-grade iNaturalist observations at this park.",
+        "funFact": "214 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -86264,7 +86387,7 @@ export const WILDLIFE_CACHE_TIER2 = {
     ],
   },
   "capitolreef": {
-    builtAt: "2026-09-06T10:04:45.231Z",
+    builtAt: "2026-09-13T10:55:17.946Z",
     animals: [
       {
         "name": "Eurasian Collared-Dove",
@@ -86420,7 +86543,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Uta stansburiana",
-        "funFact": "335 research-grade iNaturalist observations at this park.",
+        "funFact": "337 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -86458,7 +86581,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Aspidoscelis tigris",
-        "funFact": "155 research-grade iNaturalist observations at this park.",
+        "funFact": "157 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -87417,7 +87540,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Ovis canadensis",
-        "funFact": "96 research-grade iNaturalist observations at this park.",
+        "funFact": "97 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -92387,6 +92510,26 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
+        "name": "European Mantis",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "rare",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Mantis religiosa",
+        "funFact": "2 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
         "name": "Common Drone Fly",
         "emoji": "🦋",
         "animalType": "insect",
@@ -92639,6 +92782,26 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Drasteria pallescens",
+        "funFact": "2 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
+        "name": "Lycomorpha grotei",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "rare",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Lycomorpha grotei",
         "funFact": "2 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -93760,26 +93923,6 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Adalia bipunctata",
-        "funFact": "1 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
-        "name": "European Mantis",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "exceptional",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Mantis religiosa",
         "funFact": "1 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -94950,7 +95093,7 @@ export const WILDLIFE_CACHE_TIER2 = {
     ],
   },
   "saguaro": {
-    builtAt: "2026-09-06T10:04:45.519Z",
+    builtAt: "2026-09-13T10:55:15.094Z",
     animals: [
       {
         "name": "Empress Leilia",
@@ -94962,7 +95105,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Asterocampa leilia",
-        "funFact": "459 research-grade iNaturalist observations at this park.",
+        "funFact": "462 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -94979,7 +95122,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Libytheana carinenta",
-        "funFact": "375 research-grade iNaturalist observations at this park.",
+        "funFact": "382 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -95021,23 +95164,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
-        "name": "Giant Cactus Longhorn Beetle",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "guaranteed",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "year_round"
-        ],
-        "scientificName": "Moneilema gigas",
-        "funFact": "91 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
         "name": "Western Red-bellied Tiger Beetle",
         "emoji": "🦋",
         "animalType": "insect",
@@ -95048,7 +95174,24 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Cicindelidia sedecimpunctata",
-        "funFact": "90 research-grade iNaturalist observations at this park.",
+        "funFact": "92 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
+        "name": "Giant Cactus Longhorn Beetle",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "guaranteed",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "year_round"
+        ],
+        "scientificName": "Moneilema gigas",
+        "funFact": "91 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -95141,7 +95284,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Sylvilagus audubonii",
-        "funFact": "349 research-grade iNaturalist observations at this park.",
+        "funFact": "352 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -95213,7 +95356,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Callisaurus draconoides",
-        "funFact": "757 research-grade iNaturalist observations at this park.",
+        "funFact": "758 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -95230,7 +95373,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Uta stansburiana",
-        "funFact": "542 research-grade iNaturalist observations at this park.",
+        "funFact": "543 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -95249,7 +95392,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Crotalus atrox",
-        "funFact": "436 research-grade iNaturalist observations at this park.",
+        "funFact": "437 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -95268,7 +95411,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Cophosaurus texanus",
-        "funFact": "221 research-grade iNaturalist observations at this park.",
+        "funFact": "223 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -95340,7 +95483,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Hemiargus ceraunus",
-        "funFact": "236 research-grade iNaturalist observations at this park.",
+        "funFact": "241 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -95357,7 +95500,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Nathalis iole",
-        "funFact": "229 research-grade iNaturalist observations at this park.",
+        "funFact": "231 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -95408,7 +95551,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Apis mellifera",
-        "funFact": "185 research-grade iNaturalist observations at this park.",
+        "funFact": "186 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -95459,7 +95602,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Microtia dymas",
-        "funFact": "161 research-grade iNaturalist observations at this park.",
+        "funFact": "162 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -95476,7 +95619,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Zerene cesonia",
-        "funFact": "152 research-grade iNaturalist observations at this park.",
+        "funFact": "156 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -95512,7 +95655,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Eurema nicippe",
-        "funFact": "144 research-grade iNaturalist observations at this park.",
+        "funFact": "147 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -95537,6 +95680,25 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
+        "name": "White-lined Sphinx",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "very_likely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall"
+        ],
+        "scientificName": "Hyles lineata",
+        "funFact": "112 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
         "name": "Large Creosote Gall Midge",
         "emoji": "🦋",
         "animalType": "insect",
@@ -95547,23 +95709,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ],
         "scientificName": "Asphondylia auripila",
         "funFact": "112 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
-        "name": "Gray Buckeye",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "very_likely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "year_round"
-        ],
-        "scientificName": "Junonia grisea",
-        "funFact": "110 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -95582,7 +95727,24 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Oarisma aurantiaca",
-        "funFact": "110 research-grade iNaturalist observations at this park.",
+        "funFact": "112 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
+        "name": "Gray Buckeye",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "very_likely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "year_round"
+        ],
+        "scientificName": "Junonia grisea",
+        "funFact": "111 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -95671,7 +95833,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Pseudoleon superbus",
-        "funFact": "90 research-grade iNaturalist observations at this park.",
+        "funFact": "92 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -95690,7 +95852,27 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Cogia hippalus",
-        "funFact": "89 research-grade iNaturalist observations at this park.",
+        "funFact": "91 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
+        "name": "Funereal Duskywing",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "very_likely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Erynnis funeralis",
+        "funFact": "81 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -95711,26 +95893,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ],
         "scientificName": "Trichodes ornatus",
         "funFact": "81 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
-        "name": "Funereal Duskywing",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "very_likely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Erynnis funeralis",
-        "funFact": "78 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -100836,7 +100998,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Otospermophilus variegatus",
-        "funFact": "94 research-grade iNaturalist observations at this park.",
+        "funFact": "95 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -100932,7 +101094,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Sceloporus magister",
-        "funFact": "188 research-grade iNaturalist observations at this park.",
+        "funFact": "189 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -100968,7 +101130,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Phrynosoma solare",
-        "funFact": "133 research-grade iNaturalist observations at this park.",
+        "funFact": "134 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -101042,7 +101204,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Masticophis flagellum",
-        "funFact": "73 research-grade iNaturalist observations at this park.",
+        "funFact": "74 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -101082,7 +101244,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Thamnophis cyrtopsis",
-        "funFact": "64 research-grade iNaturalist observations at this park.",
+        "funFact": "66 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -101102,7 +101264,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Crotalus molossus",
-        "funFact": "62 research-grade iNaturalist observations at this park.",
+        "funFact": "63 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -101285,25 +101447,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
-        "name": "White-lined Sphinx",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "likely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall"
-        ],
-        "scientificName": "Hyles lineata",
-        "funFact": "110 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
         "name": "Texan Crescent",
         "emoji": "🦋",
         "animalType": "insect",
@@ -101336,7 +101479,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Ministrymon leda",
-        "funFact": "61 research-grade iNaturalist observations at this park.",
+        "funFact": "62 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -101396,7 +101539,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Calephelis nemesis",
-        "funFact": "55 research-grade iNaturalist observations at this park.",
+        "funFact": "57 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -101456,7 +101599,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Libellula saturata",
-        "funFact": "52 research-grade iNaturalist observations at this park.",
+        "funFact": "53 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -101556,6 +101699,26 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Chlosyne lacinia",
+        "funFact": "48 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
+        "name": "Familiar Bluet",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "likely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Enallagma civile",
         "funFact": "46 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -101577,26 +101740,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ],
         "scientificName": "Copestylum marginatum",
         "funFact": "46 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
-        "name": "Familiar Bluet",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "likely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Enallagma civile",
-        "funFact": "45 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -101744,6 +101887,26 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
+        "name": "Acmaeodera alicia",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "likely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Acmaeodera alicia",
+        "funFact": "31 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
         "name": "Novomessor cockerelli",
         "emoji": "🦋",
         "animalType": "insect",
@@ -101784,7 +101947,7 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
-        "name": "Acmaeodera alicia",
+        "name": "Plateau Dragonlet",
         "emoji": "🦋",
         "animalType": "insect",
         "rarity": "likely",
@@ -101795,7 +101958,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall",
           "winter"
         ],
-        "scientificName": "Acmaeodera alicia",
+        "scientificName": "Erythrodiplax basifusca",
         "funFact": "30 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -101817,26 +101980,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ],
         "scientificName": "Litaneutria ocularis",
         "funFact": "30 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
-        "name": "Plateau Dragonlet",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "likely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Erythrodiplax basifusca",
-        "funFact": "29 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -101877,6 +102020,26 @@ export const WILDLIFE_CACHE_TIER2 = {
         ],
         "scientificName": "Telebasis salva",
         "funFact": "28 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
+        "name": "Tailed Orange",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "likely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Eurema proterpia",
+        "funFact": "26 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -101964,7 +102127,7 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
-        "name": "Tailed Orange",
+        "name": "Acmaeodera parkeri",
         "emoji": "🦋",
         "animalType": "insect",
         "rarity": "likely",
@@ -101975,7 +102138,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall",
           "winter"
         ],
-        "scientificName": "Eurema proterpia",
+        "scientificName": "Acmaeodera parkeri",
         "funFact": "25 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -102004,7 +102167,7 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
-        "name": "Acmaeodera parkeri",
+        "name": "Laccophilus pictus",
         "emoji": "🦋",
         "animalType": "insect",
         "rarity": "likely",
@@ -102015,7 +102178,27 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall",
           "winter"
         ],
-        "scientificName": "Acmaeodera parkeri",
+        "scientificName": "Laccophilus pictus",
+        "funFact": "24 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
+        "name": "Leaf-footed Cactus Bug",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "likely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Narnia femorata",
         "funFact": "24 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -102056,46 +102239,6 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Eupeodes volucris",
-        "funFact": "23 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
-        "name": "Laccophilus pictus",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "likely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Laccophilus pictus",
-        "funFact": "23 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
-        "name": "Leaf-footed Cactus Bug",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "likely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Narnia femorata",
         "funFact": "23 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -102264,6 +102407,26 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
+        "name": "Golden-headed Scallopwing",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "likely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Staphylus ceos",
+        "funFact": "19 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
         "name": "Desert Marble",
         "emoji": "🦋",
         "animalType": "insect",
@@ -102364,26 +102527,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
-        "name": "Golden-headed Scallopwing",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "likely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Staphylus ceos",
-        "funFact": "18 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
         "name": "Obscure Darkling Beetle",
         "emoji": "🦋",
         "animalType": "insect",
@@ -102436,6 +102579,26 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Lytta magister",
+        "funFact": "17 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
+        "name": "Leafhopper Assassin Bug",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "likely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Zelus renardii",
         "funFact": "17 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -102504,6 +102667,26 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
+        "name": "Sonoran Tiger Mantis",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "likely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Stagmomantis clauseni",
+        "funFact": "17 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
         "name": "Giant Agave Bug",
         "emoji": "🦋",
         "animalType": "insect",
@@ -102524,26 +102707,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
-        "name": "Leafhopper Assassin Bug",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "likely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Zelus renardii",
-        "funFact": "16 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
         "name": "Double-banded Bycid",
         "emoji": "🦋",
         "animalType": "insect",
@@ -102556,26 +102719,6 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Sphaenothecus bilineatus",
-        "funFact": "16 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
-        "name": "Sonoran Tiger Mantis",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "likely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Stagmomantis clauseni",
         "funFact": "16 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -104466,26 +104609,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
-        "name": "Southwestern Blackhead Snake",
-        "emoji": "🐊",
-        "animalType": "reptile",
-        "rarity": "unlikely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Tantilla hobartsmithi",
-        "funFact": "3 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
         "name": "California King Snake",
         "emoji": "🐊",
         "animalType": "reptile",
@@ -104498,6 +104621,26 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Lampropeltis californiae",
+        "funFact": "4 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
+        "name": "Southwestern Blackhead Snake",
+        "emoji": "🐊",
+        "animalType": "reptile",
+        "rarity": "unlikely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Tantilla hobartsmithi",
         "funFact": "3 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -104586,6 +104729,26 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
+        "name": "Trichodes peninsularis",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "unlikely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Trichodes peninsularis",
+        "funFact": "14 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
         "name": "Dasymutilla foxi",
         "emoji": "🦋",
         "animalType": "insect",
@@ -104598,6 +104761,26 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Dasymutilla foxi",
+        "funFact": "14 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
+        "name": "Dark Buckeye",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "unlikely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Junonia nigrosuffusa",
         "funFact": "14 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -104658,46 +104841,6 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Dolichodynerus tanynotus",
-        "funFact": "13 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
-        "name": "Trichodes peninsularis",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "unlikely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Trichodes peninsularis",
-        "funFact": "13 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
-        "name": "Dark Buckeye",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "unlikely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Junonia nigrosuffusa",
         "funFact": "13 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -104926,6 +105069,26 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
+        "name": "Acmaeodera quadrivittatoides",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "unlikely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Acmaeodera quadrivittatoides",
+        "funFact": "11 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
         "name": "Gulf Fritillary",
         "emoji": "🦋",
         "animalType": "insect",
@@ -104958,6 +105121,26 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Diacrita costalis",
+        "funFact": "10 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
+        "name": "Ranatra quadridentata",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "unlikely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Ranatra quadridentata",
         "funFact": "10 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -105018,6 +105201,26 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Callophrys gryneus",
+        "funFact": "9 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
+        "name": "Mexican Amberwing",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "unlikely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Perithemis intensa",
         "funFact": "9 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -105126,26 +105329,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
-        "name": "Ranatra quadridentata",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "unlikely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Ranatra quadridentata",
-        "funFact": "9 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
         "name": "Acmaeodera convicta",
         "emoji": "🦋",
         "animalType": "insect",
@@ -105159,26 +105342,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ],
         "scientificName": "Acmaeodera convicta",
         "funFact": "9 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
-        "name": "Mexican Amberwing",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "unlikely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Perithemis intensa",
-        "funFact": "8 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -105278,26 +105441,6 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Flatormenis saucia",
-        "funFact": "8 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
-        "name": "Acmaeodera quadrivittatoides",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "unlikely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Acmaeodera quadrivittatoides",
         "funFact": "8 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -106639,6 +106782,26 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
+        "name": "Western Mosquitofish",
+        "emoji": "🐟",
+        "animalType": "marine",
+        "rarity": "exceptional",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Gambusia affinis",
+        "funFact": "1 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
         "name": "Roundtail Chub",
         "emoji": "🐟",
         "animalType": "marine",
@@ -106661,7 +106824,7 @@ export const WILDLIFE_CACHE_TIER2 = {
     ],
   },
   "mountrainier": {
-    builtAt: "2026-09-06T10:04:45.664Z",
+    builtAt: "2026-09-13T10:55:17.102Z",
     animals: [
       {
         "name": "Cascade Golden-mantled Ground Squirrel",
@@ -106674,7 +106837,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Callospermophilus saturatus",
-        "funFact": "1768 research-grade iNaturalist observations at this park.",
+        "funFact": "1790 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -106692,7 +106855,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Plebejus anna",
-        "funFact": "451 research-grade iNaturalist observations at this park.",
+        "funFact": "457 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -106727,7 +106890,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Cicindela depressula",
-        "funFact": "231 research-grade iNaturalist observations at this park.",
+        "funFact": "234 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -107900,7 +108063,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Marmota caligata",
-        "funFact": "2287 research-grade iNaturalist observations at this park.",
+        "funFact": "2315 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -107918,7 +108081,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Ochotona princeps",
-        "funFact": "710 research-grade iNaturalist observations at this park.",
+        "funFact": "721 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -107937,7 +108100,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Odocoileus hemionus",
-        "funFact": "623 research-grade iNaturalist observations at this park.",
+        "funFact": "638 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -107955,7 +108118,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Oreamnos americanus",
-        "funFact": "512 research-grade iNaturalist observations at this park.",
+        "funFact": "515 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -107973,7 +108136,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Neotamias amoenus",
-        "funFact": "423 research-grade iNaturalist observations at this park.",
+        "funFact": "438 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -107992,7 +108155,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Tamiasciurus douglasii",
-        "funFact": "175 research-grade iNaturalist observations at this park.",
+        "funFact": "178 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -108011,7 +108174,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Neotamias townsendii",
-        "funFact": "147 research-grade iNaturalist observations at this park.",
+        "funFact": "149 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -108047,7 +108210,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Ambystoma gracile",
-        "funFact": "184 research-grade iNaturalist observations at this park.",
+        "funFact": "185 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -108065,7 +108228,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Argynnis mormonia",
-        "funFact": "233 research-grade iNaturalist observations at this park.",
+        "funFact": "235 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -108101,7 +108264,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Nymphalis californica",
-        "funFact": "149 research-grade iNaturalist observations at this park.",
+        "funFact": "154 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -108118,7 +108281,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "summer"
         ],
         "scientificName": "Icaricia icarioides",
-        "funFact": "149 research-grade iNaturalist observations at this park.",
+        "funFact": "150 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -108135,7 +108298,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "summer"
         ],
         "scientificName": "Euphydryas colon",
-        "funFact": "129 research-grade iNaturalist observations at this park.",
+        "funFact": "130 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -108239,11 +108402,10 @@ export const WILDLIFE_CACHE_TIER2 = {
         "rarity": "very_likely",
         "raritySource": "inat_corrected",
         "seasons": [
-          "summer",
-          "fall"
+          "summer"
         ],
         "scientificName": "Gnophaela vermiculata",
-        "funFact": "40 research-grade iNaturalist observations at this park.",
+        "funFact": "41 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -109594,7 +109756,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Ursus americanus",
-        "funFact": "384 research-grade iNaturalist observations at this park.",
+        "funFact": "401 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -109773,7 +109935,8 @@ export const WILDLIFE_CACHE_TIER2 = {
         "rarity": "likely",
         "raritySource": "inat_corrected",
         "seasons": [
-          "summer"
+          "summer",
+          "fall"
         ],
         "scientificName": "Syrphus opinator",
         "funFact": "55 research-grade iNaturalist observations at this park.",
@@ -109794,7 +109957,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Coccinella septempunctata",
-        "funFact": "51 research-grade iNaturalist observations at this park.",
+        "funFact": "52 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -109819,6 +109982,23 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
+        "name": "Milbert's Tortoiseshell",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "likely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "summer"
+        ],
+        "scientificName": "Aglais milberti",
+        "funFact": "43 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
         "name": "Hoary Comma",
         "emoji": "🦋",
         "animalType": "insect",
@@ -109829,23 +110009,6 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Polygonia gracilis",
-        "funFact": "42 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
-        "name": "Milbert's Tortoiseshell",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "likely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "summer"
-        ],
-        "scientificName": "Aglais milberti",
         "funFact": "42 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -109901,7 +110064,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Polygonia faunus",
-        "funFact": "38 research-grade iNaturalist observations at this park.",
+        "funFact": "39 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -109943,6 +110106,23 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
+        "name": "Lorquin's Admiral",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "likely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "summer"
+        ],
+        "scientificName": "Limenitis lorquini",
+        "funFact": "32 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
         "name": "Western Wood Fly",
         "emoji": "🦋",
         "animalType": "insect",
@@ -109953,23 +110133,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ],
         "scientificName": "Blera scitula",
         "funFact": "32 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
-        "name": "Lorquin's Admiral",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "likely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "summer"
-        ],
-        "scientificName": "Limenitis lorquini",
-        "funFact": "31 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -110112,6 +110275,26 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
+        "name": "Spotted Tussock Moth",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "likely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Lophocampa maculata",
+        "funFact": "22 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
         "name": "Vancouver Flower Longhorn Beetle",
         "emoji": "🦋",
         "animalType": "insect",
@@ -110125,26 +110308,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ],
         "scientificName": "Evodinus vancouveri",
         "funFact": "21 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
-        "name": "Spotted Tussock Moth",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "likely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Lophocampa maculata",
-        "funFact": "20 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -110192,6 +110355,26 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
+        "name": "Common Drone Fly",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "likely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Eristalis tenax",
+        "funFact": "18 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
         "name": "Narrow-collared Snail-eating Beetle",
         "emoji": "🦋",
         "animalType": "insect",
@@ -110204,7 +110387,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Scaphinotus angusticollis",
-        "funFact": "17 research-grade iNaturalist observations at this park.",
+        "funFact": "18 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -110245,26 +110428,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ],
         "scientificName": "Hadromyia pulchra",
         "funFact": "17 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
-        "name": "Common Drone Fly",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "likely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Eristalis tenax",
-        "funFact": "16 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -118237,6 +118400,26 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
+        "name": "Western Deer Mouse",
+        "emoji": "🦌",
+        "animalType": "mammal",
+        "rarity": "unlikely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Peromyscus sonoriensis",
+        "funFact": "12 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
         "name": "Pacific Marten",
         "emoji": "🦌",
         "animalType": "mammal",
@@ -118277,26 +118460,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
-        "name": "Western Deer Mouse",
-        "emoji": "🦌",
-        "animalType": "mammal",
-        "rarity": "unlikely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Peromyscus sonoriensis",
-        "funFact": "10 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
         "name": "Coyote",
         "emoji": "🦌",
         "animalType": "mammal",
@@ -118309,7 +118472,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Canis latrans",
-        "funFact": "6 research-grade iNaturalist observations at this park.",
+        "funFact": "7 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -118597,6 +118760,26 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
+        "name": "Painted Lady",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "unlikely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Vanessa cardui",
+        "funFact": "21 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
         "name": "Pale Swallowtail",
         "emoji": "🦋",
         "animalType": "insect",
@@ -118610,26 +118793,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ],
         "scientificName": "Papilio eurymedon",
         "funFact": "21 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
-        "name": "Painted Lady",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "unlikely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Vanessa cardui",
-        "funFact": "20 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -118997,6 +119160,26 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
+        "name": "Orange Sulphur",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "unlikely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Colias eurytheme",
+        "funFact": "8 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
         "name": "Great Arctic",
         "emoji": "🦋",
         "animalType": "insect",
@@ -119169,6 +119352,26 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Sympetrum corruptum",
+        "funFact": "6 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
+        "name": "Pale Beauty",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "unlikely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Campaea perlata",
         "funFact": "6 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -119377,7 +119580,7 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
-        "name": "Pale Beauty",
+        "name": "Undulant-Winged Grasshopper",
         "emoji": "🦋",
         "animalType": "insect",
         "rarity": "unlikely",
@@ -119388,7 +119591,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall",
           "winter"
         ],
-        "scientificName": "Campaea perlata",
+        "scientificName": "Circotettix undulatus",
         "funFact": "5 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -119489,26 +119692,6 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Lasius pallitarsis",
-        "funFact": "4 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
-        "name": "Undulant-Winged Grasshopper",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "unlikely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Circotettix undulatus",
         "funFact": "4 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -120523,6 +120706,26 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
+        "name": "North American Porcupine",
+        "emoji": "🦌",
+        "animalType": "mammal",
+        "rarity": "rare",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Erethizon dorsatum",
+        "funFact": "2 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
         "name": "Townsend's Big-eared Bat",
         "emoji": "🦌",
         "animalType": "mammal",
@@ -120723,26 +120926,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
-        "name": "Orange Sulphur",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "rare",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Colias eurytheme",
-        "funFact": "6 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
         "name": "Margined White",
         "emoji": "🦋",
         "animalType": "insect",
@@ -120763,26 +120946,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
-        "name": "Red Admiral",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "rare",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Vanessa atalanta",
-        "funFact": "5 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
         "name": "Juba Skipper",
         "emoji": "🦋",
         "animalType": "insect",
@@ -120795,6 +120958,26 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Hesperia juba",
+        "funFact": "6 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
+        "name": "Red Admiral",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "rare",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Vanessa atalanta",
         "funFact": "5 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -122023,26 +122206,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
-        "name": "North American Porcupine",
-        "emoji": "🦌",
-        "animalType": "mammal",
-        "rarity": "exceptional",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Erethizon dorsatum",
-        "funFact": "1 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
         "name": "Bushy-tailed Woodrat",
         "emoji": "🦌",
         "animalType": "mammal",
@@ -122185,7 +122348,7 @@ export const WILDLIFE_CACHE_TIER2 = {
     ],
   },
   "kingscanyon": {
-    builtAt: "2026-09-06T10:04:47.812Z",
+    builtAt: "2026-09-13T10:55:19.716Z",
     animals: [
       {
         "name": "Mule Deer",
@@ -122200,7 +122363,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Odocoileus hemionus",
-        "funFact": "368 research-grade iNaturalist observations at this park.",
+        "funFact": "377 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -122220,7 +122383,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Marmota flaviventris",
-        "funFact": "192 research-grade iNaturalist observations at this park.",
+        "funFact": "197 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -122240,7 +122403,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Tamiasciurus douglasii",
-        "funFact": "162 research-grade iNaturalist observations at this park.",
+        "funFact": "168 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -122260,7 +122423,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Sceloporus occidentalis",
-        "funFact": "151 research-grade iNaturalist observations at this park.",
+        "funFact": "153 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -122940,7 +123103,8 @@ export const WILDLIFE_CACHE_TIER2 = {
         "photoUrl": null,
         "source": "ebird",
         "sources": [
-          "ebird"
+          "ebird",
+          "inaturalist"
         ]
       },
       {
@@ -125957,7 +126121,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Ursus americanus",
-        "funFact": "213 research-grade iNaturalist observations at this park.",
+        "funFact": "223 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -125977,7 +126141,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Ochotona princeps",
-        "funFact": "123 research-grade iNaturalist observations at this park.",
+        "funFact": "128 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -125997,7 +126161,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Callospermophilus lateralis",
-        "funFact": "97 research-grade iNaturalist observations at this park.",
+        "funFact": "98 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -126017,7 +126181,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Otospermophilus beecheyi",
-        "funFact": "74 research-grade iNaturalist observations at this park.",
+        "funFact": "76 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -126037,7 +126201,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Sciurus griseus",
-        "funFact": "58 research-grade iNaturalist observations at this park.",
+        "funFact": "60 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -126057,7 +126221,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Neotamias speciosus",
-        "funFact": "39 research-grade iNaturalist observations at this park.",
+        "funFact": "40 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -126137,7 +126301,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Thamnophis couchii",
-        "funFact": "43 research-grade iNaturalist observations at this park.",
+        "funFact": "44 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -126177,7 +126341,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Pseudacris regilla",
-        "funFact": "74 research-grade iNaturalist observations at this park.",
+        "funFact": "75 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -126257,7 +126421,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Hippodamia convergens",
-        "funFact": "55 research-grade iNaturalist observations at this park.",
+        "funFact": "56 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -126485,26 +126649,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
-        "name": "Western Eyed Click Beetle",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "likely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Alaus melanops",
-        "funFact": "11 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
         "name": "Hairy Smooth Carpenter Ant",
         "emoji": "🦋",
         "animalType": "insect",
@@ -126517,6 +126661,26 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Camponotus laevissimus",
+        "funFact": "12 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
+        "name": "Western Eyed Click Beetle",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "likely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Alaus melanops",
         "funFact": "11 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -127029,7 +127193,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Urocitellus beldingi",
-        "funFact": "16 research-grade iNaturalist observations at this park.",
+        "funFact": "17 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -127697,6 +127861,26 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
+        "name": "Heteroecus dasydactyli",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "unlikely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Heteroecus dasydactyli",
+        "funFact": "8 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
         "name": "Pacific Spiketail",
         "emoji": "🦋",
         "animalType": "insect",
@@ -127789,26 +127973,6 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Circotettix maculatus",
-        "funFact": "7 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
-        "name": "Heteroecus dasydactyli",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "unlikely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Heteroecus dasydactyli",
         "funFact": "7 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -127949,6 +128113,26 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Cosmopepla conspicillaris",
+        "funFact": "5 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
+        "name": "Polystoechotes punctata",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "unlikely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Polystoechotes punctata",
         "funFact": "5 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -128429,7 +128613,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Martes caurina",
-        "funFact": "4 research-grade iNaturalist observations at this park.",
+        "funFact": "5 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -129029,26 +129213,6 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Claassenia sabulosa",
-        "funFact": "4 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
-        "name": "Polystoechotes punctata",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "rare",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Polystoechotes punctata",
         "funFact": "4 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -131397,6 +131561,26 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
+        "name": "Great Purple Hairstreak",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "exceptional",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Atlides halesus",
+        "funFact": "1 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
         "name": "Great Basin Wood-Nymph",
         "emoji": "🦋",
         "animalType": "insect",
@@ -131435,12 +131619,17 @@ export const WILDLIFE_CACHE_TIER2 = {
         "sources": [
           "inaturalist"
         ]
-      },
+      }
+    ],
+  },
+  "sequoia": {
+    builtAt: "2026-09-13T10:55:15.771Z",
+    animals: [
       {
-        "name": "Pacific Forktail",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "exceptional",
+        "name": "Mule Deer",
+        "emoji": "🦌",
+        "animalType": "mammal",
+        "rarity": "guaranteed",
         "raritySource": "inat_corrected",
         "seasons": [
           "spring",
@@ -131448,19 +131637,14 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall",
           "winter"
         ],
-        "scientificName": "Ischnura cervula",
-        "funFact": "1 research-grade iNaturalist observations at this park.",
+        "scientificName": "Odocoileus hemionus",
+        "funFact": "910 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
           "inaturalist"
         ]
-      }
-    ],
-  },
-  "sequoia": {
-    builtAt: "2026-09-06T10:04:45.445Z",
-    animals: [
+      },
       {
         "name": "Yellow-bellied Marmot",
         "emoji": "🦌",
@@ -131474,27 +131658,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Marmota flaviventris",
-        "funFact": "798 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
-        "name": "Mule Deer",
-        "emoji": "🦌",
-        "animalType": "mammal",
-        "rarity": "very_likely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Odocoileus hemionus",
-        "funFact": "894 research-grade iNaturalist observations at this park.",
+        "funFact": "809 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -131514,7 +131678,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Ursus americanus",
-        "funFact": "685 research-grade iNaturalist observations at this park.",
+        "funFact": "693 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -131534,7 +131698,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Callospermophilus lateralis",
-        "funFact": "447 research-grade iNaturalist observations at this park.",
+        "funFact": "459 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -131554,7 +131718,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Tamiasciurus douglasii",
-        "funFact": "266 research-grade iNaturalist observations at this park.",
+        "funFact": "277 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -131574,7 +131738,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Sceloporus occidentalis",
-        "funFact": "367 research-grade iNaturalist observations at this park.",
+        "funFact": "372 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -131602,6 +131766,26 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
+        "name": "California Sister",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "very_likely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Adelpha californica",
+        "funFact": "118 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
         "name": "White-spotted Sawyer",
         "emoji": "🦋",
         "animalType": "insect",
@@ -131615,26 +131799,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ],
         "scientificName": "Monochamus scutellatus",
         "funFact": "117 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
-        "name": "California Sister",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "very_likely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Adelpha californica",
-        "funFact": "116 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -131674,27 +131838,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Camponotus modoc",
-        "funFact": "64 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
-        "name": "Douglas-fir tussock moth",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "very_likely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Orgyia pseudotsugata",
-        "funFact": "61 research-grade iNaturalist observations at this park.",
+        "funFact": "65 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -131714,6 +131858,26 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Trimerotropis verruculata",
+        "funFact": "62 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
+        "name": "Douglas-fir tussock moth",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "very_likely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Orgyia pseudotsugata",
         "funFact": "61 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -131754,7 +131918,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Alaus melanops",
-        "funFact": "34 research-grade iNaturalist observations at this park.",
+        "funFact": "35 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -134304,7 +134468,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Ochotona princeps",
-        "funFact": "137 research-grade iNaturalist observations at this park.",
+        "funFact": "140 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -134324,7 +134488,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Neotamias speciosus",
-        "funFact": "127 research-grade iNaturalist observations at this park.",
+        "funFact": "130 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -134364,7 +134528,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Sciurus griseus",
-        "funFact": "63 research-grade iNaturalist observations at this park.",
+        "funFact": "67 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -134424,7 +134588,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Elgaria coerulea",
-        "funFact": "92 research-grade iNaturalist observations at this park.",
+        "funFact": "94 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -134484,7 +134648,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Pituophis catenifer",
-        "funFact": "59 research-grade iNaturalist observations at this park.",
+        "funFact": "60 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -134504,7 +134668,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Charina bottae",
-        "funFact": "44 research-grade iNaturalist observations at this park.",
+        "funFact": "45 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -134524,7 +134688,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Thamnophis couchii",
-        "funFact": "25 research-grade iNaturalist observations at this park.",
+        "funFact": "26 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -134544,7 +134708,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Pseudacris regilla",
-        "funFact": "127 research-grade iNaturalist observations at this park.",
+        "funFact": "128 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -134604,7 +134768,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Papilio eurymedon",
-        "funFact": "84 research-grade iNaturalist observations at this park.",
+        "funFact": "85 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -134644,7 +134808,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Nymphalis californica",
-        "funFact": "59 research-grade iNaturalist observations at this park.",
+        "funFact": "60 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -134724,7 +134888,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Apis mellifera",
-        "funFact": "47 research-grade iNaturalist observations at this park.",
+        "funFact": "48 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -135564,7 +135728,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Oncorhynchus mykiss",
-        "funFact": "66 research-grade iNaturalist observations at this park.",
+        "funFact": "67 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -135584,7 +135748,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Oncorhynchus aguabonita",
-        "funFact": "63 research-grade iNaturalist observations at this park.",
+        "funFact": "64 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -149135,26 +149299,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
-        "name": "Bighorn Sheep",
-        "emoji": "🦌",
-        "animalType": "mammal",
-        "rarity": "unlikely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Ovis canadensis",
-        "funFact": "6 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
         "name": "Canyon Bat",
         "emoji": "🦌",
         "animalType": "mammal",
@@ -149427,7 +149571,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Anaxyrus boreas",
-        "funFact": "27 research-grade iNaturalist observations at this park.",
+        "funFact": "28 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -149467,7 +149611,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Junonia grisea",
-        "funFact": "21 research-grade iNaturalist observations at this park.",
+        "funFact": "22 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -149507,7 +149651,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Vanessa virginiensis",
-        "funFact": "19 research-grade iNaturalist observations at this park.",
+        "funFact": "20 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -150235,6 +150379,26 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
+        "name": "Urbane Digger Bee",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "unlikely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Anthophora urbana",
+        "funFact": "7 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
         "name": "Bittacus chlorostigma",
         "emoji": "🦋",
         "animalType": "insect",
@@ -150387,26 +150551,6 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Boisea rubrolineata",
-        "funFact": "6 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
-        "name": "Urbane Digger Bee",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "unlikely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Anthophora urbana",
         "funFact": "6 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -151881,6 +152025,26 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
+        "name": "Bighorn Sheep",
+        "emoji": "🦌",
+        "animalType": "mammal",
+        "rarity": "rare",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Ovis canadensis",
+        "funFact": "4 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
         "name": "Western Spotted Skunk",
         "emoji": "🦌",
         "animalType": "mammal",
@@ -151961,6 +152125,26 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
+        "name": "Botta's Pocket Gopher",
+        "emoji": "🦌",
+        "animalType": "mammal",
+        "rarity": "rare",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Megascapheus bottae",
+        "funFact": "3 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
         "name": "Long-eared Myotis",
         "emoji": "🦌",
         "animalType": "mammal",
@@ -152013,26 +152197,6 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Glaucomys oregonensis",
-        "funFact": "2 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
-        "name": "Botta's Pocket Gopher",
-        "emoji": "🦌",
-        "animalType": "mammal",
-        "rarity": "rare",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Megascapheus bottae",
         "funFact": "2 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -153563,7 +153727,7 @@ export const WILDLIFE_CACHE_TIER2 = {
     ],
   },
   "deathvalley": {
-    builtAt: "2026-09-06T10:04:47.324Z",
+    builtAt: "2026-09-13T10:55:16.787Z",
     animals: [
       {
         "name": "Common Side-blotched Lizard",
@@ -153577,7 +153741,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Uta stansburiana",
-        "funFact": "1083 research-grade iNaturalist observations at this park.",
+        "funFact": "1086 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -153595,7 +153759,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Hyles lineata",
-        "funFact": "735 research-grade iNaturalist observations at this park.",
+        "funFact": "736 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -153701,7 +153865,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Canis latrans",
-        "funFact": "444 research-grade iNaturalist observations at this park.",
+        "funFact": "445 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -153718,7 +153882,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Callisaurus draconoides",
-        "funFact": "485 research-grade iNaturalist observations at this park.",
+        "funFact": "486 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -153754,7 +153918,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "summer"
         ],
         "scientificName": "Dipsosaurus dorsalis",
-        "funFact": "357 research-grade iNaturalist observations at this park.",
+        "funFact": "358 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -153772,7 +153936,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "summer"
         ],
         "scientificName": "Phrynosoma platyrhinos",
-        "funFact": "223 research-grade iNaturalist observations at this park.",
+        "funFact": "224 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -153920,7 +154084,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Apis mellifera",
-        "funFact": "78 research-grade iNaturalist observations at this park.",
+        "funFact": "79 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -154010,7 +154174,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Cyprinodon salinus",
-        "funFact": "513 research-grade iNaturalist observations at this park.",
+        "funFact": "514 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -157607,7 +157771,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Neotoma lepida",
-        "funFact": "13 research-grade iNaturalist observations at this park.",
+        "funFact": "14 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -157758,7 +157922,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Pituophis catenifer",
-        "funFact": "52 research-grade iNaturalist observations at this park.",
+        "funFact": "53 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -157785,6 +157949,25 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
+        "name": "Keeled Rock Gecko",
+        "emoji": "🐊",
+        "animalType": "reptile",
+        "rarity": "likely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall"
+        ],
+        "scientificName": "Cyrtopodion scabrum",
+        "funFact": "33 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
         "name": "Common Sagebrush Lizard",
         "emoji": "🐊",
         "animalType": "reptile",
@@ -157797,25 +157980,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ],
         "scientificName": "Sceloporus graciosus",
         "funFact": "33 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
-        "name": "Keeled Rock Gecko",
-        "emoji": "🐊",
-        "animalType": "reptile",
-        "rarity": "likely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall"
-        ],
-        "scientificName": "Cyrtopodion scabrum",
-        "funFact": "30 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -158062,7 +158226,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Phodaga alticeps",
-        "funFact": "26 research-grade iNaturalist observations at this park.",
+        "funFact": "27 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -164680,6 +164844,26 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
+        "name": "Ophryastes desertus",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "rare",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Ophryastes desertus",
+        "funFact": "4 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
         "name": "Euarestoides acutangulus",
         "emoji": "🦋",
         "animalType": "insect",
@@ -165640,26 +165824,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
-        "name": "American Lady",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "exceptional",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Vanessa virginiensis",
-        "funFact": "2 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
         "name": "Largemouth Bass",
         "emoji": "🐟",
         "animalType": "marine",
@@ -165682,7 +165846,7 @@ export const WILDLIFE_CACHE_TIER2 = {
     ],
   },
   "kenaifjords": {
-    builtAt: "2026-09-06T10:04:45.076Z",
+    builtAt: "2026-09-13T10:55:16.850Z",
     animals: [
       {
         "name": "Tufted Puffin",
@@ -167058,7 +167222,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "summer"
         ],
         "scientificName": "Clethrionomys rutilus",
-        "funFact": "16 research-grade iNaturalist observations at this park.",
+        "funFact": "17 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -168113,7 +168277,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Alces alces",
-        "funFact": "37 research-grade iNaturalist observations at this park.",
+        "funFact": "38 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -168281,6 +168445,23 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
+        "name": "Yellow-fronted Bumble Bee",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "unlikely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "summer"
+        ],
+        "scientificName": "Bombus flavifrons",
+        "funFact": "8 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
         "name": "Margined White",
         "emoji": "🦋",
         "animalType": "insect",
@@ -168291,23 +168472,6 @@ export const WILDLIFE_CACHE_TIER2 = {
           "summer"
         ],
         "scientificName": "Pieris marginalis",
-        "funFact": "7 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
-        "name": "Yellow-fronted Bumble Bee",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "unlikely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "summer"
-        ],
-        "scientificName": "Bombus flavifrons",
         "funFact": "7 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -169658,7 +169822,7 @@ export const WILDLIFE_CACHE_TIER2 = {
     ],
   },
   "glacierbay": {
-    builtAt: "2026-09-06T10:04:45.664Z",
+    builtAt: "2026-09-13T10:55:17.102Z",
     animals: [
       {
         "name": "Harbor Seal",
@@ -171209,7 +171373,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Oreamnos americanus",
-        "funFact": "130 research-grade iNaturalist observations at this park.",
+        "funFact": "131 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -173206,7 +173370,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "fall"
         ],
         "scientificName": "Enhydra lutris",
-        "funFact": "359 research-grade iNaturalist observations at this park.",
+        "funFact": "360 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
@@ -173407,26 +173571,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
-        "name": "Rusty Tussock Moth",
-        "emoji": "🦋",
-        "animalType": "insect",
-        "rarity": "unlikely",
-        "raritySource": "inat_corrected",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall",
-          "winter"
-        ],
-        "scientificName": "Orgyia antiqua",
-        "funFact": "5 research-grade iNaturalist observations at this park.",
-        "photoUrl": null,
-        "source": "inaturalist",
-        "sources": [
-          "inaturalist"
-        ]
-      },
-      {
         "name": "Spotted Tussock Moth",
         "emoji": "🦋",
         "animalType": "insect",
@@ -173439,6 +173583,26 @@ export const WILDLIFE_CACHE_TIER2 = {
           "winter"
         ],
         "scientificName": "Lophocampa maculata",
+        "funFact": "6 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
+        "name": "Rusty Tussock Moth",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "unlikely",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Orgyia antiqua",
         "funFact": "5 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
@@ -174928,6 +175092,26 @@ export const WILDLIFE_CACHE_TIER2 = {
         ]
       },
       {
+        "name": "American Angle Shades",
+        "emoji": "🦋",
+        "animalType": "insect",
+        "rarity": "exceptional",
+        "raritySource": "inat_corrected",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall",
+          "winter"
+        ],
+        "scientificName": "Euplexia benesimilis",
+        "funFact": "1 research-grade iNaturalist observations at this park.",
+        "photoUrl": null,
+        "source": "inaturalist",
+        "sources": [
+          "inaturalist"
+        ]
+      },
+      {
         "name": "Meloe niger",
         "emoji": "🦋",
         "animalType": "insect",
@@ -175350,7 +175534,7 @@ export const WILDLIFE_CACHE_TIER2 = {
     ],
   },
   "haleakala": {
-    builtAt: "2026-09-06T10:04:45.952Z",
+    builtAt: "2026-09-13T10:55:16.413Z",
     animals: [
       {
         "name": "Ring-necked Pheasant",
@@ -175362,6 +175546,26 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Phasianus colchicus",
+        "funFact": "Confirmed at this park's eBird hotspot.",
+        "photoUrl": null,
+        "source": "ebird",
+        "sources": [
+          "ebird",
+          "inaturalist"
+        ]
+      },
+      {
+        "name": "Red Junglefowl",
+        "emoji": "🐦",
+        "animalType": "bird",
+        "rarity": "likely",
+        "raritySource": "ebird_binary",
+        "seasons": [
+          "spring",
+          "summer",
+          "fall"
+        ],
+        "scientificName": "Gallus gallus",
         "funFact": "Confirmed at this park's eBird hotspot.",
         "photoUrl": null,
         "source": "ebird",
@@ -175686,26 +175890,6 @@ export const WILDLIFE_CACHE_TIER2 = {
         "source": "ebird",
         "sources": [
           "ebird"
-        ]
-      },
-      {
-        "name": "Red Junglefowl",
-        "emoji": "🐦",
-        "animalType": "bird",
-        "rarity": "likely",
-        "raritySource": "ebird_binary",
-        "seasons": [
-          "spring",
-          "summer",
-          "fall"
-        ],
-        "scientificName": "Gallus gallus",
-        "funFact": "Confirmed at this park's eBird hotspot.",
-        "photoUrl": null,
-        "source": "ebird",
-        "sources": [
-          "ebird",
-          "inaturalist"
         ]
       },
       {
@@ -176136,9 +176320,7 @@ export const WILDLIFE_CACHE_TIER2 = {
         "rarity": "likely",
         "raritySource": "ebird_binary",
         "seasons": [
-          "spring",
-          "summer",
-          "fall"
+          "year_round"
         ],
         "scientificName": "Chlorodrepanis virens",
         "funFact": "Confirmed at this park's eBird hotspot.",
@@ -176202,7 +176384,8 @@ export const WILDLIFE_CACHE_TIER2 = {
         "photoUrl": null,
         "source": "ebird",
         "sources": [
-          "ebird"
+          "ebird",
+          "inaturalist"
         ]
       },
       {
@@ -176544,7 +176727,7 @@ export const WILDLIFE_CACHE_TIER2 = {
           "year_round"
         ],
         "scientificName": "Hippodamia convergens",
-        "funFact": "35 research-grade iNaturalist observations at this park.",
+        "funFact": "36 research-grade iNaturalist observations at this park.",
         "photoUrl": null,
         "source": "inaturalist",
         "sources": [
