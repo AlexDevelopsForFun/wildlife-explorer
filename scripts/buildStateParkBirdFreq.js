@@ -291,14 +291,78 @@ function mergeSamples(a, b) {
   return { valid: a.valid + b.valid, total: a.total + b.total, datesPresent, monthData, monthValid };
 }
 
+// ── County cache: keyed by the YEAR it sampled ────────────────────────────────
+// The sample is pinned to YEAR = getFullYear() - 1, a CLOSED year, so a county
+// re-sampled in September returns exactly what it returned in August. The
+// monthly job nonetheless deleted a quarter of the cache (~465 counties) and
+// re-fetched all of it — ~21 hours of eBird calls against a 350-minute
+// ceiling, which is why that job had never once completed: Jul 1, Aug 1 and
+// Sep 1 were all cancelled at 5h50m.
+//
+// Deleting was only ever a crude proxy for "the year rolled over". Putting the
+// year IN THE FILENAME says that directly: within a year every read is a hit
+// and nothing needs clearing, and when 2027 arrives the keys miss on their own.
+//
+// The fallback chain matters as much as the key. On Jan 1 every current-year
+// key misses at once, and re-sampling 1,862 counties is ~84 hours; serving the
+// previous year's sample (or a legacy unkeyed one) keeps the build correct and
+// complete while the new year fills in gradually behind it. Slightly stale
+// beats absent — the regression gate would otherwise refuse the whole write.
+function countyCachePaths(county) {
+  return [
+    path.join(CACHE_DIR, `${county}_${YEAR}.json`),      // this year's sample
+    path.join(CACHE_DIR, `${county}_${YEAR - 1}.json`),  // last year's, still usable
+    path.join(CACHE_DIR, `${county}.json`),              // pre-2026 unkeyed files
+  ];
+}
+
+// Cap on how many counties may be sampled fresh in one run. Unlimited locally;
+// CI sets it so a run always finishes inside its timeout and the remainder
+// keeps serving the fallback. A job that refreshes 110 counties and COMPLETES
+// beats one that attempts 465 and is killed having written nothing.
+// NOT `Number(env) || Infinity` — 0 is falsy, so MAX_NEW_SAMPLES=0 (the
+// obvious way to ask for "sample nothing", and the first thing anyone reaches
+// for when smoke-testing) silently became unlimited. Treat only unset/blank/
+// non-numeric as "no cap".
+const MAX_NEW_SAMPLES = (() => {
+  const raw = process.env.MAX_NEW_SAMPLES;
+  if (raw == null || raw === '') return Infinity;
+  const n = Number(raw);
+  return Number.isFinite(n) && n >= 0 ? n : Infinity;
+})();
+let _freshSamples = 0;
+
 export async function sampleCounty(county) {
-  const cacheFile = path.join(CACHE_DIR, `${county}.json`);
-  if (existsSync(cacheFile)) {
-    const cached = JSON.parse(readFileSync(cacheFile, 'utf8'));
+  const [currentPath, ...fallbacks] = countyCachePaths(county);
+
+  // A hit on THIS year's key is final — the year is closed, the data cannot move.
+  if (existsSync(currentPath)) {
+    const cached = JSON.parse(readFileSync(currentPath, 'utf8'));
     if (cached.__skip__) { console.log(`  [${county}] cached (skip)`); return null; }
     console.log(`  [${county}] cached`);
     return cached;
   }
+
+  // Only an older sample exists. Upgrade it if there is budget left this run,
+  // otherwise serve it as-is. Returning the stale sample unconditionally would
+  // be the quiet failure here: every read would succeed forever and no county
+  // would ever advance to the new year.
+  const stalePath = fallbacks.find(f => existsSync(f));
+  if (stalePath && _freshSamples >= MAX_NEW_SAMPLES) {
+    const cached = JSON.parse(readFileSync(stalePath, 'utf8'));
+    if (cached.__skip__) { console.log(`  [${county}] cached (skip, previous year)`); return null; }
+    console.log(`  [${county}] cached (previous year — upgrade deferred)`);
+    return cached;
+  }
+
+  if (!stalePath && _freshSamples >= MAX_NEW_SAMPLES) {
+    // Budget spent. No cached sample of any vintage exists for this county, so
+    // it simply has no floor this run — the same outcome as an unsampled county.
+    console.log(`  [${county}] skipped — MAX_NEW_SAMPLES (${MAX_NEW_SAMPLES}) reached`);
+    return null;
+  }
+  _freshSamples++;
+  const cacheFile = currentPath;
   let samp = await sampleDates(county, SAMPLE_DAYS, YEAR);
   let note = '';
   if (samp.valid < MIN_VALID_DATES) {                 // sparse → denser deep pass…

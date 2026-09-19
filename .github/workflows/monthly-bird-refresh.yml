@@ -49,31 +49,39 @@ jobs:
       # refreshed on a rolling 4-month cycle, and each run finishes well inside
       # the budget. Bucketing is by a stable hash of the filename (NOT mtime —
       # a fresh checkout gives every file the same timestamp).
-      - name: Rotate county cache (1/4 per month — clearing IS the refresh)
-        env:
-          FULL_CLEAR: ${{ github.event.inputs.full_clear }}
+      # The cache filename now carries the YEAR it sampled, so nothing needs
+      # clearing. This step used to delete a quarter of it (~465 counties) on
+      # the theory that "clearing IS the refresh" — but the sample is pinned to
+      # getFullYear() - 1, a CLOSED year, so every one of those counties was
+      # re-fetched to produce byte-identical data. At ~2.7 min per county that
+      # is ~21 hours against timeout-minutes: 350, which is why this job had
+      # never completed once: Jul 1, Aug 1 and Sep 1 all cancelled at 5h50m.
+      #
+      # With the year in the key, a run inside the same year is all cache hits
+      # and finishes in seconds. When the year rolls over the keys miss on
+      # their own, counties fall back to the previous year's sample (so the
+      # build stays complete), and MAX_NEW_SAMPLES upgrades a slice per run
+      # rather than attempting all 1,863 at once — that would be ~84 hours.
+      - name: County cache status
         run: |
           mkdir -p scripts/_nj_county_cache
           node -e '
             const fs = require("fs");
             const dir = "scripts/_nj_county_cache";
-            const BUCKETS = 4;
-            const bucket = new Date().getUTCMonth() % BUCKETS;
-            const full = process.env.FULL_CLEAR === "true";
             const files = fs.readdirSync(dir).filter(f => f.endsWith(".json"));
-            let cleared = 0;
-            for (const f of files) {
-              let h = 0;
-              for (const ch of f) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
-              if (full || h % BUCKETS === bucket) { fs.unlinkSync(`${dir}/${f}`); cleared++; }
-            }
-            console.log(`${files.length} cached counties, cleared ${cleared} `
-              + (full ? "(FULL clear requested)" : `(bucket ${bucket}/${BUCKETS})`)
-              + " — the rest resume from cache.");
+            const year = new Date().getFullYear() - 1;
+            const current = files.filter(f => f.endsWith(`_${year}.json`)).length;
+            console.log(`${files.length} cached counties, ${current} sampled for ${year}`);
+            console.log(current === files.length
+              ? "All current — this run should be cache-only."
+              : `${files.length - current} on an older sample; up to MAX_NEW_SAMPLES will upgrade.`);
           '
 
       - name: Rebuild county bird frequencies
         env:
+          # ~2.7 min/county measured; 110 fits the 350-min job with room for
+          # checkout, npm ci, split, build and audits.
+          MAX_NEW_SAMPLES: "110"
           VITE_EBIRD_API_KEY: ${{ secrets.EBIRD_KEY }}
           EBIRD_KEY:          ${{ secrets.EBIRD_KEY }}
         run: node --max-old-space-size=6144 scripts/buildStateParkBirdFreq.js
